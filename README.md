@@ -1,5 +1,5 @@
 # Wildlife Conservation Society
-WCS jobs to integrate:  
+OpenFn jobs to integrate:  
 - BNS Kobo Toolbox forms
 - NGRT Kobo Toolbox forms
 - ...
