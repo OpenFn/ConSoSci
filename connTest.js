@@ -9,7 +9,7 @@ sql({
   query: `
     SELECT *
     FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_NAME = 'WCSPROGRAMS_KoboBnsAnswer'`,
+    WHERE TABLE_NAME = 'WCSPROGRAMS_KoboNgrtNgrtanswer'`,
 });
 
 // sql({
