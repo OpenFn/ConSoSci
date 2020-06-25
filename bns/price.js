@@ -5,6 +5,7 @@ upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
   Village: state.data.body.village,
   Gs: state.data.body.good[0][`good/name`], //repeat group
   Price: state.data.body.good[0][`good/price`], //repeat group
+  LastUpdate: state.data.body._submission_time //Cannot insert the value NULL into column 'LastUpdate'
 });
 
 
