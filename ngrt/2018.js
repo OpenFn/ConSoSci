@@ -11,7 +11,7 @@ sql({
 });
 
 insertMany('WCSPROGRAMS_KoboNgrtNgrtanswergs', state => {
-  state.data.hhMembers.map(member => {
+  state.data.ngrtAns.map(member => {
     return {
       AnswerId: state.data._uuid,
       Name: member.name,
