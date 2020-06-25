@@ -6,7 +6,7 @@
 
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('body._uuid'),
-  AnswerId: dataValue('_id'),
+  AnswerId: state.data._id,
   SurveyDate: dataValue('today'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
