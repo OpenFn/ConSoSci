@@ -32,7 +32,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 });
 console.log(
   'Kobo data to upload: ',
-  JSON.stringify(json, null, 2)
+  JSON.stringify(state, null, 2)
 );
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
