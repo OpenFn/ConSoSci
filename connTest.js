@@ -5,6 +5,10 @@
    `,
   });
   
+  alterState(state=>{
+    console.log(state.data);
+  })
+  
 
 sql({
   query: `
