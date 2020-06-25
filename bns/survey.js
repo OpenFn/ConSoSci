@@ -25,10 +25,6 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   BnsPlus: dataValue('body.bns_plus'),
   // more: dataValue('moreFields'),
 });
-console.log(
-  'Kobo data to upload: ',
-  JSON.stringify(state, null, 2)
-);
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
