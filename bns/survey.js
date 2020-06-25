@@ -36,11 +36,10 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   state.data.hhMembers.map(member => {
     return {
       AnswerId: state.data.body._id, //is _id how we map to parent Answer? or _uuid?
-      //Name: member.name,
-      Head: gender_head ? 'yes' : 'no',
-      Gender: gender_head,
-      Ethnicity: ethnicity_head,
-      Birth: birth_head,
+      Head: member.gender_head ? 'yes' : 'no',
+      Gender: member.gender_head,
+      Ethnicity: member.ethnicity_head,
+      Birth: member.birth_head,
     };
   });
 });
