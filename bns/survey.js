@@ -522,6 +522,9 @@ insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => {
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
-  // other: dataValue('otherStuff'),
+  AnswerId: dataValue('_id'),
+  Geom: dataValue('_geolocation'), //this is a Kobo array -- transform?
+  Lat: dataValue('gps/lat'),
+  Long: dataValue('gps/long'),
   // more: dataValue('moreFields'),
 });
