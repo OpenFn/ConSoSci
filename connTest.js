@@ -7,12 +7,13 @@
 
 sql({
   query: `
-    SELECT @@VERSION;
-  `,
+    SELECT *
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_NAME = 'WCSPROGRAMS_KoboBnsAnswer'`,
 });
 
-// upsert('WCSTestDB.dbo.Supplier', 'SupplierNumber', {
-//   SupplierNumber: 7,
-//   Name: dataValue('name'),
-//   Address: 'New Guy!',
+// sql({
+//   query: `
+//     SELECT @@VERSION;
+//   `,
 // });
