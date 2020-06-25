@@ -1,6 +1,13 @@
-upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('body._uuid'),
-  Id: dataValue('body._id'),
-  Surveyor: dataValue('body.surveyor'),
-  Village: dataValue('body.village'),
-});
+each(
+  merge(
+    dataPath('body.good[*]'),
+    upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
+      DatasetUuidId: state.data.body._uuid,
+      Id: state.data.body._id,
+      Surveyor: state.data.body.surveyor,
+      Village: state.data.body.village,
+      Gs: dataValue('good/name'),
+      Price: dataValue('good/price'),
+    })
+  )
+);
