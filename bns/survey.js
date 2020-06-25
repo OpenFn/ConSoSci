@@ -23,7 +23,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   //Livelihood3: dataValue('body.livelihoods/l3'),
   //Livelihood4: dataValue('body.livelihoods/l4'),
   BnsPlus: dataValue('body.bns_plus'),
-  // more: dataValue('moreFields'),
+  // more: dataValue('moreFields'), ...
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
@@ -40,16 +40,20 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
       Head: gender_head ? 'yes' : 'no',
       Gender: gender_head,
       Ethnicity: ethnicity_head,
-      Birth: birth_head
+      Birth: birth_head,
     };
   });
 });
 
 upsert('WCSPROGRAMS_KoboBnsAnswernr', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
-  // other: dataValue('otherStuff'),
+  AnswerId: dataValue('_id'),
+  NrCollect: dataValue('firewood'),
+  NrCollect: dataValue('gnetum'),
+  NrCollect: dataValue('marantaceas'),
+  NrCollect: dataValue('bushmeat'),
+  NrCollect: dataValue('liana'),
   // more: dataValue('moreFields'),
-  
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
