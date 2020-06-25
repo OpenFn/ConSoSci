@@ -1,7 +1,7 @@
  sql({
   query: `
-    SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
-     WHERE TABLE_NAME = 'WCSPROGRAMS_KoboNgrtNgrtanswer'
+    SELECT NAME
+    FROM sys.objects where type='u' and name like 'wcsprograms_kobo%'
    `,
   });
 
