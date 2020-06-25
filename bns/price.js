@@ -3,8 +3,8 @@ upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
   Id: state.data.body._id,
   Surveyor: state.data.body.surveyor,
   Village: state.data.body.village,
-  Gs: state.data.body.good[0].good/name, //repeat group
-  Price: state.data.body.good[0].good/price, //repeat group
+  Gs: state.data.body.good[0][`good/name`], //repeat group
+  Price: state.data.body.good[0][`good/price`], //repeat group
 });
 
 
