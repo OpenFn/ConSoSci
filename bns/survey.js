@@ -1,4 +1,20 @@
 // Built for Microsoft SQL Azure (RTM) - 12.0.2000.8
+sql({
+  query: `
+    MERGE WCSPROGRAMS_KoboBnsAnswer
+    USING (
+      VALUES ('${data._uuid}')
+    )
+    AS new (DatasetUuidId)
+    ON WCSPROGRAMS_KoboBnsAnswer.DatasetUuidId = new.DatasetUuidId 
+    WHEN MATCHED THEN
+      UPDATE SET DatasetUuidId = new.DatasetUuidId
+    WHEN NOT MATCHED THEN
+      INSERT (DatasetUuidId)
+      VALUES (new.DatasetUuidId);
+  `,
+});
+
 sql(state => {
   const { data } = state;
   return (

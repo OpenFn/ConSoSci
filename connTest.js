@@ -11,18 +11,8 @@
 //   `,
 // });
 
-sql({
-  query: `
-    MERGE WCSPROGRAMS_KoboBnsAnswer
-    USING (
-      VALUES ('1')
-    )
-    AS new (DatasetUuidId) 
-    ON WCSPROGRAMS_KoboBnsAnswer.DatasetUuidId = new.DatasetUuidId 
-    WHEN MATCHED THEN
-      UPDATE SET DatasetUuidId = new.DatasetUuidId
-    WHEN NOT MATCHED THEN
-      INSERT (DatasetUuidId)
-      VALUES (new.DatasetUuidId);
-  `,
+upsert('WCSTestDB.dbo.Supplier', 'SupplierNumber', {
+  SupplierNumber: 7,
+  Name: dataValue('name'),
+  Address: 'New Guy!',
 });
