@@ -26,7 +26,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   // more: dataValue('moreFields'), ...
 });
 
-// Upsert behavior for child tables/ repeat groups --> TO DISCUSS 
+// Upsert behavior for child tables/ repeat groups --> TO DISCUSS
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
@@ -45,7 +45,29 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   });
 });
 
-upsert('WCSPROGRAMS_KoboBnsAnswernr', 'DatasetUuidId', {
+//Looks like we need to insert 1 record for each NrCollect (?) --> see separate insert statements belpw
+insert('WCSPROGRAMS_KoboBnsAnswernr', {
+  AnswerId: dataValue('body._id'), //is _id how we map to parent Answer? or _uuid?
+  NrCollect: dataValue('body.firewood'),
+});
+insert('WCSPROGRAMS_KoboBnsAnswernr', {
+  AnswerId: dataValue('body._id'),
+  NrCollect: dataValue('body.gnetum'),
+});
+insert('WCSPROGRAMS_KoboBnsAnswernr', {
+  AnswerId: dataValue('body._id'),
+  NrCollect: dataValue('body.marantaceas'),
+});
+insert('WCSPROGRAMS_KoboBnsAnswernr', {
+  AnswerId: dataValue('body._id'),
+  NrCollect: dataValue('body.bushmeat'),
+});
+insert('WCSPROGRAMS_KoboBnsAnswernr', {
+  AnswerId: dataValue('body._id'),
+  NrCollect: dataValue('body.liana'),
+});
+
+/*upsert('WCSPROGRAMS_KoboBnsAnswernr', 'DatasetUuidId', {
   DatasetUuidId: dataValue('body._uuid'), //need to configure this on all child tables?
   AnswerId: dataValue('body._id'),
   NrCollect: dataValue('body.firewood'),
@@ -54,7 +76,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswernr', 'DatasetUuidId', {
   NrCollect: dataValue('body.bushmeat'),
   NrCollect: dataValue('body.liana'),
   // more: dataValue('moreFields'),
-});
+});*/
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
