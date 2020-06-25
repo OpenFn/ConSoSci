@@ -5,14 +5,14 @@
 //   `,
 // });
 
-// sql({
-//   query: `
-//     SELECT @@VERSION;
-//   `,
-// });
-
-upsert('WCSTestDB.dbo.Supplier', 'SupplierNumber', {
-  SupplierNumber: 7,
-  Name: dataValue('name'),
-  Address: 'New Guy!',
+sql({
+  query: `
+    SELECT @@VERSION;
+  `,
 });
+
+// upsert('WCSTestDB.dbo.Supplier', 'SupplierNumber', {
+//   SupplierNumber: 7,
+//   Name: dataValue('name'),
+//   Address: 'New Guy!',
+// });
