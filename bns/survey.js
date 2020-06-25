@@ -9,7 +9,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Arrival: dataValue('body.arrival'),
   District: dataValue('body.district'),
   Village: dataValue('body.village'),
-  HhId: dataValue('body.hh_id'),
+  //HhId: dataValue('body.hh_id'),
   BenefProject: dataValue('body.benef_project'),
   HhTypeControl: dataValue('body.hh_type'),
   HhTypeOrgBenef: dataValue('body.hh_type'),
