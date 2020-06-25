@@ -1,7 +1,7 @@
 // Built for Microsoft SQL Azure (RTM) - 12.0.2000.8
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('body._uuid'),
-  AnswerId: dataValue('body._id',
+  AnswerId: dataValue('body._id'),
   SurveyDate: dataValue('body.today'),
   Landscape: dataValue('body.landscape'),
   Surveyor: dataValue('body.surveyor'),
