@@ -5,23 +5,9 @@
    `,
   });
   
-  alterState(state=>{
-    const tableSets = state.data;
-    
-    const tables = async tbls => {
-    return post(state.configuration.inboxUrl, {
-      body: { tables: tbls },
-    })(state);
-  };
-
-  async function makePosts() {
-    return Promise.all([
-      ...tableSets.map(item => tables(item)),
-    ]);
-  }
-
-  return makePosts();
-  })
+ /* alterState(state=>{
+    console.log(state.data);
+  }) */
   
 
 sql({
