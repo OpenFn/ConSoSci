@@ -35,8 +35,12 @@ sql({
 insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   state.data.hhMembers.map(member => {
     return {
-      AnswerId: state.data.body._uuid,
+      AnswerId: state.data.body._id,
       Name: member.name,
+      Head: gender_head ? 'yes' : 'no',
+      Gender: gender_head,
+      Ethnicity: ethnicity_head,
+      Birth: birth_head
     };
   });
 });
