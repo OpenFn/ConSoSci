@@ -1,5 +1,5 @@
 upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
-  // other: dataValue('otherStuff'),
-  // more: dataValue('moreFields'),
+  Surveyor: dataValue('body.surveyor'),
+  Village: dataValue('body.village'),
 });
