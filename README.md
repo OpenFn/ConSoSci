@@ -1,4 +1,4 @@
-# Wildlife Conservation Society's OpenFn Integration Scripts
+# Wildlife Conservation Society (OpenFn Jobs)
 
 **N.B. commits to the `master` branch will deploy to OpenFn.org**
 
