@@ -1,5 +1,5 @@
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+  DatasetUuidId: dataValue('body._uuid'),
   AnswerId: dataValue('body._id'),
   Landscape: dataValue('body.landscape'),
   GovGroup: dataValue('body.gov_group'),
