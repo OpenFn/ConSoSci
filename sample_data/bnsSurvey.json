@@ -46,10 +46,7 @@
     "bns_matrix_pot/bns_matrix_pot_necessary": "yes",
     "bns_matrix_fishing_net/bns_matrix_fishing_net_number": "2",
     "new_BNS": "no",
-    "_geolocation": [
-      null,
-      null
-    ],
+    "_geolocation": [null, null],
     "bns_matrix_chicken/bns_matrix_chicken_possess": "yes",
     "bns_matrix_pot/bns_matrix_pot_possess": "yes",
     "bns_matrix_protein_once_week/bns_matrix_protein_once_week_possess": "no",
