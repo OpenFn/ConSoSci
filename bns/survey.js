@@ -1,3 +1,24 @@
+alterState(state => {
+  const submission = state.data.body;
+
+  for (const key in submission) {
+    switch (submission[key]) {
+      case 'yes':
+        submission[key] = 1;
+
+      case 'no':
+        submission[key] = 1;
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  state.data = submission;
+  return state;
+});
+
 // Built for Microsoft SQL Azure (RTM) - 12.0.2000.8
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('body._uuid'),
