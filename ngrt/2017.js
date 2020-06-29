@@ -1,4 +1,4 @@
-upsert('WCSPROGRAMS_KoboNgrtNgrtanswer', 'DatasetUuidId', {
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('body._id'),
   Landscape: dataValue('body.landscape'),
