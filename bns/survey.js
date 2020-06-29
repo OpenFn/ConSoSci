@@ -28,6 +28,15 @@ alterState(state => {
   }
 
   state.data = cleanedSubmission;
+
+  state.nr = Object.keys(state.data)
+    .filter(key => key.startsWith('nr/'))
+    .map(key => ({
+      AnswerId: state.data._id,
+      Nr: key.substring(3),
+      NrCollect: state.data[key],
+    }));
+
   return state;
 });
 
@@ -77,27 +86,11 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   });
 });
 
-//Looks like we need to insert 1 record for each NrCollect (?) --> see separate insert statements belpw
-insert('WCSPROGRAMS_KoboBnsAnswernr', {
-  AnswerId: dataValue('_id'), //is _id how we map to parent Answer? or _uuid?
-  NrCollect: dataValue('firewood'),
+sql({
+  query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = ${state.data.AnswerId}`,
 });
-insert('WCSPROGRAMS_KoboBnsAnswernr', {
-  AnswerId: dataValue('_id'),
-  NrCollect: dataValue('gnetum'),
-});
-insert('WCSPROGRAMS_KoboBnsAnswernr', {
-  AnswerId: dataValue('_id'),
-  NrCollect: dataValue('marantaceas'),
-});
-insert('WCSPROGRAMS_KoboBnsAnswernr', {
-  AnswerId: dataValue('_id'),
-  NrCollect: dataValue('bushmeat'),
-});
-insert('WCSPROGRAMS_KoboBnsAnswernr', {
-  AnswerId: dataValue('_id'),
-  NrCollect: dataValue('liana'),
-});
+
+insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 
 /*upsert('WCSPROGRAMS_KoboBnsAnswernr', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'), //need to configure this on all child tables?
@@ -113,7 +106,7 @@ insert('WCSPROGRAMS_KoboBnsAnswernr', {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
-  query: `DELETE FROM KoboBnsAnswergs where AnswerId = ${state.data.AnswerId}`,
+  query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = ${state.data.AnswerId}`,
 });
 
 //==>NOTE: KoboBnsAnswergs is not actually a repeat group!
