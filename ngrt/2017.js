@@ -1,15 +1,17 @@
 // Note: This data cleaning operation returns state,
 // modified in whatever way necessary.
 alterState(state => {
-  const submission = state.data.body;
+  const original = state.data.body;
+  let cleanedSubmission = {};
 
-  for (const key in submission) {
-    switch (submission[key]) {
+  for (const key in original) {
+    switch (original[key]) {
       case 'yes':
-        submission[key] = 1;
+        cleanedSubmission[key] = 1;
+        break;
 
       case 'no':
-        submission[key] = 1;
+        cleanedSubmission[key] = 0;
         break;
 
       default:
@@ -17,7 +19,7 @@ alterState(state => {
     }
   }
 
-  state.data = submission;
+  state.data = cleanedSubmission;
   return state;
 });
 
