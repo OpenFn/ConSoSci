@@ -1,4 +1,4 @@
-upsert('WCSPROGRAMS_KoboNgrtNgrtanswer', 'DatasetUuidId', {
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
   AmswerId: dataValue('body._id'),
   Landscape: dataValue('body.landscape'),
@@ -7,7 +7,7 @@ upsert('WCSPROGRAMS_KoboNgrtNgrtanswer', 'DatasetUuidId', {
   // more: dataValue('moreFields'),
 });
 
-upsert('WCSPROGRAMS_KoboNgrtNgrtanswergs', 'DatasetUuidId', {
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('body._id'),
   Gender: dataValue('body.gender'),
