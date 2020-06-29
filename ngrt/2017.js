@@ -14,7 +14,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
-  query: `DELETE FROM WCSPROGRAMS_KoboNrgtNrgtanswergs where AnswerId = ${state.data.AnswerId}`,
+  query: `DELETE FROM WCSPROGRAMS_KoboNrgtNrgtanswergs where AnswerId = ${state.data.body. AnswerId}`,
 });
 
 insertMany('WCSPROGRAMS_KoboNrgtNrgtanswergs', state => {
