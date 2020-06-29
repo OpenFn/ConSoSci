@@ -15,6 +15,7 @@ alterState(state => {
         break;
 
       default:
+        cleanedSubmission[key] = original[key];
         break;
     }
   }

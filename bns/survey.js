@@ -19,6 +19,13 @@ alterState(state => {
     }
   }
 
+  // How should the contract be set up? Should it be based on
+  // `"gps_method" === 'device'` or on `Object.hasOwnProperty('geo')` ?
+  if (cleanedSubmission.gps_method === 'device') {
+    cleanedSubmission['gps/lat'] = cleanedSubmission.geo.split(' ')[0];
+    cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
+  }
+
   state.data = cleanedSubmission;
   return state;
 });
