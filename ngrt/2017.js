@@ -7,7 +7,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Objective: dataValue('body.objective'),
   Members: dataValue('body.members'),
   Women: dataValue('body.women'),
-  LastUpdate: dataValue('body.survey_date')
+  LastUpdate: dataValue('body._submission_time')
   // more: dataValue('moreFields'),
 });
 
@@ -21,7 +21,7 @@ insertMany('WCSPROGRAMS_KoboNrgtNrgtanswergs', state => {
   state.data.nrtAns.map(member => {
     return {
       AnswerId: state.data._id,
-      SurveyDate: state.data.body.survey_date,
+      SurveyDate: state.data.body._submission_time,
       Code: member.code,
       Gender: member.gender,
       Member: member.member,
