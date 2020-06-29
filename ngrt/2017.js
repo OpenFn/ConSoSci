@@ -1,5 +1,5 @@
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+  DatasetUuidId: dataValue('body._uuid'),
   AnswerId: dataValue('body._id'),
   Landscape: dataValue('body.landscape'),
   GovGroup: dataValue('body.gov_group'),
@@ -11,8 +11,8 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   // more: dataValue('moreFields'),
 });
 
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+  //DatasetUuidId: dataValue('_uuid'),
   AnswerId:  dataValue('body._id'),
   SurveyDate:  dataValue('body._submission_time'),
   Code:  dataValue('body.code'),
