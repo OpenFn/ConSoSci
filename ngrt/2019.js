@@ -1,5 +1,4 @@
-// Note: This data cleaning operation returns state,
-// modified in whatever way necessary.
+// NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   const original = state.data.body;
   let cleanedSubmission = {};
