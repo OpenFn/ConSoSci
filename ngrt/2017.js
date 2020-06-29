@@ -11,8 +11,8 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   // more: dataValue('moreFields'),
 });
 
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+  //DatasetUuidId: dataValue('_uuid'),
   AnswerId:  dataValue('body._id'),
   SurveyDate:  dataValue('body._submission_time'),
   Code:  dataValue('body.code'),
