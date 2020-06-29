@@ -7,17 +7,18 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Objective: dataValue('body.objective'),
   Members: dataValue('body.members'),
   Women: dataValue('body.women'),
+  LastUpdate: dataValue('body.survey_date')
   // more: dataValue('moreFields'),
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
-  query: `DELETE FROM WCSPROGRAMS_KoboNgrtNgrtanswergs where AnswerId = ${state.data.AnswerId}`,
+  query: `DELETE FROM WCSPROGRAMS_KoboNrgtNrgtanswergs where AnswerId = ${state.data.AnswerId}`,
 });
 
-insertMany('WCSPROGRAMS_KoboNgrtNgrtanswergs', state => {
-  state.data.ngrtAns.map(member => {
+insertMany('WCSPROGRAMS_KoboNrgtNrgtanswergs', state => {
+  state.data.nrtAns.map(member => {
     return {
       AnswerId: state.data._id,
       SurveyDate: state.data.body.survey_date,
