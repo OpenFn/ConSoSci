@@ -6,7 +6,7 @@
   });
   
   alterState(state=>{
-    console.log(state.data);
+    console.log(state.references);
     return state;
   }) 
   
