@@ -6,7 +6,7 @@
   });
   
   alterState(state=>{
-    console.log(state.references);
+    console.log(JSON.stringify(state.references, null, 2));
     return state;
   }) 
   
