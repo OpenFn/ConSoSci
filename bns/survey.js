@@ -65,6 +65,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
+  LastUpdate: dataValue('_submission_time'),
   SurveyDate: dataValue('today'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
