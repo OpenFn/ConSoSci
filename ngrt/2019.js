@@ -39,7 +39,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Gender: dataValue('gender'),
   Member: dataValue('member'),
   //Objective: dataValue('objective'),
-  //Legitimacy: dataValue('legitimacy'),
+  Legitimacy: dataValue('legitimacy'),
   Accountability: dataValue('accountability'),
   Transparency: dataValue('transparency'),
   Participation: dataValue('participation'),
