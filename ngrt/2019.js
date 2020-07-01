@@ -32,9 +32,9 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   LastUpdate: dataValue('_submission_time'),
   // more: dataValue('moreFields'),
 });
-
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+//upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
+  //DatasetUuidId: dataValue('_uuid'), //Need to add
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
