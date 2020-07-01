@@ -119,11 +119,13 @@ insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` });
 insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
-upsert('WCSPROGRAMS_KoboBnsAnswergps', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
+  // DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
+  Id: dataValue('_id'),
   Geom: dataValue('_geolocation'), //this is a Kobo array -- transform?
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
+  LastUpdate: dataValue('_submission_time'),
   // more: dataValue('moreFields'),
 });
