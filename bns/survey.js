@@ -98,7 +98,7 @@ sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = ${
 insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   state.data.hhMembers.map(member => {
     return {
-      AnswerId: state.data.body._id, //is _id how we map to parent Answer? or _uuid?
+      AnswerId: state.data._id, 
       Head: member.gender_head ? 'yes' : 'no',
       Gender: member.gender_head,
       Ethnicity: member.ethnicity_head,
