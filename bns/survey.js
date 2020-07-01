@@ -95,19 +95,16 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
-//sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = ${state.data.AnswerId}` });
-insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
-  state.data.hhMembers.map(member => {
-    return {
-      Id: state.data._id,
-      //AnswerId: state.data._id,
-      Head: member.gender_head ? 'yes' : 'no',
-      Gender: member.gender_head,
-      Ethnicity: member.ethnicity_head,
-      Birth: member.birth_head,
-    };
-  });
-});
+insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state =>
+  state.data.hh_members.map(member => ({
+    Id: state.data._id,
+    // AnswerId: state.data._id,
+    Head: member.gender_head ? 1 : 0,
+    Gender: member.gender_head,
+    Ethnicity: member.ethnicity_head,
+    Birth: member.birth_head,
+  }))
+);
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
