@@ -56,6 +56,5 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   EnactDecision: dataValue('enact_decision'),
   HeldAccountable: dataValue('held_accountable'),
   Diversity: dataValue('diversity'),
-  //LastUpdate: dataValue('_submission_time')
-  // more: dataValue('moreFields'),
+  LastUpdate: dataValue('_submission_time')
 });
