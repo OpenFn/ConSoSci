@@ -103,6 +103,7 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state =>
     Gender: member.gender_head,
     Ethnicity: member.ethnicity_head,
     Birth: member.birth_head,
+    LastUpdate: state.data._submission_time,
   }))
 );
 
