@@ -1,35 +1,60 @@
+// NOTE: This data cleaning operation returns state, modified as needed.
+alterState(state => {
+  const original = state.data.body;
+  let cleanedSubmission = {};
+
+  for (const key in original) {
+    switch (original[key]) {
+      case 'yes':
+        cleanedSubmission[key] = 1;
+        break;
+
+      case 'no':
+        cleanedSubmission[key] = 0;
+        break;
+
+      default:
+        cleanedSubmission[key] = original[key];
+        break;
+    }
+  }
+
+  state.data = cleanedSubmission;
+  return state;
+});
+
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('body._uuid'),
-  AnswerId: dataValue('body._id'),
-  Landscape: dataValue('body.landscape'),
-  GovGroup: dataValue('body.gov_group'),
-  Jurisdiction: dataValue('body.jurisdiction'),
-  Objective: dataValue('body.objective'),
-  Members: dataValue('body.members'),
-  Women: dataValue('body.women'),
-  LastUpdate: dataValue('body._submission_time')
+  DatasetUuidId: dataValue('_uuid'),
+  AnswerId: dataValue('_id'),
+  Landscape: dataValue('landscape'),
+  GovGroup: dataValue('gov_group'),
+  Jurisdiction: dataValue('jurisdiction'),
+  Objective: dataValue('objective'),
+  Members: dataValue('members'),
+  Women: dataValue('women'),
+  LastUpdate: dataValue('_submission_time'),
   // more: dataValue('moreFields'),
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   //DatasetUuidId: dataValue('_uuid'),
-  AnswerId:  dataValue('body._id'),
-  SurveyDate:  dataValue('body._submission_time'),
-  Code:  dataValue('body.code'),
-  Gender:  dataValue('body.gender'),
-  Member:  dataValue('body.member'),
-  Legitimacy:  dataValue('body.legitimacy'),
-  Accountability:  dataValue('body.accountability'),
-  Transparency:  dataValue('body.transparency'),
-  Participation:  dataValue('body.participation'),
-  Fairness:  dataValue('body.fairness'),
-  KnowledgeSkills:  dataValue('body.knowledge_skills'),
-  Resources:  dataValue('body.resources'),
-  InstutionalFramework:  dataValue('body.institutional_framework'),
-  Motivation:  dataValue('body.motivation'),
-  EnactDecision:  dataValue('body.enact_decision'),
-  HeldAccountable:  dataValue('body.held_accountable'),
-  Diversity:  dataValue('body.diversity'),
-  //LastUpdate: dataValue('body._submission_time')
+  AnswerId: dataValue('_id'),
+  SurveyDate: dataValue('_submission_time'),
+  Code: dataValue('code'),
+  Gender: dataValue('gender'),
+  Member: dataValue('member'),
+  Legitimacy: dataValue('legitimacy'),
+  Accountability: dataValue('accountability'),
+  Transparency: dataValue('transparency'),
+  Participation: dataValue('participation'),
+  Fairness: dataValue('fairness'),
+  KnowledgeSkills: dataValue('knowledge_skills'),
+  Resources: dataValue('resources'),
+  InstutionalFramework: dataValue('institutional_framework'),
+  Motivation: dataValue('motivation'),
+  EnactDecision: dataValue('enact_decision'),
+  HeldAccountable: dataValue('held_accountable'),
+  Diversity: dataValue('diversity'),
+  //LastUpdate: dataValue('_submission_time')
   // more: dataValue('moreFields'),
 });
