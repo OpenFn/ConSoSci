@@ -40,6 +40,8 @@ alterState(state => {
     .filter(key => key.startsWith('nr/'))
     .map(key => ({
       AnswerId: state.data._id,
+      Id: state.data._id,
+      LastUpdate: state.data._submission_time,
       Nr: key.substring(3),
       NrCollect: state.data[key],
     }));
@@ -109,12 +111,12 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state =>
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = ${state.data._id}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'` });
 insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = ${state.data._id}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` });
 insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'DatasetUuidId', {
