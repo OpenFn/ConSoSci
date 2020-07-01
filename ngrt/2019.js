@@ -30,24 +30,22 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
   LastUpdate: dataValue('_submission_time'),
-  // more: dataValue('moreFields'),
 });
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
 //upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  //DatasetUuidId: dataValue('_uuid'), //Need to add
+  //DatasetUuidId: dataValue('_uuid'), //ERROR: Need to add uuid to table
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
-  Objective: dataValue('objective'),
+  //Objective: dataValue('objective'), //ERROR: Invalid column name
   Legitimacy: dataValue('legitimacy'),
   Accountability: dataValue('accountability'),
   Transparency: dataValue('transparency'),
   Participation: dataValue('participation'),
   Fairness: dataValue('fairness'),
   Diversity: dataValue('diversity'),
-  //KnowledgeSkills: 0.5,//dataValue('knowledge_skills'),
+  //KnowledgeSkills: 0.5,//dataValue('knowledge_skills'), //ERROR: Conversion failed when converting the varchar value '0.5' to data type int.
   Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
-  // more: dataValue('moreFields'),
 });
