@@ -25,7 +25,7 @@ alterState(state => {
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
-  AmswerId: dataValue('_id'),
+  AnswerId: dataValue('_id'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
