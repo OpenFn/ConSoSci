@@ -1,13 +1,14 @@
  sql({
   query: `
     SELECT NAME
-    FROM sys.objects where type='u' and name like 'WCSPROGRAMS_KoboNgrt%'
+    FROM sys.objects where type='u' and name like 'WCSPROGRAMS_KoboBnsAnswer%'
    `,
   });
   
- /* alterState(state=>{
-    console.log(state.data);
-  }) */
+  alterState(state=>{
+    console.log(JSON.stringify(state.references, null, 2));
+    return state;
+  }) 
   
 
 sql({
