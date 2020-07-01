@@ -38,6 +38,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   //DatasetUuidId: dataValue('_uuid'),
+  Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('_submission_time'),
   Code: dataValue('code'),
