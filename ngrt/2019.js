@@ -29,6 +29,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
+  LastUpdate: dataValue('_submission_time'),
   // more: dataValue('moreFields'),
 });
 
