@@ -38,15 +38,16 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
-  //Objective: dataValue('objective'), //ERROR: Invalid column name
+  Objective: dataValue('objective'), //ERROR: Invalid column name
   Legitimacy: dataValue('legitimacy'),
   Accountability: dataValue('accountability'),
   Transparency: dataValue('transparency'),
   Participation: dataValue('participation'),
   Fairness: dataValue('fairness'),
   Diversity: dataValue('diversity'),
-  //KnowledgeSkills: 0.5,//dataValue('knowledge_skills'), //ERROR: Conversion failed when converting the varchar value '0.5' to data type int.
+  KnowledgeSkills: 0.5,//dataValue('knowledge_skills'), //ERROR: Conversion failed when converting the varchar value '0.5' to data type int.
   Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
+  LastUpdate: dataValue('_submission_time'),
 });
