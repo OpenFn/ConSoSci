@@ -46,7 +46,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Fairness: dataValue('fairness'),
   Diversity: dataValue('diversity'),
   //KnowledgeSkills: 0.5,//dataValue('knowledge_skills'),
-  //Resources: dataValue('resources'),
+  Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
   // more: dataValue('moreFields'),
