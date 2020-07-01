@@ -74,7 +74,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Village: dataValue('village'),
   //HhId: dataValue('hh_id'), //temp commenting out until 'undefined' string issue resolved in LP
   BenefProject: dataValue('benef_project'),
-  HhTypeControl: dataValue('hh_type'),
+  //HhTypeControl: dataValue('hh_type'), // what is transformation? Need 0/1 values
   HhTypeOrgBenef: dataValue('hh_type'),
   HhTypeOtherBenef: dataValue('hh_type'),
   //ExplainProject: dataValue('explain_project'),
