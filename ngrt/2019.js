@@ -34,6 +34,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
 //upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
   //DatasetUuidId: dataValue('_uuid'), //ERROR: Need to add uuid to table
+  Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
