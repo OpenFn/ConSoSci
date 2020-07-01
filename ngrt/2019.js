@@ -45,7 +45,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Participation: dataValue('participation'),
   Fairness: dataValue('fairness'),
   Diversity: dataValue('diversity'),
-  KnowledgeSkills: 0.5,//dataValue('knowledge_skills'), //ERROR: Conversion failed when converting the varchar value '0.5' to data type int.
+  KnowledgeSkills: dataValue('knowledge_skills'), //ERROR: Conversion failed when converting the varchar value '0.5' to data type int.
   Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
