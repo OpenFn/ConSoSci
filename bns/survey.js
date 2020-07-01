@@ -50,7 +50,7 @@ alterState(state => {
     .map(key => {
       const item = key.substring(11, key.indexOf('/'));
       return {
-        AnswerId: state.data._id, 
+        AnswerId: state.data._id,
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
         necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
@@ -94,13 +94,13 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
 //sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = ${state.data.AnswerId}` });
 insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
   state.data.hhMembers.map(member => {
     return {
-      Id: state.data._id, 
-      //AnswerId: state.data._id, 
+      Id: state.data._id,
+      //AnswerId: state.data._id,
       Head: member.gender_head ? 'yes' : 'no',
       Gender: member.gender_head,
       Ethnicity: member.ethnicity_head,
@@ -111,12 +111,12 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = ${state.data.AnswerId}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = ${state.data.AnswerId}` });
 insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = ${state.data.AnswerId}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = ${state.data.AnswerId}` });
 insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'DatasetUuidId', {

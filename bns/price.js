@@ -25,12 +25,12 @@ alterState(state => {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: `DELETE FROM WCSPROGRAMS_KoboBnsPrice where Id = ${state.data._id}` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsPrice where Id = ${state.data._id}` });
 insertMany('WCSPROGRAMS_KoboBnsPrice', state => {
   state.data.good.map(good => {
     return {
-      Id: state.data._id, 
-      //AnswerId: state.data.body._id, 
+      Id: state.data._id,
+      //AnswerId: state.data.body._id,
       DatasetUuidId: state.data._uuid,
       Surveyor: state.data.surveyor,
       Village: state.data.village,
