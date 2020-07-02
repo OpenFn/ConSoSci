@@ -114,7 +114,8 @@ insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` });
+//sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where Id = '${state.data._id}'` });
 insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
