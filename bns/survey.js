@@ -75,24 +75,21 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Arrival: dataValue('arrival'),
   District: dataValue('district'),
   Village: dataValue('village'),
-  //HhId: dataValue('hh_id'), //temp commenting out until 'undefined' string issue resolved in LP
+  HhId: dataValue('hh_id'), 
   BenefProject: dataValue('benef_project'),
   //HhTypeControl: dataValue('hh_type'), // what is transformation? Need 0/1 values
   //HhTypeOrgBenef: dataValue('hh_type'),
   //HhTypeOtherBenef: dataValue('hh_type'),
-  //ExplainProject: dataValue('explain_project'),
+  ExplainProject: dataValue('explain_project'),
   KnowPa: dataValue('know_PA'),
-  //BenefPa: dataValue('benef_PA'),
-  //ExplainBenefPa: dataValue('explain_benef_PA'),
+  BenefPa: dataValue('benef_PA'),
+  ExplainBenefPa: dataValue('explain_benef_PA'),
   Livelihood1: dataValue('livelihoods/l1'),
   Livelihood2: dataValue('livelihoods/l2'),
-  //Livelihood3: dataValue('livelihoods/l3'),
-  //Livelihood4: dataValue('livelihoods/l4'),
+  Livelihood3: dataValue('livelihoods/l3'),
+  Livelihood4: dataValue('livelihoods/l4'),
   BnsPlus: dataValue('bns_plus'),
-  // more: dataValue('moreFields'), ...
 });
-
-// NOTE: Upsert behavior for child tables/ repeat groups --> TO DISCUSS
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
@@ -123,9 +120,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   // DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
-  Geom: dataValue('_geolocation'), //this is a Kobo array -- transform?
+  Geom: dataValue('_geolocation'), 
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
   LastUpdate: dataValue('_submission_time'),
-  // more: dataValue('moreFields'),
 });
