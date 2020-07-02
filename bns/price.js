@@ -40,17 +40,3 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   }))
 );
 
-//Need a `for each` option in LP. Something like...
-// each(
-//   merge(
-//     dataPath('body.good[*]'),
-//     upsert('WCSPROGRAMS_KoboBnsPrice', 'DatasetUuidId', {
-//       DatasetUuidId: state.data._uuid,
-//       Id: state.data._id,
-//       Surveyor: state.data.surveyor,
-//       Village: state.data.village,
-//       Gs: dataValue('good/name'),
-//       Price: dataValue('good/price'),
-//     })
-//   )
-// );
