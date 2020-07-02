@@ -52,7 +52,8 @@ alterState(state => {
     .map(key => {
       const item = key.substring(11, key.indexOf('/'));
       return {
-        AnswerId: state.data._id,
+        Id: state.data._id,
+        //AnswerId: state.data._id,
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
         necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
@@ -118,7 +119,7 @@ insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   // DatasetUuidId: dataValue('_uuid'),
-  //AnswerId: dataValue('_id'),
+  AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
   Geom: dataValue('_geolocation'), 
   Lat: dataValue('gps/lat'),
