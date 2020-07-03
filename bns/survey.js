@@ -62,7 +62,12 @@ alterState(state => {
       };
     });
   // ===========================================================================
-
+  
+  //=== hh_type mappings to binary value ====//
+  state.control = (dataValue('hh_type')(state)==='control'? 1 : 0);
+  state.benef = (dataValue('hh_type')(state)==='wcs_benef'? 1 : 0);
+  state.otherBenef = (dataValue('hh_type')(state)==='other_benef'? 1 : 0);
+  
   return state;
 });
 
@@ -79,9 +84,9 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Village: dataValue('village'),
   HhId: dataValue('hh_id'), 
   BenefProject: dataValue('benef_project'),
-  HhTypeControl: dataValue('hh_type')==='control'? 1 : 0, 
-  HhTypeOrgBenef: dataValue('hh_type')==='wcs_benef'? 1 : 0,
-  HhTypeOtherBenef: dataValue('hh_type')==='other_benef'? 1 : 0,
+  HhTypeControl:  state.control, 
+  HhTypeOrgBenef: state.benef,
+  HhTypeOtherBenef: state.otherBenef,
   ExplainProject: dataValue('explain_project'),
   KnowPa: dataValue('know_PA'),
   BenefPa: dataValue('benef_PA'),
