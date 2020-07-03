@@ -108,7 +108,7 @@ sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id =
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
   Id: state.data._id,
   AnswerId: state.data._id, //Q: replace with AnswerId ?
-  Head: state.data.gender_head ? 1 : 0,
+  Head: state.data.gender_head ? '1' : '0',
   Gender: state.data.gender_head,
   Ethnicity: state.data.ethnicity_head,
   Birth: state.data.birth_head,
@@ -119,7 +119,7 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other me
   state.data.hh_members.map(member => ({  //Q: what if no members selected?
     Id: state.data._id, //Q: replace with AnswerId ?
     AnswerId: state.data._id,
-    Head: 0,
+    Head: '0',
     Gender: member[`hh_members/gender`],
     Ethnicity: member[`hh_members/ethnicity`],
     Birth: member[`hh_members/birth`],
