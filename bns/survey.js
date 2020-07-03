@@ -62,7 +62,7 @@ alterState(state => {
       };
     });
   // ===========================================================================
-    
+
   return state;
 });
 
@@ -77,20 +77,20 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Arrival: dataValue('arrival'),
   District: dataValue('district'),
   Village: dataValue('village'),
-  HhId: dataValue('hh_id'), 
+  HhId: dataValue('hh_id'),
   BenefProject: dataValue('benef_project'),
-  HhTypeControl:  state =>{
-    var control = dataValue('hh_type')(state)==='control'? 1 : 0;
-    return control; 
-  }, 
-  HhTypeOrgBenef: state =>{
-    var benef = dataValue('hh_type')(state)==='wcs_benef'? 1 : 0;
-    return benef; 
-  }, 
-  HhTypeOtherBenef: state =>{
-    var other = dataValue('hh_type')(state)==='other_benef'? 1 : 0;
-    return other; 
-  }, 
+  HhTypeControl: state => {
+    var control = dataValue('hh_type')(state) === 'control' ? 1 : 0; //always returning 0
+    return control;
+  },
+  HhTypeOrgBenef: state => {
+    var benef = dataValue('hh_type')(state) === 'wcs_benef' ? 1 : 0;
+    return benef;
+  },
+  HhTypeOtherBenef: state => {
+    var other = dataValue('hh_type')(state) === 'other_benef' ? 1 : 0;
+    return other;
+  },
   ExplainProject: dataValue('explain_project'),
   KnowPa: dataValue('know_PA'),
   BenefPa: dataValue('benef_PA'),
@@ -105,14 +105,24 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
-insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state =>
-  state.data.hh_members.map(member => ({
+insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
+  Id: state.data._id,
+  // AnswerId: state.data._id,
+  Head: state.data.gender_head ? 1 : 0,
+  Gender: state.data.gender_head,
+  Ethnicity: state.data.ethnicity_head,
+  Birth: state.data.birth_head,
+  LastUpdate: state.data._submission_time,
+});
+
+insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other members
+  state.data.hh_members.map(member => ({  //Q: what if no members selected?
     Id: state.data._id,
     // AnswerId: state.data._id,
-    Head: member.gender_head ? 1 : 0,
-    Gender: member.gender_head,
-    Ethnicity: member.ethnicity_head,
-    Birth: member.birth_head,
+    Head: 0,
+    Gender: member[`hh_members/gender`],
+    Ethnicity: member[`hh_members/ethnicity`],
+    Birth: member[`hh_members/birth`],
     LastUpdate: state.data._submission_time,
   }))
 );
@@ -132,7 +142,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   // DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
-  Geom: dataValue('_geolocation'), 
+  Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
   LastUpdate: dataValue('_submission_time'),
