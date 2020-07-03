@@ -38,7 +38,7 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     Village: state.data.village,
     Gs: g[`good/name`],
     Price: g[`good/price`], 
-    LastUpdate: state.data._submission_time,
+    LastUpdate: state.data._submission_time, //Q: update runtime to now()
   }))
 );
 
