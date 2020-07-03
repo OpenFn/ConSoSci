@@ -26,6 +26,8 @@ alterState(state => {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsPrice where DatasetUuidId = ${state.data._uuid}` });
+/*ERROR: Executing query: DELETE FROM WCSPROGRAMS_KoboBnsPrice where DatasetUuidId = eeea1846-e88c-4c89-b030-ca77fd9daecd
+Incorrect syntax near 'c89'.*/
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
