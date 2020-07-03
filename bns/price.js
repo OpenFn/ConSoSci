@@ -31,14 +31,14 @@ Incorrect syntax near 'c89'.*/
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
-    Id: state.data._id, //Q: replace with AnswerId
-    // AnswerId: state.data._id,
+    Id: state.data._id, //Q: Id vs AnswerId
+    AnswerId: state.data._id,
     DatasetUuidId: dataValue('_uuid')(state),
     Surveyor: state.data.surveyor,
     Village: state.data.village,
     Gs: g[`good/name`],
     Price: g[`good/price`], 
-    LastUpdate: state.data._submission_time, //Q: update runtime to now()
+    LastUpdate: state.data.end, 
   }))
 );
 
