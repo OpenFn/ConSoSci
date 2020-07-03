@@ -52,9 +52,8 @@ alterState(state => {
     .map(key => {
       const item = key.substring(11, key.indexOf('/'));
       return {
-        Dataset_id: state.data._uuid,
-        Row_id: state.data._id, //Q: Replace with AnswerId
-        //AnswerId: state.data._id
+        Dataset_id: state.data._uuid, //Rename?
+        AnswerId: state.data._id,
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
         necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
