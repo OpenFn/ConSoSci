@@ -32,12 +32,11 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Objective: dataValue('objective'),
   Members: dataValue('members'),
   Women: dataValue('women'),
-  LastUpdate: dataValue('_submission_time'),
-  // more: dataValue('moreFields'),
+  LastUpdate: dataValue('_submission_time'), //update to runtime now()
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-  //DatasetUuidId: dataValue('_uuid'),
+  //DatasetUuidId: dataValue('_uuid'), //Q: add column to table
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('_submission_time'),
@@ -56,5 +55,5 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   EnactDecision: dataValue('enact_decision'),
   HeldAccountable: dataValue('held_accountable'),
   Diversity: dataValue('diversity'),
-  LastUpdate: dataValue('_submission_time')
+  LastUpdate: dataValue('_submission_time') //update to runtime now()
 });
