@@ -41,7 +41,7 @@ alterState(state => {
     .map(key => ({
       AnswerId: state.data._id,
       Id: state.data._id,
-      LastUpdate: state.data._submission_time,
+      LastUpdate: state.data._submission_time, //Q: update runtime to now()
       Nr: key.substring(3),
       NrCollect: state.data[key],
     }));
@@ -54,6 +54,7 @@ alterState(state => {
       return {
         Dataset_id: state.data._uuid,
         Row_id: state.data._id, //Q: Replace with AnswerId
+        //AnswerId: state.data._id
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
         necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
@@ -68,7 +69,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
-  LastUpdate: dataValue('_submission_time'),
+  LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
   SurveyDate: dataValue('today'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
@@ -111,7 +112,7 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
   Gender: state.data.gender_head,
   Ethnicity: state.data.ethnicity_head,
   Birth: state.data.birth_head,
-  LastUpdate: state.data._submission_time,
+  LastUpdate: state.data._submission_time, //Q: update runtime to now()
 });
 
 insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other members
@@ -122,7 +123,7 @@ insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other me
     Gender: member[`hh_members/gender`],
     Ethnicity: member[`hh_members/ethnicity`],
     Birth: member[`hh_members/birth`],
-    LastUpdate: state.data._submission_time,
+    LastUpdate: state.data._submission_time, //Q: update runtime to now()
   }))
 );
 
@@ -144,5 +145,5 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
-  LastUpdate: dataValue('_submission_time'),
+  LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
 });
