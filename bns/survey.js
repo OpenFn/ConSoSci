@@ -53,8 +53,7 @@ alterState(state => {
       const item = key.substring(11, key.indexOf('/'));
       return {
         Dataset_id: state.data._uuid,
-        Row_id: state.data._id,
-        //AnswerId: state.data._id, //does not exist
+        Row_id: state.data._id, //Q: Replace with AnswerId
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
         necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
@@ -80,7 +79,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   HhId: dataValue('hh_id'),
   BenefProject: dataValue('benef_project'),
   HhTypeControl: state => {
-    var control = dataValue('hh_type')(state) === 'control' ? 1 : 0; //always returning 0
+    var control = dataValue('hh_type')(state) === 'control' ? 1 : 0; //Q: not working, always returning 0
     return control;
   },
   HhTypeOrgBenef: state => {
@@ -107,7 +106,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
   Id: state.data._id,
-  // AnswerId: state.data._id,
+  // AnswerId: state.data._id, //Q: replace with AnswerId ?
   Head: state.data.gender_head ? 1 : 0,
   Gender: state.data.gender_head,
   Ethnicity: state.data.ethnicity_head,
@@ -117,7 +116,7 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
 
 insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other members
   state.data.hh_members.map(member => ({  //Q: what if no members selected?
-    Id: state.data._id,
+    Id: state.data._id, //Q: replace with AnswerId ?
     // AnswerId: state.data._id,
     Head: 0,
     Gender: member[`hh_members/gender`],
@@ -139,7 +138,7 @@ sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where Dataset_id 
 insertMany('WCSPROGRAMS_KoboBnsAnswergs', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
-  // DatasetUuidId: dataValue('_uuid'),
+  // DatasetUuidId: dataValue('_uuid'), //Q: Add new column
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
   Geom: dataValue('_geolocation'),
