@@ -78,18 +78,9 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   Village: dataValue('village'),
   HhId: dataValue('hh_id'),
   BenefProject: dataValue('benef_project'),
-  HhTypeControl: state => {
-    var control = dataValue('hh_type')(state) === 'control' ? 1 : 0; //Q: not working, always returning 0
-    return control;
-  },
-  HhTypeOrgBenef: state => {
-    var benef = dataValue('hh_type')(state) === 'wcs_benef' ? 1 : 0;
-    return benef;
-  },
-  HhTypeOtherBenef: state => {
-    var other = dataValue('hh_type')(state) === 'other_benef' ? 1 : 0;
-    return other;
-  },
+  HhTypeControl: state => (state.data.hh_type === 'control' ? 1 : 0),
+  HhTypeOrgBenef: state => (state.data.hh_type === 'wcs_benef' ? 1 : 0),
+  HhTypeOtherBenef: state => (state.data.hh_type === 'other_benef' ? 1 : 0),
   ExplainProject: dataValue('explain_project'),
   KnowPa: dataValue('know_PA'),
   BenefPa: dataValue('benef_PA'),
@@ -103,8 +94,9 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = '${state.data._id}'` });
-insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
+insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', {
+  //insert hh head first
   Id: state.data._id,
   AnswerId: state.data._id, //Q: replace with AnswerId ?
   Head: state.data.gender_head ? '1' : '0',
@@ -114,8 +106,11 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'Id', { //insert hh head first
   LastUpdate: state.data._submission_time, //Q: update runtime to now()
 });
 
-insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', state => //then insert other members
-  state.data.hh_members.map(member => ({  //Q: what if no members selected?
+insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', (
+  state //then insert other members
+) =>
+  state.data.hh_members.map(member => ({
+    //Q: what if no members selected?
     Id: state.data._id, //Q: replace with AnswerId ?
     AnswerId: state.data._id,
     Head: '0',
