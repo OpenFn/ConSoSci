@@ -1,10 +1,12 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
-  const original = state.data.body;
+  const { form, body } = state.data;
+  const { _submission_time, _id } = body;
+
   let cleanedSubmission = {};
 
-  for (const key in original) {
-    switch (original[key]) {
+  for (const key in body) {
+    switch (body[key]) {
       case 'yes':
         cleanedSubmission[key] = 1;
         break;
@@ -14,7 +16,7 @@ alterState(state => {
         break;
 
       default:
-        cleanedSubmission[key] = original[key];
+        cleanedSubmission[key] = body[key];
         break;
     }
   }
@@ -26,6 +28,7 @@ alterState(state => {
     cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
   }
 
+  cleanedSubmission.durableUUID = `${_submission_time}-${form}-${_id}`;
   state.data = cleanedSubmission;
 
   // ===========================================================================
@@ -52,7 +55,7 @@ alterState(state => {
     .map(key => {
       const item = key.substring(11, key.indexOf('/'));
       return {
-        Dataset_id: state.data._uuid, //Rename?
+        Dataset_id: state.data.durableUUID, //Rename?
         AnswerId: state.data._id,
         gs: item.replace(/_/g, ' '),
         have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
@@ -66,7 +69,7 @@ alterState(state => {
 });
 
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('_uuid'),
+  DatasetUuidId: dataValue('durableUUID'),
   AnswerId: dataValue('_id'),
   LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
   SurveyDate: dataValue('today'),
@@ -128,11 +131,11 @@ insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data._uuid}'` });
+sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'` });
 insertMany('WCSPROGRAMS_KoboBnsAnswerGS', state => state.matrix);
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
-  DatasetUuidId: dataValue('_uuid'), //Q: Add new column
+  DatasetUuidId: dataValue('durableUUID'), //Q: Add new column
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
   Geom: dataValue('_geolocation'),
