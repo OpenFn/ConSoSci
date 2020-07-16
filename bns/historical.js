@@ -28,8 +28,8 @@ each(dataPath('surveys[*]'), state =>
   get(state.data.url, {}, state => {
     console.log(`Fetched ${state.data.count} submissions.`);
     state.data.submissions = state.data.results;
-    //Once we fetch the data, we want to put each individual survey
-    //back to the OpenFn inbox to run through the jons
+    //Once we fetch the data, we want to post each individual survey
+    //back to the OpenFn inbox to run through the jobs
     return each(
       dataPath('submissions[*]'),
       post(
