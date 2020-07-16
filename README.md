@@ -33,7 +33,7 @@
  ### Historical Kobo Migrations 
 1. At any time, the OpenFn job `historical.js` can be run on-demand to manually fetch historical Kobo data. 
 2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
-'https://kf.kobotoolbox.org/#/forms/**aopf2bJ4cVqEXCrjnwAoHd**/landing'
+In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` --> `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
 3. When ready to sync the historical data, click "Run job" button. 
 ![run-job](run-this-job.png)
 
