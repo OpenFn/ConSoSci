@@ -9,7 +9,7 @@
 - [x] NRGT Current --> OpenFn job [`nrgt/2019.js`](https://github.com/OpenFn/wcs/blob/master/ngrt/2019.js)
 
 ## Mappings
-[See here](https://docs.google.com/spreadsheets/d/1EuSCOepC3gs8nRHlh9E4Tszi5txv__WxHkRAK80FMT4/edit#gid=0) for the mapping specifications. 
+[See here](https://docs.google.com/spreadsheets/d/1EuSCOepC3gs8nRHlh9E4Tszi5txv__WxHkRAK80FMT4/edit#gid=0) for the mapping specifications defined by WCS. These jobs map to a MSSql database and leverage [OpenFn/language-mssql](https://github.com/OpenFn/language-mssql) and available helper functions. 
 
 ### Assumptions
 1. For idempotency, the jobs create a new Kobo `uuid` to map to the DB `DatasetUuidId`. This is a concatenation of Kobo `_id` + `_submission_time` + `_xform_id_string`. We cannot use Kobo `_uuid` because this is refreshed every time a Kobo submission is cleaned.
@@ -27,7 +27,7 @@
 *Note this job creates a **custom unique identifier** (Kobo `_id` + `_submission_time` + `_xform_id_string`) to map to the DB column `DatasetUuidId`, which can be used in the OpenFn job `upsert()` operations to ensure idempotency. 
 
 ### Real-Time Integration
-1. WCS may choose to configure a REST service in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis. 
+1. For some forms, WCS may prefer to configure a REST service in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis). 
 2. To configure the Kobo REST service for real-time integration, see the [instructions here](https://docs.google.com/document/d/14V4GgvH2eorchO6s7AOwDCIkn4JhqBb6A6SsC46GJmY/edit?usp=sharing). 
 
  ### Historical Kobo Migrations 
@@ -35,7 +35,7 @@
 2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
 'https://kf.kobotoolbox.org/#/forms/**aopf2bJ4cVqEXCrjnwAoHd**/landing'
 3. When ready to sync the historical data, click "Run job" button. 
-![run-job](run-job-now.png)
+![run-job](run-this-job.png)
 
 ## Questions? 
 Contact support@openfn.org. 
