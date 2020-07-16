@@ -1,11 +1,14 @@
 //== Job to be used for historical, once-off migrations  ==//
 // This can be run on-demand at any time by clicking "run" // 
 
+
+//NOTE: This job is currently configured to support BNS historical migration, but another version is in development to 
+//support other survey types. Please test migrating historical BNS forms for now.  
 alterState(state => {
   state.data.surveys = [
     'aMpW7wwRBRbtCfidtK2rRn', //Form Id of test OpenFN BNS Survey form
     //'ad7S4hPBN7qM4Ac3mpEdwZ', //Historical BNS forms to migrate
-    //'amD3cUsR4Jurj3ZSUyQdBH',
+    //'amD3cUsR4Jurj3ZSUyQdBH', //Remove comments for any of these to test migration
     //'a2m5Hp4BoN956CBxfKHdJY',
     //'aFQWAYHXXfh8i2cmXw9BFi',
     //'auqBASwJMLvkqtAJnZ8SXx',
