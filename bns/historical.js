@@ -1,6 +1,8 @@
 //== Job to be used for historical, once-off migrations  ==//
 // This can be run on-demand at any time by clicking "run" //
 
+//NOTE: This job is currently configured to support BNS historical migration, but another version is in development to
+//support other survey types. Please test migrating historical BNS forms for now.
 alterState(state => {
   state.data.surveys = [
     { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id of test OpenFN BNS Survey form
@@ -37,7 +39,6 @@ each(dataPath('surveys[*]'), state =>
     console.log(`Fetched ${state.data.count} submissions.`);
     //Once we fetch the data, we want to post each individual survey
     //back to the OpenFn inbox to run through the jobs
-    console.log(state.data.submissions);
     return each(
       dataPath('submissions[*]'),
       post(state.configuration.openfnInboxUrl, { body: state => state.data }, state => {
