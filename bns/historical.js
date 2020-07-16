@@ -3,7 +3,18 @@
 
 alterState(state => {
   state.data.surveys = [
-    'aMpW7wwRBRbtCfidtK2rRn',
+    'aMpW7wwRBRbtCfidtK2rRn', //Form Id of test OpenFN BNS Survey form
+    //'ad7S4hPBN7qM4Ac3mpEdwZ', //Historical BNS forms to migrate
+    //'amD3cUsR4Jurj3ZSUyQdBH',
+    //'a2m5Hp4BoN956CBxfKHdJY',
+    //'aFQWAYHXXfh8i2cmXw9BFi',
+    //'auqBASwJMLvkqtAJnZ8SXx',
+    //'a9R68Er4oeDx6quZre2DM7',
+    //'arJkDGmkhhCiJ2eYwRcCit',
+    //'aEypYtcfNGvDtpkSUPXrJN',
+    //'aCShrrKNApccvaAPzxzbxK',
+    //'aQbjGLfvPTEUjdTmsdTu46',
+    //'ahz5DN45juUzp7eUfGS5QA'
     // 'add more ids to this list',
     // 'to perform more daily syncs',
   ].map(id => ({
