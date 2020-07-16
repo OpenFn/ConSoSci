@@ -1,7 +1,7 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   const { body } = state.data;
-  const { _submission_time, _id, _xform_id_string} = body;
+  const { _submission_time, _id, _xform_id_string } = body;
   let cleanedSubmission = {};
 
   for (const key in body) {
@@ -20,9 +20,14 @@ alterState(state => {
     }
   }
 
-  cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-  state.data = cleanedSubmission;
-  return state;
+  return {
+    ...state,
+    data: {
+      ...cleanedSubmission,
+      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+      end: cleanedSubmission.end.slice(0, 10),
+    },
+  };
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
