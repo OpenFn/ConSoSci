@@ -16,7 +16,7 @@
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is synced with the DB, it will overwrite the records saved there and use the above `uuid` to upsert existing records.
 3. In the [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js) job, we utiilize some of the Kobo form metadata to create data for the `bns_matrix` [L52-L65](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L52-L65) and `nr` [L42-L50](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L42-L50) question groups. It is therefore important that future versions of this form follow the same Kobo question naming conventions, otherwise the data will _not_ map as expected and the job may need to be modified. 
 
-## How it works
+## Data Sync Frequency
 ### Ongoing, Timer-Based Integration
 1. On a timer-basis, the OpenFn job `getKoboData.js` will run to fetch Kobo form data in bulk for the specified form Ids. 
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
