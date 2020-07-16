@@ -1,6 +1,6 @@
 # Wildlife Conservation Society (OpenFn Jobs)
 
-**N.B. commits to the `master` branch will deploy to OpenFn.org**
+**N.B. commits to the `master` branch will automatically deploy to OpenFn.org**
 
 ## Kobo Toolbox template forms to integrate
 - [x] BNS Survey --> OpenFn job [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js)
@@ -28,7 +28,7 @@
 
 ### Real-Time Integration
 1. WCS may choose to configure a REST service in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis. 
-2. To configure the Kobo REST service for real-time integration, see the instructions here. 
+2. To configure the Kobo REST service for real-time integration, see the [instructions here](https://docs.google.com/document/d/14V4GgvH2eorchO6s7AOwDCIkn4JhqBb6A6SsC46GJmY/edit?usp=sharing). 
 
  ### Historical Kobo Migrations 
 1. At any time, the OpenFn job `historical.js` can be run on-demand to manually fetch historical Kobo data. 
