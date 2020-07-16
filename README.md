@@ -18,8 +18,8 @@
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is synced with the DB, it will overwrite the records saved there and use the above `uuid` to upsert existing records.
 3. In the [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js) job, we utiilize some of the Kobo form metadata to create data for the `bns_matrix` [L52-L65](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L52-L65) and `nr` [L42-L50](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L42-L50) question groups. It is therefore important that future versions of this form follow the same Kobo question naming conventions, otherwise the data will _not_ map as expected and the job may need to be modified. 
 
-## Data Syncing Options
-### Ongoing, Timer-Based Integration (*IN DEVPT*)
+## Data Flows
+### (1) Ongoing, Timer-Based Integration (*IN DEVPT*)
 1. On a timer-basis (e.g., every 3 hours), the OpenFn job {`getKoboData.js`_- IN DEVPT_} will run to fetch Kobo form data in bulk for the specified form Ids. 
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
 3. Message filter triggers will execute the relevant jobs (see above list) to process & load the data into the connect DB. 
@@ -31,11 +31,14 @@
   cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
 ```
 
-### Real-Time Integration (READY for testing)
-1. For some forms, WCS may prefer to configure a REST service in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis). 
+### (2) Real-Time Integration (READY for testing)
+1. For some forms, WCS may prefer to configure a REST service* in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis). 
 2. To configure the Kobo REST service for real-time integration, see the [instructions here](https://docs.google.com/document/d/14V4GgvH2eorchO6s7AOwDCIkn4JhqBb6A6SsC46GJmY/edit?usp=sharing). 
+3. Every time WCS submits a new Kobo survey, the data will be forwarded automatically to the OpenFn Inbox. If the OpenFn jobs are "on", this data will be processed and forwarded onto the database automatically. 
 
- ### Historical Kobo Migrations (READY for testing)
+*Note that this REST Service will not re-send Kobo data after it has been cleaned (only the initial submission). This is why the timer-based jobs are needed to sync cleaned Kobo data. 
+
+ ### (3) Historical Kobo Migrations (READY for testing)
 1. At any time, the OpenFn job `historical.js` can be run on-demand to manually fetch historical Kobo data. 
 2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
 In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` --> `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
