@@ -34,11 +34,11 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Objective: dataValue('objective'),
   Members: dataValue('members'),
   Women: dataValue('women'),
-  LastUpdate: dataValue('_submission_time'), //update to runtime now()
+  LastUpdate: dataValue('_submission_time'), // update to runtime now()
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-  //DatasetUuidId: dataValue('durableUUID'), //Q: add column to table
+  DatasetUuidId: dataValue('durableUUID'), // Q: add column to table
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('_submission_time'),

@@ -35,7 +35,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
 });
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  // DatasetUuidId: dataValue('durableUUID'), //Q: Need to add column to table
+  DatasetUuidId: dataValue('durableUUID'), // Q: Need to add column to table
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
