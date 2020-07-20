@@ -1,4 +1,4 @@
-//== Job to be used for fetching data from Kobo for (1) ongoing syncs and (2) historical, once-off migrations  ==//
+//== Job to be used for fetching data from Kobo for historical, once-off migrations  ==//
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
