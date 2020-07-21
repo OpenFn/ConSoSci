@@ -21,8 +21,7 @@ alterState(state => {
     }
   }
 
-  // QUESTION: How should the contract be set up? Should it be based on
-  // `"gps_method" === 'device'` or on `Object.hasOwnProperty('geo')` ?
+  // NOTE: This assumes all device-collected geo data follows specific lat, log data format
   if (cleanedSubmission.gps_method === 'device') {
     cleanedSubmission['gps/lat'] = cleanedSubmission.geo.split(' ')[0];
     cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
@@ -32,7 +31,9 @@ alterState(state => {
   state.data = cleanedSubmission;
 
   // ===========================================================================
-  // WARNING: In OpenFn's opinion, this is a very FRAGILE API contract!
+  //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
+  //  'NR' and 'BNS matrix' questions should follow the naming conventions below
+  //  See Docs to learn more about the assumptions made here. 
   // ===========================================================================
   // If a partner creates a form with slightly different field names, this
   // section will need to be updated by WCS. If future forms are being designed,
