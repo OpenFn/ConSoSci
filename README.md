@@ -8,6 +8,10 @@
 - [x] NRGT Historical --> OpenFn job [`nrgt/2017.js`](https://github.com/OpenFn/wcs/blob/master/ngrt/2017.js)
 - [x] NRGT Current --> OpenFn job [`nrgt/2019.js`](https://github.com/OpenFn/wcs/blob/master/ngrt/2019.js)
 
+## OpenFn jobs to _fetch_ Kobo data
+- [x] Ongoing, timer-based fetch --> OpenFn job [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js)
+- [x] Historical, once-off fetch --> OpenFn job [`historical.js`](https://github.com/OpenFn/wcs/blob/master/bns/historical.js)
+
 ## Mappings
 [See here](https://docs.google.com/spreadsheets/d/1EuSCOepC3gs8nRHlh9E4Tszi5txv__WxHkRAK80FMT4/edit#gid=0) for the mapping specifications defined by WCS. 
 - These jobs map to a MSSql database and leverage [OpenFn/language-mssql](https://github.com/OpenFn/language-mssql) and available helper functions. 
@@ -20,7 +24,7 @@
 
 ## Data Flows
 ### (1) Ongoing, Timer-Based Integration 
-1. On a timer-basis (e.g., every 3 hours), the OpenFn job `[getKoboData.js](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js)` will run to fetch Kobo form data in bulk for the specified form Ids. 
+1. On a timer-basis (e.g., every 3 hours), the OpenFn job [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js) will run to fetch Kobo form data in bulk for the specified form Ids. 
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
 3. Message filter triggers will execute the relevant jobs (see above list) to process & load the data into the connect DB. 
 4. View **Activity History** to monitor the success of these integration flows. 
@@ -39,7 +43,7 @@
 *Note that this REST Service will not re-send Kobo data after it has been cleaned (only the initial submission). This is why the timer-based jobs are needed to sync cleaned Kobo data. 
 
  ### (3) Historical Kobo Migrations (READY for testing)
-1. At any time, the OpenFn job `historical.js` can be run on-demand to manually fetch historical Kobo data. 
+1. At any time, the OpenFn job [`historical.js`](https://github.com/OpenFn/wcs/blob/master/bns/historical.js) can be run on-demand to manually fetch historical Kobo data. 
 2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
 In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` --> `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
 3. When ready to sync the historical data, click "Run job" button. 
