@@ -2,18 +2,18 @@
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
-  let state.data = {};
-  state.data.surveys = [
-    { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form --> For Testing
-    // Add more Form ids and tags to this list to perform more Kobo syncs...
-    //{ id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_2019' }, //BNS Price survey to be synced regularly
-    //{ id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price_2019' }, //BNS Price survey to be synced regularly
-    
-  ].map(survey => ({
-    formId: survey.id,
-    tag: survey.tag,
-    url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
-  }));
+  state.data = {
+    surveys: [
+      { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form --> For Testing
+      // Add more Form ids and tags to this list to perform more Kobo syncs...
+      //{ id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_2019' }, //BNS Price survey to be synced regularly
+      //{ id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price_2019' }, //BNS Price survey to be synced regularly
+    ].map(survey => ({
+      formId: survey.id,
+      tag: survey.tag,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+    })),
+  };
   return state;
 });
 
