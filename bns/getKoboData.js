@@ -2,6 +2,7 @@
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
+  let state.data = {};
   state.data.surveys = [
     { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form --> For Testing
     // Add more Form ids and tags to this list to perform more Kobo syncs...
