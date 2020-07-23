@@ -31,7 +31,6 @@ alterState(state => {
 each(dataPath('surveys[*]'), state =>
   get(state.data.url, {}, state => {
     state.data.submissions = state.data.results.map(submission => {
-      console.log(lastReferenceValue('tag')(state));
       return {
         // Here we append the tags defined above to the Kobo form submission data
         form: lastReferenceValue('tag')(state),
