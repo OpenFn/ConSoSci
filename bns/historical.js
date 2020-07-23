@@ -30,11 +30,14 @@ alterState(state => {
 
 each(dataPath('surveys[*]'), state =>
   get(state.data.url, {}, state => {
-    state.data.submissions = state.data.results.map(submission => ({
-      // Here we append the tags defined above to the Kobo form submission data
-      form: lastReferenceValue('tag')(state),
-      body: submission,
-    }));
+    state.data.submissions = state.data.results.map(submission => {
+      console.log(lastReferenceValue('tag')(state));
+      return {
+        // Here we append the tags defined above to the Kobo form submission data
+        form: lastReferenceValue('tag')(state),
+        body: submission,
+      };
+    });
     console.log(`Fetched ${state.data.count} submissions.`);
     //Once we fetch the data, we want to post each individual Kobo survey
     //back to the OpenFn inbox to run through the jobs
