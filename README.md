@@ -23,8 +23,9 @@
 3. In the [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js) job, we utiilize some of the Kobo form metadata to create data for the `bns_matrix` [L52-L65](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L52-L65) and `nr` [L42-L50](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L42-L50) question groups. It is therefore important that future versions of this form follow the same Kobo question naming conventions, otherwise the data will _not_ map as expected and the job may need to be modified. 
 
 ## Data Flows
-### (1) Ongoing, Timer-Based Integration 
+### (1) Ongoing, Timer-Based Integration (READY for testing)
 1. On a timer-basis (e.g., every 3 hours), the OpenFn job [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js) will run to fetch Kobo form data in bulk for the specified form Ids. 
+- Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id. 
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
 3. Message filter triggers will execute the relevant jobs (see above list) to process & load the data into the connect DB. 
 4. View **Activity History** to monitor the success of these integration flows. 
@@ -45,7 +46,7 @@
  ### (3) Historical Kobo Migrations (READY for testing)
 1. At any time, the OpenFn job [`historical.js`](https://github.com/OpenFn/wcs/blob/master/bns/historical.js) can be run on-demand to manually fetch historical Kobo data. 
 2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
-In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` --> `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
+In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
 3. When ready to sync the historical data, click "Run job" button. 
 ![run-job](run-this-job.png)
 
