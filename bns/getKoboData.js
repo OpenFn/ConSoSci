@@ -2,6 +2,8 @@
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
+  // Set a manual cursor if you'd like to only fetch data after this date.
+  manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
       { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form --> For Testing
@@ -12,13 +14,14 @@ alterState(state => {
       formId: survey.id,
       tag: survey.tag,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
     })),
   };
   return state;
 });
 
 each(dataPath('surveys[*]'), state =>
-  get(state.data.url, {}, state => {
+  get(`${state.data.url}${state.data.query}`, {}, state => {
     state.data.submissions = state.data.results.map(submission => ({
       //Here we append the tags defined above to the Kobo form submission data
       form: lastReferenceValue('tag')(state),
@@ -51,3 +54,11 @@ each(dataPath('surveys[*]'), state =>
     )(state);
   })(state)
 );
+
+alterState(state => {
+  const lastEnd = state.references
+    .filter(item => item.body)
+    .map(s => s.body.end)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+  return { ...state, lastEnd };
+});
