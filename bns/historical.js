@@ -3,7 +3,7 @@
 
 alterState(state => {
   state.data = {
-    surveys: [
+    surveys: [ //Tag options: nrgt_2017, nrgt_2019, bns_2019, bns_price_2019
       { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form
       // Historical BNS forms to migrate:
       // { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_2019' }, //Make sure the tag matches the Trigger of the related Job
