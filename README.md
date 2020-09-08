@@ -52,5 +52,6 @@ In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the 
 ![run-job](run-this-job.png)
 
 ## Open Questions
-1. Can WCS test to confirm the jobs are mapping data to Postgres as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata. 
+1. Can WCS test to confirm the jobs are mapping data to Mssql as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata. 
+2. Can WCS confirm the Postgres database we should also map these to? And should we map the exact same data to Postgres as we are to Mssql? Or will different surveys be mapped to different DBs? 
 
