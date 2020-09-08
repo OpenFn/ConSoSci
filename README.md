@@ -21,6 +21,7 @@
 1. For idempotency, the jobs create a new Kobo `uuid` to map to the DB `DatasetUuidId`. This is a concatenation of Kobo `_id` + `_submission_time` + `_xform_id_string`. We cannot use Kobo `_uuid` because this is refreshed every time a Kobo submission is cleaned.
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is synced with the DB, it will overwrite the records saved there and use the above `uuid` to upsert existing records.
 3. In the [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js) job, we utiilize some of the Kobo form metadata to create data for the `bns_matrix` [L52-L65](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L52-L65) and `nr` [L42-L50](https://github.com/OpenFn/wcs/blob/master/bns/survey.js#L42-L50) question groups. It is therefore important that future versions of this form follow the same Kobo question naming conventions, otherwise the data will _not_ map as expected and the job may need to be modified. 
+4. OpenFn will only automatically fetch the Kobo surveys where the form Ids have been specified in the job [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js). This is to allow WCS to identify which forms have historical data to be migrated one time using  [`historical.js`](https://github.com/OpenFn/wcs/blob/master/bns/historical.js), and which forms should be synced on an ongoing basis using [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js). 
 
 ## Data Flows
 ### (1) Ongoing, Timer-Based Integration (READY for testing)
@@ -50,6 +51,6 @@ In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the 
 3. When ready to sync the historical data, click "Run job" button. 
 ![run-job](run-this-job.png)
 
-## Questions? 
-Contact support@openfn.org. 
+## Open Questions
+1. Can WCS test to confirm the jobs are mapping data to Postgres as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata. 
 
