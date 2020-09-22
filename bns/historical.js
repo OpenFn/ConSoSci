@@ -20,15 +20,13 @@ alterState(state => {
       // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_2019' }, // ✓
       // { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_2019' }, // ✓
       // { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_2019' }, // ✓
-      // NOTE: The above have been finished. ===================================
-      { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_2019' },
-      { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_2019' },
-      { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_2019' },
-      { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_2019' },
-      { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_2019' },
-      { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_2019' },
-      { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_2019' },
-      // NOTE: The below have been finished. ===================================
+      // { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_2019' }, // ✓
+      // { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_2019' }, // ✓
+      // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_2019' }, // ✓
+      // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_2019' }, // ✓
+      // { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_2019' }, // ✓
+      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_2019' }, // ✓
+      // { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_2019' }, // ✓
       // { id: 'a6BjZ8ncLtTtfBSGZ9PqoJ', tag: 'bns_price_2019' }, // ✓
       // { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price_2019' }, // ✓
       // { id: 'apMTFWRd9fQWHvpJHLfvk6', tag: 'bns_price_2019' }, // ✓
@@ -81,10 +79,6 @@ each(dataPath('surveys[*]'), state => {
     //back to the OpenFn inbox to run through the jobs =========================
     return each(dataPath('submissions[*]'), state => {
       console.log(`Posting ${state.data.i + 1} of ${count}...`);
-      // if (state.data.i < 920) {
-      //   console.log('Skpping post, already done.');
-      //   return state;
-      // }
       return post(state.configuration.openfnInboxUrl, { body: state => state.data })(state);
     })(state);
     // =========================================================================
