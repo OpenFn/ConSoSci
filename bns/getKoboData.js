@@ -6,8 +6,10 @@ alterState(state => {
   manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
-      //Tag options: nrgt_2017, nrgt_2019, bns_2019, bns_price_2019
-      { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Form Id, Tag of test OpenFN BNS Survey form --> For Testing
+      // Tag options: nrgt_2017, nrgt_2019, bns_2019, bns_price_2019
+      //Form Id, Tag of test OpenFN BNS Survey form --> For Testing  
+      { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, 
+      //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, //Survey Name
       // Add more Form ids and tags to this list to perform more Kobo syncs...
       //{ id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_2019' }, //BNS Price survey to be synced regularly
       //{ id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price_2019' }, //BNS Price survey to be synced regularly
