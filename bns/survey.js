@@ -110,20 +110,28 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   LastUpdate: state.data._submission_time, //Q: update runtime to now()
 });
 
-insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', (
-  state //then insert other members
-) =>
-  state.data.hh_members.map(member => ({
-    //Q: what if no members selected?
-    Id: state.data._id, //Q: replace with AnswerId ?
-    AnswerId: state.data._id,
-    Head: '0',
-    Gender: member[`hh_members/gender`],
-    Ethnicity: member[`hh_members/ethnicity`],
-    Birth: member[`hh_members/birth`],
-    LastUpdate: state.data._submission_time, //Q: update runtime to now()
-  }))
-);
+alterState(state => {
+  if (state.data.hh_members) {
+    return insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', (
+      state //then insert other members
+    ) =>
+      state.data.hh_members.map(member => ({
+        //Q: what if no members selected?
+        Id: state.data._id, //Q: replace with AnswerId ?
+        AnswerId: state.data._id,
+        Head: '0',
+        Gender: member[`hh_members/gender`],
+        Ethnicity: member[`hh_members/ethnicity`],
+        Birth: member[`hh_members/birth`],
+        LastUpdate: state.data._submission_time, //Q: update runtime to now()
+      }))
+    )(state);
+  }
+  
+  console.log('No household members found.');
+  return state;
+});
+
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'` });
