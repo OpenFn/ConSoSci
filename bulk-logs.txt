@@ -1,3 +1,12 @@
+Running ~1.1 submission per second.
+
+seconds	| submissions |	seconds/submission
+417	410	1.017073171
+502	472	1.063559322
+643	562	1.144128114
+453	410	1.104878049
+
+
 Started at: 2020-09-22T13:41:34.424Z
 Fetching data for 1 surveys.
 ✓ GET succeeded. (The response body will be available in state.)
