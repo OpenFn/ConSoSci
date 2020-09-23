@@ -28,6 +28,13 @@
 1. On a scheduled-basis (e.g., every 3 hours), the OpenFn job [`1A. Get Kobo Data`](https://www.openfn.org/projects/1168/jobs/3562) (aka `getKoboData.js`) will run to fetch Kobo form data in bulk for the specified form Ids. _Before running the job, WCS should..._
 - 1a. Update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id. 
 - 1b. Add the appropriate survey tag to indicate which mappings should be used to process the data. Tag options include: `bns_survey`, `bns_price`, `nrgt_current`, `nrgt_historical`. 
+```
+surveys: [
+      //** Specify new forms to fetch here **//
+      //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
+      { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey' }, //BNS Ndoki 2019 
+      { id: 'new-form-id', tag: 'form_tag' }, //New Form Name
+```
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
 3. Message filter triggers will execute the relevant jobs (see above list) to process & load the data into the connect DB. 
 4. View **Activity History** to monitor the success of these integration flows. 
