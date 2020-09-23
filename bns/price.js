@@ -1,33 +1,38 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
-  const { body } = state.data;
-  const { _submission_time, _id, _xform_id_string } = body;
-  let cleanedSubmission = {};
+  try {
+    const { body } = state.data;
+    const { _submission_time, _id, _xform_id_string } = body;
+    let cleanedSubmission = {};
 
-  for (const key in body) {
-    switch (body[key]) {
-      case 'yes':
-        cleanedSubmission[key] = 1;
-        break;
+    for (const key in body) {
+      switch (body[key]) {
+        case 'yes':
+          cleanedSubmission[key] = 1;
+          break;
 
-      case 'no':
-        cleanedSubmission[key] = 0;
-        break;
+        case 'no':
+          cleanedSubmission[key] = 0;
+          break;
 
-      default:
-        cleanedSubmission[key] = body[key];
-        break;
+        default:
+          cleanedSubmission[key] = body[key];
+          break;
+      }
     }
-  }
 
-  return {
-    ...state,
-    data: {
-      ...cleanedSubmission,
-      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
-      end: cleanedSubmission.end.slice(0, 10),
-    },
-  };
+    return {
+      ...state,
+      data: {
+        ...cleanedSubmission,
+        durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+        end: cleanedSubmission.end.slice(0, 10),
+      },
+    };
+  } catch (error) {
+    state.connection.close();
+    throw error;
+  }
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.

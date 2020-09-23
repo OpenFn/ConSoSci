@@ -1,72 +1,77 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
-  const { body } = state.data;
-  const { _submission_time, _id, _xform_id_string } = body;
+  try {
+    const { body } = state.data;
+    const { _submission_time, _id, _xform_id_string } = body;
 
-  let cleanedSubmission = {};
+    let cleanedSubmission = {};
 
-  for (const key in body) {
-    switch (body[key]) {
-      case 'yes':
-        cleanedSubmission[key] = 1;
-        break;
+    for (const key in body) {
+      switch (body[key]) {
+        case 'yes':
+          cleanedSubmission[key] = 1;
+          break;
 
-      case 'no':
-        cleanedSubmission[key] = 0;
-        break;
+        case 'no':
+          cleanedSubmission[key] = 0;
+          break;
 
-      default:
-        cleanedSubmission[key] = body[key];
-        break;
+        default:
+          cleanedSubmission[key] = body[key];
+          break;
+      }
     }
-  }
 
-  // NOTE: This assumes all device-collected geo data follows specific lat, log data format
-  if (cleanedSubmission.gps_method === 'device') {
-    cleanedSubmission['gps/lat'] = cleanedSubmission.geo.split(' ')[0];
-    cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
-  }
+    // NOTE: This assumes all device-collected geo data follows specific lat, log data format
+    if (cleanedSubmission.gps_method === 'device') {
+      cleanedSubmission['gps/lat'] = cleanedSubmission.geo.split(' ')[0];
+      cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
+    }
 
-  cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-  state.data = cleanedSubmission;
+    cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+    state.data = cleanedSubmission;
 
-  // ===========================================================================
-  //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
-  //  'NR' and 'BNS matrix' questions should follow the naming conventions below
-  //  See Docs to learn more about the assumptions made here. 
-  // ===========================================================================
-  // If a partner creates a form with slightly different field names, this
-  // section will need to be updated by WCS. If future forms are being designed,
-  // we'd recommend using a repeat group that allows the partner to select the
-  // type of 'nr' or 'matrix' they're reporting on. The current approach treats
-  // the form field names in Kobo _AS_ data themselves.
-  state.nr = Object.keys(state.data)
-    .filter(key => key.startsWith('nr/'))
-    .map(key => ({
-      AnswerId: state.data._id,
-      Id: state.data._id,
-      LastUpdate: state.data._submission_time, //Q: update runtime to now()
-      Nr: key.substring(3),
-      NrCollect: state.data[key],
-    }));
-
-  state.matrix = Object.keys(state.data)
-    .filter(key => key.startsWith('bns_matrix_'))
-    .filter(key => key.endsWith('_possess'))
-    .map(key => {
-      const item = key.substring(11, key.indexOf('/'));
-      return {
-        Dataset_id: state.data.durableUUID, //Rename?
+    // ===========================================================================
+    //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
+    //  'NR' and 'BNS matrix' questions should follow the naming conventions below
+    //  See Docs to learn more about the assumptions made here.
+    // ===========================================================================
+    // If a partner creates a form with slightly different field names, this
+    // section will need to be updated by WCS. If future forms are being designed,
+    // we'd recommend using a repeat group that allows the partner to select the
+    // type of 'nr' or 'matrix' they're reporting on. The current approach treats
+    // the form field names in Kobo _AS_ data themselves.
+    state.nr = Object.keys(state.data)
+      .filter(key => key.startsWith('nr/'))
+      .map(key => ({
         AnswerId: state.data._id,
-        gs: item.replace(/_/g, ' '),
-        have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
-        necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
-        quantity: state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
-      };
-    });
-  // ===========================================================================
+        Id: state.data._id,
+        LastUpdate: state.data._submission_time, //Q: update runtime to now()
+        Nr: key.substring(3),
+        NrCollect: state.data[key],
+      }));
 
-  return state;
+    state.matrix = Object.keys(state.data)
+      .filter(key => key.startsWith('bns_matrix_'))
+      .filter(key => key.endsWith('_possess'))
+      .map(key => {
+        const item = key.substring(11, key.indexOf('/'));
+        return {
+          Dataset_id: state.data.durableUUID, //Rename?
+          AnswerId: state.data._id,
+          gs: item.replace(/_/g, ' '),
+          have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
+          necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
+          quantity: state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
+        };
+      });
+    // ===========================================================================
+
+    return state;
+  } catch (error) {
+    state.connection.close();
+    throw error;
+  }
 });
 
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
@@ -127,7 +132,7 @@ alterState(state => {
       }))
     )(state);
   }
-  
+
   console.log('No household members found.');
   return state;
 });

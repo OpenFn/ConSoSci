@@ -1,28 +1,33 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
-  const { body } = state.data;
-  const { _submission_time, _id, _xform_id_string } = body;
-  let cleanedSubmission = {};
+  try {
+    const { body } = state.data;
+    const { _submission_time, _id, _xform_id_string } = body;
+    let cleanedSubmission = {};
 
-  for (const key in body) {
-    switch (body[key]) {
-      case 'yes':
-        cleanedSubmission[key] = 1;
-        break;
+    for (const key in body) {
+      switch (body[key]) {
+        case 'yes':
+          cleanedSubmission[key] = 1;
+          break;
 
-      case 'no':
-        cleanedSubmission[key] = 0;
-        break;
+        case 'no':
+          cleanedSubmission[key] = 0;
+          break;
 
-      default:
-        cleanedSubmission[key] = body[key];
-        break;
+        default:
+          cleanedSubmission[key] = body[key];
+          break;
+      }
     }
-  }
 
-  cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-  state.data = cleanedSubmission;
-  return state;
+    cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+    state.data = cleanedSubmission;
+    return state;
+  } catch (error) {
+    state.connection.close();
+    throw error;
+  }
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
