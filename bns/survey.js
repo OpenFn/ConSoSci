@@ -141,7 +141,7 @@ alterState(state => {
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'` });
 alterState(state => {
-  if (state.nr) {
+  if (state.nr && state.nr.length > 0) {
     return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
   }
 
@@ -154,7 +154,7 @@ alterState(state => {
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'` });
 alterState(state => {
-  if (state.matrix) {
+  if (state.matrix && state.matrix.length > 0) {
     return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.matrix)(state);
   }
 
