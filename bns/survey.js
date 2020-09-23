@@ -140,13 +140,27 @@ alterState(state => {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'` });
-insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr);
+alterState(state => {
+  if (state.nr) {
+    return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
+  }
+
+  console.log('No natural resource found.');
+  return state;
+});
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'` });
-insertMany('WCSPROGRAMS_KoboBnsAnswerGS', state => state.matrix);
+alterState(state => {
+  if (state.matrix) {
+    return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.matrix)(state);
+  }
+
+  console.log('No matrix found.');
+  return state;
+});
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   DatasetUuidId: dataValue('durableUUID'), //Q: Add new column
