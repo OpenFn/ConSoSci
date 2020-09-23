@@ -24,8 +24,8 @@ alterState(state => {
 
     // NOTE: This assumes all device-collected geo data follows specific lat, log data format
     if (cleanedSubmission.gps_method === 'device') {
-      cleanedSubmission['gps/lat'] = cleanedSubmission.geo.split(' ')[0];
-      cleanedSubmission['gps/long'] = cleanedSubmission.geo.split(' ')[1];
+      cleanedSubmission['gps/lat'] = cleanedSubmission.geo ? cleanedSubmission.geo.split(' ')[0] : null;
+      cleanedSubmission['gps/long'] = cleanedSubmission.geo ? cleanedSubmission.geo.split(' ')[1] : null;
     }
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
