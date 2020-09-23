@@ -6,8 +6,8 @@ alterState(state => {
   state.submissions = [];
   state.data = {
     surveys: [
-      //Tag options: nrgt_2017, nrgt_2019, bns_2019, bns_price_2019
-      //Form Id, Tag of test OpenFN BNS Survey form
+      //** Specify new forms to fetch here **//
+      //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
       // { id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_2017' }, // ✓
