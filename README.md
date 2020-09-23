@@ -25,8 +25,9 @@
 
 ## Data Flows
 ### (1) Timer-Based Integration (Ongoing Sync)
-1. On a timer-basis (e.g., every 3 hours), the OpenFn job [`getKoboData.js`](https://github.com/OpenFn/wcs/blob/master/bns/getKoboData.js) will run to fetch Kobo form data in bulk for the specified form Ids. 
-- Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id. 
+1. On a timer-basis (e.g., every 3 hours), the OpenFn job [`1A. Get Kobo Data`](https://www.openfn.org/projects/1168/jobs/3562) (aka `getKoboData.js`) will run to fetch Kobo form data in bulk for the specified form Ids. _Before running the job, WCS should..._
+- (a) Update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id. 
+- (b) Add the appropriate survey tag to indicate which mappings should be used to process the data. Tag options include: `bns_survey`, `bns_price`, `nrgt_current`, `nrgt_historical`. 
 2. This job will post each individual Kobo survey back to the OpenFn inbox as an individual Message. 
 3. Message filter triggers will execute the relevant jobs (see above list) to process & load the data into the connect DB. 
 4. View **Activity History** to monitor the success of these integration flows. 
@@ -37,19 +38,29 @@
   cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
 ```
 
-### (2) Real-Time Integration (As needed)
+ ### (2) Historical Kobo Migrations (Once-off)
+1. At any time, the OpenFn job [`1B. Get Historical Kobo Data`](https://www.openfn.org/projects/1168/jobs/3542) (aka `historical.js`) can be run on-demand to manually fetch historical Kobo data in bulk. _Before running the job, WCS should..._ 
+- (a) Update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id. 
+- (b) Add the appropriate survey tag to indicate which mappings should be used to process the data. Tag options include: `bns_survey`, `bns_price`, `nrgt_current`, `nrgt_historical`. 
+2. When ready to sync the historical data, click "Run job" button. 
+![run-job](run-this-job.png)
+
+### (3) Real-Time Integration (Not used - Redundant if #1 is running every 3 hrs)
 1. For some forms, WCS may prefer to configure a *REST service** in Kobo Toolbox to forward Kobo surveys to OpenFn for real-time processing (rather than having the above job sync the data on a timed basis). 
 2. To configure the Kobo REST service for real-time integration, see the [instructions here](https://docs.google.com/document/d/14V4GgvH2eorchO6s7AOwDCIkn4JhqBb6A6SsC46GJmY/edit?usp=sharing). 
 3. Every time WCS submits a new Kobo survey, the data will be forwarded automatically to the OpenFn Inbox. If the OpenFn jobs are "on", this data will be processed and forwarded onto the database automatically. 
 
 *Note that this REST Service will not re-send Kobo data after it has been cleaned (only the initial submission). This is why the timer-based jobs are needed to sync cleaned Kobo data. 
 
- ### (3) Historical Kobo Migrations (Once-off)
-1. At any time, the OpenFn job [`historical.js`](https://github.com/OpenFn/wcs/blob/master/bns/historical.js) can be run on-demand to manually fetch historical Kobo data. 
-2. Before running the job, WCS should update the survey Ids to fetched from Kobo toolbox (these can be copied from the URL of a Kobo form). 
-In `https://kf.kobotoolbox.org/#/forms/aopf2bJ4cVqEXCrjnwAoHd/landing` then the string `aopf2bJ4cVqEXCrjnwAoHd` is the survey Id
-3. When ready to sync the historical data, click "Run job" button. 
-![run-job](run-this-job.png)
+## Kobo Form Management 
+### Integrating New Kobo Forms
+If WCS would like to integrate a new BNS or NRGT Kobo form with the database...
+1. Delete any test submissions used in training/ testing. 
+2. Check if the form already has real submission data collected. If yes, add the `formId` to the [`1B. Get Historical Kobo Data`](https://www.openfn.org/projects/1168/jobs/3542) job and run it to first migrate the historical data to the database (see more in data flow #2 above). 
+3. Add the new `formId` and relevant `tag` to the job [`1A. Get Kobo Data`](https://www.openfn.org/projects/1168/jobs/3562) to fetch data for this form on an ongoing basis. 
+
+### Disconnecting Kobo Forms
+To remove a Kobo form from the integration flow, edit the job [`1A. Get Kobo Data`](https://www.openfn.org/projects/1168/jobs/3562) (aka `getKoboData.js`) to remove the relevant form Id. 
 
 ## Open Questions
 1. Can WCS test to confirm the jobs are mapping data to Mssql as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata. 
