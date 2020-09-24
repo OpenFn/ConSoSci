@@ -155,7 +155,7 @@ alterState(state => {
 sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'` });
 alterState(state => {
   if (state.matrix && state.matrix.length > 0) {
-    return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.matrix)(state);
+    return insertMany('WCSPROGRAMS_KoboBnsAnswerGS', state => state.matrix)(state);
   }
 
   console.log('No matrix found.');
