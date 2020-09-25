@@ -26,6 +26,12 @@ alterState(state => {
     if (cleanedSubmission.gps_method === 'device') {
       cleanedSubmission['gps/lat'] = cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
       cleanedSubmission['gps/long'] = cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
+    } else if (
+      Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
+      Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
+    ) {
+      state.connection.close();
+      throw `Invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`;
     }
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
