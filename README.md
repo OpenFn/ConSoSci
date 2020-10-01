@@ -77,3 +77,13 @@ To remove a Kobo form from the integration flow, edit the job [`1A. Get Kobo Dat
 1. Can WCS test to confirm the jobs are mapping data to Mssql as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata. 
 2. Can WCS confirm the Postgres database we should also map these to? And should we map the exact same data to Postgres as we are to Mssql? Or will different surveys be mapped to different DBs? 
 
+
+
+## Assumptions from engineering
+1. We will check for new or changed forms in Kobo every 60 minutes.
+2. We will not delete columns from tables in Postgres, ever.
+3. Will will not modify columns in Postgres, ever.
+4. When a new form is added to Kobo, we will create a corresponding table in
+   Postgres.
+5. When a form is modified in Kobo, if fields have been _added_, we will add
+   those columns to the existing table in Postgres.
