@@ -13,80 +13,77 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       };
     });
 
-  console.log(`Forms to fetch: ${JSON.stringify(state.data.forms, null, 2)}`);
-  return state;
-});
-
-alterState(state => {
   const lastEnd = state.data.results
     .filter(item => item.date_modified)
     .map(s => s.date_modified)
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-  return { ...state, lastEnd };
+
+  console.log(`Forms to fetch: ${JSON.stringify(state.data.forms, null, 2)}`);
+
+  return { ...state, lastEnd, tablesToBeCreated: [] };
 });
 
-each(dataPath('forms[*]'), state =>
-  get(`${state.data.url}`, {}, state => {
-    const mapType = {
-      decimal: 'float4',
-      integer: 'int4',
-      text: 'text',
-      select_one: 'varchar',
-      calculate: 'varchar',
-      date: 'date',
-    };
+each(
+  // for each form that has been created/updated since the last run...
+  dataPath('forms[*]'),
+  // get the form definition...
+  state =>
+    get(`${state.data.url}`, {}, state => {
+      const { survey } = state.data.content;
+      console.log(survey);
 
-    const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
+      const mapType = {
+        decimal: 'float4',
+        integer: 'int4',
+        text: 'text',
+        select_one: 'varchar',
+        calculate: 'varchar',
+        date: 'date',
+      };
 
-    const { survey } = state.data.content;
-    state.kobo_form = survey.map(x => x);
+      const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
 
-    var index = -1;
-    var index2 = -1;
-    var val1 = 'begin_repeat';
-    var val2 = 'end_repeat';
-    survey.find((item, i) => {
-      if (item.type === val1) {
-        index = i;
+      var index = -1;
+      var index2 = -1;
+      var val1 = 'begin_repeat';
+      var val2 = 'end_repeat';
+      survey.find((item, i) => {
+        if (item.type === val1) {
+          index = i;
+        }
+        if (item.type === val2) index2 = i;
+      });
+
+      var repeatGroup;
+      var repeatGroup_columns;
+      if (-1 !== (index | index2)) {
+        repeatGroup = survey.splice(index, index2 - index + 1);
+        repeatGroup_columns = repeatGroup.filter(elt => types.includes(elt.type));
+        repeatGroup_columns.forEach(obj => (obj.type = mapType[obj.type]));
+        repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
       }
-      if (item.type === val2) index2 = i;
-    });
 
-    var repeatGroup;
-    var repeatGroup_columns;
-    if (-1 !== (index | index2)) {
-      repeatGroup = survey.splice(index, index2 - index + 1);
-      repeatGroup_columns = repeatGroup.filter(elt => types.includes(elt.type));
-      repeatGroup_columns.forEach(obj => (obj.type = mapType[obj.type]));
-      repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
-    }
+      const columns = survey.filter(elt => types.includes(elt.type));
 
-    const columns = survey.filter(elt => types.includes(elt.type));
+      columns.forEach(obj => (obj.type = mapType[obj.type]));
 
-    columns.forEach(obj => (obj.type = mapType[obj.type]));
+      columns.push({ table_name: state.data.name.split(' ').join('_').toLowerCase() });
 
-    columns.push({ table_name: state.data.name.split(' ').join('_').toLowerCase() });
-
-    columns.forEach(obj => {
-      if (obj.name === 'group') {
-        obj.name = 'kobogroup';
-      }
-    });
-    if (repeatGroup) {
-      repeatGroup_columns.forEach(obj => {
+      columns.forEach(obj => {
         if (obj.name === 'group') {
           obj.name = 'kobogroup';
         }
       });
-      return {
-        ...state,
-        tablesToBeCreated: [columns, repeatGroup_columns],
-      };
-    }
 
-    return {
-      ...state,
-      tablesToBeCreated: [columns],
-    };
-  })(state)
+      if (repeatGroup) {
+        repeatGroup_columns.forEach(obj => {
+          if (obj.name === 'group') {
+            obj.name = 'kobogroup';
+          }
+        });
+        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, columns, repeatGroup_columns] };
+      }
+
+      return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, columns] };
+    })(state)
 );
