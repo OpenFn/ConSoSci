@@ -30,7 +30,6 @@ each(
   state =>
     get(`${state.data.url}`, {}, state => {
       const { survey } = state.data.content;
-      console.log(survey);
 
       const mapType = {
         decimal: 'float4',
@@ -66,14 +65,13 @@ each(
       const columns = survey.filter(elt => types.includes(elt.type));
 
       columns.forEach(obj => (obj.type = mapType[obj.type]));
-
-      columns.push({ table_name: state.data.name.split(' ').join('_').toLowerCase() });
-
       columns.forEach(obj => {
         if (obj.name === 'group') {
           obj.name = 'kobogroup';
         }
       });
+
+      const table = { name: state.data.name.split(' ').join('_').toLowerCase(), columns };
 
       if (repeatGroup) {
         repeatGroup_columns.forEach(obj => {
@@ -81,9 +79,9 @@ each(
             obj.name = 'kobogroup';
           }
         });
-        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, columns, repeatGroup_columns] };
+        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table, repeatGroup_columns] };
       }
 
-      return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, columns] };
+      return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table] };
     })(state)
 );
