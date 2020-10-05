@@ -32,7 +32,7 @@ each(
     }
     //console.log(mapPostgresToKobo);
 
-    const expression = `UPSERT(${state.data.name}, auto/${state.data.name}, ${JSON.stringify(mapPostgresToKobo, null, 2)}})`;
+    const expression = `UPSERT(${state.data.name}, ${state.data.name}, ${JSON.stringify(mapPostgresToKobo, null, 2)})`;
     //console.log(expression);
     state.data.expression = expression;
     //return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, expression] };
@@ -55,32 +55,37 @@ request(
 each(
   '$.tablesToBeCreated[*]',
   alterState(state => {
-    console.log(state.data.name);
-    console.log(state.job[0].name);
-    if (state.job[0] && state.job[0].name === state.data.name) {
-      //state.data[0].expression = state.expression;
-      //"createTEI({\n  trackedEntityType: 'nEenWmSyUEp', // a person\n  orgUnit: 'g8upMTyEZGZ', // Njandama MCHP\n  attributes: [\n    {\n      attribute: 'w75KJ2mc4zz', // attribute id for first name\n      value: dataValue('case.firstName')(state) // data from submission \n    },\n    {\n      attribute: 'zDhUuAYrxNC', // attribute id for last name\n      value: dataValue('case.lastName')(state) // data from another submission field\n    }\n  ],\n  enrollments: [\n    {\n        orgUnit: 'g8upMTyEZGZ', // Njandama MCHP\n        program: 'IpHINAT79UW', // enroll in Child Program \n        enrollmentDate: new Date().toISOString().slice(0,10), // some custom javascript \n        incidentDate: state.data.metadata.timeStart.slice(0,10) // more custom javascript\n     }\n   ]\n});";
-      // There's already a job, so we update...
+    const jobs = state.job.map(job => job.name);
+    const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
+
+    if (state.job[job_index].name !== -1) {
       console.log('There is a job.');
-      //return state;
+      state.job[job_index].expression = state.data.expression;
+
       return request({
         method: 'put',
-        path: 'jobs/' + state.data[0].id,
+        path: 'jobs/' + state.job[job_index].id,
         data: {
-          job: state.data[0],
+          job: state.job[job_index],
         },
       })(state);
     } else {
-      // There isn't an openfn job in this project, so we create...
+      const job = {
+        name: 'auto/' + state.data.name,
+        project_id: state.job[0].project_id,
+        trigger_id: state.job[0].trigger_id, // Im assigning the same trigger than before. But should we...
+        // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
+        adaptor: 'postgresql',
+        expression: state.data.expression,
+      };
+
       return request({
         method: 'post',
         path: 'jobs/',
         data: {
-          job: state.data,
+          job: job,
         },
       })(state);
     }
-
-    return state;
   })
 );
