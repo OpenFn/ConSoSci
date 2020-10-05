@@ -62,7 +62,15 @@ each(
         //repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
       }
 
-      const columns = survey.filter(elt => types.includes(elt.type));
+      var columns = survey.filter(elt => types.includes(elt.type));
+      columns = columns
+        .map(x => {
+          if (x.name !== undefined) {
+            x.name = x.name.split(/-/).join('_');
+          }
+          return x;
+        })
+        .filter(x => x.name !== undefined);
 
       columns.forEach(obj => (obj.type = mapType[obj.type]));
       columns.forEach(obj => {
@@ -71,7 +79,7 @@ each(
         }
       });
 
-      const table = { name: state.data.name.split(/\s|-/).join('_').toLowerCase(), columns };
+      const table = { name: state.data.name.split(/\s|-/).join('_').toLowerCase(), columns, form: survey };
 
       if (repeatGroup) {
         repeatGroup_columns.forEach(obj => {
@@ -82,6 +90,7 @@ each(
         const repeatgroup_table = {
           name: state.data.name.split(/\s|_/).join('_').toLowerCase() + '_char',
           columns: repeatGroup_columns,
+          form: repeatGroup,
         };
         return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table, repeatgroup_table] };
       }
