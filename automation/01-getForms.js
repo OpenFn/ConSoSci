@@ -59,7 +59,7 @@ each(
         repeatGroup = survey.splice(index, index2 - index + 1);
         repeatGroup_columns = repeatGroup.filter(elt => types.includes(elt.type));
         repeatGroup_columns.forEach(obj => (obj.type = mapType[obj.type]));
-        repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
+        //repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
       }
 
       const columns = survey.filter(elt => types.includes(elt.type));
@@ -71,7 +71,7 @@ each(
         }
       });
 
-      const table = { name: state.data.name.split(' ').join('_').toLowerCase(), columns };
+      const table = { name: state.data.name.split(/\s|-/).join('_').toLowerCase(), columns };
 
       if (repeatGroup) {
         repeatGroup_columns.forEach(obj => {
@@ -79,7 +79,11 @@ each(
             obj.name = 'kobogroup';
           }
         });
-        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table, repeatGroup_columns] };
+        const repeatgroup_table = {
+          name: state.data.name.split(/\s|_/).join('_').toLowerCase() + '_char',
+          columns: repeatGroup_columns,
+        };
+        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table, repeatgroup_table] };
       }
 
       return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table] };
