@@ -20,7 +20,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
 
   console.log(`Forms to fetch: ${JSON.stringify(state.data.forms, null, 2)}`);
 
-  return { ...state, lastEnd, tablesToBeCreated: [] };
+  return { ...state, lastEnd, forms: [] };
 });
 
 each(
@@ -42,59 +42,59 @@ each(
 
       const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
 
-      var index = -1;
-      var index2 = -1;
-      var val1 = 'begin_repeat';
-      var val2 = 'end_repeat';
-      survey.find((item, i) => {
-        if (item.type === val1) {
-          index = i;
-        }
-        if (item.type === val2) index2 = i;
-      });
-
-      var repeatGroup;
-      var repeatGroup_columns;
-      if (-1 !== (index | index2)) {
-        repeatGroup = survey.splice(index, index2 - index + 1);
-        repeatGroup_columns = repeatGroup.filter(elt => types.includes(elt.type));
-        repeatGroup_columns.forEach(obj => (obj.type = mapType[obj.type]));
-        //repeatGroup_columns.push({ table_name: state.data.name.split(' ').join('_') + '_char'.toLowerCase() });
-      }
-
-      var columns = survey.filter(elt => types.includes(elt.type));
-      columns = columns
-        .map(x => {
-          if (x.name !== undefined) {
-            x.name = x.name.split(/-/).join('_');
-          }
-          return x;
-        })
-        .filter(x => x.name !== undefined);
-
-      columns.forEach(obj => (obj.type = mapType[obj.type]));
-      columns.forEach(obj => {
-        if (obj.name === 'group') {
-          obj.name = 'kobogroup';
-        }
-      });
-
-      const table = { name: state.data.name.split(/\s|-/).join('_').toLowerCase(), columns, form: survey };
-
-      if (repeatGroup) {
-        repeatGroup_columns.forEach(obj => {
+      function map_question_to_valid_type(questions) {
+        var form = questions.filter(elt => types.includes(elt.type));
+        form.forEach(obj => (obj.type = mapType[obj.type]));
+        form.forEach(obj => {
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
           }
         });
-        const repeatgroup_table = {
-          name: state.data.name.split(/\s|_/).join('_').toLowerCase() + '_char',
-          columns: repeatGroup_columns,
-          form: repeatGroup,
-        };
-        return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table, repeatgroup_table] };
+        form = form
+          .map(x => {
+            if (x.name !== undefined) {
+              x.name = x.name.split(/-/).join('_');
+            }
+            return x;
+          })
+          .filter(x => x.name !== undefined);
+
+        return form;
       }
 
-      return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, table] };
+      function extract_tables_from_questions_array(questions, formName, tables) {
+        var index_begin = -1;
+        var index_end = -1;
+
+        questions.find((item, i) => {
+          if (item.type === 'begin_repeat') {
+            index_begin = i;
+          }
+          if (item.type === 'end_repeat') index_end = i;
+        });
+
+        if (-1 !== (index_begin | index_end)) {
+          const group = questions.splice(index_begin, index_end - index_begin + 1);
+          tables.push({
+            name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
+            columns: map_question_to_valid_type(group),
+            formDef: group
+          });
+          return extract_tables_from_questions_array(questions, formName, tables);
+        }
+        tables.push({
+          name: formName.split(/\s|-/).join('_').toLowerCase(),
+          columns: map_question_to_valid_type(questions),
+          formDef: questions
+        });
+        return tables;
+      }
+
+      const tables = extract_tables_from_questions_array(survey, state.data.name, []);
+
+      return {
+        ...state,
+        forms: [...state.forms, tables],
+      };
     })(state)
 );

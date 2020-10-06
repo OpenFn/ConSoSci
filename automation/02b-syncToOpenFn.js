@@ -31,13 +31,26 @@ each(
       mapPostgresToKobo[state.data.columns[i].name] = path[i];
     }
     //console.log(mapPostgresToKobo);
-
+    
+    const trigger = `{"form": ${state.name}}`;
     const expression = `UPSERT(${state.data.name}, ${state.data.name}, ${JSON.stringify(mapPostgresToKobo, null, 2)})`;
-    //console.log(expression);
+    
     state.data.expression = expression;
-    //return { ...state, tablesToBeCreated: [...state.tablesToBeCreated, expression] };
+    state.data.trigger = trigger;
     return state;
   })
+);
+
+request(
+  {
+    method: 'get',
+    path: 'triggers',
+    params: {
+      project_id: 1087,
+    },
+  },
+  // we are trying to get one job whose externalId matches our UUID
+  state => ({ ...state, triggers: state.data })
 );
 
 request(
@@ -49,16 +62,16 @@ request(
     },
   },
   // we are trying to get one job whose externalId matches our UUID
-  state => ({ ...state, job: state.data })
+  state => ({ ...state, jobs: state.data })
 );
 
 each(
   '$.tablesToBeCreated[*]',
   alterState(state => {
-    const jobs = state.job.map(job => job.name);
+    const jobs = state.jobs.map(job => job.name);
     const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
 
-    if (state.job[job_index].name !== -1) {
+    if (state.jobs[job_index].name !== -1) {
       console.log('There is a job.');
       state.job[job_index].expression = state.data.expression;
 
@@ -66,14 +79,14 @@ each(
         method: 'put',
         path: 'jobs/' + state.job[job_index].id,
         data: {
-          job: state.job[job_index],
+          job: state.jobs[job_index],
         },
       })(state);
     } else {
       const job = {
         name: 'auto/' + state.data.name,
-        project_id: state.job[0].project_id,
-        trigger_id: state.job[0].trigger_id, // Im assigning the same trigger than before. But should we...
+        project_id: state.jobs[0].project_id,
+        trigger_id: state.jobs[0].trigger_id, // Im assigning the same trigger than before. But should we...
         // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
         adaptor: 'postgresql',
         expression: state.data.expression,
