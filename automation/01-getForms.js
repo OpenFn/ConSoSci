@@ -32,7 +32,7 @@ each(
       const { survey } = state.data.content;
 
       // TODO: Decide which metadata field to include. ========================
-      survey.push({"name": "_id", "type": "text"});
+      survey.push({"name": "generated_uuid", "type": "text"});
       // ======================================================================
 
       const mapType = {

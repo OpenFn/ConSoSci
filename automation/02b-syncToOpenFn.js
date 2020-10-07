@@ -40,16 +40,20 @@ each(
             paths.push(prefix + '/' + formDef[i].name + '/');
         }
       }
-      //console.log(paths);
 
       const mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
       for (var i = 0; i < columns.length; i++) {
-        mapKoboToPostgres[columns[i].name] = paths[i];
+        mapKoboToPostgres[columns[i].name] = `dataValue('${paths[i]}')`;
       }
-      //console.log(mapKoboToPostgres);
+      mapKoboToPostgres.generated_uuid =
+        'state.data._id + state.data._xform_id_string';
 
-      const expression = `UPSERT(${name}, '_id', ${JSON.stringify(mapKoboToPostgres).replace(/\\/g,'')})`;
+      const expression = `upsert('${name}', '_id', ${JSON.stringify(
+        mapKoboToPostgres,
+        null,
+        2
+      ).replace(/"/g, '')});`;
 
       state.data.expression = expression;
       state.data.triggerCriteria = { form: `${name}` };
@@ -81,7 +85,7 @@ alterState(state => {
         project_id: state.projectId,
       },
     },
-    state => ({ ...state, jobs: state.data })
+    state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
   )(state);
 });
 
@@ -112,7 +116,6 @@ each(
             },
           },
           state => {
-            console.log(state.data);
             return { ...state, triggers: [...state.triggers, state.data] };
           }
         )(state);
@@ -136,7 +139,7 @@ each('$.forms[*]', state => {
       const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
       const triggerIndex = triggersName.indexOf(name);
       const triggerId = state.triggers[triggerIndex].id;
-      
+
       const job = {
         adaptor: 'postgresql',
         expression,
