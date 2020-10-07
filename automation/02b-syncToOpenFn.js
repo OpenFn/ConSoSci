@@ -47,16 +47,12 @@ each(
       for (var i = 0; i < columns.length; i++) {
         mapKoboToPostgres[columns[i].name] = paths[i];
       }
-      console.log(mapKoboToPostgres);
+      //console.log(mapKoboToPostgres);
 
-      const expression = `UPSERT(${name}, '_id', ${JSON.stringify(
-        mapKoboToPostgres,
-        null,
-        2
-      )})`;
+      const expression = `UPSERT(${name}, '_id', ${JSON.stringify(mapKoboToPostgres).replace(/\\/g,'')})`;
 
       state.data.expression = expression;
-      state.data.triggerCriteria = `{"form": "${name}"}`;
+      state.data.triggerCriteria = { form: `${name}` };
 
       return state;
     })
@@ -104,7 +100,9 @@ each(
         type: 'message',
         criteria: state.data.triggerCriteria,
       };
+
       if (triggerIndex === -1) {
+        console.log('Inserting triggers.');
         return request(
           {
             method: 'post',
@@ -118,6 +116,8 @@ each(
             return { ...state, triggers: [...state.triggers, state.data] };
           }
         )(state);
+      } else {
+        console.log('Trigger already existing.');
       }
 
       return state;
@@ -125,30 +125,30 @@ each(
   )
 );
 
-/* each('$.forms[*]', state => {
+each('$.forms[*]', state => {
   return each(
     '$.data[*]',
     alterState(state => {
       const { expression } = state.data;
-      const jobNames = state.jobs.map(job => job.name);
+      const jobNames = state.jobs.map(j => j.name);
+      const triggersName = state.triggers.map(t => t.name);
       const name = `auto/${state.data.name}`;
       const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-      const triggerIndex = state.triggers.indexOf(name);
-      const triggerId = state.triggers[triggerIndex];
-
-      const data = {
+      const triggerIndex = triggersName.indexOf(name);
+      const triggerId = state.triggers[triggerIndex].id;
+      
+      const job = {
+        adaptor: 'postgresql',
+        expression,
         name,
         project_id: state.projectId,
         trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-        adaptor: 'postgresql',
-        expression,
       };
       const method = jobIndex !== -1 ? 'put' : 'post';
       const path =
         method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
 
-      return request({ method, path, data })(state);
+      return request({ method, path, data: { job } })(state);
     })
   )(state);
 });
- */
