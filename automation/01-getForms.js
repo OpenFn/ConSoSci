@@ -42,7 +42,7 @@ each(
 
       const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
 
-      function map_question_to_valid_type(questions) {
+      function questionToType(questions) {
         var form = questions.filter(elt => types.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type]));
         form.forEach(obj => {
@@ -62,7 +62,7 @@ each(
         return form;
       }
 
-      function extract_tables_from_questions_array(questions, formName, tables) {
+      function tablesFromQuestions(questions, formName, tables) {
         var index_begin = -1;
         var index_end = -1;
 
@@ -77,20 +77,20 @@ each(
           const group = questions.splice(index_begin, index_end - index_begin + 1);
           tables.push({
             name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
-            columns: map_question_to_valid_type(group),
-            formDef: group
+            columns: questionToType(group),
+            formDef: group,
           });
-          return extract_tables_from_questions_array(questions, formName, tables);
+          return tablesFromQuestions(questions, formName, tables);
         }
         tables.push({
           name: formName.split(/\s|-/).join('_').toLowerCase(),
-          columns: map_question_to_valid_type(questions),
-          formDef: questions
+          columns: questionToType(questions),
+          formDef: questions,
         });
         return tables;
       }
 
-      const tables = extract_tables_from_questions_array(survey, state.data.name, []);
+      const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {
         ...state,
