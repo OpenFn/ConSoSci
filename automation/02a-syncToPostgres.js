@@ -5,8 +5,8 @@ each(
     alterState(state => {
       const { name, columns } = state.data;
       if (columns.length !== 0) {
-        return describeTable(name)(state).then(postgresColumn => {
-          const { body } = postgresColumn.table_data;
+        return describeTable(name)(state).then(response => {
+          const { body } = response.table_data;
           const { rowCount, rows } = body;
           if (rowCount === 0 && name !== 'untitled' && columns.length !== 0) {
             console.log('No matching table found in postgres --- Inserting.');
