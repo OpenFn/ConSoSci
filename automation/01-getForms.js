@@ -31,6 +31,10 @@ each(
     get(`${state.data.url}`, {}, state => {
       const { survey } = state.data.content;
 
+      // TODO: Decide which metadata field to include. ========================
+      survey.push({"name": "_id", "type": "text"});
+      // ======================================================================
+
       const mapType = {
         decimal: 'float4',
         integer: 'int4',

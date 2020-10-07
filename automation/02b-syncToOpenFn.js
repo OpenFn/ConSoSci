@@ -1,7 +1,9 @@
-each('$.forms[*]', state => {
-  return each(
+each(
+  '$.forms[*]',
+  each(
     '$.data[*]',
     alterState(state => {
+      const { formDef, columns, name } = state.data;
       const validTypes = [
         'float4',
         'int4',
@@ -10,53 +12,52 @@ each('$.forms[*]', state => {
         'varchar',
         'date',
       ];
-      var path = [];
+      var paths = [];
       var prefix = '';
 
-      for (var i = 0; i < state.data.formDef.length; i++) {
+      for (var i = 0; i < formDef.length; i++) {
         if (
-          state.data.formDef[i].type == 'begin_group' ||
-          state.data.formDef[i].type == 'begin_repeat'
+          formDef[i].type == 'begin_group' ||
+          formDef[i].type == 'begin_repeat'
         ) {
-          prefix += '/' + state.data.formDef[i].name;
+          prefix += '/' + formDef[i].name;
         } else if (
           // if we have a 'end_group' or 'end_repeat',
           //it means we must close a group = removing last element of prefix
-          state.data.formDef[i].type == 'end_group' ||
-          state.data.formDef[i].type == 'end_repeat'
+          formDef[i].type == 'end_group' ||
+          formDef[i].type == 'end_repeat'
         ) {
           const prefixes = prefix.split('/');
           prefixes.splice(prefixes.length - 1);
           prefix = prefixes.join('/');
         } else {
           // if none of those cases are met, it means we have potentially a column then we must add it to the path.
-          if (
-            state.data.formDef[i].name &&
-            validTypes.includes(state.data.formDef[i].type)
-          )
-            path.push(prefix + '/' + state.data.formDef[i].name + '/');
+          if (formDef[i].name && validTypes.includes(formDef[i].type))
+            paths.push(prefix + '/' + formDef[i].name + '/');
         }
       }
-      //console.log(path);
+      //console.log(paths);
 
-      const mapPostgresToKobo = {}; // This is the jsonBody that should be given to our upsert
+      const mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
-      for (var i = 0; i < state.data.columns.length; i++) {
-        mapPostgresToKobo[state.data.columns[i].name] = path[i];
+      for (var i = 0; i < columns.length; i++) {
+        mapKoboToPostgres[columns[i].name] = paths[i];
       }
-      console.log(mapPostgresToKobo);
+      console.log(mapKoboToPostgres);
 
-      const trigger = `{"form": ${state.data.name}}`;
-      const expression = `UPSERT(${state.data.name}, ${
-        state.data.name
-      }, ${JSON.stringify(mapPostgresToKobo, null, 2)})`;
+      const trigger = `{"form": ${name}}`;
+      const expression = `UPSERT(${name}, '_id', ${JSON.stringify(
+        mapKoboToPostgres,
+        null,
+        2
+      )})`;
 
       state.data.expression = expression;
       state.data.trigger = trigger;
       return state;
     })
-  )(state);
-});
+  )
+);
 
 request(
   {
