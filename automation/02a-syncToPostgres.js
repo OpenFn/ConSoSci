@@ -11,8 +11,8 @@ each(
           if (rowCount === 0 && name !== 'untitled' && columns.length !== 0) {
             console.log('No matching table found in postgres --- Inserting.');
 
-            const columns = columns.filter(x => x.name !== undefined);
-            return insertTable(name, state => columns)(state);
+            const validColumns = columns.filter(x => x.name !== undefined);
+            return insertTable(name, state => validColumns)(state);
           } else {
             const columnNames = rows.map(x => x.column_name);
 
