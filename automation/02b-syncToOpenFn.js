@@ -2,12 +2,22 @@ each('$.forms[*]', state => {
   return each(
     '$.data[*]',
     alterState(state => {
-      const validTypes = ['float4', 'int4', 'text', 'varchar', 'varchar', 'date'];
+      const validTypes = [
+        'float4',
+        'int4',
+        'text',
+        'varchar',
+        'varchar',
+        'date',
+      ];
       var path = [];
       var prefix = '';
 
       for (var i = 0; i < state.data.formDef.length; i++) {
-        if (state.data.formDef[i].type == 'begin_group' || state.data.formDef[i].type == 'begin_repeat') {
+        if (
+          state.data.formDef[i].type == 'begin_group' ||
+          state.data.formDef[i].type == 'begin_repeat'
+        ) {
           prefix += '/' + state.data.formDef[i].name;
         } else if (
           // if we have a 'end_group' or 'end_repeat',
@@ -20,7 +30,10 @@ each('$.forms[*]', state => {
           prefix = prefixes.join('/');
         } else {
           // if none of those cases are met, it means we have potentially a column then we must add it to the path.
-          if (state.data.formDef[i].name && validTypes.includes(state.data.formDef[i].type))
+          if (
+            state.data.formDef[i].name &&
+            validTypes.includes(state.data.formDef[i].type)
+          )
             path.push(prefix + '/' + state.data.formDef[i].name + '/');
         }
       }
@@ -34,11 +47,9 @@ each('$.forms[*]', state => {
       console.log(mapPostgresToKobo);
 
       const trigger = `{"form": ${state.data.name}}`;
-      const expression = `UPSERT(${state.data.name}, ${state.data.name}, ${JSON.stringify(
-        mapPostgresToKobo,
-        null,
-        2
-      )})`;
+      const expression = `UPSERT(${state.data.name}, ${
+        state.data.name
+      }, ${JSON.stringify(mapPostgresToKobo, null, 2)})`;
 
       state.data.expression = expression;
       state.data.trigger = trigger;
