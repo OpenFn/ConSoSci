@@ -1,3 +1,7 @@
+alterState(state => {
+  return { ...state, projectId: 1087 };
+});
+
 each(
   '$.forms[*]',
   each(
@@ -45,7 +49,6 @@ each(
       }
       console.log(mapKoboToPostgres);
 
-      const trigger = `{"form": ${name}}`;
       const expression = `UPSERT(${name}, '_id', ${JSON.stringify(
         mapKoboToPostgres,
         null,
@@ -53,112 +56,99 @@ each(
       )})`;
 
       state.data.expression = expression;
-      state.data.trigger = trigger;
+      state.data.triggerCriteria = `{"form": "${name}"}`;
+
       return state;
     })
   )
 );
 
-request(
-  {
-    method: 'get',
-    path: 'triggers',
-    params: {
-      project_id: 1087,
+alterState(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'triggers',
+      params: {
+        project_id: state.projectId,
+      },
     },
-  },
-  state => ({ ...state, triggers: state.data })
-);
-
-request(
-  {
-    method: 'get',
-    path: 'jobs',
-    params: {
-      project_id: 1087,
-    },
-  },
-  state => ({ ...state, jobs: state.data })
-);
-
-each('$.forms[*]', state => {
-  return each(
-    '$.data[*]',
-    alterState(state => {
-      const jobs = state.jobs.map(job => job.name);
-      const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
-
-      if (job_index !== -1) {
-        console.log(`There is already a job called ${state.data.name}`);
-        //const new_expression = state.data.expression;
-        state.jobs[job_index].expression = 'test';
-
-        return request({
-          method: 'put',
-          path: 'jobs/' + state.jobs[job_index].id,
-          data: {
-            job: state.jobs[job_index],
-          },
-        })(state);
-      }
-      /* else {
-        const job = {
-          name: 'auto/' + state.data.name,
-          project_id: state.jobs[0].project_id,
-          trigger_id: state.jobs[0].trigger_id, // Im assigning the same trigger than before. But should we...
-          // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
-          adaptor: 'postgresql',
-          expression: state.data.expression,
-        };
-
-        return request({
-          method: 'post',
-          path: 'jobs/',
-          data: {
-            job: job,
-          },
-        })(state);
-      } */ return state;
-    })
+    state => ({ ...state, triggers: state.data })
   )(state);
 });
 
-/* 
+alterState(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'jobs',
+      params: {
+        project_id: state.projectId,
+      },
+    },
+    state => ({ ...state, jobs: state.data })
+  )(state);
+});
+
 each(
-  '$.tablesToBeCreated[*]',
-  alterState(state => {
-    const jobs = state.jobs.map(job => job.name);
-    const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
+  '$.forms[*]',
+  each(
+    '$.data[*]',
+    alterState(state => {
+      const triggerNames = state.triggers.map(t => t.name);
+      const name = `auto/${state.data.name}`;
+      const triggerIndex = triggerNames.indexOf(name);
 
-    if (state.jobs[job_index].name !== -1) {
-      console.log(`There is already a job called ${state.data.name}`);
-      state.job[job_index].expression = state.data.expression;
-
-      return request({
-        method: 'put',
-        path: 'jobs/' + state.job[job_index].id,
-        data: {
-          job: state.jobs[job_index],
-        },
-      })(state);
-    } else {
-      const job = {
-        name: 'auto/' + state.data.name,
-        project_id: state.jobs[0].project_id,
-        trigger_id: state.jobs[0].trigger_id, // Im assigning the same trigger than before. But should we...
-        // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
-        adaptor: 'postgresql',
-        expression: state.data.expression,
+      const trigger = {
+        project_id: state.projectId,
+        name,
+        type: 'message',
+        criteria: state.data.triggerCriteria,
       };
+      if (triggerIndex === -1) {
+        return request(
+          {
+            method: 'post',
+            path: 'triggers',
+            data: {
+              trigger,
+            },
+          },
+          state => {
+            console.log(state.data);
+            return { ...state, triggers: [...state.triggers, state.data] };
+          }
+        )(state);
+      }
 
-      return request({
-        method: 'post',
-        path: 'jobs/',
-        data: {
-          job: job,
-        },
-      })(state);
-    }
-  })
+      return state;
+    })
+  )
 );
+
+/* each('$.forms[*]', state => {
+  return each(
+    '$.data[*]',
+    alterState(state => {
+      const { expression } = state.data;
+      const jobNames = state.jobs.map(job => job.name);
+      const name = `auto/${state.data.name}`;
+      const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
+      const triggerIndex = state.triggers.indexOf(name);
+      const triggerId = state.triggers[triggerIndex];
+
+      const data = {
+        name,
+        project_id: state.projectId,
+        trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
+        adaptor: 'postgresql',
+        expression,
+      };
+      const method = jobIndex !== -1 ? 'put' : 'post';
+      const path =
+        method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
+
+      return request({ method, path, data })(state);
+    })
+  )(state);
+});
  */
