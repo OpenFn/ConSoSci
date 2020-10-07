@@ -38,20 +38,20 @@ each(
       // ======================================================================
 
       const mapType = {
-        decimal: 'float4',
-        integer: 'int4',
-        text: 'text',
-        select_one: 'varchar',
         calculate: 'varchar',
         date: 'date',
+        decimal: 'float4',
+        integer: 'int4',
+        select_one: 'varchar',
+        text: 'text',
       };
 
       const discards = [
+        'begin_group',
+        'begin_repeat',
+        'end_group',
+        'end_repeat',
         'note',
-        'group_end',
-        'group_begin',
-        'repeat_end',
-        'repeat_begin',
       ];
 
       function questionToType(questions) {
