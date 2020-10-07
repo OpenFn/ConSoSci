@@ -44,12 +44,9 @@ each(
         date: 'date',
       };
 
-      const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
-
       function questionToType(questions) {
-        var form = questions.filter(elt => types.includes(elt.type));
-        form.forEach(obj => (obj.type = mapType[obj.type]));
-        form.forEach(obj => {
+        questions.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
+        questions.forEach(obj => {
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
           }
