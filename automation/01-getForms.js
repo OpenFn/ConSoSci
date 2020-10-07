@@ -3,7 +3,9 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // Set a manual cursor if you'd like to only fetch form after a certain date
   const manualCursor = '2019-05-25T14:32:43.325+01:00';
   state.data.forms = state.data.results
-    .filter(resource => resource.date_modified > (state.lastEnd || manualCursor))
+    .filter(
+      resource => resource.date_modified > (state.lastEnd || manualCursor)
+    )
     .map(form => {
       const url = form.url.split('?').join('?');
       return {
@@ -32,7 +34,7 @@ each(
       const { survey } = state.data.content;
 
       // TODO: Decide which metadata field to include. ========================
-      survey.push({"name": "generated_uuid", "type": "text"});
+      survey.push({ name: 'generated_uuid', type: 'text' });
       // ======================================================================
 
       const mapType = {
@@ -44,11 +46,17 @@ each(
         date: 'date',
       };
 
-      const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
+      const discards = [
+        'note',
+        'group_end',
+        'group_begin',
+        'repeat_end',
+        'repeat_begin',
+      ];
 
       function questionToType(questions) {
-        var form = questions.filter(elt => types.includes(elt.type));
-        form.forEach(obj => (obj.type = mapType[obj.type]));
+        var form = questions.filter(elt => !discards.includes(elt.type));
+        form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
         form.forEach(obj => {
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
@@ -78,9 +86,15 @@ each(
         });
 
         if (-1 !== (index_begin | index_end)) {
-          const group = questions.splice(index_begin, index_end - index_begin + 1);
+          const group = questions.splice(
+            index_begin,
+            index_end - index_begin + 1
+          );
           tables.push({
-            name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
+            name: (formName + '_' + questions[index_begin].name)
+              .split(/\s|-/)
+              .join('_')
+              .toLowerCase(),
             columns: questionToType(group),
             formDef: group,
           });
