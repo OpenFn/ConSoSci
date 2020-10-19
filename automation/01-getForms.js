@@ -31,23 +31,35 @@ each(
     get(`${state.data.url}`, {}, state => {
       const { survey } = state.data.content;
 
+      // TODO: Decide which metadata field to include. ========================
+      survey.push({ name: 'generated_uuid', type: 'text' });
+      // ======================================================================
+
       const mapType = {
-        decimal: 'float4',
-        integer: 'int4',
-        text: 'text',
-        select_one: 'varchar',
         calculate: 'varchar',
         date: 'date',
+        decimal: 'float4',
+        end: 'date',
+        integer: 'int4',
+        select_one: 'varchar',
+        start: 'date',
+        text: 'text',
+        today: 'date',
+        jsonb: 'jsonb',
       };
 
-      const types = ['integer', 'text', 'decimal', 'select_one', 'date', 'calculate'];
+      const discards = ['begin_group', 'begin_repeat', 'end_group', 'end_repeat', 'note'];
 
-      function map_question_to_valid_type(questions) {
-        var form = questions.filter(elt => types.includes(elt.type));
-        form.forEach(obj => (obj.type = mapType[obj.type]));
+      function questionToType(questions) {
+        var form = questions.filter(elt => !discards.includes(elt.type));
+        form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
         form.forEach(obj => {
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
+          }
+          if (obj.name == 'end') {
+            // end is reserved in postgresql
+            obj.name = 'end_date';
           }
         });
         form = form
@@ -58,11 +70,13 @@ each(
             return x;
           })
           .filter(x => x.name !== undefined);
+        // Adding a column as jsonb to take the whole payload
+        form.push({ name: 'payload', type: 'jsonb' });
 
         return form;
       }
 
-      function extract_tables_from_questions_array(questions, formName, tables) {
+      function tablesFromQuestions(questions, formName, tables) {
         var index_begin = -1;
         var index_end = -1;
 
@@ -77,20 +91,23 @@ each(
           const group = questions.splice(index_begin, index_end - index_begin + 1);
           tables.push({
             name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
-            columns: map_question_to_valid_type(group),
-            formDef: group
+            columns: questionToType(group),
+            formDef: group,
           });
-          return extract_tables_from_questions_array(questions, formName, tables);
+          return tablesFromQuestions(questions, formName, tables);
         }
         tables.push({
-          name: formName.split(/\s|-/).join('_').toLowerCase(),
-          columns: map_question_to_valid_type(questions),
-          formDef: questions
+          name: formName
+            .split(/\s|-|'/)
+            .join('_')
+            .toLowerCase(),
+          columns: questionToType(questions),
+          formDef: questions,
         });
         return tables;
       }
 
-      const tables = extract_tables_from_questions_array(survey, state.data.name, []);
+      const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {
         ...state,
