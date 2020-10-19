@@ -61,5 +61,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetUuid: dataValue('durableUUID'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
+  LastCheckedTime: dataValue('_submission_time'),
+  KoboManaged: true,
   Tags: dataValue('_tags'),
 });
