@@ -58,3 +58,12 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Motivation: dataValue('motivation'),
   LastUpdate: dataValue('_submission_time'), // update to runtime now()
 });
+
+upsert('WCSPROGRAMS_KoboData', 'AuthUserId', {
+  DatasetId: dataValue('_uuid'),
+  DatasetName: dataValue('form_title'),
+  DatasetUuid: dataValue('_uuid'),
+  DatasetYear: new Date().getFullYear(),
+  LastSubmissionTime: dataValue('_submission_time'),
+  Tags: dataValue('_tags'),
+});
