@@ -24,8 +24,10 @@ alterState(state => {
 
     // NOTE: This assumes all device-collected geo data follows specific lat, log data format
     if (cleanedSubmission.gps_method === 'device') {
-      cleanedSubmission['gps/lat'] = cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
-      cleanedSubmission['gps/long'] = cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
+      cleanedSubmission['gps/lat'] =
+        cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
+      cleanedSubmission['gps/long'] =
+        cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
     } else if (
       Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
       Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
@@ -67,7 +69,8 @@ alterState(state => {
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
           have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
-          necessary: state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
+          necessary:
+            state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
           quantity: state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
         };
       });
@@ -109,7 +112,10 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}` });
+sql({
+  query: state =>
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}`,
+});
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
   Id: state.data._id,
@@ -145,7 +151,10 @@ alterState(state => {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'` });
+sql({
+  query: state =>
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'`,
+});
 alterState(state => {
   if (state.nr && state.nr.length > 0) {
     return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
@@ -158,10 +167,16 @@ alterState(state => {
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
-sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'` });
+sql({
+  query: state =>
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'`,
+});
 alterState(state => {
   if (state.matrix && state.matrix.length > 0) {
-    return insertMany('WCSPROGRAMS_KoboBnsAnswerGS', state => state.matrix)(state);
+    return insertMany(
+      'WCSPROGRAMS_KoboBnsAnswerGS',
+      state => state.matrix
+    )(state);
   }
 
   console.log('No matrix found.');
@@ -176,4 +191,13 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
   LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
+});
+
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
+  DatasetId: dataValue('_id'),
+  DatasetName: dataValue('form_title'),
+  DatasetUuid: dataValue('durableUUID'),
+  DatasetYear: new Date().getFullYear(),
+  LastSubmissionTime: dataValue('_submission_time'),
+  Tags: dataValue('_tags'),
 });
