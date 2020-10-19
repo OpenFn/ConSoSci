@@ -193,10 +193,10 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
 });
 
-upsert('WCSPROGRAMS_KoboData', 'DatasetId', {
-  DatasetId: dataValue('durableUUID'),
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
+  DatasetId: dataValue('_id'),
   DatasetName: dataValue('form_title'),
-  DatasetUuid: dataValue('_uuid'),
+  DatasetUuid: dataValue('durableUUID'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   Tags: dataValue('_tags'),
