@@ -101,8 +101,10 @@ To remove a Kobo form from the integration flow, edit the job [`1A. Get Kobo Dat
 # Project 2: Automated Postgres Table & Kobo Form Integration
 ## Summary
 WCS would like to automate the configuration of destination database tables and OpenFn jobs to integrate Kobo data when new Kobo forms are uploaded to a connected Kobo account. How this will work: 
-1. Job `automation/01-getForms.js` will run on a scheduled basis to check Kobo Toolbox for new forms. If any forms are created or updated, this will trigger 2 jobs to run...
+1. Job `automation/01-getForms.js` will run on a scheduled basis to check Kobo Toolbox for new forms. If any forms are created or updated, this will trigger 2 jobs to run.
+
 2a. Job `02a-syncToPostgres.js` will upsert database tables in Postgres. If the table exists, but new Kobo questions have been added - the table will be updated to include additional columns. 
+
 2b. Job `02b-syncToOpenFn.js` will upsert jobs in OpenFn to map the Kobo forms to the tables created in the above job. 
 
 See [issue 7](https://github.com/OpenFn/wcs-consocsci/issues/7) documenting the original request. 
