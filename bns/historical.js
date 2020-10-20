@@ -10,7 +10,7 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
-      // { id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical' }, // ✓
+      { id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical', name: 'NRGT Makira 2017 - Test OpenFn', owner: 'openfn' }, // ✓
       // { id: 'av4hQ37rMgwFoh9ogjeyKh', tag: 'nrgt_current' }, // ✓
       // { id: 'azrSYMFpj3M8jdFkApT3o6/', tag: 'bns_price' }, // ✓
       // { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey' }, // ✓
