@@ -10,48 +10,48 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
-      // { id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_2017' }, // ✓
-      // { id: 'av4hQ37rMgwFoh9ogjeyKh', tag: 'nrgt_2019' }, // ✓
-      // { id: 'azrSYMFpj3M8jdFkApT3o6/', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_2019' }, // ✓
-      // { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_2019' }, // ✓
-      // { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price_2019' }, // ✓
-      // { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_2019' }, // ✓ changed by j
-      // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_2019' }, // ✓
-      // { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_2019' }, // ✓
-      // { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_2019' }, // ✓
-      // { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_2019' }, // ✓
-      // { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_2019' }, // ✓
-      // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_2019' }, // ✓
-      // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_2019' }, // ✓
-      // { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_2019' }, // ✓
-      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_2019' }, // ✓
-      // { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_2019' }, // ✓
-      // { id: 'a6BjZ8ncLtTtfBSGZ9PqoJ', tag: 'bns_price_2019' }, // ✓
-      // { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price_2019' }, // ✓
-      // { id: 'apMTFWRd9fQWHvpJHLfvk6', tag: 'bns_price_2019' }, // ✓
-      // { id: 'ao52kp6BgLgooE3MRsdy4B', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aq5r9cKQYBRDT9SBqYanUP', tag: 'bns_price_2019' }, // ✓
-      // { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_2019' }, // ✓
-      // { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_2019' }, // ✓
-      // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_2019' }, // ✓
-      // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_2017' }, // ✓
-      // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_2017' }, // ✓
-      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_2017' }, // ✓
-      // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_2017' }, // ✓
-      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_2017' }, // ✓
-      // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_2017' }, // ✓
-      // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_2017' }, // ✓
-      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_2019' }, // ✓
-      // { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_2017' }, // ✓
-      // { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_price_2019' }, // ✓
-      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_price_2019' }, // ✓
-      // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_price_2019' }, // ✓
-      // { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_price_2019' }, // ✓
-      // { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_price_2019' }, // ✓
+      // { id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical' }, // ✓
+      // { id: 'av4hQ37rMgwFoh9ogjeyKh', tag: 'nrgt_current' }, // ✓
+      // { id: 'azrSYMFpj3M8jdFkApT3o6/', tag: 'bns_price' }, // ✓
+      // { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey' }, // ✓
+      // { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey' }, // ✓
+      // { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price' }, // ✓
+      // { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey' }, // ✓ changed by j
+      // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey' }, // ✓
+      // { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey' }, // ✓
+      // { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_survey' }, // ✓
+      // { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey' }, // ✓
+      // { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey' }, // ✓
+      // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_survey' }, // ✓
+      // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey' }, // ✓
+      // { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_survey' }, // ✓
+      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey' }, // ✓
+      // { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey' }, // ✓
+      // { id: 'a6BjZ8ncLtTtfBSGZ9PqoJ', tag: 'bns_price' }, // ✓
+      // { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price' }, // ✓
+      // { id: 'apMTFWRd9fQWHvpJHLfvk6', tag: 'bns_price' }, // ✓
+      // { id: 'ao52kp6BgLgooE3MRsdy4B', tag: 'bns_price' }, // ✓
+      // { id: 'aq5r9cKQYBRDT9SBqYanUP', tag: 'bns_price' }, // ✓
+      // { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_survey' }, // ✓
+      // { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey' }, // ✓
+      // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey' }, // ✓
+      // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical' }, // ✓
+      // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_historical' }, // ✓
+      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical' }, // ✓
+      // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical' }, // ✓
+      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical' }, // ✓
+      // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical' }, // ✓
+      // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical' }, // ✓
+      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current' }, // ✓
+      // { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical' }, // ✓
+      // { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_survey' }, // ✓
+      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_survey' }, // ✓
+      // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_survey' }, // ✓
+      // { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_survey' }, // ✓
+      // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey' }, // ✓
+      // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_survey' }, // ✓
+      // { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey' }, // ✓
+      // { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_survey' }, // ✓
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
