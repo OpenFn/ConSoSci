@@ -2,6 +2,7 @@
 
 **N.B. commits to the `master` branch will automatically deploy to OpenFn.org**
 
+# Project 1: BNS and NRGT Survey Integrations
 ## Kobo Toolbox template forms to integrate
 
 - [x] BNS Survey --> OpenFn job [`bns/survey.js`](https://github.com/OpenFn/wcs/blob/master/bns/survey.js)
@@ -96,6 +97,15 @@ To remove a Kobo form from the integration flow, edit the job [`1A. Get Kobo Dat
 
 1. Can WCS test to confirm the jobs are mapping data to Mssql as expected? [See this video for guidance](http://somup.com/cYQjQxX02A). Please pay special attention to the BNS Survey job, where the mapping logic is more complex and based on the form metadata.
 2. Can WCS confirm the Postgres database we should also map these to? And should we map the exact same data to Postgres as we are to Mssql? Or will different surveys be mapped to different DBs?
+
+# Project 2: Automated Postgres Table & Kobo Form Integration
+## Summary
+WCS would like to automate the configuration of destination database tables and OpenFn jobs to integrate Kobo data when new Kobo forms are uploaded to a connected Kobo account. How this will work: 
+1. Job `automation/01-getForms.js` will run on a scheduled basis to check Kobo Toolbox for new forms. If any forms are created or updated, this will trigger 2 jobs to run...
+2a. Job `02a-syncToPostgres.js` will upsert database tables in Postgres. If the table exists, but new Kobo questions have been added - the table will be updated to include additional columns. 
+2b. Job `02b-syncToOpenFn.js` will upsert jobs in OpenFn to map the Kobo forms to the tables created in the above job. 
+
+See [issue 7](https://github.com/OpenFn/wcs-consocsci/issues/7) documenting the original request. 
 
 ## Assumptions from engineering
 
