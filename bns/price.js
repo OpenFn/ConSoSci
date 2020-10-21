@@ -37,7 +37,7 @@ alterState(state => {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-sql({
+/* sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsPrice where DatasetUuidId = '${state.data.durableUUID}'`,
 });
@@ -54,7 +54,7 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     LastUpdate: state.data.end,
   }))
 );
-
+ */
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetId: dataValue('_id'),
   DatasetName: dataValue('formName'),
@@ -63,6 +63,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
+  LastUpdateTime: new Date(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
   

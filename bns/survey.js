@@ -83,7 +83,7 @@ alterState(state => {
   }
 });
 
-upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
+/* upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('durableUUID'),
   AnswerId: dataValue('_id'),
   LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
@@ -162,12 +162,12 @@ alterState(state => {
 
   console.log('No natural resource found.');
   return state;
-});
+}); */
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
-sql({
+/* sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'`,
 });
@@ -181,9 +181,9 @@ alterState(state => {
 
   console.log('No matrix found.');
   return state;
-});
+}); */
 
-upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
+/* upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   DatasetUuidId: dataValue('durableUUID'), //Q: Add new column
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
@@ -191,7 +191,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
   LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
-});
+}); */
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetId: dataValue('_id'),
@@ -200,6 +200,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
+  LastUpdateTime: new Date(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
 });
