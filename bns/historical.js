@@ -55,6 +55,8 @@ alterState(state => {
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
+      name: survey.name, 
+      owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
     })),
   };
@@ -63,7 +65,7 @@ alterState(state => {
 });
 
 each(dataPath('surveys[*]'), state => {
-  const { url, tag, formId } = state.data;
+  const { url, tag, formId, name, owner } = state.data;
   return get(url, {}, state => {
     state.data.submissions = state.data.results.map((submission, i) => {
       return {
