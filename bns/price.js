@@ -57,11 +57,13 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetId: dataValue('_id'),
-  DatasetName: dataValue('form_title'),
+  DatasetName: dataValue('formName'),
+  DatasetOwner: dataValue('formOwner'),
   DatasetUuid: dataValue('durableUUID'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
   KoboManaged: true,
   Tags: dataValue('_tags'),
+  
 });
