@@ -33,11 +33,11 @@ alterState(state => {
       // { id: 'ao52kp6BgLgooE3MRsdy4B', tag: 'bns_price', name: 'BNS Prix Ndoki 2018', owner: 'wcs_ndoki' }, // ✓
       // { id: 'aq5r9cKQYBRDT9SBqYanUP', tag: 'bns_price', name: 'BNS Prix Ndoki 2019', owner: 'wcs_ndoki' }, // ✓
       // { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_survey', name: 'BNS_ABS_2019_FINAL', owner: 'wcs_antongil' }, // ✓
-      // { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
+      // { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2019', owner: 'wcs_soariake' }, // ✓
+      // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'BNS_Soariake_2019', owner: 'wcs_soariake' }, // ✓
+      // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical', name: 'NRGT Crossriver 2017', owner: 'wcs_crossriver' }, // ✓
+      // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_historical', name: 'NRGT Ituri 2017', owner: 'wcs_ituri' }, // ✓
+      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'bwcs_iturins' }, // ✓
       // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
       // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
       // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
