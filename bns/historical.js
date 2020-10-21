@@ -37,21 +37,21 @@ alterState(state => {
       // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'BNS_Soariake_2019', owner: 'wcs_soariake' }, // ✓
       // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical', name: 'NRGT Crossriver 2017', owner: 'wcs_crossriver' }, // ✓
       // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_historical', name: 'NRGT Ituri 2017', owner: 'wcs_ituri' }, // ✓
-      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'bwcs_iturins' }, // ✓
-      // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current' },, name: 'NRGT 2019 - Test OpenFn', owner: 'bns' // ✓
-      // { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
-      // { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_survey', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // ✓
+      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'bwcs_iturin' }, // ✓
+      // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2018', owner: 'wcs_mtkb' }, // ✓
+      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb' }, // ✓
+      // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT Lac Télé 2017', owner: 'wcs_lactele' }, // ✓
+      // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical', name: 'NRGT Makira 2017', owner: 'wcs_mamabaie' }, // ✓
+      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current' },, name: 'NRGT Makira 2019', owner: 'wcs_mamabaie' // ✓
+      // { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical', name: 'NRGT Ndoki 2018', owner: 'wcs_ndoki' }, // ✓
+      // { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_survey', name: 'Price Makira 2017', owner: 'wcs_mamabaie' }, // ✓
+      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_survey', name: 'Price Makira 2019', owner: 'wcs_mamabaie' }, // ✓
+      // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_survey', name: 'Prices Crossriver 2017 ', owner: 'wcs_crossriver' }, // ✓
+      // { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_survey', name: 'Prices MTKB 2017', owner: 'akirkby' }, // ✓
+      // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // ✓
+      // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_survey', name: 'Prix_BNS_Ankarea/Ankivony_2019', owner: 'wcs_soariake' }, // ✓
+      // { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // ✓
+      // { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_survey', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // ✓
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
