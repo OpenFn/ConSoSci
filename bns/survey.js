@@ -118,13 +118,13 @@ sql({
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
-  Id: state.data._id,
-  AnswerId: state.data._id, //Q: replace with AnswerId ?
-  Head: state.data.gender_head ? '1' : '0',
-  Gender: state.data.gender_head,
-  Ethnicity: state.data.ethnicity_head,
-  Birth: state.data.birth_head,
-  LastUpdate: state.data._submission_time, //Q: update runtime to now()
+  Id: state.data.body._id,
+  AnswerId: state.data.body._id, //Q: replace with AnswerId ?
+  Head: state.data.body.gender_head ? '1' : '0',
+  Gender: state.data.body.gender_head,
+  Ethnicity: state.data.body.ethnicity_head,
+  Birth: state.data.body.birth_head,
+  LastUpdate: state.data.body._submission_time, //Q: update runtime to now()
 });
 
 alterState(state => {
