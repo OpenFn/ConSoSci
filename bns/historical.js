@@ -70,6 +70,8 @@ each(dataPath('surveys[*]'), state => {
         i,
         // Here we append the tags defined above to the Kobo form submission data
         form: tag,
+        formName: name, 
+        formOwner: owner,
         body: submission,
       };
     });
