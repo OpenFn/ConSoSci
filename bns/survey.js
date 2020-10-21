@@ -119,12 +119,12 @@ sql({
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
   Id: state.data.body._id,
-  AnswerId: state.data.body._id, //Q: replace with AnswerId ?
-  Head: state.data.body.gender_head ? '1' : '0',
-  Gender: state.data.body.gender_head,
-  Ethnicity: state.data.body.ethnicity_head,
-  Birth: state.data.body.birth_head,
-  LastUpdate: state.data.body._submission_time, //Q: update runtime to now()
+  AnswerId: dataValue('._id'), //Q: replace with AnswerId ?
+  Head: dataValue('gender_head') ? '1' : '0',
+  Gender: dataValue('gender_head'),
+  Ethnicity: dataValue('ethnicity_head'),
+  Birth: dataValue('birth_head'),
+  LastUpdate: dataValue('submission_time') //Q: update runtime to now()
 });
 
 alterState(state => {
