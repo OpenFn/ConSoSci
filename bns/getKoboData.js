@@ -3,7 +3,7 @@
 
 alterState(state => {
   // Set a manual cursor if you'd like to only fetch data after this date.
-  manualCursor = '2020-05-25T14:32:43.325+01:00';
+  const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
       //** Specify new forms to fetch here **//
@@ -56,5 +56,6 @@ alterState(state => {
     .filter(item => item.body)
     .map(s => s.body.end)
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-  return { ...state, lastEnd };
+    
+  return { ...state, data: {}, references: [], lastEnd };
 });
