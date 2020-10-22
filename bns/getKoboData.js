@@ -10,8 +10,8 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey' }, //BNS Ndoki 2019 - Test OpenFn
       
-      { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey' }, //BNS Ndoki 2020
-      { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price' }, //BNS Ndoki Prix 2020
+      { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'wcs'}, 
+      { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs' },
       
       //{ id: 'new-form-id', tag: 'new_tag' } //New Form Name
     ].map(survey => ({
