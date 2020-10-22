@@ -17,6 +17,8 @@ alterState(state => {
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
+      name: survey.name, 
+      owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
       query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
     })),
@@ -25,13 +27,15 @@ alterState(state => {
 });
 
 each(dataPath('surveys[*]'), state => {
-  const { url, tag, formId } = state.data;
+  const { url, tag, formId, name, owner } = state.data;
   return get(url, {}, state => {
     state.data.submissions = state.data.results.map((submission, i) => {
       return {
         i,
         // Here we append the tags defined above to the Kobo form submission data
         form: tag,
+        formName: name, 
+        formOwner: owner,
         body: submission,
       };
     });
