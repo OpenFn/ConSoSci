@@ -116,7 +116,7 @@ sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}`,
 });
-insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'DatasetUuidId', {
+upsert('WCSPROGRAMS_KoboBnsAnswerhhmembers', 'DatasetUuidId', {
   //insert hh head first
   DatasetUuidId: dataValue('durableUUID'),
   Id: dataValue('._id'),
