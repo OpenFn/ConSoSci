@@ -93,6 +93,7 @@ each(
             name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
             columns: questionToType(group),
             formDef: group,
+            group: 'repeat_group',
           });
           return tablesFromQuestions(questions, formName, tables);
         }
@@ -103,6 +104,7 @@ each(
             .toLowerCase(),
           columns: questionToType(questions),
           formDef: questions,
+          group: 'parent',
         });
         return tables;
       }
