@@ -195,7 +195,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', { //renamed from DatasetUuid
-  DatasetId: dataValue('_id'),
+  AnswerId: dataValue('_id'), //renamed from DatasetId
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
   DatasetUuidId: dataValue('durableUUID'),
