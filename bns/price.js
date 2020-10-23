@@ -37,14 +37,14 @@ alterState(state => {
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
-/* sql({
+sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsPrice where DatasetUuidId = '${state.data.durableUUID}'`,
 });
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
-    Id: state.data._id, //Q: Id vs AnswerId
+    Id: state.data.id, //Q: Id vs AnswerId
     AnswerId: state.data._id,
     DatasetUuidId: dataValue('durableUUID')(state),
     Surveyor: state.data.surveyor,
@@ -54,7 +54,7 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     LastUpdate: state.data.end,
   }))
 );
- */
+
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetId: dataValue('_id'),
   DatasetName: dataValue('formName'),
