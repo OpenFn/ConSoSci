@@ -198,7 +198,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
   DatasetId: dataValue('_id'),
   DatasetName: state.data.formName,
-  DatasetOwner: state.data.formName.formOwner,
+  DatasetOwner: state.data.formOwner,
   DatasetUuid: dataValue('durableUUID'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
