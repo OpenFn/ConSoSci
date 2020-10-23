@@ -1,152 +1,161 @@
-each('$.forms[*]', state => {
-  return each(
-    '$.data[*]',
-    alterState(state => {
-      const validTypes = ['float4', 'int4', 'text', 'varchar', 'varchar', 'date'];
-      var path = [];
-      var prefix = '';
-
-      for (var i = 0; i < state.data.formDef.length; i++) {
-        if (state.data.formDef[i].type == 'begin_group' || state.data.formDef[i].type == 'begin_repeat') {
-          prefix += '/' + state.data.formDef[i].name;
-        } else if (
-          // if we have a 'end_group' or 'end_repeat',
-          //it means we must close a group = removing last element of prefix
-          state.data.formDef[i].type == 'end_group' ||
-          state.data.formDef[i].type == 'end_repeat'
-        ) {
-          const prefixes = prefix.split('/');
-          prefixes.splice(prefixes.length - 1);
-          prefix = prefixes.join('/');
-        } else {
-          // if none of those cases are met, it means we have potentially a column then we must add it to the path.
-          if (state.data.formDef[i].name && validTypes.includes(state.data.formDef[i].type))
-            path.push(prefix + '/' + state.data.formDef[i].name + '/');
-        }
-      }
-      //console.log(path);
-
-      const mapPostgresToKobo = {}; // This is the jsonBody that should be given to our upsert
-
-      for (var i = 0; i < state.data.columns.length; i++) {
-        mapPostgresToKobo[state.data.columns[i].name] = path[i];
-      }
-      console.log(mapPostgresToKobo);
-
-      const trigger = `{"form": ${state.data.name}}`;
-      const expression = `UPSERT(${state.data.name}, ${state.data.name}, ${JSON.stringify(
-        mapPostgresToKobo,
-        null,
-        2
-      )})`;
-
-      state.data.expression = expression;
-      state.data.trigger = trigger;
-      return state;
-    })
-  )(state);
+alterState(state => {
+  return { ...state, projectId: 1087 };
 });
 
-request(
-  {
-    method: 'get',
-    path: 'triggers',
-    params: {
-      project_id: 1087,
-    },
-  },
-  state => ({ ...state, triggers: state.data })
-);
-
-request(
-  {
-    method: 'get',
-    path: 'jobs',
-    params: {
-      project_id: 1087,
-    },
-  },
-  state => ({ ...state, jobs: state.data })
-);
-
-each('$.forms[*]', state => {
-  return each(
-    '$.data[*]',
-    alterState(state => {
-      const jobs = state.jobs.map(job => job.name);
-      const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
-
-      if (job_index !== -1) {
-        console.log(`There is already a job called ${state.data.name}`);
-        //const new_expression = state.data.expression;
-        state.jobs[job_index].expression = 'test';
-
-        return request({
-          method: 'put',
-          path: 'jobs/' + state.jobs[job_index].id,
-          data: {
-            job: state.jobs[job_index],
-          },
-        })(state);
-      }
-      /* else {
-        const job = {
-          name: 'auto/' + state.data.name,
-          project_id: state.jobs[0].project_id,
-          trigger_id: state.jobs[0].trigger_id, // Im assigning the same trigger than before. But should we...
-          // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
-          adaptor: 'postgresql',
-          expression: state.data.expression,
-        };
-
-        return request({
-          method: 'post',
-          path: 'jobs/',
-          data: {
-            job: job,
-          },
-        })(state);
-      } */ return state;
-    })
-  )(state);
-});
-
-/* 
 each(
-  '$.tablesToBeCreated[*]',
+  '$.forms[*]',
   alterState(state => {
-    const jobs = state.jobs.map(job => job.name);
-    const job_index = jobs.indexOf('auto/' + state.data.name); // We check if there is a job with that name.
+    var expression = '';
+    var form_name = '';
+    const expressions = [];
 
-    if (state.jobs[job_index].name !== -1) {
-      console.log(`There is already a job called ${state.data.name}`);
-      state.job[job_index].expression = state.data.expression;
+    for (var i = 0; i < state.data.length; i++) {
+      const { formDef, columns, name, group } = state.data[i];
+      if (name !== 'untitled') {
+        const validTypes = ['float4', 'int4', 'text', 'varchar', 'varchar', 'date'];
+        var paths = [];
+        var prefix = '';
+        form_name = name;
+        for (var j = 0; j < formDef.length; j++) {
+          if (formDef[j].type == 'begin_group' || formDef[j].type == 'begin_repeat') {
+            prefix += '/' + formDef[j].name;
+          } else if (
+            // if we have a 'end_group' or 'end_repeat',
+            //it means we must close a group = removing last element of prefix
+            formDef[j].type == 'end_group' ||
+            formDef[j].type == 'end_repeat'
+          ) {
+            const prefixes = prefix.split('/');
+            prefixes.splice(prefixes.length - 1);
+            prefix = prefixes.join('/');
+          } else {
+            // if none of those cases are met, it means we have potentially a column then we must add it to the path.
+            if (formDef[j].name && validTypes.includes(formDef[j].type))
+              paths.push(prefix + '/' + formDef[j].name + '/');
+          }
+        }
 
-      return request({
-        method: 'put',
-        path: 'jobs/' + state.job[job_index].id,
-        data: {
-          job: state.jobs[job_index],
-        },
-      })(state);
-    } else {
-      const job = {
-        name: 'auto/' + state.data.name,
-        project_id: state.jobs[0].project_id,
-        trigger_id: state.jobs[0].trigger_id, // Im assigning the same trigger than before. But should we...
-        // ... (1) create a trigger first; (2) get the id ; (3) assign it here?
-        adaptor: 'postgresql',
-        expression: state.data.expression,
-      };
+        var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
-      return request({
-        method: 'post',
-        path: 'jobs/',
-        data: {
-          job: job,
-        },
-      })(state);
+        for (var k = 0; k < columns.length - 1; k++) {
+          mapKoboToPostgres[columns[k].name] = `dataValue('${paths[k]}')`;
+        }
+        mapKoboToPostgres.generated_uuid = `state.data._id + '-' + state.data._xform_id_string`;
+        group === 'repeat_group'
+          ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
+          : mapKoboToPostgres.generated_uuid;
+
+        if (group === 'repeat_group') {
+          const delete_expression = `sql({ query: state => 'DELETE FROM ${name} where generated_uuid = ${mapKoboToPostgres.generated_uuid}' });`;
+          expression += delete_expression + '\n';
+        }
+
+        expression +=
+          `upsert('${name}', 'generated_uuid', ${JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')});` +
+          '\n';
+        state.data[i].expression = expression;
+        state.data[i].triggerCriteria = { form: `${form_name}` };
+      }
     }
+
+    return state;
   })
 );
- */
+
+alterState(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'triggers',
+      params: {
+        project_id: state.projectId,
+      },
+    },
+    state => ({ ...state, triggers: state.data })
+  )(state);
+});
+
+alterState(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'jobs',
+      params: {
+        project_id: state.projectId,
+      },
+    },
+    state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
+  )(state);
+});
+
+each(
+  '$.forms[*]',
+  alterState(state => {
+    const triggerNames = state.triggers.map(t => t.name);
+
+    const name = state.data[0].group === 'repeat_group' ? `auto/${state.data[1].name}` : `auto/${state.data[0].name}`;
+
+    const criteria =
+      state.data[0].group === 'repeat_group' ? state.data[1].triggerCriteria : state.data[0].triggerCriteria;
+
+    const triggerIndex = triggerNames.indexOf(name);
+
+    const trigger = {
+      project_id: state.projectId,
+      name,
+      type: 'message',
+      criteria,
+    };
+
+    if (triggerIndex === -1) {
+      console.log('Inserting triggers.');
+      return request(
+        {
+          method: 'post',
+          path: 'triggers',
+          data: {
+            trigger,
+          },
+        },
+        state => {
+          return { ...state, triggers: [...state.triggers, state.data] };
+        }
+      )(state);
+    } else {
+      console.log('Trigger already existing.');
+    }
+
+    return state;
+  })
+);
+
+each(
+  '$.forms[*]',
+  alterState(state => {
+    const expression = state.data[0].group === 'repeat_group' ? state.data[1].expression : state.data[0].expression;
+
+    const jobNames = state.jobs.map(j => j.name);
+    const triggersName = state.triggers.map(t => t.name);
+
+    const name = state.data[0].group === 'repeat_group' ? `auto/${state.data[1].name}` : `auto/${state.data[0].name}`;
+
+    const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
+
+    const triggerIndex = triggersName.indexOf(name);
+    const triggerId = state.triggers[triggerIndex].id;
+
+    const job = {
+      adaptor: 'postgresql',
+      expression,
+      name,
+      project_id: state.projectId,
+      trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
+    };
+    const method = jobIndex !== -1 ? 'put' : 'post';
+    const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
+
+    return request({ method, path, data: { job } }, state => {
+      return state;
+    })(state);
+  })
+);
