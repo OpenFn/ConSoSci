@@ -135,6 +135,7 @@ alterState(state => {
     ) =>
       state.data.hh_members.map(member => ({
         //Q: what if no members selected?
+        DatasetUuidId: dataValue('durableUUID'),
         Id: state.data._id, //Q: replace with AnswerId ?
         AnswerId: state.data._id,
         Head: '0',
