@@ -53,7 +53,7 @@ alterState(state => {
       .filter(key => key.startsWith('nr/'))
       .map(key => ({
         AnswerId: state.data._id,
-        Id: state.data._id,
+        //Id: state.data._id,
         LastUpdate: state.data._submission_time, //Q: update runtime to now()
         Nr: key.substring(3),
         NrCollect: state.data[key],
@@ -86,7 +86,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
   DatasetUuidId: dataValue('durableUUID'),
   AnswerId: dataValue('_id'),
-  LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
+  LastUpdate: dataValue('_submission_time'),
   SurveyDate: dataValue('today'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
@@ -114,12 +114,12 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
   query: state =>
-    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where Id = ${state.data._id}`,
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = ${state.data._id}`,
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
   DatasetUuidId: dataValue('durableUUID'),  // Q: do we need upsert?
-  Id: dataValue('._id'),
+  //Id: dataValue('._id'),
   AnswerId: dataValue('._id'), //Q: replace with AnswerId ?
   Head: dataValue('gender_head') ? '1' : '0',
   Gender: dataValue('gender_head'),
@@ -135,7 +135,7 @@ alterState(state => {
     ) =>
       state.data.hh_members.map(member => ({
         DatasetUuidId: state.data.durableUUID,
-        Id: state.data._id, //Q: replace with AnswerId ?
+        //Id: state.data._id, //Q: replace with AnswerId ?
         AnswerId: state.data._id,
         Head: '0',
         Gender: member[`hh_members/gender`],
@@ -187,7 +187,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   DatasetUuidId: dataValue('durableUUID'), //Q: Add new column
   AnswerId: dataValue('_id'),
-  Id: dataValue('_id'),
+  //Id: dataValue('_id'),
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
@@ -195,7 +195,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', { //renamed from DatasetUuid
-  AnswerId: dataValue('_id'), //renamed from DatasetId
+  AnswerId: dataValue('_id'), //RENAME TO DatasetId ?
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
   DatasetUuidId: dataValue('durableUUID'),
