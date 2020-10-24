@@ -1,7 +1,7 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   try {
-    const { body } = state.data;
+    const { body, formName } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
     let cleanedSubmission = {};
 
@@ -26,6 +26,7 @@ alterState(state => {
       data: {
         ...cleanedSubmission,
         durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+        datasetId = `${formName}-${_xform_id_string}`,
         end: cleanedSubmission.end.slice(0, 10),
       },
     };
@@ -39,14 +40,14 @@ alterState(state => {
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
   query: state =>
-    `DELETE FROM WCSPROGRAMS_KoboBnsPrice where DatasetUuidId = '${state.data.durableUUID}'`,
+    `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
 });
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
-    Id: state.data._id, //Q: Id vs AnswerId
+    Id: state.data.durableUUID, 
     AnswerId: state.data._id,
-    DatasetUuidId: dataValue('durableUUID')(state),
+    DatasetUuidId: state.data.datasetId,
     Surveyor: state.data.surveyor,
     Village: state.data.village,
     Gs: g[`good/name`],
@@ -55,11 +56,11 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   }))
 );
 
-upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
-  DatasetId: dataValue('_id'),
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+  //AnswerId: dataValue('durableUUID'),
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
-  DatasetUuid: dataValue('durableUUID'),
+  DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
