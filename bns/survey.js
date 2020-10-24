@@ -2,7 +2,7 @@
 alterState(state => {
   try {
     const { body } = state.data;
-    const { _submission_time, _id, _xform_id_string } = body;
+    const { _submission_time, _id, _xform_id_string, formName } = body;
 
     let cleanedSubmission = {};
 
@@ -36,7 +36,8 @@ alterState(state => {
       throw `Invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`;
     }
 
-    cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+    cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
+    cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
     state.data = cleanedSubmission;
 
     // ===========================================================================
@@ -52,9 +53,10 @@ alterState(state => {
     state.nr = Object.keys(state.data)
       .filter(key => key.startsWith('nr/'))
       .map(key => ({
+        DatasetUuidId: state.data.datasetId, 
         AnswerId: state.data._id,
-        //Id: state.data._id,
-        LastUpdate: state.data._submission_time, //Q: update runtime to now()
+        Id: state.data.durableUUID,
+        LastUpdate: state.data._submission_time, 
         Nr: key.substring(3),
         NrCollect: state.data[key],
       }));
@@ -65,7 +67,8 @@ alterState(state => {
       .map(key => {
         const item = key.substring(11, key.indexOf('/'));
         return {
-          Dataset_id: state.data.durableUUID, //Rename?
+          Dataset_id: state.data.datasetId, 
+          Id: state.data.durableUUID,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
           have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
@@ -83,8 +86,9 @@ alterState(state => {
   }
 });
 
-upsert('WCSPROGRAMS_KoboBnsAnswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('durableUUID'),
+upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
+  DatasetUuidId: dataValue('datasetId'),
+  Id: dataValue('durableUUID'),
   AnswerId: dataValue('_id'),
   LastUpdate: dataValue('_submission_time'),
   SurveyDate: dataValue('today'),
@@ -118,14 +122,14 @@ sql({
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
-  DatasetUuidId: dataValue('durableUUID'),  // Q: do we need upsert?
-  //Id: dataValue('._id'),
-  AnswerId: dataValue('._id'), //Q: replace with AnswerId ?
+  DatasetUuidId: dataValue('datasetId'),
+  Id: dataValue('durableUUID'),
+  AnswerId: dataValue('._id'), 
   Head: dataValue('gender_head') ? '1' : '0',
   Gender: dataValue('gender_head'),
   Ethnicity: dataValue('ethnicity_head'),
   Birth: dataValue('birth_head'),
-  LastUpdate: dataValue('submission_time') //Q: update runtime to now()
+  LastUpdate: dataValue('submission_time') 
 });
 
 alterState(state => {
@@ -134,14 +138,14 @@ alterState(state => {
       state //then insert other members
     ) =>
       state.data.hh_members.map(member => ({
-        DatasetUuidId: state.data.durableUUID,
-        //Id: state.data._id, //Q: replace with AnswerId ?
+        DatasetUuidId: state.data.datasetId,
+        Id: state.data.durableUUID,
         AnswerId: state.data._id,
         Head: '0',
         Gender: member[`hh_members/gender`],
         Ethnicity: member[`hh_members/ethnicity`],
         Birth: member[`hh_members/birth`],
-        LastUpdate: state.data._submission_time, //Q: update runtime to now()
+        LastUpdate: state.data._submission_time,
       }))
     )(state);
   }
@@ -170,7 +174,7 @@ alterState(state => {
 //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
 sql({
   query: state =>
-    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where Dataset_id = '${state.data.durableUUID}'`,
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where AnswerId = '${state.data._id}'`,
 });
 alterState(state => {
   if (state.matrix && state.matrix.length > 0) {
@@ -185,20 +189,20 @@ alterState(state => {
 });
 
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
-  DatasetUuidId: dataValue('durableUUID'), //Q: Add new column
+  DatasetUuidId: dataValue('datasetId'), //Q: Add new column
   AnswerId: dataValue('_id'),
-  //Id: dataValue('_id'),
+  Id: dataValue('durableUUID'),
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
-  LastUpdate: dataValue('_submission_time'), //Q: update runtime to now()
+  LastUpdate: dataValue('_submission_time'), 
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', { //renamed from DatasetUuid
-  AnswerId: dataValue('_id'), //RENAME TO DatasetId ?
+  //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
-  DatasetUuidId: dataValue('durableUUID'),
+  DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
