@@ -56,7 +56,7 @@ alterState(state => {
         DatasetUuidId: state.data.datasetId, 
         AnswerId: state.data._id,
         Id: state.data.durableUUID,
-        LastUpdate: state.data._submission_time, 
+        LastUpdate: new Date().toISOString(), 
         Nr: key.substring(3),
         NrCollect: state.data[key],
       }));
@@ -90,7 +90,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
   //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
   AnswerId: dataValue('_id'),
-  LastUpdate: dataValue('_submission_time'),
+  LastUpdate: new Date().toISOString(),
   SurveyDate: dataValue('today'),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
@@ -129,7 +129,7 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   Gender: dataValue('gender_head'),
   Ethnicity: dataValue('ethnicity_head'),
   Birth: dataValue('birth_head'),
-  LastUpdate: dataValue('submission_time') 
+  LastUpdate: new Date().toISOString()
 });
 
 alterState(state => {
@@ -145,7 +145,7 @@ alterState(state => {
         Gender: member[`hh_members/gender`],
         Ethnicity: member[`hh_members/ethnicity`],
         Birth: member[`hh_members/birth`],
-        LastUpdate: state.data._submission_time,
+        LastUpdate: new Date().toISOString(),
       }))
     )(state);
   }
@@ -195,7 +195,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
-  LastUpdate: dataValue('_submission_time'), 
+  LastUpdate: new Date().toISOString(), 
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', { //renamed from DatasetUuid
