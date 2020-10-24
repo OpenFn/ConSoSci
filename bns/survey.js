@@ -122,7 +122,7 @@ sql({
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
-  DatasetUuidId: dataValue('datasetId'),
+  //DatasetUuidId: dataValue('datasetId'),
   //Id: dataValue('durableUUID'),
   AnswerId: dataValue('._id'), 
   Head: dataValue('gender_head') ? '1' : '0',
