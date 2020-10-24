@@ -88,7 +88,7 @@ alterState(state => {
 
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
-  Id: dataValue('durableUUID'),
+  //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
   AnswerId: dataValue('_id'),
   LastUpdate: dataValue('_submission_time'),
   SurveyDate: dataValue('today'),
