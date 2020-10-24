@@ -118,7 +118,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
 // Maybe check result of previous op, then only delete if it was an update.
 sql({
   query: state =>
-    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = ${state.data._id}`,
+    `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = '${state.data._id}'`,
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
