@@ -1,7 +1,7 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   try {
-    const { body } = state.data;
+    const { body, formName } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
     let cleanedSubmission = {};
 
@@ -22,6 +22,7 @@ alterState(state => {
     }
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+    cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     state.data = cleanedSubmission;
     return state;
   } catch (error) {
@@ -30,8 +31,8 @@ alterState(state => {
   }
 });
 
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('durableUUID'),
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+  DatasetUuidId: dataValue('datasetId'),
   AnswerId: dataValue('_id'),
   Landscape: dataValue('landscape'),
   GovGroup: dataValue('gov_group'),
@@ -39,12 +40,12 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'DatasetUuidId', {
   Objective: dataValue('objective'),
   Members: dataValue('members'),
   Women: dataValue('women'),
-  LastUpdate: dataValue('_submission_time'), // update to runtime now()
+  LastUpdate: new Date().toISOString(), 
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-  DatasetUuidId: dataValue('durableUUID'), // Q: add column to table
-  Id: dataValue('_id'),
+  DatasetUuidId: dataValue('datasetId'), 
+  Id: dataValue('durableUUID'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('_submission_time'),
   Code: dataValue('code'),
@@ -62,14 +63,14 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   EnactDecision: dataValue('enact_decision'),
   HeldAccountable: dataValue('held_accountable'),
   Diversity: dataValue('diversity'),
-  LastUpdate: dataValue('_submission_time'), //update to runtime now()
+  LastUpdate: new Date().toISOString(), 
 });
 
-upsert('WCSPROGRAMS_KoboData', 'DatasetUuid', {
-  DatasetId: dataValue('_id'),
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+  //AnswerId: dataValue('_id'),
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
-  DatasetUuid: dataValue('durableUUID'),
+  DatasetUuid: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
