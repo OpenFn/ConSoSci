@@ -26,7 +26,7 @@ alterState(state => {
       data: {
         ...cleanedSubmission,
         durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
-        datasetId = `${formName}-${_xform_id_string}`,
+        datasetId: `${formName}-${_xform_id_string}`,
         end: cleanedSubmission.end.slice(0, 10),
       },
     };
