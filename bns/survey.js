@@ -1,8 +1,8 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   try {
-    const { body } = state.data;
-    const { _submission_time, _id, _xform_id_string, formName } = body;
+    const { body, formName } = state.data;
+    const { _submission_time, _id, _xform_id_string } = body;
 
     let cleanedSubmission = {};
 
