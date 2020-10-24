@@ -45,7 +45,7 @@ sql({
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
-    Id: state.data.durableUUID, 
+    Id: state.data._id, 
     AnswerId: state.data._id,
     DatasetUuidId: state.data.datasetId,
     Surveyor: state.data.surveyor,
