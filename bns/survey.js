@@ -55,7 +55,7 @@ alterState(state => {
       .map(key => ({
         DatasetUuidId: state.data.datasetId, 
         AnswerId: state.data._id,
-        Id: state.data.durableUUID,
+        Id: state.data._id,
         LastUpdate: new Date().toISOString(), 
         Nr: key.substring(3),
         NrCollect: state.data[key],
@@ -68,7 +68,7 @@ alterState(state => {
         const item = key.substring(11, key.indexOf('/'));
         return {
           Dataset_id: state.data.datasetId, 
-          Id: state.data.durableUUID,
+          Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
           have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
@@ -122,9 +122,9 @@ sql({
 });
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
-  //DatasetUuidId: dataValue('datasetId'),
-  //Id: dataValue('durableUUID'),
-  AnswerId: dataValue('._id'), 
+  DatasetUuidId: dataValue('datasetId'),
+  Id: dataValue('_id'),
+  AnswerId: dataValue('_id'), 
   Head: dataValue('gender_head') ? '1' : '0',
   Gender: dataValue('gender_head'),
   Ethnicity: dataValue('ethnicity_head'),
@@ -139,7 +139,7 @@ alterState(state => {
     ) =>
       state.data.hh_members.map(member => ({
         DatasetUuidId: state.data.datasetId,
-        Id: state.data.durableUUID,
+        Id: state.data._id,
         AnswerId: state.data._id,
         Head: '0',
         Gender: member[`hh_members/gender`],
@@ -191,7 +191,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'), //Q: Add new column
   AnswerId: dataValue('_id'),
-  Id: dataValue('durableUUID'),
+  Id: dataValue('_id'),
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
