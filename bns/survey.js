@@ -68,7 +68,7 @@ alterState(state => {
         const item = key.substring(11, key.indexOf('/'));
         return {
           Dataset_id: state.data.datasetId, 
-          Id: state.data._id,
+          //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
           have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
