@@ -42,11 +42,11 @@ alterState(state => {
       // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb' }, // 
       // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT Lac Télé 2017', owner: 'wcs_lactele' }, // 
       // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical', name: 'NRGT Makira 2017', owner: 'wcs_mamabaie' }, // 
-       { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie'} // 
-      // { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical', name: 'NRGT Ndoki 2018', owner: 'wcs_ndoki' }, // 
-      // { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_survey', name: 'Price Makira 2017', owner: 'wcs_mamabaie' }, // 
-      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_survey', name: 'Price Makira 2019', owner: 'wcs_mamabaie' }, // 
-      // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_survey', name: 'Prices Crossriver 2017 ', owner: 'wcs_crossriver' }, // 
+      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie'} // fetched Oct25 ✓ 
+       { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical', name: 'NRGT Ndoki 2018', owner: 'wcs_ndoki' }, // 
+       { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_survey', name: 'Price Makira 2017', owner: 'wcs_mamabaie' }, // 
+       { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_survey', name: 'Price Makira 2019', owner: 'wcs_mamabaie' }, // 
+       { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_survey', name: 'Prices Crossriver 2017 ', owner: 'wcs_crossriver' }, // 
       // { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_survey', name: 'Prices MTKB 2017', owner: 'akirkby' }, // 
       // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // 
       // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_survey', name: 'Prix_BNS_Ankarea/Ankivony_2019', owner: 'wcs_soariake' }, // 
