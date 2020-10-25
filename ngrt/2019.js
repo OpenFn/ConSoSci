@@ -62,8 +62,8 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('_id'),
-  DatasetName: dataValue('formName'),
-  DatasetOwner: dataValue('formOwner'),
+  DatasetName: state.data.formName,
+  DatasetOwner: state.data.formOwner,
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
