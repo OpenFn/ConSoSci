@@ -42,7 +42,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
   DatasetUuidId: dataValue('datasetId'), 
-  Id: dataValue('durableUUID'),
+  Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
