@@ -90,7 +90,7 @@ each(
         if (-1 !== (index_begin | index_end)) {
           const group = questions.splice(index_begin, index_end - index_begin + 1);
           tables.push({
-            name: (formName + '_' + questions[index_begin].name).split(/\s|-/).join('_').toLowerCase(),
+            name: (formName + '_' + questions[index_begin].name).split(/\s|-|'/).join('_').toLowerCase(),
             columns: questionToType(group),
             formDef: group,
             group: 'repeat_group',
