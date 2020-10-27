@@ -32,8 +32,11 @@ alterState(state => {
       Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
       Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
     ) {
-      state.connection.close();
-      throw `Invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`;
+      console.log(
+        `WARNING: Discarding invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`
+      );
+      cleanedSubmission['gps/lat'] = null;
+      cleanedSubmission['gps/long'] = null;
     }
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
@@ -53,10 +56,10 @@ alterState(state => {
     state.nr = Object.keys(state.data)
       .filter(key => key.startsWith('nr/'))
       .map(key => ({
-        DatasetUuidId: state.data.datasetId, 
+        DatasetUuidId: state.data.datasetId,
         AnswerId: state.data._id,
         Id: state.data._id,
-        LastUpdate: new Date().toISOString(), 
+        LastUpdate: new Date().toISOString(),
         Nr: key.substring(3),
         NrCollect: state.data[key],
       }));
@@ -67,7 +70,7 @@ alterState(state => {
       .map(key => {
         const item = key.substring(11, key.indexOf('/'));
         return {
-          Dataset_id: state.data.datasetId, 
+          Dataset_id: state.data.datasetId,
           //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
@@ -124,12 +127,12 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
   DatasetUuidId: dataValue('datasetId'),
   Id: dataValue('_id'),
-  AnswerId: dataValue('_id'), 
+  AnswerId: dataValue('_id'),
   Head: dataValue('gender_head') ? '1' : '0',
   Gender: dataValue('gender_head'),
   Ethnicity: dataValue('ethnicity_head'),
   Birth: dataValue('birth_head'),
-  LastUpdate: new Date().toISOString()
+  LastUpdate: new Date().toISOString(),
 });
 
 alterState(state => {
@@ -167,7 +170,7 @@ alterState(state => {
 
   console.log('No natural resource found.');
   return state;
-}); 
+});
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
 // Maybe check result of previous op, then only delete if it was an update.
@@ -195,10 +198,11 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Geom: dataValue('_geolocation'),
   Lat: dataValue('gps/lat'),
   Long: dataValue('gps/long'),
-  LastUpdate: new Date().toISOString(), 
+  LastUpdate: new Date().toISOString(),
 });
 
-upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', { //renamed from DatasetUuid
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+  //renamed from DatasetUuid
   //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
