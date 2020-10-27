@@ -35,8 +35,8 @@ alterState(state => {
       console.log(
         `WARNING: Discarding invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`
       );
-      cleanedSubmission['gps/lat'] = null;
-      cleanedSubmission['gps/long'] = null;
+      delete cleanedSubmission['gps/lat'];
+      delete cleanedSubmission['gps/long'];
     }
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
