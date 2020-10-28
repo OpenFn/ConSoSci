@@ -80,17 +80,16 @@ each(
         var index_begin = -1;
         var index_end = -1;
 
-        questions.find((item, i) => {
-          if (item.type === 'begin_repeat') {
-            index_begin = i;
-          }
-          if (item.type === 'end_repeat') index_end = i;
-        });
+        index_begin = questions.lastIndexOf(questions.find(item => item.type === 'begin_repeat'));
+        index_end = questions.indexOf(questions.find(item => item.type === 'end_repeat'));
 
         if (-1 !== (index_begin | index_end)) {
           const group = questions.splice(index_begin, index_end - index_begin + 1);
           tables.push({
-            name: (formName + '_' + questions[index_begin].name).split(/\s|-|'/).join('_').toLowerCase(),
+            name: (formName + '_' + questions[index_begin].name)
+              .split(/\s|-|'/)
+              .join('_')
+              .toLowerCase(),
             columns: questionToType(group),
             formDef: group,
             group: 'repeat_group',
