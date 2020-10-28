@@ -1,4 +1,5 @@
 alterState(state => {
+  console.log(state.configuration);
   return { ...state, projectId: state.configuration.projectId };
 });
 
