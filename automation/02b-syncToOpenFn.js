@@ -1,5 +1,5 @@
 alterState(state => {
-  return { ...state, projectId: 1087 };
+  return { ...state, projectId: state.configuration.projectId };
 });
 
 each(
