@@ -3,15 +3,11 @@ each('$.forms[*]', state => {
     '$.data[*]',
     alterState(state => {
       const { name } = state.data;
-      if (state.data.columns.length !== 0) {
+      if (name !== 'untitled') {
         return describeTable(name)(state)
           .then(postgresColumn => {
             const { rows } = postgresColumn.table_data.body;
-            if (
-              postgresColumn.table_data.body.rowCount === 0 &&
-              name !== 'untitled' &&
-              state.data.columns.length !== 0
-            ) {
+            if (postgresColumn.table_data.body.rowCount === 0) {
               console.log('No matching table found in postgres --- Inserting.');
 
               const columns = state.data.columns.filter(x => x.name !== undefined);
