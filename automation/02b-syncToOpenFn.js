@@ -93,10 +93,9 @@ each(
   alterState(state => {
     const triggerNames = state.triggers.map(t => t.name);
 
-    const name = state.data[0].group === 'repeat_group' ? `auto/${state.data[1].name}` : `auto/${state.data[0].name}`;
+    const name = `auto/${state.data[state.data.length - 1].name}`;
 
-    const criteria =
-      state.data[0].group === 'repeat_group' ? state.data[1].triggerCriteria : state.data[0].triggerCriteria;
+    const criteria = state.data[state.data.length - 1].triggerCriteria;
 
     const triggerIndex = triggerNames.indexOf(name);
 
@@ -132,12 +131,12 @@ each(
 each(
   '$.forms[*]',
   alterState(state => {
-    const expression = state.data[0].group === 'repeat_group' ? state.data[1].expression : state.data[0].expression;
-
+    const expression = state.data[state.data.length - 1].expression;
+    console.log('Inserting / Updating job');
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
 
-    const name = state.data[0].group === 'repeat_group' ? `auto/${state.data[1].name}` : `auto/${state.data[0].name}`;
+    const name = `auto/${state.data[state.data.length - 1].name}`;
 
     const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
 
