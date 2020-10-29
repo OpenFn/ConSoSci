@@ -20,10 +20,26 @@ const questions = [
   { p: 15, type: 'end_repeat' },
 ];
 
+let depth = 0;
+
 for (let index = 0; index < questions.length; index++) {
-  const element = questions[index];
+  const q = questions[index];
+  switch (q.type) {
+    case 'begin_repeat':
+      depth++;
+      break;
+
+    case 'end_repeat':
+      depth--;
+      break;
+
+    default:
+      break;
+  }
+  questions[index] = { ...q, calculatedDepth: depth, parent: true };
 }
 
+console.log(depth);
 console.log(questions);
 
 function tablesFromQuestions(questions, formName, tables) {
