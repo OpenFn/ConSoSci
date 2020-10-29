@@ -29,8 +29,14 @@ each(
   // for each form that has been created/updated since the last run...
   dataPath('forms[*]'),
   // get the form definition...
-  state =>
-    get(`${state.data.url}`, {}, state => {
+  state => {
+    // if (
+    //   state.data.tag !==
+    //   'Copie_de_Questionnaire_conso-ménage_29092020 derniere version'
+    // ) {
+    //   return state;
+    // }
+    return get(`${state.data.url}`, {}, state => {
       const { survey } = state.data.content;
 
       // TODO: Decide which metadata field to include. ========================
@@ -85,11 +91,9 @@ each(
       }
 
       function tablesFromQuestions(questions, formName, tables) {
-        const backwards = [...questions].reverse();
-
-        const backwardsFirstBegin = backwards.findIndex(
-          item => item.type === 'begin_repeat'
-        );
+        const backwardsFirstBegin = questions
+          .reverse()
+          .findIndex(item => item.type === 'begin_repeat');
 
         const lastBegin =
           backwardsFirstBegin !== -1
@@ -99,11 +103,16 @@ each(
         if (lastBegin) {
           const firstEndAfterLastBegin =
             questions
+              .reverse()
               .slice(lastBegin)
               .findIndex(item => item.type === 'end_repeat') + lastBegin;
 
-          console.log('lastBegin', lastBegin);
-          console.log('firstEndAfterLastBegin', firstEndAfterLastBegin);
+          console.log('lastBegin', lastBegin, questions[lastBegin]);
+          console.log(
+            'firstEndAfterLastBegin',
+            firstEndAfterLastBegin,
+            questions[firstEndAfterLastBegin]
+          );
 
           // Remove the deepest repeat group from the 'questions' array, parse it
           // and push it to the 'tables' array, and call tablesFromQuestions with
@@ -113,7 +122,7 @@ each(
             firstEndAfterLastBegin - lastBegin + 1
           );
           tables.push({
-            name: (formName + '_' + questions[lastBegin].name)
+            name: (formName + '_' + group[0].name)
               .split(/\s|-|'/)
               .join('_')
               .toLowerCase(),
@@ -144,5 +153,6 @@ each(
         ...state,
         forms: [...state.forms, tables],
       };
-    })(state)
+    })(state);
+  }
 );
