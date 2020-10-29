@@ -58,6 +58,35 @@ each(
         'note',
       ];
 
+      function questionMutation(questions) {
+        let depth = 0;
+        let progenitor = {};
+        let path = [];
+
+        for (let index = 0; index < questions.length; index++) {
+          const q = questions[index];
+          switch (q.type) {
+            case 'begin_repeat':
+              depth++;
+              questions[index] = { ...q, depth, parent: progenitor.name, path };
+              //console.log(questions[index]);
+              //progenitor = q;
+              path.push(q.name);
+              break;
+
+            case 'end_repeat':
+              depth--;
+              var i = path.indexOf(q);
+              //progenitor = {};
+              path.splice(i, 1);
+              break;
+
+            default:
+              break;
+          }
+        }
+      }
+
       function questionToType(questions) {
         var form = questions.filter(elt => !discards.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -101,12 +130,12 @@ each(
               .slice(lastBegin)
               .findIndex(item => item.type === 'end_repeat') + lastBegin;
 
-          console.log('lastBegin', lastBegin, questions[lastBegin]);
+          /* console.log('lastBegin', lastBegin, questions[lastBegin]);
           console.log(
             'firstEndAfterLastBegin',
             firstEndAfterLastBegin,
             questions[firstEndAfterLastBegin]
-          );
+          ); */
 
           // console.log('lastBegin =', lastBegin, questions[lastBegin].name);
           // console.log(
@@ -154,6 +183,7 @@ each(
       }
 
       console.log('Form:', state.data.name);
+      questionMutation(survey);
       const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {

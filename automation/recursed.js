@@ -6,18 +6,22 @@ const questions = [
   { p: 4, type: 'begin_repeat', name: 'enfants', exp: 1 },
   { p: 5, type: 'age' },
   { p: 6, type: 'gender' },
-  { p: 7, type: 'begin_repeat', name: 'medicaments', exp: 2 },
+  { p: 7, type: 'end_repeat', name: 'medicaments', exp: 2 },
   { p: 8, type: 'generic_name' },
   { p: 9, type: 'dose' },
   { p: 10, type: 'begin_repeat', name: 'bad_reactions', exp: 3 },
   { p: 11, type: 'kind_of_reaction' },
   { p: 12, type: 'end_repeat' },
   { p: 13, type: 'lastTaken' },
-  { p: 14, type: 'end_repeat' },
-  { p: 15, type: 'end_repeat' },
-  { p: 1, type: 'begin_repeat', name: 'animaux', exp: 1 },
-  { p: 2, type: 'isCat' },
-  { p: 3, type: 'end_repeat' },
+  { p: 14, type: 'begin_repeat' },
+  { p: 15, type: 'begin_repeat' },
+  { p: 16, type: 'begin_repeat' },
+  { p: 17, type: 'end_repeat', name: 'animaux', exp: 1 },
+  { p: 18, type: 'isCat' },
+  { p: 19, type: 'end_repeat' },
+  { p: 20, type: 'end_repeat' },
+  { p: 21, type: 'begin_repeat' },
+  { p: 22, type: 'end_repeat' },
 ];
 
 let depth = 0;
@@ -29,16 +33,17 @@ for (let index = 0; index < questions.length; index++) {
   switch (q.type) {
     case 'begin_repeat':
       depth++;
-      questions[index] = { ...q, depth, parent: progenitor.name, path };
+      questions[index] = { ...q, depth, parent: progenitor.p, path };
       console.log(questions[index]);
       progenitor = q;
-      path.push(q.name);
+      path.push(q.p);
       break;
 
     case 'end_repeat':
       depth--;
       var i = path.indexOf(q);
       path.splice(i, 1);
+      progenitor = {};
       break;
 
     default:
