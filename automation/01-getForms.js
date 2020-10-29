@@ -29,14 +29,8 @@ each(
   // for each form that has been created/updated since the last run...
   dataPath('forms[*]'),
   // get the form definition...
-  state => {
-    // if (
-    //   state.data.tag !==
-    //   'Copie_de_Questionnaire_conso-ménage_29092020 derniere version'
-    // ) {
-    //   return state;
-    // }
-    return get(`${state.data.url}`, {}, state => {
+  state =>
+    get(`${state.data.url}`, {}, state => {
       const { survey } = state.data.content;
 
       // TODO: Decide which metadata field to include. ========================
@@ -114,13 +108,26 @@ each(
             questions[firstEndAfterLastBegin]
           );
 
+          // console.log('lastBegin =', lastBegin, questions[lastBegin].name);
+          // console.log(
+          //   'firstEndAfterLastBegin',
+          //   firstEndAfterLastBegin,
+          //   questions[firstEndAfterLastBegin].name
+          // );
+
           // Remove the deepest repeat group from the 'questions' array, parse it
           // and push it to the 'tables' array, and call tablesFromQuestions with
           // the remaining questions.
+
+          // console.log(questions);
           const group = questions.splice(
             lastBegin,
             firstEndAfterLastBegin - lastBegin + 1
           );
+          // console.log(group);
+          // console.log('group length', group.length);
+          // console.log('remaining questions', questions.length);
+
           tables.push({
             name: (formName + '_' + group[0].name)
               .split(/\s|-|'/)
@@ -153,6 +160,5 @@ each(
         ...state,
         forms: [...state.forms, tables],
       };
-    })(state);
-  }
+    })(state)
 );
