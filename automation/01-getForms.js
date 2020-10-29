@@ -3,7 +3,9 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // Set a manual cursor if you'd like to only fetch form after a certain date
   const manualCursor = '2019-05-25T14:32:43.325+01:00';
   state.data.forms = state.data.results
-    .filter(resource => resource.date_modified > (state.lastEnd || manualCursor))
+    .filter(
+      resource => resource.date_modified > (state.lastEnd || manualCursor)
+    )
     .map(form => {
       const url = form.url.split('?').join('?');
       return {
@@ -48,7 +50,13 @@ each(
         jsonb: 'jsonb',
       };
 
-      const discards = ['begin_group', 'begin_repeat', 'end_group', 'end_repeat', 'note'];
+      const discards = [
+        'begin_group',
+        'begin_repeat',
+        'end_group',
+        'end_repeat',
+        'note',
+      ];
 
       function questionToType(questions) {
         var form = questions.filter(elt => !discards.includes(elt.type));
@@ -77,16 +85,35 @@ each(
       }
 
       function tablesFromQuestions(questions, formName, tables) {
-        var index_begin = -1;
-        var index_end = -1;
+        const backwards = [...questions].reverse();
 
-        index_begin = questions.lastIndexOf(questions.find(item => item.type === 'begin_repeat'));
-        index_end = questions.indexOf(questions.find(item => item.type === 'end_repeat'));
+        const backwardsFirstBegin = backwards.findIndex(
+          item => item.type === 'begin_repeat'
+        );
 
-        if (-1 !== (index_begin | index_end)) {
-          const group = questions.splice(index_begin, index_end - index_begin + 1);
+        const lastBegin =
+          backwardsFirstBegin !== -1
+            ? questions.length - backwardsFirstBegin - 1
+            : false;
+
+        if (lastBegin) {
+          const firstEndAfterLastBegin =
+            questions
+              .slice(lastBegin)
+              .findIndex(item => item.type === 'end_repeat') + lastBegin;
+
+          console.log('lastBegin', lastBegin);
+          console.log('firstEndAfterLastBegin', firstEndAfterLastBegin);
+
+          // Remove the deepest repeat group from the 'questions' array, parse it
+          // and push it to the 'tables' array, and call tablesFromQuestions with
+          // the remaining questions.
+          const group = questions.splice(
+            lastBegin,
+            firstEndAfterLastBegin - lastBegin + 1
+          );
           tables.push({
-            name: (formName + '_' + questions[index_begin].name)
+            name: (formName + '_' + questions[lastBegin].name)
               .split(/\s|-|'/)
               .join('_')
               .toLowerCase(),
@@ -96,6 +123,7 @@ each(
           });
           return tablesFromQuestions(questions, formName, tables);
         }
+
         tables.push({
           name: formName
             .split(/\s|-|'/)
@@ -105,9 +133,11 @@ each(
           formDef: questions,
           group: 'parent',
         });
+
         return tables;
       }
 
+      console.log('Form:', state.data.name);
       const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {
