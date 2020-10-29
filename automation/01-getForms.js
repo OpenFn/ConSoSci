@@ -111,9 +111,7 @@ each(
       const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {
-        // ...state,
-        projectId: state.projectId,
-        lastEnd: state.lastEnd,
+        ...state,
         forms: [...state.forms, tables],
       };
     })(state)
