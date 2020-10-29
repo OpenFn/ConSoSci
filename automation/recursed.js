@@ -21,7 +21,6 @@ const questions = [
 ];
 
 let depth = 0;
-let progenitor = {};
 let path = [];
 
 for (let index = 0; index < questions.length; index++) {
@@ -29,9 +28,8 @@ for (let index = 0; index < questions.length; index++) {
   switch (q.type) {
     case 'begin_repeat':
       depth++;
-      questions[index] = { ...q, depth, parent: progenitor.name, path };
+      questions[index] = { ...q, depth, path };
       console.log(questions[index]);
-      progenitor = q;
       path.push(q.name);
       break;
 
