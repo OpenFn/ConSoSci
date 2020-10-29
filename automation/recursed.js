@@ -25,7 +25,6 @@ const questions = [
 ];
 
 let depth = 0;
-let progenitor = {};
 let path = [];
 
 for (let index = 0; index < questions.length; index++) {
