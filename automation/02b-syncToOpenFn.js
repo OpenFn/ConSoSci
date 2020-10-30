@@ -12,12 +12,22 @@ each(
     for (var i = 0; i < state.data.length; i++) {
       const { formDef, columns, name, group } = state.data[i];
       if (name !== 'untitled') {
-        const validTypes = ['float4', 'int4', 'text', 'varchar', 'varchar', 'date'];
+        const validTypes = [
+          'float4',
+          'int4',
+          'text',
+          'varchar',
+          'varchar',
+          'date',
+        ];
         var paths = [];
         var prefix = '';
         form_name = name;
         for (var j = 0; j < formDef.length; j++) {
-          if (formDef[j].type == 'begin_group' || formDef[j].type == 'begin_repeat') {
+          if (
+            formDef[j].type == 'begin_group' ||
+            formDef[j].type == 'begin_repeat'
+          ) {
             prefix += '/' + formDef[j].name;
           } else if (
             // if we have a 'end_group' or 'end_repeat',
@@ -40,6 +50,9 @@ each(
         for (var k = 0; k < columns.length - 1; k++) {
           mapKoboToPostgres[columns[k].name] = `dataValue('${paths[k]}')`;
         }
+
+        mapKoboToPostgres.payload = 'state.data';
+
         mapKoboToPostgres.generated_uuid = `state.data._id + '-' + state.data._xform_id_string`;
         group === 'repeat_group'
           ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
@@ -51,8 +64,11 @@ each(
         }
 
         expression +=
-          `upsert('${name}', 'generated_uuid', ${JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')});` +
-          '\n';
+          `upsert('${name}', 'generated_uuid', ${JSON.stringify(
+            mapKoboToPostgres,
+            null,
+            2
+          ).replace(/"/g, '')});` + '\n';
         state.data[i].expression = expression;
         state.data[i].triggerCriteria = { form: `${form_name}` };
       }
