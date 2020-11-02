@@ -6,6 +6,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     .filter(
       resource => resource.date_modified > (state.lastEnd || manualCursor)
     )
+    .filter(form => form.uid === 'aZv8deXKd8AqfSVGXCdHrX')
     .map(form => {
       const url = form.url.split('?').join('?');
       return {
@@ -60,31 +61,24 @@ each(
 
       function questionMutation(questions) {
         let depth = 0;
-        let progenitor = {};
         let path = [];
 
-        for (let index = 0; index < questions.length; index++) {
-          const q = questions[index];
-          switch (q.type) {
-            case 'begin_repeat':
-              depth++;
-              questions[index] = { ...q, depth, parent: progenitor.name, path };
-              //console.log(questions[index]);
-              //progenitor = q;
-              path.push(q.name);
-              break;
-
-            case 'end_repeat':
-              depth--;
-              var i = path.indexOf(q);
-              //progenitor = {};
-              path.splice(i, 1);
-              break;
-
-            default:
-              break;
+        const x = questions.map((q, i, arr) => {
+          if (q.type === 'begin_repeat') {
+            depth++;
+            path.push(q.name);
+          } else if (q.type === 'end_repeat') {
+            depth--;
+            path.pop();
           }
-        }
+
+          const newObj = { ...q, path, depth };
+          console.log(newObj);
+          return { ...newObj };
+        });
+
+        console.log(x);
+        return x;
       }
 
       function questionToType(questions) {
@@ -148,7 +142,6 @@ each(
           // and push it to the 'tables' array, and call tablesFromQuestions with
           // the remaining questions.
 
-          // console.log(questions);
           const group = questions.splice(
             lastBegin,
             firstEndAfterLastBegin - lastBegin + 1
@@ -182,8 +175,38 @@ each(
         return tables;
       }
 
-      console.log('Form:', state.data.name);
-      questionMutation(survey);
+      // console.log('Form:', state.data.name);
+      // console.log('before', survey);
+      // const newGuy = questionMutation(survey);
+      // console.log(
+      //   'deep stuff',
+      //   newGuy.map(q => ({ depth: q.depth, path: q.path }))
+      // );
+      let depth = 0;
+      let path = [];
+
+      for (let index = 0; index < survey.length; index++) {
+        const q = survey[index];
+        switch (q.type) {
+          case 'begin_repeat':
+            depth++;
+            survey[index] = { ...q, depth, path };
+            console.log(survey[index]);
+            path.push(q.p);
+            break;
+
+          case 'end_repeat':
+            depth--;
+            var i = path.indexOf(q);
+            path.splice(i, 1);
+            progenitor = {};
+            break;
+
+          default:
+            break;
+        }
+      }
+
       const tables = tablesFromQuestions(survey, state.data.name, []);
 
       return {

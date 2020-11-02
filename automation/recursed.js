@@ -25,32 +25,33 @@ const questions = [
 ];
 
 let depth = 0;
-let path = [];
 
 for (let index = 0; index < questions.length; index++) {
   const q = questions[index];
   switch (q.type) {
     case 'begin_repeat':
       depth++;
-      questions[index] = { ...q, depth, parent: progenitor.p, path };
-      console.log(questions[index]);
-      progenitor = q;
-      path.push(q.p);
+      questions[index] = {
+        ...q,
+        depth,
+        path: [...questions[index - 1].path, q.name],
+      };
       break;
 
     case 'end_repeat':
       depth--;
       var i = path.indexOf(q);
-      path.splice(i, 1);
+      path: [...questions[index - 1].path],
       progenitor = {};
       break;
 
     default:
+      path: [...questions[index - 1].path]
       break;
   }
 }
 
-// console.log(questions);
+console.log(questions);
 
 function tablesFromQuestions(questions, formName, tables) {
   const backwardsFirstBegin = questions
