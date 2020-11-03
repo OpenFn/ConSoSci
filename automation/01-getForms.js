@@ -59,28 +59,6 @@ each(
         'note',
       ];
 
-      function questionMutation(questions) {
-        let depth = 0;
-        let path = [];
-
-        const x = questions.map((q, i, arr) => {
-          if (q.type === 'begin_repeat') {
-            depth++;
-            path.push(q.name);
-          } else if (q.type === 'end_repeat') {
-            depth--;
-            path.pop();
-          }
-
-          const newObj = { ...q, path, depth };
-          console.log(newObj);
-          return { ...newObj };
-        });
-
-        console.log(x);
-        return x;
-      }
-
       function questionToType(questions) {
         var form = questions.filter(elt => !discards.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -124,41 +102,23 @@ each(
               .slice(lastBegin)
               .findIndex(item => item.type === 'end_repeat') + lastBegin;
 
-          /* console.log('lastBegin', lastBegin, questions[lastBegin]);
-          console.log(
-            'firstEndAfterLastBegin',
-            firstEndAfterLastBegin,
-            questions[firstEndAfterLastBegin]
-          ); */
-
-          // console.log('lastBegin =', lastBegin, questions[lastBegin].name);
-          // console.log(
-          //   'firstEndAfterLastBegin',
-          //   firstEndAfterLastBegin,
-          //   questions[firstEndAfterLastBegin].name
-          // );
-
           // Remove the deepest repeat group from the 'questions' array, parse it
           // and push it to the 'tables' array, and call tablesFromQuestions with
           // the remaining questions.
-
           const group = questions.splice(
             lastBegin,
             firstEndAfterLastBegin - lastBegin + 1
           );
-          // console.log(group);
-          // console.log('group length', group.length);
-          // console.log('remaining questions', questions.length);
 
           tables.push({
-            name: (formName + '_' + group[0].name)
+            name: (formName + '_' + group[0].path.join('_'))
               .split(/\s|-|'/)
               .join('_')
               .toLowerCase(),
             columns: questionToType(group),
-            formDef: group,
-            group: 'repeat_group',
+            depth: group[0].depth,
           });
+
           return tablesFromQuestions(questions, formName, tables);
         }
 
@@ -168,46 +128,45 @@ each(
             .join('_')
             .toLowerCase(),
           columns: questionToType(questions),
-          formDef: questions,
-          group: 'parent',
+          depth: 0,
         });
 
         return tables;
       }
 
-      // console.log('Form:', state.data.name);
-      // console.log('before', survey);
-      // const newGuy = questionMutation(survey);
-      // console.log(
-      //   'deep stuff',
-      //   newGuy.map(q => ({ depth: q.depth, path: q.path }))
-      // );
       let depth = 0;
-      let path = [];
 
-      for (let index = 0; index < survey.length; index++) {
-        const q = survey[index];
+      survey.forEach((q, i, arr) => {
         switch (q.type) {
           case 'begin_repeat':
             depth++;
-            survey[index] = { ...q, depth, path };
-            console.log(survey[index]);
-            path.push(q.p);
+            arr[i] = {
+              ...q,
+              depth,
+              path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+            };
             break;
 
           case 'end_repeat':
+            arr[i] = {
+              ...q,
+              depth,
+              path: i === 0 ? [] : [...arr[i - 1].path.slice(0, -1)],
+            };
             depth--;
-            var i = path.indexOf(q);
-            path.splice(i, 1);
-            progenitor = {};
             break;
 
           default:
+            arr[i] = {
+              ...q,
+              depth,
+              path: i === 0 ? [] : [...arr[i - 1].path],
+            };
             break;
         }
-      }
+      });
 
-      const tables = tablesFromQuestions(survey, state.data.name, []);
+      const tables = tablesFromQuestions(survey, state.data.name, []).reverse();
 
       return {
         ...state,
