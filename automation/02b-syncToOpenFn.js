@@ -2,23 +2,50 @@ alterState(state => {
   return { ...state, projectId: 1168 };
 });
 
+alterState(state => {
+  function addUUIDs(object, key, initialUuid) {
+    if (initialUuid) {
+      object[key] = initialUuid;
+    }
+
+    for (const property in object) {
+      if (Array.isArray(object[property])) {
+        object[property].forEach((thing, i, arr) => {
+          thing[key] = `${object[key]}-${i}`;
+          for (const property in thing) {
+            if (Array.isArray(thing[property])) {
+              addUUIDs(thing, key);
+            }
+          }
+        });
+      }
+    }
+  }
+  addUUIDs(
+    state.forms,
+    '__newUuid',
+    'state.data._id-state.data._xform_id_string'
+  );
+
+  return state;
+});
+
 each(
   '$.forms[*]',
   alterState(state => {
     var expression = '';
     var form_name = '';
-
     for (var i = 0; i < state.data.length; i++) {
-      const { columns, name, depth } = state.data[i];
+      const { columns, name, depth, __newUuid } = state.data[i];
       if (name !== 'untitled') {
         var paths = [];
         form_name = name;
         for (var j = 0; j < columns.length; j++) {
-          if (columns[j].path) {
-            paths.push(columns[j].path.join('/') + '/' + columns[j].name);
-          } else {
-            paths.push('/' + columns[j].name);
-          }
+          paths.push(
+            (columns[j].path ? columns[j].path.join('/') : '') +
+              '/' +
+              columns[j].name
+          );
         }
 
         var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
@@ -29,10 +56,7 @@ each(
 
         mapKoboToPostgres.payload = 'state.data';
 
-        mapKoboToPostgres.generated_uuid = `state.data._id + '-' + state.data._xform_id_string`;
-        depth > 0
-          ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
-          : mapKoboToPostgres.generated_uuid;
+        mapKoboToPostgres.generated_uuid = __newUuid; // This is the Uuid of the current table in form[]
 
         let mapping = '';
         if (columns[0].depth > 0) {
@@ -73,6 +97,7 @@ alterState(state => {
   )(state);
 });
 
+/* 
 alterState(state => {
   return request(
     {
@@ -156,3 +181,4 @@ each(
     })(state);
   })
 );
+ */
