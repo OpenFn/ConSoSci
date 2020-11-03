@@ -7,41 +7,17 @@ each(
   alterState(state => {
     var expression = '';
     var form_name = '';
-    const expressions = [];
 
     for (var i = 0; i < state.data.length; i++) {
-      const { formDef, columns, name, group } = state.data[i];
+      const { columns, name, depth } = state.data[i];
       if (name !== 'untitled') {
-        const validTypes = [
-          'float4',
-          'int4',
-          'text',
-          'varchar',
-          'varchar',
-          'date',
-        ];
         var paths = [];
-        var prefix = '';
         form_name = name;
-        for (var j = 0; j < formDef.length; j++) {
-          if (
-            formDef[j].type == 'begin_group' ||
-            formDef[j].type == 'begin_repeat'
-          ) {
-            prefix += '/' + formDef[j].name;
-          } else if (
-            // if we have a 'end_group' or 'end_repeat',
-            //it means we must close a group = removing last element of prefix
-            formDef[j].type == 'end_group' ||
-            formDef[j].type == 'end_repeat'
-          ) {
-            const prefixes = prefix.split('/');
-            prefixes.splice(prefixes.length - 1);
-            prefix = prefixes.join('/');
+        for (var j = 0; j < columns.length; j++) {
+          if (columns[j].path) {
+            paths.push(columns[j].path.join('/') + '/' + columns[j].name);
           } else {
-            // if none of those cases are met, it means we have potentially a column then we must add it to the path.
-            if (formDef[j].name && validTypes.includes(formDef[j].type))
-              paths.push(prefix + '/' + formDef[j].name + '/');
+            paths.push('/' + columns[j].name);
           }
         }
 
@@ -54,17 +30,14 @@ each(
         mapKoboToPostgres.payload = 'state.data';
 
         mapKoboToPostgres.generated_uuid = `state.data._id + '-' + state.data._xform_id_string`;
-        group === 'repeat_group'
+        depth > 0
           ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
           : mapKoboToPostgres.generated_uuid;
 
-        if (group === 'repeat_group') {
-          const delete_expression = `sql({ query: state => 'DELETE FROM ${name} where generated_uuid = ${mapKoboToPostgres.generated_uuid}' });`;
-          expression += delete_expression + '\n';
-        }
+        const operation = depth > 0 ? `upsertMany` : `upsert`;
 
         expression +=
-          `upsert('${name}', 'generated_uuid', ${JSON.stringify(
+          `${operation}('${name}', 'generated_uuid', ${JSON.stringify(
             mapKoboToPostgres,
             null,
             2
