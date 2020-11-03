@@ -34,14 +34,23 @@ each(
           ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
           : mapKoboToPostgres.generated_uuid;
 
+        let mapping = '';
+        if (columns[0].depth > 0) {
+          mapping = `state => state.data.${
+            columns[0].path[columns[0].depth - 1]
+          }.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}))`;
+        }
         const operation = depth > 0 ? `upsertMany` : `upsert`;
 
         expression +=
-          `${operation}('${name}', 'generated_uuid', ${JSON.stringify(
-            mapKoboToPostgres,
-            null,
-            2
-          ).replace(/"/g, '')});` + '\n';
+          `${operation}('${name}', 'generated_uuid', ${
+            depth > 0
+              ? mapping
+              : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
+          });` + '\n';
         state.data[i].expression = expression;
         state.data[i].triggerCriteria = { form: `${form_name}` };
       }
