@@ -3,25 +3,21 @@ const tables = [];
 
 const questions = [
   { p: 0, type: 'surveyDate' },
-  { p: 4, type: 'begin_repeat', name: 'enfants', exp: 1 },
-  { p: 5, type: 'age' },
-  { p: 6, type: 'gender' },
-  { p: 7, type: 'end_repeat', name: 'medicaments', exp: 2 },
-  { p: 8, type: 'generic_name' },
-  { p: 9, type: 'dose' },
-  { p: 10, type: 'begin_repeat', name: 'bad_reactions', exp: 3 },
-  { p: 11, type: 'kind_of_reaction' },
-  { p: 12, type: 'end_repeat' },
-  { p: 13, type: 'lastTaken' },
-  { p: 14, type: 'begin_repeat' },
-  { p: 15, type: 'begin_repeat' },
-  { p: 16, type: 'begin_repeat' },
-  { p: 17, type: 'end_repeat', name: 'animaux', exp: 1 },
-  { p: 18, type: 'isCat' },
-  { p: 19, type: 'end_repeat' },
-  { p: 20, type: 'end_repeat' },
-  { p: 21, type: 'begin_repeat' },
-  { p: 22, type: 'end_repeat' },
+  { p: 1, type: 'begin_repeat', name: 'enfants', exp: 1 },
+  { p: 2, type: 'age' },
+  { p: 3, type: 'gender' },
+  { p: 4, type: 'begin_repeat', name: 'medicaments', exp: 2 },
+  { p: 5, type: 'generic_name' },
+  { p: 6, type: 'dose' },
+  { p: 7, type: 'begin_repeat', name: 'bad_reactions', exp: 3 },
+  { p: 8, type: 'kind_of_reaction' },
+  { p: 9, type: 'end_repeat', name: 'bad_reactions' },
+  { p: 10, type: 'lastTaken' },
+  { p: 11, type: 'end_repeat', name: 'medicaments' },
+  { p: 12, type: 'end_repeat', name: 'enfants' },
+  { p: 13, type: 'begin_repeat', name: 'animaux' },
+  { p: 14, type: 'isCat' },
+  { p: 15, type: 'end_repeat', name: 'animaux'},
 ];
 
 let depth = 0;
@@ -34,19 +30,26 @@ for (let index = 0; index < questions.length; index++) {
       questions[index] = {
         ...q,
         depth,
-        path: [...questions[index - 1].path, q.name],
+        path: index === 0 ? [] : [...questions[index - 1].path, q.name],
       };
       break;
 
     case 'end_repeat':
       depth--;
-      var i = path.indexOf(q);
-      path: [...questions[index - 1].path],
-      progenitor = {};
+      console.log('slice', questions[index - 1].path.slice(0, -1));
+      questions[index] = {
+        ...q,
+        depth,
+        path: index === 0 ? [] : [...questions[index - 1].path.slice(0, -1)],
+      };
       break;
 
     default:
-      path: [...questions[index - 1].path]
+      questions[index] = {
+        ...q,
+        depth,
+        path: index === 0 ? [] : [...questions[index - 1].path],
+      };
       break;
   }
 }
