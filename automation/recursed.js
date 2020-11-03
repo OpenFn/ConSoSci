@@ -17,42 +17,73 @@ const questions = [
   { p: 12, type: 'end_repeat', name: 'enfants' },
   { p: 13, type: 'begin_repeat', name: 'animaux' },
   { p: 14, type: 'isCat' },
-  { p: 15, type: 'end_repeat', name: 'animaux'},
+  { p: 15, type: 'end_repeat', name: 'animaux' },
 ];
 
 let depth = 0;
 
-for (let index = 0; index < questions.length; index++) {
-  const q = questions[index];
+questions.forEach((q, i, arr) => {
   switch (q.type) {
     case 'begin_repeat':
       depth++;
-      questions[index] = {
+      arr[i] = {
         ...q,
         depth,
-        path: index === 0 ? [] : [...questions[index - 1].path, q.name],
+        path: i === 0 ? [] : [...arr[i - 1].path, q.name],
       };
       break;
 
     case 'end_repeat':
       depth--;
-      console.log('slice', questions[index - 1].path.slice(0, -1));
-      questions[index] = {
+      console.log('slice', arr[i - 1].path.slice(0, -1));
+      arr[i] = {
         ...q,
         depth,
-        path: index === 0 ? [] : [...questions[index - 1].path.slice(0, -1)],
+        path: i === 0 ? [] : [...arr[i - 1].path.slice(0, -1)],
       };
       break;
 
     default:
-      questions[index] = {
+      arr[i] = {
         ...q,
         depth,
-        path: index === 0 ? [] : [...questions[index - 1].path],
+        path: i === 0 ? [] : [...arr[i - 1].path],
       };
       break;
   }
-}
+});
+
+// for (let index = 0; index < questions.length; index++) {
+//   const q = questions[index];
+//   switch (q.type) {
+//     case 'begin_repeat':
+//       depth++;
+//       questions[index] = {
+//         ...q,
+//         depth,
+//         path: index === 0 ? [] : [...questions[index - 1].path, q.name],
+//       };
+//       break;
+
+//     case 'end_repeat':
+//       depth--;
+//       console.log('slice', questions[index - 1].path.slice(0, -1));
+//       questions[index] = {
+//         ...q,
+//         depth,
+//         path: index === 0 ? [] : [...questions[index - 1].path.slice(0, -1)],
+//       };
+//       break;
+
+//     default:
+//       questions[index] = {
+//         ...q,
+//         depth,
+//         path: index === 0 ? [] : [...questions[index - 1].path],
+//       };
+//       break;
+//   }
+// }
 
 console.log(questions);
 
