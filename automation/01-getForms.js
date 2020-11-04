@@ -137,18 +137,44 @@ each(
           return tablesFromQuestions(questions, formName, tables);
         }
 
-        tables.push({
-          name:
-            'WCS__FormGroup_' +
-            toCamelCase(
-              formName
-                .split(/\s|-|'/)
-                .join('_')
-                .toLowerCase()
-            ),
-          columns: questionToType(questions),
-          depth: 0,
-        });
+        tables.push(
+          {
+            name:
+              'WCS__FormGroup_' +
+              toCamelCase(
+                formName
+                  .split(/\s|-|'/)
+                  .join('_')
+                  .toLowerCase()
+              ),
+            columns: questionToType(questions),
+            depth: 0,
+          },
+          {
+            name: 'WCS__KoboDataset',
+            columns: [
+              {
+                name: 'FormName',
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: 'DatasetId',
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: 'LastUpdated',
+                type: 'date',
+                depth: 0,
+                path: [],
+              },
+            ],
+            depth: 0,
+          }
+        );
 
         return tables;
       }
