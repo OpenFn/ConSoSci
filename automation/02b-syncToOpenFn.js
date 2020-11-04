@@ -42,16 +42,22 @@ each(
         form_name = name;
         for (var j = 0; j < columns.length; j++) {
           paths.push(
-            (columns[j].path ? columns[j].path.join('/') : '') +
-              '/' +
+            (columns[j].path ? columns[j].path.join('/') + '/' : '') +
               columns[j].name
           );
         }
 
         var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
+        // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length - 1; k++) {
-          mapKoboToPostgres[columns[k].name] = `dataValue('${paths[k]}')`;
+          if (columns[k].depth > 0)
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+          else
+            mapKoboToPostgres[columns[k].name] = `state.data.${paths[k].replace(
+              '/',
+              ''
+            )}`;
         }
 
         mapKoboToPostgres.payload = 'state.data';
@@ -60,15 +66,16 @@ each(
 
         let mapping = '';
         if (columns[0].depth > 0) {
-          mapping = `state => state.data.${
-            columns[0].path[columns[0].depth - 1]
-          }.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+          mapping = `state => state.data.${columns[0].path.join(
+            '.'
+          )}.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
             /"/g,
             ''
           )}))`;
         }
-        const operation = depth > 0 ? `upsertMany` : `upsert`;
+        // END OF BUILDING MAPPINGS
 
+        const operation = depth > 0 ? `upsertMany` : `upsert`;
         expression +=
           `${operation}('${name}', 'generated_uuid', ${
             depth > 0
@@ -97,7 +104,6 @@ alterState(state => {
   )(state);
 });
 
-/* 
 alterState(state => {
   return request(
     {
@@ -181,4 +187,3 @@ each(
     })(state);
   })
 );
- */
