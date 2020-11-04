@@ -9,12 +9,14 @@ alterState(state => {
     }
 
     for (const property in object) {
-      if (Array.isArray(object[property])) {
+      if (Array.isArray(object[property]) && object !== null) {
         object[property].forEach((thing, i, arr) => {
-          thing[key] = `${object[key]}-${i}`;
-          for (const property in thing) {
-            if (Array.isArray(thing[property])) {
-              addUUIDs(thing, key);
+          if (thing !== null) {
+            thing[key] = `${object[key]}-${i}`;
+            for (const property in thing) {
+              if (Array.isArray(thing[property])) {
+                addUUIDs(thing, key);
+              }
             }
           }
         });
@@ -36,17 +38,17 @@ each(
     var expression = '';
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
-      const { columns, name, depth, __newUuid } = state.data[i];
-      if (name !== 'untitled') {
+      const { columns, name, formName, depth, __newUuid } = state.data[i];
+      if (name !== 'WCS__FormGroup_Untitled') {
         var paths = [];
         form_name = name;
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
           if (name === 'WCS__KoboDataset') {
             const values = {
-              FormName: `'${state.references[1].tag}'`,
+              FormName: `'${formName}'`,
               DatasetId: 'state.data._xform_id_string',
-              LastUpdated: Date.now(),
+              LastUpdated: 'Date.now()',
             };
 
             for (x in values) paths.push(values[x]);
@@ -98,7 +100,6 @@ each(
         state.data[i].triggerCriteria = { form: `${form_name}` };
       }
     }
-
     return state;
   })
 );
@@ -134,9 +135,9 @@ each(
   alterState(state => {
     const triggerNames = state.triggers.map(t => t.name);
 
-    const name = `auto/${state.data[state.data.length - 1].name}`;
+    const name = `auto/${state.data[1].name}`;
 
-    const criteria = state.data[state.data.length - 1].triggerCriteria;
+    const criteria = state.data[1].triggerCriteria;
 
     const triggerIndex = triggerNames.indexOf(name);
 
@@ -146,7 +147,6 @@ each(
       type: 'message',
       criteria,
     };
-
     if (triggerIndex === -1) {
       console.log('Inserting triggers.');
       return request(
@@ -164,7 +164,6 @@ each(
     } else {
       console.log('Trigger already existing.');
     }
-
     return state;
   })
 );
@@ -176,11 +175,8 @@ each(
     console.log('Inserting / Updating job');
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
-
-    const name = `auto/${state.data[state.data.length - 1].name}`;
-
+    const name = `auto/${state.data[1].name}`;
     const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-
     const triggerIndex = triggersName.indexOf(name);
     const triggerId = state.triggers[triggerIndex].id;
 
@@ -193,7 +189,6 @@ each(
     };
     const method = jobIndex !== -1 ? 'put' : 'post';
     const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
-
     return request({ method, path, data: { job } }, state => {
       return state;
     })(state);
