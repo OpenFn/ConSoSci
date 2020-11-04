@@ -6,7 +6,6 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     .filter(
       resource => resource.date_modified > (state.lastEnd || manualCursor)
     )
-    .filter(form => form.uid === 'aZv8deXKd8AqfSVGXCdHrX')
     .map(form => {
       const url = form.url.split('?').join('?');
       return {
@@ -61,7 +60,7 @@ each(
 
       // Camelize columns and table name
       function toCamelCase(str) {
-        const words = str.split('_'); // we split using '_'. With regex we would use: "match(/[a-z]+/gi)"
+        const words = str.match(/[a-z]+/gi); // we split using split('_')."
         if (!words) return '';
         return words
           .map(word => {
@@ -74,6 +73,7 @@ each(
         var form = questions.filter(elt => !discards.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
         form.forEach(obj => {
+          // At some point we might need a list of 'question' that should be renamed, and their new values.
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
           }
@@ -81,11 +81,21 @@ each(
             // end is reserved in postgresql
             obj.name = 'end_date';
           }
+          if (obj.name == 'column') {
+            // end is reserved in postgresql
+            obj.name = 'column_name';
+          }
+          if (obj.name == 'date') {
+            // end is reserved in postgresql
+            obj.name = 'date_value';
+          }
         });
         form = form
           .map(x => {
             if (x.name !== undefined) {
-              x.name = toCamelCase(x.name.split(/-/).join('_'));
+              x.name = /^\d+$/.test(x.name.charAt(1))
+                ? `_${toCamelCase(x.name.split(/-/).join('_'))}`
+                : toCamelCase(x.name.split(/-/).join('_'));
             }
             return x;
           })
@@ -128,9 +138,10 @@ each(
                 (formName + '_' + group[0].path.join('_'))
                   .split(/\s|-|'/)
                   .join('_')
-                  .toLowerCase()
+                  .replace('.', '')
               ),
             columns: questionToType(group),
+            formName,
             depth: group[0].depth,
           });
 
@@ -145,9 +156,10 @@ each(
                 formName
                   .split(/\s|-|'/)
                   .join('_')
-                  .toLowerCase()
+                  .replace('.', '')
               ),
             columns: questionToType(questions),
+            formName,
             depth: 0,
           },
           {
@@ -172,6 +184,7 @@ each(
                 path: [],
               },
             ],
+            formName,
             depth: 0,
           }
         );
