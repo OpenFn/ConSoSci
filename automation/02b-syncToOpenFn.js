@@ -33,17 +33,6 @@ alterState(state => {
 each(
   '$.forms[*]',
   alterState(state => {
-    // Camelize columns and table name
-    function toCamelCase(str) {
-      const words = str.split('_'); // we split using '_'. With regex we would use: "match(/[a-z]+/gi)"
-      if (!words) return '';
-      return words
-        .map(word => {
-          return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-        })
-        .join('');
-    }
-
     var expression = '';
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
@@ -54,7 +43,7 @@ each(
         for (var j = 0; j < columns.length; j++) {
           paths.push(
             (columns[j].path ? columns[j].path.join('/') + '/' : '') +
-              columns[j].name
+              columns[j].$autoname
           );
         }
 
@@ -63,13 +52,12 @@ each(
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length - 1; k++) {
           if (columns[k].depth > 0)
-            mapKoboToPostgres[
-              toCamelCase(columns[k].name)
-            ] = `x['${paths[k]}']`;
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else
-            mapKoboToPostgres[
-              toCamelCase(columns[k].name)
-            ] = `state.data.${paths[k].replace('/', '')}`;
+            mapKoboToPostgres[columns[k].name] = `state.data.${paths[k].replace(
+              '/',
+              ''
+            )}`;
         }
 
         mapKoboToPostgres.Payload = 'state.data';
@@ -89,9 +77,7 @@ each(
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         expression +=
-          `${operation}('WCS__FormGroup_${toCamelCase(
-            name.replace('é', 'e')
-          )}', 'GeneratedUuid', ${
+          `${operation}('${name}', 'GeneratedUuid', ${
             depth > 0
               ? mapping
               : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
