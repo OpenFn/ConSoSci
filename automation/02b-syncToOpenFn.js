@@ -2,73 +2,86 @@ alterState(state => {
   return { ...state, projectId: 1168 };
 });
 
+alterState(state => {
+  function addUUIDs(object, key, initialUuid) {
+    if (initialUuid) {
+      object[key] = initialUuid;
+    }
+
+    for (const property in object) {
+      if (Array.isArray(object[property])) {
+        object[property].forEach((thing, i, arr) => {
+          thing[key] = `${object[key]}-${i}`;
+          for (const property in thing) {
+            if (Array.isArray(thing[property])) {
+              addUUIDs(thing, key);
+            }
+          }
+        });
+      }
+    }
+  }
+  addUUIDs(
+    state.forms,
+    '__newUuid',
+    'state.data._id-state.data._xform_id_string'
+  );
+
+  return state;
+});
+
 each(
   '$.forms[*]',
   alterState(state => {
     var expression = '';
     var form_name = '';
-    const expressions = [];
-
     for (var i = 0; i < state.data.length; i++) {
-      const { formDef, columns, name, group } = state.data[i];
+      const { columns, name, depth, __newUuid } = state.data[i];
       if (name !== 'untitled') {
-        const validTypes = [
-          'float4',
-          'int4',
-          'text',
-          'varchar',
-          'varchar',
-          'date',
-        ];
         var paths = [];
-        var prefix = '';
         form_name = name;
-        for (var j = 0; j < formDef.length; j++) {
-          if (
-            formDef[j].type == 'begin_group' ||
-            formDef[j].type == 'begin_repeat'
-          ) {
-            prefix += '/' + formDef[j].name;
-          } else if (
-            // if we have a 'end_group' or 'end_repeat',
-            //it means we must close a group = removing last element of prefix
-            formDef[j].type == 'end_group' ||
-            formDef[j].type == 'end_repeat'
-          ) {
-            const prefixes = prefix.split('/');
-            prefixes.splice(prefixes.length - 1);
-            prefix = prefixes.join('/');
-          } else {
-            // if none of those cases are met, it means we have potentially a column then we must add it to the path.
-            if (formDef[j].name && validTypes.includes(formDef[j].type))
-              paths.push(prefix + '/' + formDef[j].name + '/');
-          }
+        for (var j = 0; j < columns.length; j++) {
+          paths.push(
+            (columns[j].path ? columns[j].path.join('/') + '/' : '') +
+              columns[j].name
+          );
         }
 
         var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
+        // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length - 1; k++) {
-          mapKoboToPostgres[columns[k].name] = `dataValue('${paths[k]}')`;
+          if (columns[k].depth > 0)
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+          else
+            mapKoboToPostgres[columns[k].name] = `state.data.${paths[k].replace(
+              '/',
+              ''
+            )}`;
         }
 
         mapKoboToPostgres.payload = 'state.data';
 
-        mapKoboToPostgres.generated_uuid = `state.data._id + '-' + state.data._xform_id_string`;
-        group === 'repeat_group'
-          ? (mapKoboToPostgres.generated_uuid += '-' + (i + 1))
-          : mapKoboToPostgres.generated_uuid;
+        mapKoboToPostgres.generated_uuid = __newUuid; // This is the Uuid of the current table in form[]
 
-        if (group === 'repeat_group') {
-          const delete_expression = `sql({ query: state => 'DELETE FROM ${name} where generated_uuid = ${mapKoboToPostgres.generated_uuid}' });`;
-          expression += delete_expression + '\n';
+        let mapping = '';
+        if (columns[0].depth > 0) {
+          mapping = `state => state.data.${columns[0].path.join(
+            '.'
+          )}.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}))`;
         }
+        // END OF BUILDING MAPPINGS
 
+        const operation = depth > 0 ? `upsertMany` : `upsert`;
         expression +=
-          `upsert('${name}', 'generated_uuid', ${JSON.stringify(
-            mapKoboToPostgres,
-            null,
-            2
-          ).replace(/"/g, '')});` + '\n';
+          `${operation}('${name}', 'generated_uuid', ${
+            depth > 0
+              ? mapping
+              : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
+          });` + '\n';
         state.data[i].expression = expression;
         state.data[i].triggerCriteria = { form: `${form_name}` };
       }
