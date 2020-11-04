@@ -38,16 +38,18 @@ each(
       // ======================================================================
 
       const mapType = {
-        calculate: 'varchar',
+        calculate: 'nvarchar',
         date: 'date',
         decimal: 'float4',
         end: 'date',
         integer: 'int4',
-        select_one: 'varchar',
+        select_one: 'nvarchar',
         start: 'date',
         text: 'text',
         today: 'date',
         jsonb: 'jsonb',
+        select_multiple: 'text',
+        geopoint: 'text',
       };
 
       const discards = [
