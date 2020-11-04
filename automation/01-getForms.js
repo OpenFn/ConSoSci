@@ -60,7 +60,7 @@ each(
 
       // Camelize columns and table name
       function toCamelCase(str) {
-        const words = str.match(/[a-z]+/gi); // we split using split('_')."
+        const words = str.match(/[0-9a-z]+/gi); // we split using split('_')."
         if (!words) return '';
         return words
           .map(word => {
@@ -92,7 +92,7 @@ each(
         });
         form = form
           .map(x => {
-            if (x.name !== undefined) {
+            if (x && x.name) {
               x.name = /^\d+$/.test(x.name.charAt(1))
                 ? `_${toCamelCase(x.name.split(/-/).join('_'))}`
                 : toCamelCase(x.name.split(/-/).join('_'));
