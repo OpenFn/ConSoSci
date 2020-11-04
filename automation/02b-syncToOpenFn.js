@@ -33,6 +33,17 @@ alterState(state => {
 each(
   '$.forms[*]',
   alterState(state => {
+    // Camelize columns and table name
+    function toCamelCase(str) {
+      const words = str.split('_'); // we split using '_'. With regex we would use: "match(/[a-z]+/gi)"
+      if (!words) return '';
+      return words
+        .map(word => {
+          return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+        })
+        .join('');
+    }
+
     var expression = '';
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
@@ -52,17 +63,18 @@ each(
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length - 1; k++) {
           if (columns[k].depth > 0)
-            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+            mapKoboToPostgres[
+              toCamelCase(columns[k].name)
+            ] = `x['${paths[k]}']`;
           else
-            mapKoboToPostgres[columns[k].name] = `state.data.${paths[k].replace(
-              '/',
-              ''
-            )}`;
+            mapKoboToPostgres[
+              toCamelCase(columns[k].name)
+            ] = `state.data.${paths[k].replace('/', '')}`;
         }
 
-        mapKoboToPostgres.payload = 'state.data';
+        mapKoboToPostgres.Payload = 'state.data';
 
-        mapKoboToPostgres.generated_uuid = __newUuid; // This is the Uuid of the current table in form[]
+        mapKoboToPostgres.GeneratedUuid = __newUuid; // This is the Uuid of the current table in form[]
 
         let mapping = '';
         if (columns[0].depth > 0) {
@@ -77,7 +89,9 @@ each(
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         expression +=
-          `${operation}('${name}', 'generated_uuid', ${
+          `${operation}('WCS__FormGroup_${toCamelCase(
+            name.replace('é', 'e')
+          )}', 'GeneratedUuid', ${
             depth > 0
               ? mapping
               : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
