@@ -41,6 +41,18 @@ each(
         var paths = [];
         form_name = name;
         for (var j = 0; j < columns.length; j++) {
+          // Handling master parent table
+          if (name === 'WCS__KoboDataset') {
+            const values = {
+              FormName: `'${state.references[1].tag}'`,
+              DatasetId: 'state.data._xform_id_string',
+              LastUpdated: Date.now(),
+            };
+
+            for (x in values) paths.push(values[x]);
+            break;
+          }
+          // end of master parent table
           paths.push(
             (columns[j].path ? columns[j].path.join('/') + '/' : '') +
               columns[j].$autoname
@@ -54,10 +66,10 @@ each(
           if (columns[k].depth > 0)
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else
-            mapKoboToPostgres[columns[k].name] = `state.data.${paths[k].replace(
-              '/',
-              ''
-            )}`;
+            mapKoboToPostgres[columns[k].name] =
+              name !== 'WCS__KoboDataset'
+                ? `state.data.${paths[k].replace('/', '')}`
+                : `${paths[k]}`;
         }
 
         mapKoboToPostgres.Payload = 'state.data';
