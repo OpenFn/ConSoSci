@@ -59,6 +59,17 @@ each(
         'note',
       ];
 
+      // Camelize columns and table name
+      function toCamelCase(str) {
+        const words = str.split('_'); // we split using '_'. With regex we would use: "match(/[a-z]+/gi)"
+        if (!words) return '';
+        return words
+          .map(word => {
+            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+          })
+          .join('');
+      }
+
       function questionToType(questions) {
         var form = questions.filter(elt => !discards.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -74,13 +85,13 @@ each(
         form = form
           .map(x => {
             if (x.name !== undefined) {
-              x.name = x.name.split(/-/).join('_');
+              x.name = toCamelCase(x.name.split(/-/).join('_'));
             }
             return x;
           })
           .filter(x => x.name !== undefined);
         // Adding a column as jsonb to take the whole payload
-        form.push({ name: 'payload', type: 'jsonb' });
+        form.push({ name: 'Payload', type: 'jsonb' });
 
         return form;
       }
@@ -111,10 +122,14 @@ each(
           );
 
           tables.push({
-            name: (formName + '_' + group[0].path.join('_'))
-              .split(/\s|-|'/)
-              .join('_')
-              .toLowerCase(),
+            name:
+              'WCS__FormGroup_' +
+              toCamelCase(
+                (formName + '_' + group[0].path.join('_'))
+                  .split(/\s|-|'/)
+                  .join('_')
+                  .toLowerCase()
+              ),
             columns: questionToType(group),
             depth: group[0].depth,
           });
@@ -123,10 +138,14 @@ each(
         }
 
         tables.push({
-          name: formName
-            .split(/\s|-|'/)
-            .join('_')
-            .toLowerCase(),
+          name:
+            'WCS__FormGroup_' +
+            toCamelCase(
+              formName
+                .split(/\s|-|'/)
+                .join('_')
+                .toLowerCase()
+            ),
           columns: questionToType(questions),
           depth: 0,
         });
