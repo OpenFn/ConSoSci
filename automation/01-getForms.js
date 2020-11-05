@@ -6,7 +6,6 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     .filter(
       resource => resource.date_modified > (state.lastEnd || manualCursor)
     )
-    .filter(form => form.uid === 'aZv8deXKd8AqfSVGXCdHrX')
     .map(form => {
       const url = form.url.split('?').join('?');
       return {
@@ -39,16 +38,18 @@ each(
       // ======================================================================
 
       const mapType = {
-        calculate: 'varchar',
+        calculate: 'nvarchar',
         date: 'date',
         decimal: 'float4',
         end: 'date',
         integer: 'int4',
-        select_one: 'varchar',
+        select_one: 'nvarchar',
         start: 'date',
         text: 'text',
         today: 'date',
         jsonb: 'jsonb',
+        select_multiple: 'text',
+        geopoint: 'text',
       };
 
       const discards = [
@@ -59,10 +60,22 @@ each(
         'note',
       ];
 
+      // Camelize columns and table name
+      function toCamelCase(str) {
+        const words = str.match(/[0-9a-z]+/gi); // we split using split('_')."
+        if (!words) return '';
+        return words
+          .map(word => {
+            return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+          })
+          .join('');
+      }
+
       function questionToType(questions) {
         var form = questions.filter(elt => !discards.includes(elt.type));
         form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
         form.forEach(obj => {
+          // At some point we might need a list of 'question' that should be renamed, and their new values.
           if (obj.name === 'group') {
             obj.name = 'kobogroup';
           }
@@ -70,17 +83,27 @@ each(
             // end is reserved in postgresql
             obj.name = 'end_date';
           }
+          if (obj.name == 'column') {
+            // end is reserved in postgresql
+            obj.name = 'column_name';
+          }
+          if (obj.name == 'date') {
+            // end is reserved in postgresql
+            obj.name = 'date_value';
+          }
         });
         form = form
           .map(x => {
-            if (x.name !== undefined) {
-              x.name = x.name.split(/-/).join('_');
+            if (x && x.name) {
+              x.name = /^\d+$/.test(x.name.charAt(1))
+                ? `_${toCamelCase(x.name.split(/-/).join('_'))}`
+                : toCamelCase(x.name.split(/-/).join('_'));
             }
             return x;
           })
           .filter(x => x.name !== undefined);
         // Adding a column as jsonb to take the whole payload
-        form.push({ name: 'payload', type: 'jsonb' });
+        form.push({ name: 'Payload', type: 'jsonb' });
 
         return form;
       }
@@ -111,25 +134,62 @@ each(
           );
 
           tables.push({
-            name: (formName + '_' + group[0].path.join('_'))
-              .split(/\s|-|'/)
-              .join('_')
-              .toLowerCase(),
+            name:
+              'WCS__FormGroup_' +
+              toCamelCase(
+                (formName + '_' + group[0].path.join('_'))
+                  .split(/\s|-|'/)
+                  .join('_')
+                  .replace('.', '')
+              ),
             columns: questionToType(group),
+            formName,
             depth: group[0].depth,
           });
 
           return tablesFromQuestions(questions, formName, tables);
         }
 
-        tables.push({
-          name: formName
-            .split(/\s|-|'/)
-            .join('_')
-            .toLowerCase(),
-          columns: questionToType(questions),
-          depth: 0,
-        });
+        tables.push(
+          {
+            name:
+              'WCS__FormGroup_' +
+              toCamelCase(
+                formName
+                  .split(/\s|-|'/)
+                  .join('_')
+                  .replace('.', '')
+              ),
+            columns: questionToType(questions),
+            formName,
+            depth: 0,
+          },
+          {
+            name: 'WCS__KoboDataset',
+            columns: [
+              {
+                name: 'FormName',
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: 'DatasetId',
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: 'LastUpdated',
+                type: 'date',
+                depth: 0,
+                path: [],
+              },
+            ],
+            formName,
+            depth: 0,
+          }
+        );
 
         return tables;
       }
