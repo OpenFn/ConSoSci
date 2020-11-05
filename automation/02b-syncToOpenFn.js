@@ -90,8 +90,10 @@ each(
         // END OF BUILDING MAPPINGS
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
+
+        var uuid = name === 'WCS__KoboDataset' ? 'DatasetId' : 'GeneratedUuid';
         expression +=
-          `${operation}('${name}', 'GeneratedUuid', ${
+          `${operation}('${name}', '${uuid}', ${
             depth > 0
               ? mapping
               : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
