@@ -39,12 +39,12 @@ each(
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, formName, depth, __newUuid } = state.data[i];
-      if (name !== 'WCS__FormGroup_Untitled') {
+      if (name !== `${state.prefix1}__${state.prefix2}_Untitled`) {
         var paths = [];
         form_name = name;
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
-          if (name === 'WCS__KoboDataset') {
+          if (name === `${state.prefix1}__KoboDataset`) {
             const values = {
               FormName: `'${formName}'`,
               DatasetId: 'state.data._xform_id_string',
@@ -69,7 +69,7 @@ each(
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else
             mapKoboToPostgres[columns[k].name] =
-              name !== 'WCS__KoboDataset'
+              name !== `${state.prefix1}__KoboDataset`
                 ? `state.data.${paths[k].replace('/', '')}`
                 : `${paths[k]}`;
         }
@@ -91,7 +91,7 @@ each(
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
 
-        var uuid = name === 'WCS__KoboDataset' ? 'DatasetId' : 'GeneratedUuid';
+        var uuid = name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : 'GeneratedUuid';
         expression +=
           `${operation}('${name}', '${uuid}', ${
             depth > 0

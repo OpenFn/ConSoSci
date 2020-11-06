@@ -3,7 +3,7 @@ each('$.forms[*]', state => {
     '$.data[*]',
     alterState(state => {
       const { name } = state.data;
-      if (name !== 'WCS__FormGroup_Untitled') {
+      if (name !== `${state.prefix1}__${state.prefix2}_Untitled`) {
         return describeTable(name.toLowerCase())(state)
           .then(postgresColumn => {
             const { rows } = postgresColumn.table_data.body;
