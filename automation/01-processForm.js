@@ -1,6 +1,11 @@
 get(`${state.data.url}`, {}, state => {
   const { survey } = state.data.content;
 
+  // PREFIX HANDLER
+  const prefix1 = 'WCS';
+  const prefix2 = 'FormGroup';
+  // END OF PREFIX HANDLER
+
   // TODO: Decide which metadata field to include. ========================
   survey.push({ name: 'generated_uuid', type: 'text' });
   // ======================================================================
@@ -30,7 +35,7 @@ get(`${state.data.url}`, {}, state => {
 
   // Camelize columns and table name
   function toCamelCase(str) {
-    const words = str.match(/[0-9a-z]+/gi); // we split using split('_')."
+    const words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi); // we split using split('_')."
     if (!words) return '';
     return words
       .map(word => {
@@ -103,7 +108,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name:
-          'WCS__FormGroup_' +
+          `${prefix1}__${prefix2}_` +
           toCamelCase(
             (formName + '_' + group[0].path.join('_'))
               .split(/\s|-|'/)
@@ -121,7 +126,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name:
-          'WCS__FormGroup_' +
+          `${prefix1}__${prefix2}_` +
           toCamelCase(
             formName
               .split(/\s|-|'/)
@@ -133,7 +138,7 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       },
       {
-        name: 'WCS__KoboDataset',
+        name: `${prefix1}__KoboDataset`,
         columns: [
           {
             name: 'FormName',
@@ -199,5 +204,7 @@ get(`${state.data.url}`, {}, state => {
   return {
     ...state,
     forms: [tables],
+    prefix1,
+    prefix2,
   };
 });
