@@ -32,14 +32,15 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   return { ...state, lastEnd, forms: [] };
 });
 
-each(dataPath('forms[*]'), state =>
-  post(
+each(dataPath('forms[*]'), state => {
+  const form = state.data;
+  return post(
     state.configuration.openfnInboxUrl,
-    { body: { ...state.data, formUpdate: true } },
+    { body: { ...form, formUpdate: true } },
     state => {
-      console.log('Sent ', state.data.tag, ' for handling:');
-      console.log(state.data);
+      console.log('Sent ', form.tag, ' for handling:');
+      console.log(form);
       return state;
     }
-  )(state)
-);
+  )(state);
+});
