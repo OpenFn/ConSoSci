@@ -38,12 +38,12 @@ each(
       // ======================================================================
 
       const mapType = {
-        calculate: 'nvarchar',
+        calculate: 'varchar',
         date: 'date',
         decimal: 'float4',
         end: 'date',
         integer: 'int4',
-        select_one: 'nvarchar',
+        select_one: 'varchar',
         start: 'date',
         text: 'text',
         today: 'date',
