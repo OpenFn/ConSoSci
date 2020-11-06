@@ -26,7 +26,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
 });
 
 each(
-  dataValue('forms[*]'),
+  dataPath('forms[*]'),
   post(state.configuration.openfnInboxUrl, { body: state.data }, state => {
     console.log("Sent ", state.data.tag, " for processing.");
     return state;
