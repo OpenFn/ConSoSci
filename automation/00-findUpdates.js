@@ -20,15 +20,26 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     .map(s => s.date_modified)
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
-  console.log(`Forms to fetch: ${JSON.stringify(state.data.forms, null, 2)}`);
+  console.log(
+    'Detected changes for:',
+    JSON.stringify(
+      state.data.forms.map(f => f.url),
+      null,
+      2
+    )
+  );
 
   return { ...state, lastEnd, forms: [] };
 });
 
-each(
-  dataPath('forms[*]'),
-  post(state.configuration.openfnInboxUrl, { body: state.data }, state => {
-    console.log("Sent ", state.data.tag, " for processing.");
-    return state;
-  })
+each(dataPath('forms[*]'), state =>
+  post(
+    state.configuration.openfnInboxUrl,
+    { body: { ...state.data, formUpdate: true } },
+    state => {
+      console.log('Sent ', state.data.tag, ' for handling:');
+      console.log(state.data);
+      return state;
+    }
+  )(state)
 );
