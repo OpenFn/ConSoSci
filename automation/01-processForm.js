@@ -198,6 +198,6 @@ get(`${state.data.url}`, {}, state => {
 
   return {
     ...state,
-    forms: [...state.forms, tables],
+    forms: [tables],
   };
 });
