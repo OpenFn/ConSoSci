@@ -35,7 +35,7 @@ get(`${state.data.url}`, {}, state => {
 
   // Camelize columns and table name
   function toCamelCase(str) {
-    const words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi); // we split using split('_')."
+    const words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi);
     if (!words) return '';
     return words
       .map(word => {
@@ -49,32 +49,28 @@ get(`${state.data.url}`, {}, state => {
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
     form.forEach(obj => {
       // At some point we might need a list of 'question' that should be renamed, and their new values.
+      // List of reserved keys in postgresql
       if (obj.name === 'group') {
         obj.name = 'kobogroup';
       }
       if (obj.name == 'end') {
-        // end is reserved in postgresql
         obj.name = 'end_date';
       }
       if (obj.name == 'column') {
-        // end is reserved in postgresql
         obj.name = 'column_name';
       }
       if (obj.name == 'date') {
-        // end is reserved in postgresql
         obj.name = 'date_value';
       }
     });
-    form = form
-      .map(x => {
-        if (x && x.name) {
-          x.name = /^\d+$/.test(x.name.charAt(1))
-            ? `_${toCamelCase(x.name.split(/-/).join('_'))}`
-            : toCamelCase(x.name.split(/-/).join('_'));
-        }
-        return x;
-      })
-      .filter(x => x.name !== undefined);
+    form = form.map(x => {
+      const name = x.name || x.$autoname;
+      x.name = /^\d+$/.test(name.charAt(1))
+        ? `_${toCamelCase(name.split(/-/).join('_'))}`
+        : toCamelCase(name.split(/-/).join('_'));
+      return x;
+    });
+    //.filter(x => x.name !== undefined);
     // Adding a column as jsonb to take the whole payload
     form.push({ name: 'Payload', type: 'jsonb' });
 
