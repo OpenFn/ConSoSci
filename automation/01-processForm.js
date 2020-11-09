@@ -2,8 +2,8 @@ get(`${state.data.url}`, {}, state => {
   const { survey } = state.data.content;
 
   // PREFIX HANDLER
-  const prefix1 = 'WCS';
-  const prefix2 = 'FormGroup';
+  const prefix1 = state.data.prefix1 || 'WCS';
+  const prefix2 = state.data.prefix2 || 'FormGroup';
   // END OF PREFIX HANDLER
 
   // TODO: Decide which metadata field to include. ========================
