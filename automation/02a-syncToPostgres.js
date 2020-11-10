@@ -4,6 +4,7 @@ each('$.forms[*]', state => {
     alterState(state => {
       const { name } = state.data;
       if (name !== `${state.prefix1}__${state.prefix2}_Untitled`) {
+        // Note: Specify options here (e.g {writeSql: false, execute: true})
         return describeTable(name.toLowerCase(), { writeSql: true })(
           state
         ).then(postgresColumn => {
@@ -14,6 +15,7 @@ each('$.forms[*]', state => {
             const columns = state.data.columns.filter(
               x => x.name !== undefined
             );
+            // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, { writeSql: true })(
               state
             );
@@ -29,7 +31,7 @@ each('$.forms[*]', state => {
             console.log(newColumns);
             if (newColumns.length > 0) {
               console.log('Existing table found in postgres --- Updating.');
-
+              // Note: Specify options here (e.g {writeSql: false, execute: true})
               return modifyTable(name, state => newColumns, { writeSql: true })(
                 state
               );
