@@ -15,6 +15,9 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // Note: If a form in manualFormList was not present in the list during
       // the last run of the job (formsWatched), then we always trigger an
       // update for that form.
+      if (!state.formsWatched) {
+        return true;
+      }
       if (state.formsWatched.indexOf(form) === -1) {
         console.log(`New form ${form.uid} (${form.name}) added to watch list.`);
         return true;
