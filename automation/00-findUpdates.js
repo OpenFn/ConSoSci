@@ -3,6 +3,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // Set a manual cursor if you'd like to only fetch form after a certain date
   const manualCursor = '2019-05-25T14:32:43.325+01:00';
 
+  //=========================================================================================//
+  //== FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
   //{ uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
     { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
