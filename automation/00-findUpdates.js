@@ -38,6 +38,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
         url,
         prefix1: manualSpec.p1,
         prefix2: manualSpec.p2,
+        lastModified: form.date_modified,
       };
     });
 
