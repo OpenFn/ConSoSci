@@ -3,9 +3,16 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // Set a manual cursor if you'd like to only fetch form after a certain date
   const manualCursor = '2019-05-25T14:32:43.325+01:00';
 
+  // ===========================================================================
+  // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
+    { uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
     { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
+    { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
+    { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
+    { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
+
   ];
 
   state.data.forms = state.data.results
@@ -72,3 +79,6 @@ each(dataPath('forms[*]'), state => {
     }
   )(state);
 });
+
+// Clear everything from state but the required cursors.
+alterState(state => ({ lastEnd: state.lastEnd, formsWatched: state.formsWatched }));
