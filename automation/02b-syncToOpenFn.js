@@ -174,7 +174,7 @@ each(
   '$.forms[*]',
   alterState(state => {
     const expression = state.data[state.data.length - 1].expression;
-    console.log('Inserting / Updating job');
+    console.log('Inserting / Updating job: ', `auto/${state.data[1].name}`);
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
     const name = `auto/${state.data[1].name}`;
