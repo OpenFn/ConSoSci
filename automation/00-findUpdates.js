@@ -6,6 +6,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualFormList = [
     { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
+    { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
   ];
 
   state.data.forms = state.data.results
