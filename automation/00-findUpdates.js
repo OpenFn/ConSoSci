@@ -30,13 +30,14 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     // Map those forms so that we can post each to the inbox later.
     .map(form => {
       const url = form.url.split('?').join('?');
+      const manualSpec = manualFormList.find(f => f.uid === form.uid);
       return {
         formId: form.uid,
         // tag: manualFormList[form.uid].customName || form.name,
         tag: form.name,
         url,
-        prefix1: manualFormList[form.uid].p1,
-        prefix2: manualFormList[form.uid].p2,
+        prefix1: manualSpec.p1,
+        prefix2: manualSpec.p2,
       };
     });
 
