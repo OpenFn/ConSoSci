@@ -35,8 +35,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
         // tag: manualFormList[form.uid].customName || form.name,
         tag: form.name,
         url,
-        prefix1: manualFormList[form.uid].prefix1,
-        prefix2: manualFormList[form.uid].prefix2,
+        prefix1: manualFormList[form.uid].p1,
+        prefix2: manualFormList[form.uid].p2,
       };
     });
 
