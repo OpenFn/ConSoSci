@@ -18,9 +18,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       if (!state.formsWatched) {
         return true;
       }
-      if (state.formsWatched.indexOf(form) === -1) {
-        console.log('form', form);
-        console.log('formsWatched', state.formsWatched);
+      if (state.formsWatched.find(f => f.uid === form.uid)) {
         console.log(`New form ${form.uid} (${form.name}) added to watch list.`);
         return true;
       }
