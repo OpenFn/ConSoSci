@@ -4,14 +4,14 @@ each('$.forms[*]', state => {
     alterState(state => {
       const { name } = state.data;
       if (name !== `${state.prefix1}__${state.prefix2}_Untitled`) {
-        return describeTable(name.toLowerCase())(state)
+        return describeTable(name.toLowerCase(), {writeSql: true})(state)
           .then(postgresColumn => {
-            const { rows } = postgresColumn.table_data.body;
-            if (postgresColumn.table_data.body.rowCount === 0) {
+            const { rows } = postgresColumn.response.body;
+            if (postgresColumn.response.body.rowCount === 0) {
               console.log('No matching table found in postgres --- Inserting.');
 
               const columns = state.data.columns.filter(x => x.name !== undefined);
-              return insertTable(name, state => columns)(state);
+              return insertTable(name, state => columns, {writeSql: true})(state);
             } else {
               const columnNames = rows.map(x => x.column_name);
 
@@ -23,7 +23,7 @@ each('$.forms[*]', state => {
               if (newColumns.length > 0) {
                 console.log('Existing table found in postgres --- Updating.');
 
-                return modifyTable(name, state => newColumns)(state);
+                return modifyTable(name, state => newColumns, {writeSql: true})(state);
               } else {
                 console.log('No new columns to add.');
                 return state;
