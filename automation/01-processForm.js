@@ -66,8 +66,8 @@ get(`${state.data.url}`, {}, state => {
     form = form.map(x => {
       const name = x.name || x.$autoname;
       x.name = /^\d+$/.test(name.charAt(1))
-        ? `_${toCamelCase(name.split(/-/).join('_'))}`
-        : toCamelCase(name.split(/-/).join('_'));
+        ? `_${name.split(/-/).join('_')}`
+        : name.split(/-/).join('_');
       return x;
     });
     //.filter(x => x.name !== undefined);
