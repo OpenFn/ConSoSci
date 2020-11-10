@@ -4,6 +4,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualCursor = '2019-05-25T14:32:43.325+01:00';
 
   const manualFormList = [
+  //{ uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
     { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
     { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
