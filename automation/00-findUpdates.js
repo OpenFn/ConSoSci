@@ -11,7 +11,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
     { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
     { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
-    { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' }
+    { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
+    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché' }
 
   ];
 
