@@ -12,7 +12,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
     { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
     { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
-    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché' }
+    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', t1: 'MarchéSurvey' }
 
   ];
 
@@ -41,8 +41,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       const manualSpec = manualFormList.find(f => f.uid === form.uid);
       return {
         formId: form.uid,
-        // tag: manualFormList[form.uid].customName || form.name,
-        tag: form.name,
+        tag: manualSpec.t1 || form.name,
+        //tag: form.name,
         url,
         prefix1: manualSpec.p1,
         prefix2: manualSpec.p2,
