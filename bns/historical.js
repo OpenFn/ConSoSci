@@ -10,6 +10,8 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
+      { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // synced Nov16,2020
+      
       //******* OPENFN TEST FORMS ******///
       //{ id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical', name: 'NRGT Makira 2017 - Test OpenFn', owner: 'bns' }, // TEST
       // { id: 'av4hQ37rMgwFoh9ogjeyKh', tag: 'nrgt_current', name: 'NRGT 2019 - Test OpenFn', owner: 'bns' }, // TEST
