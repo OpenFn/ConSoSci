@@ -100,5 +100,10 @@ each(dataPath('surveys[*]'), state => {
 
 alterState(state => {
   console.log(`Finished at: ${new Date().toISOString()}`);
-  return state;
+  return {
+    data: {
+      message: "No cursor required. Job fetches all submission for given forms."
+    },
+    references: []
+  };
 });
