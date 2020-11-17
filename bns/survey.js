@@ -131,7 +131,10 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   Head: dataValue('gender_head') ? '1' : '0',
   Gender: dataValue('gender_head'),
   Ethnicity: dataValue('ethnicity_head'),
-  Birth: dataValue('birth_head'),
+  Birth: state => {
+    var birth = dataValue('birth_head')(state);
+    return parseInt(birth.substring(0, 4));
+  },
   LastUpdate: new Date().toISOString(),
 });
 
@@ -147,7 +150,7 @@ alterState(state => {
         Head: '0',
         Gender: member[`hh_members/gender`],
         Ethnicity: member[`hh_members/ethnicity`],
-        Birth: member[`hh_members/birth`],
+        Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
         LastUpdate: new Date().toISOString(),
       }))
     )(state);
