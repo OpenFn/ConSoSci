@@ -14,7 +14,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
     { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', t1: 'MarchéSurvey' },
     { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020
-    { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping'} //test automation 17nov2020 with duplicated and renamed form
+    { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020 with duplicated and renamed form
+    { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping'} //test automation 17nov2020 with same form name but different form
 
   ];
 
