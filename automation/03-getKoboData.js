@@ -7,8 +7,9 @@ alterState(state => {
   state.data = {
     surveys: [
       //** Specify new forms to fetch here **//
-      //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
-      //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
+      //TODO: Add tag options
+      //** Tag options:  **//
+      { id: 'acZdoLnafZ5WZscgVErALo', tag: 'test_survey', name: 'Form Project Name', owner: 'openfn_kobo'},
       
       
     ].map(survey => ({
