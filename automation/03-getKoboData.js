@@ -7,8 +7,6 @@ alterState(state => {
   state.data = {
     surveys: [
       //** Specify new forms to fetch here **//
-      //TODO: Add tag options
-      //** Tag options:  **//
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
      { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'}
       
