@@ -10,7 +10,8 @@ alterState(state => {
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
      { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'},
      { id: 'aJHaEJ7mwDKW2P7cCUBcw7', name: 'WCS__FormGroup_CloneOfSwmEtudeDeMarché2020'},
-     { id: 'aFjWKDYJghBrc56NfGzepM', name: 'WCS__FormGroup_18NovCopyOfNouveauCameratrap17nov'}
+     { id: 'aFjWKDYJghBrc56NfGzepM', name: 'WCS__FormGroup_18NovCopyOfNouveauCameratrap17nov'},
+     { id: 'auwxo8iWrUSEcpLKNmDLbV', name: 'WCS__Marché_18NovCopyOfSwmEtudeMarché2020'},
       
       
     ].map(survey => ({
