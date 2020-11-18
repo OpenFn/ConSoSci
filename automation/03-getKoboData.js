@@ -8,7 +8,8 @@ alterState(state => {
     surveys: [
       //** Specify new forms to fetch here **//
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
-     { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'}
+     { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'},
+     { id: 'aJHaEJ7mwDKW2P7cCUBcw7', name: 'WCS__FormGroup_CloneOfSwmEtudeDeMarché2020'}
       
       
     ].map(survey => ({
