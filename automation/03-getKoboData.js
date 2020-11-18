@@ -10,7 +10,7 @@ alterState(state => {
       //TODO: Add tag options
       //** Tag options:  **//
      //{ id: 'acZdoLnafZ5WZscgVErALo', tag: 'test_survey', name: 'Form Project Name', owner: 'openfn_kobo'},
-     { id: 'acZdoLnafZ5WZscgVErALo'}
+     { id: 'acZdoLnafZ5WZscgVErALo', tag: 'WCS__FormGroup_NouveauCameratrap17nov'}
       
       
     ].map(survey => ({
