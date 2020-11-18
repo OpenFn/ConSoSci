@@ -133,7 +133,7 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   Ethnicity: dataValue('ethnicity_head'),
   Birth: state => {
     var birth = dataValue('birth_head')(state);
-    return parseInt(birth.substring(0, 4));
+    return birth ? parseInt(birth.substring(0, 4)) : null;
   },
   LastUpdate: new Date().toISOString(),
 });
