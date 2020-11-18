@@ -147,7 +147,7 @@ get(`${state.data.url}`, {}, state => {
           },
           {
             name: 'LastUpdated',
-            type: 'date',
+            type: 'timestamp',
             depth: 0,
             path: [],
           },
