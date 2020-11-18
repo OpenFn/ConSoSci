@@ -48,9 +48,8 @@ each(
             const values = {
               FormName: `'${formName}'`,
               DatasetId: 'state.data._xform_id_string',
-              LastUpdated: 'Date.now()',
+              LastUpdated: `'${Date.now()}'`,
             };
-
             for (x in values) paths.push(values[x]);
             break;
           }
@@ -64,7 +63,7 @@ each(
         var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
         // FROM HERE WE ARE BUILDING MAPPINGS
-        for (var k = 0; k < columns.length - 1; k++) {
+        for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else
@@ -76,7 +75,8 @@ each(
 
         mapKoboToPostgres.Payload = 'state.data';
 
-        mapKoboToPostgres.GeneratedUuid = __newUuid; // This is the Uuid of the current table in form[]
+        if (name !== `${state.prefix1}__KoboDataset`)
+          mapKoboToPostgres.GeneratedUuid = __newUuid; // This is the Uuid of the current table in form[]
 
         let mapping = '';
         if (columns[0].depth > 0) {
@@ -91,7 +91,10 @@ each(
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
 
-        var uuid = name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : 'GeneratedUuid';
+        var uuid =
+          name === `${state.prefix1}__KoboDataset`
+            ? 'DatasetId'
+            : 'GeneratedUuid';
         expression +=
           `${operation}('${name}', '${uuid}', ${
             depth > 0
