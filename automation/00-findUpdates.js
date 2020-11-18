@@ -12,10 +12,10 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
     { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
     { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
-    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', t1: 'MarchéSurvey' },
-    { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020
-    { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020 with duplicated and renamed form
-    { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020 with same form name but different form
+    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', surveyTable: 'MarchéSurvey' },
+    { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020
+    { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020 with duplicated and renamed form
+    { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v2'}, //test automation 17nov2020 with same form name but different form
     { uid: 'ahyWbL59j2VvgDJGbPgVRK', p1: 'WCS', p2: 'KidsOR'},
   ];
 
@@ -44,7 +44,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       const manualSpec = manualFormList.find(f => f.uid === form.uid);
       return {
         formId: form.uid,
-        tag: manualSpec.t1 || form.name,
+        tag: manualSpec.surveyTable || form.name,
         //tag: form.name,
         url,
         prefix1: manualSpec.p1,
