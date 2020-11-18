@@ -9,8 +9,8 @@ alterState(state => {
       //** Specify new forms to fetch here **//
       //TODO: Add tag options
       //** Tag options:  **//
-     //{ id: 'acZdoLnafZ5WZscgVErALo', tag: 'test_survey', name: 'Form Project Name', owner: 'openfn_kobo'},
-     { id: 'acZdoLnafZ5WZscgVErALo', tag: 'WCS__FormGroup_NouveauCameratrap17nov'}
+     //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name', owner: 'openfn_kobo'},
+     { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'}
       
       
     ].map(survey => ({
@@ -32,7 +32,7 @@ each(dataPath('surveys[*]'), state => {
       return {
         i,
         // Here we append the tags defined above to the Kobo form submission data
-        form: tag,
+        form: name,
         formName: name, 
         formOwner: owner,
         body: submission,
