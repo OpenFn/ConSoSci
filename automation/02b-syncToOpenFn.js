@@ -48,7 +48,7 @@ each(
             const values = {
               FormName: `'${formName}'`,
               DatasetId: 'state.data._xform_id_string',
-              LastUpdated: `'${Date.now()}'`,
+              LastUpdated: `'${Math.floor(new Date() / 1000)}'`,
             };
             for (x in values) paths.push(values[x]);
             break;
