@@ -9,7 +9,8 @@ alterState(state => {
       //** Specify new forms to fetch here **//
       //TODO: Add tag options
       //** Tag options:  **//
-      { id: 'acZdoLnafZ5WZscgVErALo', tag: 'test_survey', name: 'Form Project Name', owner: 'openfn_kobo'},
+     //{ id: 'acZdoLnafZ5WZscgVErALo', tag: 'test_survey', name: 'Form Project Name', owner: 'openfn_kobo'},
+     { id: 'acZdoLnafZ5WZscgVErALo'}
       
       
     ].map(survey => ({
