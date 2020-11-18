@@ -9,7 +9,7 @@ alterState(state => {
       //** Specify new forms to fetch here **//
       //TODO: Add tag options
       //** Tag options:  **//
-     //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name', owner: 'openfn_kobo'},
+     //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
      { id: 'acZdoLnafZ5WZscgVErALo', name: 'WCS__FormGroup_NouveauCameratrap17nov'}
       
       
