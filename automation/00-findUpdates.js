@@ -16,9 +16,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020
     { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020 with duplicated and renamed form
     { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping'}, //test automation 17nov2020 with same form name but different form
-    { uid: 'aFjWKDYJghBrc56NfGzepM', p1: 'WCS', p2: 'Cameratrapping'},
-    { uid: 'ajPZcZzsXn5VraTUWgbUci', p1: 'WCS', p2: 'KidsOR'},
-    { uid: 'auwxo8iWrUSEcpLKNmDLbV', p1: 'WCS', p2: 'Marché'}
+    { uid: 'ahyWbL59j2VvgDJGbPgVRK', p1: 'WCS', p2: 'KidsOR'},
   ];
 
   state.data.forms = state.data.results
