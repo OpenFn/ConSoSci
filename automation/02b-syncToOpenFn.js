@@ -39,7 +39,7 @@ each(
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, formName, depth, __newUuid } = state.data[i];
-      if (name !== `${state.prefix1}__${state.prefix2}_Untitled`) {
+      if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         var paths = [];
         form_name = name;
         for (var j = 0; j < columns.length; j++) {

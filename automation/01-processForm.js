@@ -101,7 +101,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name:
-          `${prefix1}__${prefix2}_` +
+          `${prefix1}_${prefix2}_` +
           toCamelCase(
             (formName + '_' + group[0].path.join('_'))
               .split(/\s|-|'/)
@@ -119,7 +119,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name:
-          `${prefix1}__${prefix2}_` +
+          `${prefix1}_${prefix2}_` +
           toCamelCase(
             formName
               .split(/\s|-|'/)
