@@ -121,3 +121,9 @@ See [issue 7](https://github.com/OpenFn/wcs-consocsci/issues/7) documenting the 
 6. When a form is updated, records in "child" repeat group tables on Postgres
    will be purged and _then_ the current set of repeat group entries will be
    added as repeat group records in Postgres.
+   
+## Future phases
+1. Compatibility with mssql
+2. SQL queries for quicker analysis
+3. Handling test data (don't write to DB?)
+4. ...
