@@ -8,7 +8,7 @@ alterState(state => {
     surveys: [
       //** Specify new forms to fetch here **//
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
-     { id: 'aygyMafSurSAPfa5Adt8F6', name: 'WCS__KidsOR_19NovCopyOfKidsorDemo'},
+     { id: 'aGhSWpeGNBnHfWgnJi6mz5', name: 'WCS__KidsOR_CloneOf19NovCopyOfKidsorDemo'},
     
       
       
