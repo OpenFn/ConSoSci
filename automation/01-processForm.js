@@ -99,15 +99,36 @@ get(`${state.data.url}`, {}, state => {
         firstEndAfterLastBegin - lastBegin + 1
       );
 
-      tables.push({
-        name:
+      const groupName = group[0].path
+        .join('_')
+        .split('_')
+        .map(x => {
+          return x[0];
+        })
+        .join('');
+
+      let name =
+        `${prefix1}_${prefix2}_` +
+        toCamelCase(
+          (formName + '_' + group[0].path.join('_'))
+            .split(/\s|-|'/)
+            .join('_')
+            .replace('.', '')
+        );
+
+      if (name.length > 63) {
+        name =
           `${prefix1}_${prefix2}_` +
           toCamelCase(
-            (formName + '_' + group[0].path.join('_'))
+            (formName + '_' + groupName)
               .split(/\s|-|'/)
               .join('_')
               .replace('.', '')
-          ),
+          );
+      }
+
+      tables.push({
+        name,
         columns: questionToType(group),
         formName,
         depth: group[0].depth,
