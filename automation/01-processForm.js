@@ -165,6 +165,7 @@ get(`${state.data.url}`, {}, state => {
             type: 'text',
             depth: 0,
             path: [],
+            unique: true,
           },
           {
             name: 'LastUpdated',
