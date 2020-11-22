@@ -12,7 +12,7 @@ alterState(state => {
       if (Array.isArray(object[property]) && object !== null) {
         object[property].forEach((thing, i, arr) => {
           if (thing !== null) {
-            thing[key] = `${object[key]}-${i}`;
+            thing[key] = `${object[key]}+'-'+${i}`;
             for (const property in thing) {
               if (Array.isArray(thing[property])) {
                 addUUIDs(thing, key);
@@ -26,7 +26,7 @@ alterState(state => {
   addUUIDs(
     state.forms,
     '__newUuid',
-    'state.data._id-state.data._xform_id_string'
+    `state.data._id+'-'+state.data._xform_id_string`
   );
 
   return state;
