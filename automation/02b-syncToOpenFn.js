@@ -76,7 +76,7 @@ each(
         mapKoboToPostgres.Payload = 'state.data';
 
         if (name !== `${state.prefix1}__KoboDataset`)
-          mapKoboToPostgres.GeneratedUuid = __newUuid; // This is the Uuid of the current table in form[]
+          mapKoboToPostgres[state.uuid] = __newUuid; // This is the Uuid of the current table in form[]
 
         let mapping = '';
         if (columns[0].depth > 0) {
@@ -92,9 +92,7 @@ each(
         const operation = depth > 0 ? `upsertMany` : `upsert`;
 
         var uuid =
-          name === `${state.prefix1}__KoboDataset`
-            ? 'DatasetId'
-            : 'GeneratedUuid';
+          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : state.uuid;
         expression +=
           `${operation}('${name}', '${uuid}', ${
             depth > 0

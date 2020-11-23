@@ -17,7 +17,7 @@ each('$.forms[*]', state => {
             );
             if (name !== `${state.prefix1}__KoboDataset`)
               columns.push({
-                name: 'GeneratedUuid',
+                name: state.uuid,
                 type: 'text',
                 unique: true,
               });

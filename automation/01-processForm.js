@@ -3,6 +3,7 @@ get(`${state.data.url}`, {}, state => {
   // PREFIX HANDLER
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || 'FormGroup';
+  const uuid = 'GeneratedUuid';
   // END OF PREFIX HANDLER
 
   // TODO: Decide which metadata field to include. ========================
@@ -227,5 +228,6 @@ get(`${state.data.url}`, {}, state => {
     forms: [tables],
     prefix1,
     prefix2,
+    uuid,
   };
 });
