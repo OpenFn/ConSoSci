@@ -15,6 +15,12 @@ each('$.forms[*]', state => {
             const columns = state.data.columns.filter(
               x => x.name !== undefined
             );
+            if (name !== `${state.prefix1}__KoboDataset`)
+              columns.push({
+                name: state.uuid,
+                type: 'text',
+                unique: true,
+              });
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, { writeSql: true })(
               state
