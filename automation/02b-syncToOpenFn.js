@@ -26,7 +26,7 @@ alterState(state => {
   addUUIDs(
     state.forms,
     '__newUuid',
-    `state.data._id+'-'+state.data._xform_id_string`
+    `state.data.body._id+'-'+state.data.body._xform_id_string`
   );
 
   return state;
@@ -47,7 +47,7 @@ each(
           if (name === `${state.prefix1}__KoboDataset`) {
             const values = {
               FormName: `'${formName}'`,
-              DatasetId: 'state.data._xform_id_string',
+              DatasetId: 'state.data.body._xform_id_string',
               LastUpdated: 'new Date()',
             };
             for (x in values) paths.push(values[x]);
@@ -69,18 +69,18 @@ each(
           else
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
-                ? `state.data.${paths[k].replace('/', '')}`
+                ? `state.data.body.${paths[k].replace('/', '')}`
                 : `${paths[k]}`;
         }
 
-        mapKoboToPostgres.Payload = 'state.data';
+        mapKoboToPostgres.Payload = 'state.data.body';
 
         if (name !== `${state.prefix1}__KoboDataset`)
           mapKoboToPostgres[state.uuid] = __newUuid; // This is the Uuid of the current table in form[]
 
         let mapping = '';
         if (columns[0].depth > 0) {
-          mapping = `state => state.data.${columns[0].path.join(
+          mapping = `state => state.data.body.${columns[0].path.join(
             '.'
           )}.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
             /"/g,
