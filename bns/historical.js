@@ -10,7 +10,7 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
-      { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // synced Nov16,2020
+     // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // synced Nov16,2020
       
       //******* OPENFN TEST FORMS ******///
       //{ id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical', name: 'NRGT Makira 2017 - Test OpenFn', owner: 'bns' }, // TEST
@@ -31,14 +31,14 @@ alterState(state => {
      //  { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2019', owner: 'wcs_ituri' }, // fetched Oct25 ✓
       // { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'wcs_lactele' }, // fetched Oct25 ✓
      //  { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'wcs_mamabaie' }, // fetched Oct25 ✓
-      { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_survey', name: 'BNS Makira 2019', owner: 'wcs_mamabaie' }, // fetched Oct25 ✓
-      { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS Ménage Kahuzi 2017', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
-      { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2019', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
-      { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey', name: 'BNS Ndoki 2018', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
-     //  { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS Ndoki 2019', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
-      // { id: 'a6BjZ8ncLtTtfBSGZ9PqoJ', tag: 'bns_price', name: 'BNS Prix Ituri 2017', owner: 'wcs_ituri' }, // fetched Oct25 ✓
-     //  { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price', name: 'BNS Prix Ituri 2019', owner: 'wcs_ituri' }, // fetched Oct25 ✓
-      // { id: 'apMTFWRd9fQWHvpJHLfvk6', tag: 'bns_price', name: 'BNS Prix Lac Télé 2017', owner: 'wcs_lactele' }, // fetched Oct25 ✓
+     // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_survey', name: 'BNS Makira 2019', owner: 'wcs_mamabaie' }, // fetched Oct25 ✓
+     // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS Ménage Kahuzi 2017', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
+    //  { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2019', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
+    //  { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey', name: 'BNS Ndoki 2018', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
+       { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS Ndoki 2019', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
+       { id: 'a6BjZ8ncLtTtfBSGZ9PqoJ', tag: 'bns_price', name: 'BNS Prix Ituri 2017', owner: 'wcs_ituri' }, // fetched Oct25 ✓
+       { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price', name: 'BNS Prix Ituri 2019', owner: 'wcs_ituri' }, // fetched Oct25 ✓
+       { id: 'apMTFWRd9fQWHvpJHLfvk6', tag: 'bns_price', name: 'BNS Prix Lac Télé 2017', owner: 'wcs_lactele' }, // fetched Oct25 ✓
       // { id: 'ao52kp6BgLgooE3MRsdy4B', tag: 'bns_price', name: 'BNS Prix Ndoki 2018', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
       // { id: 'aq5r9cKQYBRDT9SBqYanUP', tag: 'bns_price', name: 'BNS Prix Ndoki 2019', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
       // { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_survey', name: 'BNS_ABS_2019_FINAL', owner: 'wcs_antongil' }, // fetched Oct25 ✓
