@@ -19,14 +19,14 @@ alterState(state => {
       //****** Ongoing Forms to Rerun ****// 
      
      //******* WCS HISTORICAL FORMS ******///
-       { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'atyo55YdBdfxzXiaBdrbvr' },
-       { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'aTRKQW2b8TJGxF7DVPfjFv' },
-       { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'ad7S4hPBN7qM4Ac3mpEdwZ' },
-       { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'amD3cUsR4Jurj3ZSUyQdBH' },
-       //{ id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'a2m5Hp4BoN956CBxfKHdJY' },
-       //{ id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2019', owner: 'aFQWAYHXXfh8i2cmXw9BFi' },
-       //{ id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'auqBASwJMLvkqtAJnZ8SXx' },
-       //{ id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'a9R68Er4oeDx6quZre2DM7' },
+     //  { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'atyo55YdBdfxzXiaBdrbvr' },
+     //  { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'aTRKQW2b8TJGxF7DVPfjFv' },
+     //  { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'ad7S4hPBN7qM4Ac3mpEdwZ' },
+     //  { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'amD3cUsR4Jurj3ZSUyQdBH' },
+       { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'a2m5Hp4BoN956CBxfKHdJY' },
+       { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2019', owner: 'aFQWAYHXXfh8i2cmXw9BFi' },
+       { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'auqBASwJMLvkqtAJnZ8SXx' },
+       { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'a9R68Er4oeDx6quZre2DM7' },
       // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_survey', name: 'BNS Makira 2019', owner: 'arJkDGmkhhCiJ2eYwRcCit' },
       // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS Ménage Kahuzi 2017', owner: 'aEypYtcfNGvDtpkSUPXrJN' },
       // { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2019', owner: 'aCShrrKNApccvaAPzxzbxK' },
