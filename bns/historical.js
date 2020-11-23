@@ -49,7 +49,7 @@ alterState(state => {
     //   { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'bwcs_iturin' }, // fetched Oct25 ✓
     //   { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2018', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
     //   { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb' }, // fetched Oct25 ✓
-       { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT Lac Télé 2017', owner: 'wcs_lactele' }, // fetched Oct25 ✓
+     { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT Lac Télé 2017', owner: 'wcs_lactele' }, // fetched Oct25 ✓
        { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical', name: 'NRGT Makira 2017', owner: 'wcs_mamabaie' }, // fetched Oct25 ✓
        { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie'}, // fetched Oct25 ✓ 
        { id: 'aLhFXhkmM4rZJvtqiSjChE', tag: 'nrgt_historical', name: 'NRGT Ndoki 2018', owner: 'wcs_ndoki' }, // fetched Oct25 ✓ 
