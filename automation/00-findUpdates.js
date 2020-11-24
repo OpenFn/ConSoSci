@@ -23,7 +23,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
     { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
     { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza'},
-    { uid: 'aTvoBtrRc4oPEGEXtHU6dT', p1: 'WCS', p2: 'Bwalya'}
+    { uid: 'aTvoBtrRc4oPEGEXtHU6dT', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V1'}
+    { uid: 'a3fpvhRAUoGPrPGZvSdzAW', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V2'}
     
   ];
 
