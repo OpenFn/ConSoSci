@@ -20,7 +20,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
     { uid: 'aEAqMfzhGtgx5ZoYp3rPCb', p1: 'WCS', p2: 'Marche'},
     { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'},
-    { uid: 'avW25WTT7t2LDcgeq426dM', p1: 'WCS', p2: 'KidsOR'},
+    { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
     { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
     { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza'}
     
