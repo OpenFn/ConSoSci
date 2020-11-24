@@ -12,6 +12,7 @@ alterState(state => {
      { id: 'aeUjHuADwhK9RKGz8cgr5W', name: 'WCS_KidsOR_V423novCopyOfKidsorDemo'},
      { id: 'aEAqMfzhGtgx5ZoYp3rPCb', name: 'WCS_Marche_24novSwmMarcheTest'},
      { id: 'aq8jbMUZ89LndzDdUiWeA4', name: 'WCS_marche_V224novSwmMarcheTest'},
+     { id: 'avW25WTT7t2LDcgeq426dM', name: 'WCS_KidsOR_24novCopyOfKidsorDemo'},
 
     
       
