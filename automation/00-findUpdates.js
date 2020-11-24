@@ -19,7 +19,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aeUjHuADwhK9RKGz8cgr5W', p1: 'WCS', p2: 'KidsOR'},
     { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
     { uid: 'aEAqMfzhGtgx5ZoYp3rPCb', p1: 'WCS', p2: 'Marche'},
-    { uid: 'ajibEgHuQ6fuqrnxeGrfoz', p1: 'WCS', p2: 'Chaiwa'}
+    { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'}
     
   ];
 
