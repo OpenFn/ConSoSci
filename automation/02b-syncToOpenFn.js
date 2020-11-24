@@ -12,7 +12,10 @@ alterState(state => {
       if (Array.isArray(object[property]) && object !== null) {
         object[property].forEach((thing, i, arr) => {
           if (thing !== null) {
-            thing[key] = `${object[key]}+'-'+${i}`;
+            thing[key] =
+              thing['depth'] > 0
+                ? `${object[key]} + '-' + i`
+                : `${object[key]}`;
             for (const property in thing) {
               if (Array.isArray(thing[property])) {
                 addUUIDs(thing, key);
@@ -80,12 +83,13 @@ each(
 
         let mapping = '';
         if (columns[0].depth > 0) {
-          mapping = `state => state.data.body.${columns[0].path.join(
-            '.'
-          )}.map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
-            /"/g,
-            ''
-          )}))`;
+          mapping = `state => state.data.body.['${columns[0].path.join(
+            '/'
+          )}'].map((x, i) => (${JSON.stringify(
+            mapKoboToPostgres,
+            null,
+            2
+          ).replace(/"/g, '')}))`;
         }
         // END OF BUILDING MAPPINGS
 
