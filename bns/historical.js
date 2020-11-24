@@ -59,8 +59,8 @@ alterState(state => {
     //   { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_survey', name: 'Prices MTKB 2017', owner: 'akirkby' }, // fetched Oct25 ✓  
     //   { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // fetched Oct25 ✓  
     //   { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_survey', name: 'Prix_BNS_Ankarea/Ankivony_2019', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
-       { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
-       { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_survey', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
+     //  { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
+     //  { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_survey', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
