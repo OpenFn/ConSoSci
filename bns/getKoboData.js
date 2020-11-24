@@ -55,7 +55,9 @@ alterState(state => {
   const lastEnd = state.references
     .filter(item => item.body)
     .map(s => s.body.end)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+    .filter(s => s)
+    .sort()
+    .reverse()[0];
     
   console.log('New cursor value:', lastEnd);
   return { ...state, data: {}, references: [], lastEnd };
