@@ -83,7 +83,7 @@ each(
 
         let mapping = '';
         if (columns[0].depth > 0) {
-          mapping = `state => state.data.body.['${columns[0].path.join(
+          mapping = `state => state.data.body['${columns[0].path.join(
             '/'
           )}'].map((x, i) => (${JSON.stringify(
             mapKoboToPostgres,
