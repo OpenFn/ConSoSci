@@ -10,7 +10,8 @@ alterState(state => {
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
      { id: 'a83rSAZ9Cehk26SSkSJm8Z', name: 'WCS_KidsOR_V323novCopyOfKidsorDemo'},
      { id: 'aeUjHuADwhK9RKGz8cgr5W', name: 'WCS_KidsOR_V423novCopyOfKidsorDemo'},
-     { id: 'aEAqMfzhGtgx5ZoYp3rPCb', name: 'WCS_Marche_24novSwmMarcheTest'}
+     { id: 'aEAqMfzhGtgx5ZoYp3rPCb', name: 'WCS_Marche_24novSwmMarcheTest'},
+     { id: 'avW25WTT7t2LDcgeq426dM', name: 'WCS_KidsOR_24novCopyOfKidsorDemo'},
 
     
       
