@@ -66,10 +66,9 @@ get(`${state.data.url}`, {}, state => {
     form = form.map(x => {
       const name = x.name || x.$autoname;
       return {
+        ...x,
         name: `${name.split(/-/).join('_')}`,
-        type: x.type,
-        autoname: x.$autoname,
-        unique: x.unique,
+        required: false,
       };
     });
     //.filter(x => x.name !== undefined);
