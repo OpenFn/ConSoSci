@@ -18,7 +18,6 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v2'}, //test automation 17nov2020 with same form name but different form
     { uid: 'aeUjHuADwhK9RKGz8cgr5W', p1: 'WCS', p2: 'KidsOR'},
     { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
-    { uid: 'aEAqMfzhGtgx5ZoYp3rPCb', p1: 'WCS', p2: 'Marche'},
     { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'},
     { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
     { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V1'},
