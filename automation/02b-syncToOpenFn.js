@@ -50,9 +50,10 @@ each(
             break;
           }
           // end of master parent table
+          const currentPath = columns[j].path;
           paths.push(
-            (columns[j].path.length > 0
-              ? columns[j].path.join('/') + '/'
+            (currentPath && currentPath.length > 0
+              ? currentPath.join('/') + '/'
               : '') + columns[j].$autoname
           );
         }
