@@ -51,8 +51,9 @@ each(
           }
           // end of master parent table
           paths.push(
-            (columns[j].path ? columns[j].path.join('/') + '/' : '') +
-              columns[j].$autoname
+            (columns[j].path.length > 0
+              ? columns[j].path.join('/') + '/'
+              : '') + columns[j].$autoname
           );
         }
 
