@@ -18,7 +18,9 @@ alterState(state => {
     // { id: 'aRfFb8z8HGiaUfTCZoe7t8', name: 'test_form_from_xls_2.xls'},
     // { id: 'an2x2PxChR6SjmASEFQcmh', name: 'WCS_RuralConsumption_25novWcsRuralConsumptionTest'}
     //{ id: 'a3fpvhRAUoGPrPGZvSdzAW', name: 'BwalyaSurvey_V2'}
-    { id: 'aDVDagX8TE9NUY7xmvAUpv', name: 'WCS_marche_SwmEtudeMarché2020VendorSales'}
+    { id: 'aDVDagX8TE9NUY7xmvAUpv', name: 'WCS_marche_SwmEtudeMarché2020VendorSales'},
+    { id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'}
+    
 
     
       
