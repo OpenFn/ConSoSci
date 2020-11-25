@@ -26,10 +26,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     // { uid: 'a3fpvhRAUoGPrPGZvSdzAW', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V2'},
     // { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
     // { uid: 'ar9wXnLW2sdaamGgJsUrjP', p1: 'WCS', p2: 'BNSextended'},
-    // { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption'}
+    // { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption'},
     { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'} //form with nested repeat groups
-    
-    
   ];
 
   state.data.forms = state.data.results
