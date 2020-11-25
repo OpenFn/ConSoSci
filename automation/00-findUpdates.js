@@ -6,27 +6,28 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    { uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
-    { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
-    { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
-    { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
-    { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
-    { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
-    { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', surveyTable: 'MarchéSurvey' },
-    { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020
-    { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020 with duplicated and renamed form
-    { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v2'}, //test automation 17nov2020 with same form name but different form
-    { uid: 'aeUjHuADwhK9RKGz8cgr5W', p1: 'WCS', p2: 'KidsOR'},
-    { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
-    { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'},
-    { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
-    { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V1'},
-    { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V2'},
-    { uid: 'aTvoBtrRc4oPEGEXtHU6dT', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V1'},
-    { uid: 'a3fpvhRAUoGPrPGZvSdzAW', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V2'},
-    { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
-    { uid: 'ar9wXnLW2sdaamGgJsUrjP', p1: 'WCS', p2: 'BNSextended'},
-    { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption'}
+    // { uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
+    // { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
+    // { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
+    // { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
+    // { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
+    // { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
+    // { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', surveyTable: 'MarchéSurvey' },
+    // { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020
+    // { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020 with duplicated and renamed form
+    // { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v2'}, //test automation 17nov2020 with same form name but different form
+    // { uid: 'aeUjHuADwhK9RKGz8cgr5W', p1: 'WCS', p2: 'KidsOR'},
+    // { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
+    // { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'},
+    // { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
+    // { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V1'},
+    // { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V2'},
+    // { uid: 'aTvoBtrRc4oPEGEXtHU6dT', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V1'},
+    // { uid: 'a3fpvhRAUoGPrPGZvSdzAW', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V2'},
+    // { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
+    // { uid: 'ar9wXnLW2sdaamGgJsUrjP', p1: 'WCS', p2: 'BNSextended'},
+    // { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption'}
+    { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'} //form with nested repeat groups
     
     
   ];
