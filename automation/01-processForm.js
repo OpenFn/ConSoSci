@@ -197,7 +197,6 @@ get(`${state.data.url}`, {}, state => {
   survey.forEach((q, i, arr) => {
     switch (q.type) {
       case 'begin_group':
-        // depth++;
         arr[i] = {
           ...q,
           depth,
@@ -229,7 +228,6 @@ get(`${state.data.url}`, {}, state => {
           depth,
           path: i === 0 ? [] : [...arr[i - 1].path.slice(0, -1)],
         };
-        // depth--;
         break;
 
       default:

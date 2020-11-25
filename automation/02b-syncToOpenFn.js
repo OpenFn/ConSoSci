@@ -82,7 +82,7 @@ each(
           else
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
-                ? `state.data.body.${paths[k].replace('/', '')}`
+                ? `state.data.body['${paths[k]}']`
                 : `${paths[k]}`;
         }
         mapKoboToPostgres.Payload = `state.data${
