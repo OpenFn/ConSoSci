@@ -2,6 +2,8 @@
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
+  console.log('Current cursor value:', state.lastEnd);
+
   // Set a manual cursor if you'd like to only fetch data after this date.
   const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
@@ -61,5 +63,6 @@ alterState(state => {
     .map(s => s.body.end)
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
     
+  console.log('New cursor value:', lastEnd);
   return { ...state, data: {}, references: [], lastEnd };
 });
