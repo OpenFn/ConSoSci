@@ -30,7 +30,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     //FOR NEW TESTING//
     { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption'}, //form with repeat groups
     { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'}, //form with nested repeat groups
-    { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche'} //form with nested repeat groups - eu swm
+    { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche'}, //form with nested repeat groups - eu swm
+    { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm'} //Consommation Urbaine SWM
     
     
     
