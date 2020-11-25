@@ -117,7 +117,7 @@ each(
             ''
           );
         }
-        mapping += ') \n';
+        mapping += '); \n';
         // END OF BUILDING MAPPINGS
         expression += wrapper(columns[0], mapping);
       }
@@ -216,6 +216,5 @@ each(
     return request({ method, path, data: { job } }, state => {
       return state;
     })(state);
-    return state;
   })
 );
