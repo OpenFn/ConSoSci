@@ -10,13 +10,14 @@ alterState(state => {
     surveys: [
       //** Specify new forms to fetch here **//
      //{ id: 'acZdoLnafZ5WZscgVErALo', name: 'Form Project Name'},
-     { id: 'a83rSAZ9Cehk26SSkSJm8Z', name: 'WCS_KidsOR_V323novCopyOfKidsorDemo'},
-     { id: 'aeUjHuADwhK9RKGz8cgr5W', name: 'WCS_KidsOR_V423novCopyOfKidsorDemo'},
-     { id: 'aEAqMfzhGtgx5ZoYp3rPCb', name: 'WCS_Marche_24novSwmMarcheTest'},
-     { id: 'aq8jbMUZ89LndzDdUiWeA4', name: 'WCS_marche_V224novSwmMarcheTest'},
-     { id: 'avW25WTT7t2LDcgeq426dM', name: 'WCS_KidsOR_24novCopyOfKidsorDemo'},
-     { id: 'aRfFb8z8HGiaUfTCZoe7t8', name: 'test_form_from_xls_2.xls'},
-     { id: 'an2x2PxChR6SjmASEFQcmh', name: 'WCS_RuralConsumption_25novWcsRuralConsumptionTest'}
+    // { id: 'a83rSAZ9Cehk26SSkSJm8Z', name: 'WCS_KidsOR_V323novCopyOfKidsorDemo'},
+    // { id: 'aeUjHuADwhK9RKGz8cgr5W', name: 'WCS_KidsOR_V423novCopyOfKidsorDemo'},
+    // { id: 'aEAqMfzhGtgx5ZoYp3rPCb', name: 'WCS_Marche_24novSwmMarcheTest'},
+    // { id: 'aq8jbMUZ89LndzDdUiWeA4', name: 'WCS_marche_V224novSwmMarcheTest'},
+    // { id: 'avW25WTT7t2LDcgeq426dM', name: 'WCS_KidsOR_24novCopyOfKidsorDemo'},
+    // { id: 'aRfFb8z8HGiaUfTCZoe7t8', name: 'test_form_from_xls_2.xls'},
+    // { id: 'an2x2PxChR6SjmASEFQcmh', name: 'WCS_RuralConsumption_25novWcsRuralConsumptionTest'}
+    { id: 'a3fpvhRAUoGPrPGZvSdzAW', name: 'BwalyaSurvey_V2'}
 
     
       
