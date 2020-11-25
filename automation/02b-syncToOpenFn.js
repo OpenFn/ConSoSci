@@ -65,6 +65,23 @@ each(
 
         var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
+        function wrapper(column, mapping) {
+          let prefix = '';
+          const depth = column.depth;
+          if (depth > 1) {
+            for (var i = 0; i < depth - 1; i++) {
+              prefix += `each(dataPath('body.${column.path[i]}[*]'), `;
+            }
+            prefix += mapping;
+            for (var i = 0; i < depth - 1; i++) {
+              prefix += ') \n';
+            }
+
+            return prefix;
+          }
+          return mapping;
+        }
+
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
@@ -75,34 +92,37 @@ each(
                 ? `state.data.body.${paths[k].replace('/', '')}`
                 : `${paths[k]}`;
         }
-
-        mapKoboToPostgres.Payload = 'state.data.body';
+        mapKoboToPostgres.Payload = `state.data${
+          columns[0].depth > 1 ? '' : '.body'
+        }`;
 
         if (name !== `${state.prefix1}__KoboDataset`)
           mapKoboToPostgres[state.uuid] = __newUuid; // This is the Uuid of the current table in form[]
 
-        let mapping = '';
+        const operation = depth > 0 ? `upsertMany` : `upsert`;
+        var uuid =
+          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : state.uuid;
+
+        let mapping = `${operation}('${name}', '${uuid}',`;
+
         if (columns[0].depth > 0) {
-          mapping = `state => state.data.body.['${columns[0].path.join(
-            '/'
-          )}'].map((x, i) => (${JSON.stringify(
+          mapping += `state => state.data${
+            columns[0].depth > 1 ? '' : '.body'
+          }['${columns[0].path.join('/')}'].map((x, i) => (${JSON.stringify(
             mapKoboToPostgres,
             null,
             2
           ).replace(/"/g, '')}))`;
+        } else {
+          mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          );
         }
+        mapping += ') \n';
         // END OF BUILDING MAPPINGS
 
-        const operation = depth > 0 ? `upsertMany` : `upsert`;
-
-        var uuid =
-          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : state.uuid;
-        expression +=
-          `${operation}('${name}', '${uuid}', ${
-            depth > 0
-              ? mapping
-              : JSON.stringify(mapKoboToPostgres, null, 2).replace(/"/g, '')
-          });` + '\n';
+        expression = wrapper(columns[0], mapping);
         state.data[i].expression = expression;
         state.data[i].triggerCriteria = { form: `${form_name}` };
       }
