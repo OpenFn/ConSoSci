@@ -65,8 +65,12 @@ get(`${state.data.url}`, {}, state => {
     });
     form = form.map(x => {
       const name = x.name || x.$autoname;
-      x.name = `${name.split(/-/).join('_')}`;
-      return x;
+      return {
+        name: `${name.split(/-/).join('_')}`,
+        type: x.type,
+        autoname: x.$autoname,
+        unique: x.unique,
+      };
     });
     //.filter(x => x.name !== undefined);
     // Adding a column as jsonb to take the whole payload
