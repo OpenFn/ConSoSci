@@ -71,7 +71,7 @@ get(`${state.data.url}`, {}, state => {
     //.filter(x => x.name !== undefined);
     // Adding a column as jsonb to take the whole payload
     form.push({ name: 'Payload', type: 'jsonb' });
-
+    form.push({ name: uuid, type: 'text', unique: true });
     return form;
   }
 

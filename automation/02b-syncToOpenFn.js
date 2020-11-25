@@ -2,23 +2,22 @@ alterState(state => {
   return { ...state, projectId: 1168 };
 });
 
-alterState(state => {
-  function addUUIDs(object, key, initialUuid) {
-    if (initialUuid) {
-      object[key] = initialUuid;
-    }
+each(
+  '$.forms[*]',
+  alterState(state => {
+    var expression = `alterState(state => {
+  function generateUuid(body, uuid) {
+    for (const property in body) {
+      if (Array.isArray(body[property]) && body !== null) {
+        body['__generatedUuid'] = uuid;
 
-    for (const property in object) {
-      if (Array.isArray(object[property]) && object !== null) {
-        object[property].forEach((thing, i, arr) => {
+        body[property].forEach((thing, i, arr) => {
           if (thing !== null) {
-            thing[key] =
-              thing['depth'] > 0
-                ? `${object[key]} + '-' + i`
-                : `${object[key]}`;
+            let newUuid = uuid + '-' + (i + 1);
+            thing['__generatedUuid'] = newUuid;
             for (const property in thing) {
               if (Array.isArray(thing[property])) {
-                addUUIDs(thing, key);
+                generateUuid(thing, newUuid);
               }
             }
           }
@@ -26,19 +25,13 @@ alterState(state => {
       }
     }
   }
-  addUUIDs(
-    state.forms,
-    '__newUuid',
-    `state.data.body._id+'-'+state.data.body._xform_id_string`
+
+  generateUuid(
+    state.data.body,
+    state.data.body._id+'-'+state.data.body._xform_id_string
   );
-
   return state;
-});
-
-each(
-  '$.forms[*]',
-  alterState(state => {
-    var expression = '';
+}); \n`;
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, formName, depth, __newUuid } = state.data[i];
@@ -97,7 +90,10 @@ each(
         }`;
 
         if (name !== `${state.prefix1}__KoboDataset`)
-          mapKoboToPostgres[state.uuid] = __newUuid; // This is the Uuid of the current table in form[]
+          mapKoboToPostgres[state.uuid] =
+            columns[0].depth > 0
+              ? `x['__generatedUuid']`
+              : `dataValue('body.__generatedUuid')`;
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         var uuid =
@@ -121,12 +117,11 @@ each(
         }
         mapping += ') \n';
         // END OF BUILDING MAPPINGS
-
-        expression = wrapper(columns[0], mapping);
-        state.data[i].expression = expression;
-        state.data[i].triggerCriteria = { form: `${form_name}` };
+        expression += wrapper(columns[0], mapping);
       }
     }
+    state.data.expression = expression;
+    state.data.triggerCriteria = { form: `${form_name}` };
     return state;
   })
 );
@@ -164,7 +159,7 @@ each(
 
     const name = `auto/${state.data[1].name}`;
 
-    const criteria = state.data[1].triggerCriteria;
+    const criteria = state.data.triggerCriteria;
 
     const triggerIndex = triggerNames.indexOf(name);
 
@@ -198,7 +193,7 @@ each(
 each(
   '$.forms[*]',
   alterState(state => {
-    const expression = state.data[state.data.length - 1].expression;
+    const expression = state.data.expression;
     console.log('Inserting / Updating job: ', `auto/${state.data[1].name}`);
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
@@ -219,5 +214,6 @@ each(
     return request({ method, path, data: { job } }, state => {
       return state;
     })(state);
+    return state;
   })
 );
