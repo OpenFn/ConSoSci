@@ -37,7 +37,7 @@ each(
       const { columns, name, formName, depth, __newUuid } = state.data[i];
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         var paths = [];
-        form_name = name;
+        form_name = formName;
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
           if (name === `${state.prefix1}__KoboDataset`) {
@@ -159,9 +159,7 @@ each(
     const triggerNames = state.triggers.map(t => t.name);
 
     const name = `auto/${state.data[1].name}`;
-
     const criteria = state.data.triggerCriteria;
-
     const triggerIndex = triggerNames.indexOf(name);
 
     const trigger = {
