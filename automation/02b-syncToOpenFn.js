@@ -135,7 +135,9 @@ each(
       }
     }
     state.data.expression = expression;
-    state.data.triggerCriteria = { form: `${form_name}` };
+    state.data.triggerCriteria = {
+      destination: `${state.prefix1}_${state.prefix2}_${state.tableId}`,
+    };
     return state;
   })
 );

@@ -20,15 +20,15 @@ alterState(state => {
       //{ id: 'a3fpvhRAUoGPrPGZvSdzAW', name: 'BwalyaSurvey_V2'}
       {
         id: 'aDVDagX8TE9NUY7xmvAUpv',
-        name: 'WCS_marche_SwmEtudeMarché2020VendorSales',
+        destination: 'WCS_marche_SwmEtudeMarché2020VendorSales',
       },
       //{ id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'},
-      { id: 'aaayFwZcjbp8gFeYeqohHu', name: 'WCS_swm_26novSwmMarcheTest' },
-      { id: 'atFB5uoXJtzwJoPCKtNPjg', name: 'WCS_swm_26novSwmMarcheTest' },
+      { id: 'aaayFwZcjbp8gFeYeqohHu', destination: 'WCS_swm_26novSwmMarcheTest' },
+      { id: 'atFB5uoXJtzwJoPCKtNPjg', destination: 'WCS_swm_26novSwmMarcheTest' },
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
-      name: survey.name,
+      destination: survey.destination,
       owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
       query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
@@ -38,14 +38,14 @@ alterState(state => {
 });
 
 each(dataPath('surveys[*]'), state => {
-  const { url, query, tag, formId, name, owner } = state.data;
+  const { url, query, tag, formId, name, destination, owner } = state.data;
   return get(`${url}${query}`, {}, state => {
-    state.data.submissions = state.data.results.map((submission, i) => {
+    state.data.submissions = state.data.results.map(submission => {
       return {
-        i,
         // Here we append the tags defined above to the Kobo form submission data
         form: name,
-        formName: name,
+        destination,
+        formName: destination,
         formOwner: owner,
         body: submission,
       };
