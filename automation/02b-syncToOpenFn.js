@@ -30,6 +30,8 @@ each(
     state.data.body,
     state.data.body._id+'-'+state.data.body._xform_id_string
   );
+
+  state.data = { ...state.data, ...state.data.body };
   return state;
 }); \n`;
     var form_name = '';
@@ -43,7 +45,7 @@ each(
           if (name === `${state.prefix1}__KoboDataset`) {
             const values = {
               FormName: `'${formName}'`,
-              DatasetId: 'state.data.body._xform_id_string',
+              DatasetId: "dataValue('_xform_id_string')",
               LastUpdated: 'new Date()',
             };
             for (x in values) paths.push(values[x]);
@@ -65,7 +67,7 @@ each(
           const depth = column.depth;
           if (depth > 1) {
             for (var i = 0; i < depth - 1; i++) {
-              prefix += `each(dataPath('body.${column.path[i]}[*]'), `;
+              prefix += `each(dataPath('${column.path[i]}[*]'), `;
             }
             prefix += mapping;
             for (var i = 0; i < depth - 1; i++) {
@@ -84,18 +86,20 @@ each(
           else
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
-                ? `state.data.body['${paths[k]}']`
+                ? `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
         }
-        mapKoboToPostgres.Payload = `state.data${
-          columns[0].depth > 1 ? '' : '.body'
-        }`;
+
+        // Here we use an expression, rather than a function, to take the ======
+        // original, unaltered body of the Kobo submission as JSON.
+        mapKoboToPostgres.Payload = `state.data.body`;
+        // =====================================================================
 
         if (name !== `${state.prefix1}__KoboDataset`)
           mapKoboToPostgres[state.uuid] =
             columns[0].depth > 0
               ? `x['__generatedUuid']`
-              : `dataValue('body.__generatedUuid')`;
+              : `dataValue('__generatedUuid')`;
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         var uuid =
@@ -104,13 +108,12 @@ each(
         let mapping = `${operation}('${name}', '${uuid}',`;
 
         if (columns[0].depth > 0) {
-          mapping += `state => state.data${
-            columns[0].depth > 1 ? '' : '.body'
-          }['${columns[0].path.join('/')}'].map(x => (${JSON.stringify(
-            mapKoboToPostgres,
-            null,
-            2
-          ).replace(/"/g, '')}))`;
+          mapping += `state => state.data['${columns[0].path.join(
+            '/'
+          )}'].map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}))`;
         } else {
           mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
             /"/g,
