@@ -19,7 +19,8 @@ alterState(state => {
     // { id: 'an2x2PxChR6SjmASEFQcmh', name: 'WCS_RuralConsumption_25novWcsRuralConsumptionTest'}
     //{ id: 'a3fpvhRAUoGPrPGZvSdzAW', name: 'BwalyaSurvey_V2'}
     { id: 'aDVDagX8TE9NUY7xmvAUpv', name: 'WCS_marche_SwmEtudeMarché2020VendorSales'},
-    { id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'}
+    { id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'},
+    { id: 'aaayFwZcjbp8gFeYeqohHu', name: 'WCS_swm_26novSwmMarcheTest'},
     
 
     
