@@ -69,7 +69,7 @@ each(
             }
             prefix += mapping;
             for (var i = 0; i < depth - 1; i++) {
-              prefix += ') \n';
+              prefix += ')';
             }
 
             return prefix;
@@ -117,9 +117,8 @@ each(
             ''
           );
         }
-        mapping += '); \n';
         // END OF BUILDING MAPPINGS
-        expression += wrapper(columns[0], mapping);
+        expression += wrapper(columns[0], mapping) + '); \n';
       }
     }
     state.data.expression = expression;
