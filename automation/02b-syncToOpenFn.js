@@ -45,7 +45,7 @@ each(
           // Handling master parent table
           if (name === `${state.prefix1}__KoboDataset`) {
             const values = {
-              FormName: `'${formName}'`,
+              FormName: "dataValue('formName')",
               DatasetId: "dataValue('_xform_id_string')",
               LastUpdated: 'new Date()',
             };
