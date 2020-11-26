@@ -45,7 +45,7 @@ alterState(state => {
 });
 
 each(dataPath('surveys[*]'), state => {
-  const { url, query, tag, formId, name, destination, owner } = state.data;
+  const { url, query, tag, formId, formName, destination, owner } = state.data;
   return get(`${url}${query}`, {}, state => {
     state.data.submissions = state.data.results.map(submission => {
       return {
