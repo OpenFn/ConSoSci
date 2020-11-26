@@ -18,20 +18,15 @@ alterState(state => {
       // { id: 'aRfFb8z8HGiaUfTCZoe7t8', name: 'test_form_from_xls_2.xls'},
       // { id: 'an2x2PxChR6SjmASEFQcmh', name: 'WCS_RuralConsumption_25novWcsRuralConsumptionTest'}
       // { id: 'a3fpvhRAUoGPrPGZvSdzAW', name: 'BwalyaSurvey_V2'}
-      // {
-      //   id: 'aDVDagX8TE9NUY7xmvAUpv',
-      //   formName: 'WCS_marche_SwmEtudeMarché2020VendorSales',
-      //   destination: 'WCS_marche_marche',
-      // },
+      {
+        id: 'aDVDagX8TE9NUY7xmvAUpv',
+        formName: 'WCS_marche_SwmEtudeMarché2020VendorSales',
+        destination: 'WCS_marche_marche',
+      },
       // { id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'},
       {
         id: 'aaayFwZcjbp8gFeYeqohHu',
         formName: '26Nov SWM Marche Test',
-        destination: 'WCS_marche_marche',
-      },
-      {
-        id: 'atFB5uoXJtzwJoPCKtNPjg',
-        formName: 'Nov26 WCS One-1st-Level With Chaiwa Test',
         destination: 'WCS_marche_marche',
       },
     ].map(survey => ({
