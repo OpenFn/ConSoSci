@@ -32,7 +32,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'}, //form with nested repeat groups
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche'}, //form with nested repeat groups - eu swm
     { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm'}, //Consommation Urbaine SWM
-    { uid: 'aEAqMfzhGtgx5ZoYp3rPCb', p1: 'WCS', p2: 'swm'} //24Nov SWM Marche Test
+    { uid: 'aaayFwZcjbp8gFeYeqohHu', p1: 'WCS', p2: 'swm'} //25Nov SWM Marche Test
     
     
     
