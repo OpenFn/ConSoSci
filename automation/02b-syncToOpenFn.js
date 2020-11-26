@@ -10,9 +10,9 @@ each(
     for (const property in body) {
       if (Array.isArray(body[property]) && body !== null) {
         body['__generatedUuid'] = uuid;
-
         body[property].forEach((thing, i, arr) => {
           if (thing !== null) {
+            thing['__parentUuid'] = uuid;
             let newUuid = uuid + '-' + (i + 1);
             thing['__generatedUuid'] = newUuid;
             for (const property in thing) {
@@ -34,6 +34,7 @@ each(
   state.data = { ...state.data, ...state.data.body };
   return state;
 }); \n`;
+
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, formName, depth, __newUuid } = state.data[i];
@@ -95,11 +96,20 @@ each(
         mapKoboToPostgres.Payload = `state.data.body`;
         // =====================================================================
 
-        if (name !== `${state.prefix1}__KoboDataset`)
+        if (name !== `${state.prefix1}__KoboDataset`) {
           mapKoboToPostgres[state.uuid] =
             columns[0].depth > 0
               ? `x['__generatedUuid']`
               : `dataValue('__generatedUuid')`;
+
+          if (columns[0].depth > 1) {
+            mapKoboToPostgres[
+              `${columns[0].path.slice(-2, -1).pop()}_uuid`
+            ] = `x['__parentUuid']`;
+          } else if (columns[0].depth > 0) {
+            mapKoboToPostgres[`${state.tableId}_uuid`] = `x['__parentUuid']`;
+          }
+        }
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         var uuid =

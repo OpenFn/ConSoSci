@@ -3,6 +3,7 @@ get(`${state.data.url}`, {}, state => {
   // PREFIX HANDLER
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || 'FormGroup';
+  const tableId = state.references[0].tableId;
   const uuid = 'GeneratedUuid';
   // END OF PREFIX HANDLER
 
@@ -71,10 +72,20 @@ get(`${state.data.url}`, {}, state => {
         required: false,
       };
     });
-    //.filter(x => x.name !== undefined);
-    // Adding a column as jsonb to take the whole payload
-    form.push({ name: 'Payload', type: 'jsonb' });
-    form.push({ name: uuid, type: 'text', unique: true });
+
+    const parentColumn =
+      questions[0].path.length > 1
+        ? `${questions[0].path.slice(-2, -1)[0]}_uuid`
+        : `${tableId}_uuid`;
+
+    if (questions[0].depth > 0) form.push({ name: parentColumn, type: 'text' });
+
+    form.push(
+      // Adding a column as jsonb to take the whole payload
+      { name: 'Payload', type: 'jsonb' },
+      { name: uuid, type: 'text', unique: true }
+    );
+
     return form;
   }
 
@@ -103,33 +114,16 @@ get(`${state.data.url}`, {}, state => {
         firstEndAfterLastBegin - lastBegin + 1
       );
 
-      const groupName = group[0].path
-        .join('_')
-        .split('_')
-        .map(x => {
-          return x[0];
-        })
-        .join('');
-
-      let name =
-        `${prefix1}_${prefix2}_` +
+      const name =
+        `${prefix1}_${prefix2}_${tableId}_` +
         toCamelCase(
-          (formName + '_' + group[0].path.join('_'))
+          group[0].path
+            .slice(-1)
+            .pop()
             .split(/\s|-|'/)
             .join('_')
             .replace('.', '')
         );
-
-      if (name.length > 63) {
-        name =
-          `${prefix1}_${prefix2}_` +
-          toCamelCase(
-            (formName + '_' + groupName)
-              .split(/\s|-|'/)
-              .join('_')
-              .replace('.', '')
-          );
-      }
 
       tables.push({
         name,
@@ -143,14 +137,7 @@ get(`${state.data.url}`, {}, state => {
 
     tables.push(
       {
-        name:
-          `${prefix1}_${prefix2}_` +
-          toCamelCase(
-            formName
-              .split(/\s|-|'/)
-              .join('_')
-              .replace('.', '')
-          ),
+        name: `${prefix1}_${prefix2}_${tableId}`,
         columns: questionToType(questions),
         formName,
         depth: 0,
@@ -248,5 +235,6 @@ get(`${state.data.url}`, {}, state => {
     prefix1,
     prefix2,
     uuid,
+    tableId,
   };
 });
