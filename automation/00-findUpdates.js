@@ -33,7 +33,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche'}, //form with nested repeat groups - eu swm
     { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm'}, //Consommation Urbaine SWM
     // { uid: 'atFB5uoXJtzwJoPCKtNPjg', p1: 'WCS', p2: '4levelrepeat'}, //Nov26 WCS One-1st-Level With One-2nd-Level-With One 3-rd-Level With One 4th Groups
-    { uid: 'aMW7j4pwdUZcbv5772EPYa', p1: 'WCS', p2: '4levelrepeat'} //Nov26 WCS atFB5uoXJtzwJoPCKtNPjg 4 level
+    { uid: 'aMW7j4pwdUZcbv5772EPYa', p1: 'WCS', p2: '4levelrepeat'}, //Nov26 WCS atFB5uoXJtzwJoPCKtNPjg 4 level
+    { uid: 'ammbPRCFv4sF9UFxDMifnq', p1: 'WCS', p2: '4levelrepeat'} //Nov26 WCS 4 level
 
 
     
