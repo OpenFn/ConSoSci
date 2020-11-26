@@ -23,8 +23,8 @@ alterState(state => {
         destination: 'WCS_marche_SwmEtudeMarché2020VendorSales',
       },
       //{ id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'},
-      { id: 'aaayFwZcjbp8gFeYeqohHu', destination: 'WCS_swm_26novSwmMarcheTest' },
-      { id: 'atFB5uoXJtzwJoPCKtNPjg', destination: 'WCS_swm_26novSwmMarcheTest' },
+      { id: 'aaayFwZcjbp8gFeYeqohHu', destination: 'WCS_marche_marche' },
+      { id: 'atFB5uoXJtzwJoPCKtNPjg', destination: 'WCS_marche_marche' },
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
