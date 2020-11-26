@@ -33,8 +33,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche', tableId: "marche2"}, //form with nested repeat groups - eu swm
     { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm', tableId: "swm"}, //Consommation Urbaine SWM
     // { uid: 'atFB5uoXJtzwJoPCKtNPjg', p1: 'WCS', p2: '4levelrepeat'}, //Nov26 WCS One-1st-Level With One-2nd-Level-With One 3-rd-Level With One 4th Groups
-    { uid: 'aMW7j4pwdUZcbv5772EPYa', p1: 'WCS', p2: '4levelrepeat', tableId: "4level1"}, //Nov26 WCS atFB5uoXJtzwJoPCKtNPjg 4 level
-    { uid: 'ammbPRCFv4sF9UFxDMifnq', p1: 'WCS', p2: '4levelrepeat', tableId: "4level2"}, //Nov26 WCS 4 level
+    { uid: 'aMW7j4pwdUZcbv5772EPYa', p1: 'WCS', p2: '4levelrepeat', tableId: "fourlevel1"}, //Nov26 WCS atFB5uoXJtzwJoPCKtNPjg 4 level
+    { uid: 'ammbPRCFv4sF9UFxDMifnq', p1: 'WCS', p2: '4levelrepeat', tableId: "fourlevel2"}, //Nov26 WCS 4 level
     { uid: 'ayg49kwVRoKu2aa7ck3YX2', p1: 'WCS', p2: 'norepeat', tableId: "longName"} //Nov26 Consommation Urbaine SWM Form without repeat group but with a long name
 
     
