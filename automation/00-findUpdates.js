@@ -6,40 +6,8 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    // { uid: 'kobo--form-id-from-url', p1: 'Org', p2: 'FormGroupPrefix' },
-    // { uid: 'aZv8deXKd8AqfSVGXCdHrX', p1: 'WCS', p2: 'Questionnaire' },
-    // { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'Marché' },
-    // { uid: 'afgHDJgMfp5cZrPbAQWerN', p1: 'WCS', p2: 'Test' },
-    // { uid: 'aS6QvorHkKGZm2GmrGMnY4', p1: 'WCS', p2: 'Test2' },
-    // { uid: 'aJHaEJ7mwDKW2P7cCUBcw7', p1: 'WCS', p2: 'Test2' },
-    // { uid: 'aY3prGHbfndVhAdDKrpmjt', p1: 'WCS', p2: 'Marché', surveyTable: 'MarchéSurvey' },
-    // { uid: 'aydKvZSY9kdnDZn6uLvqgZ', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020
-    // { uid: 'acZdoLnafZ5WZscgVErALo', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v1'}, //test automation 17nov2020 with duplicated and renamed form
-    // { uid: 'aMW7HQB9UVzdLN8sfDGkgN', p1: 'WCS', p2: 'Cameratrapping', surveyTable: 'CameratrappingSurvey_v2'}, //test automation 17nov2020 with same form name but different form
-    // { uid: 'aeUjHuADwhK9RKGz8cgr5W', p1: 'WCS', p2: 'KidsOR'},
-    // { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'CBC', p2: 'HHRegistration'},
-    // { uid: 'aAQeCE4PGVMEqCC5GHGPk2', p1: 'WCS', p2: 'Chaiwa'},
-    // { uid: 'aQWDHLVMn5PBjDj72SSFn5', p1: 'WCS', p2: 'Banda'},
-    // { uid: 'agsDdFdudPcQMwQMLVr7VU', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V1'},
-    // { uid: 'ayipUH4QTaaA7vMiukeqPV', p1: 'WCS', p2: 'Mwanza', SurveyTable: 'MwanzaSurvey_V2'},
-    // { uid: 'aTvoBtrRc4oPEGEXtHU6dT', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V1'},
-    // { uid: 'a3fpvhRAUoGPrPGZvSdzAW', p1: 'WCS', p2: 'Bwalya', SurveyTable: 'BwalyaSurvey_V2'},
-    // { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche'},
-    // { uid: 'ar9wXnLW2sdaamGgJsUrjP', p1: 'WCS', p2: 'BNSextended'},
-    
-    //FOR NEW TESTING//
-    { uid: 'an2x2PxChR6SjmASEFQcmh', p1: 'WCS', p2: 'RuralConsumption', tableId: "RC"}, //form with repeat groups
-    { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'marche', tableId: "marche"}, //form with nested repeat groups
-    { uid: 'aDVDagX8TE9NUY7xmvAUpv', p1: 'WCS', p2: 'marche', tableId: "marche"}, //form with nested repeat groups - eu swm
-    { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm', tableId: "swm"}, //Consommation Urbaine SWM
-    // { uid: 'atFB5uoXJtzwJoPCKtNPjg', p1: 'WCS', p2: '4levelrepeat'}, //Nov26 WCS One-1st-Level With One-2nd-Level-With One 3-rd-Level With One 4th Groups
-    { uid: 'aMW7j4pwdUZcbv5772EPYa', p1: 'WCS', p2: '4levelrepeat', tableId: "fourlevel"}, //Nov26 WCS atFB5uoXJtzwJoPCKtNPjg 4 level
-    { uid: 'ammbPRCFv4sF9UFxDMifnq', p1: 'WCS', p2: '4levelrepeat', tableId: "fourlevel"}, //Nov26 WCS 4 level
-    { uid: 'ayg49kwVRoKu2aa7ck3YX2', p1: 'WCS', p2: 'norepeat', tableId: "longName"} //Nov26 Consommation Urbaine SWM Form without repeat group but with a long name
-
-    
-    
-    
+   // { uid: 'ayg49kwVRoKu2aa7ck3YX2', p1: 'WCS', p2: 'norepeat', tableId: "longName"} //form: Nov26 Consommation Urbaine SWM Form without repeat group but with a long name
+    { uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm', tableId: "ConsommationUrbaineSwm"}, //form: Consommation Urbaine SWM
     
   ];
 
