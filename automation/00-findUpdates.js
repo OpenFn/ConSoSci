@@ -7,7 +7,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
    // { uid: 'ayg49kwVRoKu2aa7ck3YX2', p1: 'WCS', p2: 'norepeat', tableId: "longName"} //form: Nov26 Consommation Urbaine SWM Form without repeat group but with a long name
-      { uid: 'aq8jbMUZ89LndzDdUiWeA4', p1: 'WCS', p2: 'swm', tableId: 'V224NovSWMMarcheTest'}
+      { uid: 'ar9wXnLW2sdaamGgJsUrjP', p1: 'WCS', p2: 'consosci', tableId: 'Socio-EcoUganda2020'}
     
   ];
 
