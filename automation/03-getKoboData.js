@@ -11,7 +11,7 @@ alterState(state => {
       {
         id: 'a9eJJ2hrRSMCJZ95WMc93j',
         formName: 'Consommation Urbaine SWM',
-        destination: 'WCS_swm_ConsommationUrbaineSwm',
+        destination: 'WCS_swm_ConsommationUrbaineSwm'
       }
       /*{
         id: 'aDVDagX8TE9NUY7xmvAUpv',
