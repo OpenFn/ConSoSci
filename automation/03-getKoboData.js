@@ -9,10 +9,15 @@ alterState(state => {
   state.data = {
     surveys: [
       {
+        id: 'a3mbXtJccsMaRRC5sn8fsv',
+        formName: 'WCS New Kobo Form',
+        destination: 'WCS_swm_WCSNewKoboForm'
+      }
+      /*{
         id: 'a9eJJ2hrRSMCJZ95WMc93j',
         formName: 'Consommation Urbaine SWM',
         destination: 'WCS_swm_ConsommationUrbaineSwm'
-      }
+      }*/
       /*{
         id: 'aDVDagX8TE9NUY7xmvAUpv',
         formName: 'WCS_marche_SwmEtudeMarché2020VendorSales',
