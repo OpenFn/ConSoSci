@@ -8,11 +8,17 @@ alterState(state => {
   const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
+        {
+        id: 'an92wDyVMw4yUtCo4d7EWi',
+        formName: 'WCS 4th Groups Test',
+        destination: 'WCS_4levelrepeat_fourlevel'
+      }
+      /*
       {
         id: 'a3mbXtJccsMaRRC5sn8fsv',
         formName: 'WCS New Kobo Form',
         destination: 'WCS_swm_WCSNewKoboForm'
-      }
+      }*/
       /*{
         id: 'a9eJJ2hrRSMCJZ95WMc93j',
         formName: 'Consommation Urbaine SWM',
