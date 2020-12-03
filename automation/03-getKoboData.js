@@ -18,7 +18,11 @@ alterState(state => {
         formName: 'Dec3 WCS 2nd Level Groups',
         destination: 'WCS_group_GroupTest'
       },
-       
+      {
+        id: 'aaayFwZcjbp8gFeYeqohHu',
+        formName: 'WCS New Kobo Form 5',
+        destination: 'WCS_swm_WCSNewKoboForm5'
+      },
       /*
       {
         id: 'a3mbXtJccsMaRRC5sn8fsv',
