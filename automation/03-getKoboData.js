@@ -12,6 +12,11 @@ alterState(state => {
         id: 'an92wDyVMw4yUtCo4d7EWi',
         formName: 'WCS 4th Groups Test',
         destination: 'WCS_4levelrepeat_fourlevel'
+      },
+       {
+        id: 'axGKmEwWdNAqWERTMGrPpy',
+        formName: 'Dec3 WCS 2nd Level Groups',
+        destination: 'WCS_group_GroupTest'
       }
       /*
       {
