@@ -19,9 +19,9 @@ alterState(state => {
         destination: 'WCS_group_GroupTest'
       },
       {
-        id: 'aaayFwZcjbp8gFeYeqohHu',
-        formName: 'WCS New Kobo Form 5',
-        destination: 'WCS_swm_WCSNewKoboForm5'
+        id: 'a2eNZrDoyreoMhCemg6R3j',
+        formName: 'Dec3 SWM Marche Test',
+        destination: 'WCS_marche_Dec3SWMMarcheTest'
       },
       /*
       {
