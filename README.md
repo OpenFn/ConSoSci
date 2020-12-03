@@ -127,7 +127,7 @@ See the Wildmeat repository. These jobs run on the `Wildmeat` OpenFn.org project
 https://github.com/OpenFn/wcs-wildmeat
    
 
-# Backlog/ Ideas
+# Backlog & Ideas for Future Phases
 ### 1. BNS and NGRT
 1. Implement compatibility with Postgres (*This year?*)
 2. Training for WCS admins on editing & writing basic jobs (*This year?*)
