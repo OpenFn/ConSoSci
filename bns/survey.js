@@ -94,7 +94,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
-  SurveyDate: dataValue('today'),
+  SurveyDate: state => (state.data.today ? state.data.today : state.data._submission_time),
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
