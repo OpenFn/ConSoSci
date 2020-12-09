@@ -65,8 +65,7 @@ alterState(state => {
       }));
 
     state.matrix = Object.keys(state.data)
-      .filter(key => key.startsWith('bns_matrix_'))
-      .filter(key => key.endsWith('_possess'))
+      .filter(key => key.includes('bns_matrix_'))
       .map(key => {
         const item = key.substring(11, key.indexOf('/'));
         return {
