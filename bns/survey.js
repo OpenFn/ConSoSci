@@ -67,7 +67,11 @@ alterState(state => {
     state.matrix = Object.keys(state.data)
       .filter(key => key.includes('bns_matrix_'))
       .map(key => {
-        const item = key.substring(11, key.indexOf('/'));
+        //const item = key.substring(11, key.indexOf('/'));
+        const item = key.substring(
+          key.lastIndexOf('bns_matrix_') + 'bns_matrix_'.length,
+          key.lastIndexOf('_')
+        );
         return {
           DatasetUuidId: state.data.datasetId,
           //Id: state.data._id,
@@ -93,7 +97,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
-  SurveyDate: state => (state.data.today ? state.data.today : state.data._submission_time),
+  SurveyDate: state =>
+    state.data.today ? state.data.today : state.data._submission_time,
   Landscape: dataValue('landscape'),
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
