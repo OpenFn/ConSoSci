@@ -67,7 +67,6 @@ alterState(state => {
     state.matrix = Object.keys(state.data)
       .filter(key => key.includes('bns_matrix_'))
       .map(key => {
-        //const item = key.substring(11, key.indexOf('/'));
         const item = key.substring(
           key.lastIndexOf('bns_matrix_') + 'bns_matrix_'.length,
           key.lastIndexOf('_')
@@ -77,10 +76,18 @@ alterState(state => {
           //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
-          have: state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
+          have:
+            state.data[
+              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
+            ],
           necessary:
-            state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
-          quantity: state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
+            state.data[
+              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
+            ],
+          quantity:
+            state.data[
+              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
+            ],
         };
       });
     // ===========================================================================
