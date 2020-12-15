@@ -1,0 +1,251 @@
+{
+    "url": "https://kf.kobotoolbox.org/api/v2/assets/aZv8deXKd8AqfSVGXCdHrX/?format=json",
+    "owner": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+    "owner__username": "openfn_kobo",
+    "parent": null,
+    "ancestors": null,
+  
+    "asset_type": "survey",
+    "date_created": "2020-10-27T07:22:46.165290Z",
+    "summary": {
+        "geo": true,
+        "labels": ["Le nom de l'enquêteur en charge de l'interview", "Le nom du regroupement", "Le nom du village", "## <span style=\"color:green\">La maison</span>", "Avec quel matériau principal les murs de la maison sont ils construit ?"],
+        "columns": ["name", "type", "label", "required", "select_from_list_name", "appearance", "choice_filter", "relevant", "constraint", "constraint_message", "hint", "calculation", "kobo--matrix_list", "repeat_count"],
+        "languages": [null],
+        "row_count": 630,
+        "naming_conflicts": ["main_sp_hunted_group_label", "__version__", "__version__", "__version__", "__version__", "__version__", "__version__", "__version__", "__version__", "__version__"],
+        "default_translation": null
+    },
+    "date_modified": "2020-10-27T10:44:51.109796Z",
+    "version_id": "vB2mDZAuV8HnTHaqJaBiFc",
+    "version__content_hash": "6df9e255fe915dac46e68c7156aae38c512d2a9d",
+    "version_count": 3,
+    "has_deployment": true,
+    "deployed_version_id": "vB2mDZAuV8HnTHaqJaBiFc",
+    "deployment__identifier": "https://kc.kobotoolbox.org/openfn_kobo/forms/aZv8deXKd8AqfSVGXCdHrX",
+
+   
+    "report_custom": {},
+    "map_styles": {},
+    "map_custom": {},
+    "content": {
+        "schema": "1",
+        "survey": [{
+            "name": "start",
+            "type": "start",
+            "$kuid": "oT5o3lLro",
+            "$autoname": "start"
+        }, {
+            "name": "surveyor",
+            "type": "select_one",
+            "$kuid": "oUTFDBePt",
+            "label": ["Le nom de l'enquêteur en charge de l'interview"],
+            "required": true,
+            "$autoname": "surveyor",
+            "select_from_list_name": "surveyor"
+        },  {
+            "name": "wall_material",
+            "type": "select_one",
+            "$kuid": "SZIhSxed1",
+            "label": ["Avec quel matériau principal les murs de la maison sont ils construit ?"],
+            "required": true,
+            "$autoname": "wall_material",
+            "appearance": "w3 horizontal",
+            "select_from_list_name": "wall_material"
+        }, {
+            "name": "other_wall_material",
+            "type": "text",
+            "$kuid": "6wEDHtmv7",
+            "label": ["Autre matériau"],
+            "relevant": "${wall_material} = 'autre'",
+            "required": true,
+            "$autoname": "other_wall_material"
+        }, {
+            "name": "floor_material",
+            "type": "select_one",
+            "$kuid": "dUFH5QAqX",
+            "label": ["Avec quel matériau principal le sol de la maison est il construit ?"],
+            "required": true,
+            "$autoname": "floor_material",
+            "appearance": "w3 horizontal",
+            "select_from_list_name": "floor_material"
+        },  {
+            "name": "info_consumption_history",
+            "type": "begin_repeat",
+            "$kuid": "2wGRAfMkh",
+            "required": false,
+            "$autoname": "info_consumption_history",
+            "repeat_count": "${nb_meal}"
+        }, {
+            "name": "meal_nb",
+            "type": "calculate",
+            "$kuid": "bnkIcUM1G",
+            "$autoname": "meal_nb",
+            "calculation": "position(..)"
+        }, {
+            "name": "intro_meal_nb",
+            "type": "note",
+            "$kuid": "xItUiZnqs",
+            "label": ["#####Repas n°${meal_nb}"],
+            "$autoname": "intro_meal_nb"
+        }, {
+            "name": "date",
+            "type": "date",
+            "$kuid": "MRXyB7VBQ",
+            "label": ["Quelle est la date du repas n°${meal_nb}?"],
+            "required": true,
+            "$autoname": "date"
+        }, {
+            "name": "day_period",
+            "type": "select_one",
+            "$kuid": "j5DgJwW7P",
+            "label": ["A quelle période de la journée à été pris ce repas n°${meal_nb}?"],
+            "required": true,
+            "$autoname": "day_period",
+            "appearance": "horizontal",
+            "select_from_list_name": "day_period"
+        }, {
+            "name": "code_repas",
+            "type": "calculate",
+            "$kuid": "G3AtqXzHI",
+            "$autoname": "code_repas",
+            "calculation": "concat('le', ' repas', ' du ', ${date}, ' au ', ${day_period})"
+        }, {
+            "name": "nb_people",
+            "type": "integer",
+            "$kuid": "SFHJ9fuo6",
+            "label": ["Combien de personnes ont partagé ${code_repas}?"],
+            "required": true,
+            "$autoname": "nb_people",
+            "constraint": ".>0",
+            "constraint_message": "La valeur doit être strictement supérieure à zéro"
+        }, {
+            "hint": ["Si la personne répond \"Non\", demander de confirmer si elle/il a mangé de la viande, du poisson, des oeufs ou des poduits laitiers, des haricots, des pois, des lentilles pour être sûr de la réponse."],
+            "name": "eat_protein_yesno",
+            "type": "select_one",
+            "$kuid": "WUXNcORWh",
+            "label": ["Les membres du ménage ont ils mangé de la viande, du poisson , des œufs, des harcots durant ${code_repas}?"],
+            "required": true,
+            "$autoname": "eat_protein_yesno",
+            "select_from_list_name": "yesno"
+        }, {
+            "name": "protein_meal",
+            "type": "begin_repeat",
+            "$kuid": "7gP05RIUl",
+            "relevant": "${eat_protein_yesno} = 'oui'",
+            "$autoname": "protein_meal"
+        }, {
+            "name": "food",
+            "type": "note",
+            "$kuid": "FYchAvZDv",
+            "label": ["Quel produit carné les membres du ménage ont ils consommé pendant ${code_repas}?"],
+            "$autoname": "food"
+        }, {
+            "name": "category1",
+            "type": "select_one",
+            "$kuid": "svL01AqzX",
+            "label": ["Catégorie d'aliment"],
+            "required": true,
+            "$autoname": "category1",
+            "appearance": "horizontal",
+            "select_from_list_name": "category1"
+        }, {
+            "name": "species",
+            "type": "select_one",
+            "$kuid": "lXD2jdp8t",
+            "label": ["Espèce"],
+            "required": true,
+            "$autoname": "species",
+            "appearance": "minimal",
+            "choice_filter": "category1=${category1}",
+            "select_from_list_name": "species"
+        }, {
+            "name": "other_food",
+            "type": "text",
+            "$kuid": "SwRgbumGb",
+            "label": ["Autre produit carné consommé pendant ${code_repas}"],
+            "relevant": "${species} = 'autre'",
+            "required": true,
+            "$autoname": "other_food"
+        }, {
+            "name": "state",
+            "type": "select_one",
+            "$kuid": "gnEfnu5Pw",
+            "label": ["Quel était l'état de cette nourriture ? (Frais, Fumé, En boîte, Congelé etc...)"],
+            "required": true,
+            "$autoname": "state",
+            "appearance": "horizontal",
+            "select_from_list_name": "state"
+        }, {
+            "name": "other_state",
+            "type": "text",
+            "$kuid": "f5iWvz4nw",
+            "label": ["Autre état"],
+            "relevant": "${state} = 'other_state'",
+            "required": true,
+            "$autoname": "other_state"
+        }, {
+            "name": "unit",
+            "type": "select_one",
+            "$kuid": "VaNcR67AB",
+            "label": ["Dans quelle unité voulez vous estimer cette quantité?"],
+            "required": true,
+            "$autoname": "unit",
+            "appearance": "horizontal",
+            "select_from_list_name": "unit"
+        }, {
+            "name": "other_unit",
+            "type": "text",
+            "$kuid": "9ZdZqjqQf",
+            "label": ["Autre unité"],
+            "relevant": "${unit} = 'autre'",
+            "required": true,
+            "$autoname": "other_unit"
+        }, {
+            "name": "unit_number",
+            "type": "decimal",
+            "$kuid": "xUfASJzwP",
+            "label": ["Quelle est le nombre d'unités consommée pendant ${code_repas}?"],
+            "required": true,
+            "$autoname": "unit_number"
+        }, {
+            "name": "unit_price",
+            "type": "integer",
+            "$kuid": "aa4P8L8vk",
+            "label": ["Quel est le prix unitaire de ce produit ?"],
+            "required": true,
+            "$autoname": "unit_price"
+        }, {
+            "name": "obtention",
+            "type": "select_one",
+            "$kuid": "Jiwt1aHl4",
+            "label": ["Comment avez-vous obtenu cette nourriture ?"],
+            "required": true,
+            "$autoname": "obtention",
+            "appearance": "horizontal",
+            "select_from_list_name": "obtention"
+        }, {
+            "name": "other_obtention",
+            "type": "text",
+            "$kuid": "JViE6oV1Z",
+            "label": ["Autre moyen d'obtention des aliments"],
+            "relevant": "${obtention} = 'other_obtention'",
+            "required": true,
+            "$autoname": "other_obtention"
+        }, {
+            "name": "one_more_food",
+            "type": "note",
+            "$kuid": "6NtAMxRmX",
+            "label": ["######Cliquer sur \"+\" si un autre produit carné différent a été consommé pendant ${code_repas}. Sinon passer au repas suivant."],
+            "$autoname": "one_more_food"
+        }, {
+            "type": "end_repeat",
+            "$kuid": "bdmi2L9l3"
+        }, {
+            "type": "end_repeat",
+            "$kuid": "CuG7xBvyi"
+        }]
+        }
+    }
+       
+    

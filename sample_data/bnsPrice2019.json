@@ -1,0 +1,133 @@
+{
+    "__query_params": {},
+    "body": {
+      "__version__": "vE5BUiAEY876i77P2VsJQJ",
+      "_attachments": [],
+      "_bamboo_dataset_id": "",
+      "_geolocation": [
+        null,
+        null
+      ],
+      "_id": 57438482,
+      "_notes": [],
+      "_status": "submitted_via_web",
+      "_submission_time": "2020-06-25T13:00:13",
+      "_submitted_by": null,
+      "_tags": [],
+      "_uuid": "a6f40e4f-d25d-4f2d-b978-5a5fc73f6802",
+      "_validation_status": {},
+      "_version_": "vChvVn9Livc6b8w764Skd5",
+      "_xform_id_string": "azrSYMFpj3M8jdFkApT3o6",
+      "deviceid": "ee.kobotoolbox.org:55QKXTVtSAO9F5mS",
+      "district": "kabo",
+      "end": "2020-06-25T13:59:57.961+01:00",
+      "formhub/uuid": "f158f704649242209cc78d51cd68e5c9",
+      "good": [
+        {
+          "good/name": "machete",
+          "good/price": "1"
+        },
+        {
+          "good/name": "cookstove",
+          "good/price": "1"
+        },
+        {
+          "good/name": "generator",
+          "good/price": "1"
+        },
+        {
+          "good/name": "sewing_machine",
+          "good/price": "1"
+        },
+        {
+          "good/name": "jerrycan_25l",
+          "good/price": "1"
+        },
+        {
+          "good/name": "table_chairs",
+          "good/price": "1"
+        },
+        {
+          "good/name": "brick_house_metal_roof",
+          "good/price": "1"
+        },
+        {
+          "good/name": "tv",
+          "good/price": "1"
+        },
+        {
+          "good/name": "computer"
+        },
+        {
+          "good/name": "hurricane_lamp",
+          "good/price": "1"
+        },
+        {
+          "good/name": "fishing_net",
+          "good/price": "1"
+        },
+        {
+          "good/name": "moto",
+          "good/price": "1"
+        },
+        {
+          "good/name": "jewelry",
+          "good/price": "1"
+        },
+        {
+          "good/name": "mosquito_net",
+          "good/price": "1"
+        },
+        {
+          "good/name": "chicken",
+          "good/price": "1"
+        },
+        {
+          "good/name": "canoe",
+          "good/price": "1"
+        },
+        {
+          "good/name": "pot",
+          "good/price": "1"
+        },
+        {
+          "good/name": "phone",
+          "good/price": "1"
+        },
+        {
+          "good/name": "gun",
+          "good/price": "1"
+        },
+        {
+          "good/name": "lance",
+          "good/price": "1"
+        },
+        {
+          "good/name": "bed_and_mattress",
+          "good/price": "1"
+        },
+        {
+          "good/name": "sheep_breeding",
+          "good/price": "1"
+        },
+        {
+          "good/name": "freezer",
+          "good/price": "1"
+        },
+        {
+          "good/name": "field_half_ha",
+          "good/price": "1"
+        }
+      ],
+      "good_count": "24",
+      "goods_number": "24",
+      "meta/instanceID": "uuid:a6f40e4f-d25d-4f2d-b978-5a5fc73f6802",
+      "surveyor": "francois",
+      "today": "2020-06-25",
+      "village": "leme",
+      "welcome": "OK"
+    },
+    "country": "congo",
+    "form": "bns_price_2019",
+    "site": "ndoki"
+  }

@@ -1,0 +1,71 @@
+ {
+            "_id": 72404782,
+            "_version__008": "vMR2zACBM4UdA8D4cRUXNd",
+            "wall_material": "semi_dur",
+            "floor_material": "beton",
+            "surveyor": "diane",
+            "info_consumption_history": [
+                {
+                    "info_consumption_history/code_repas": "le repas du 2020-10-29 au matin",
+                    "info_consumption_history/meal_nb": "1",
+                    "info_consumption_history/protein_meal": [
+                        {
+                            "info_consumption_history/protein_meal/state": "smoked",
+                            "info_consumption_history/protein_meal/category1": "wildmeat",
+                            "info_consumption_history/protein_meal/species": "1256",
+                            "info_consumption_history/protein_meal/unit": "e",
+                            "info_consumption_history/protein_meal/unit_price": "1",
+                            "info_consumption_history/protein_meal/obtention": "bought",
+                            "info_consumption_history/protein_meal/unit_number": "1"
+                        },
+                        {
+                            "info_consumption_history/protein_meal/state": "frozen",
+                            "info_consumption_history/protein_meal/category1": "domeat",
+                            "info_consumption_history/protein_meal/species": "100034",
+                            "info_consumption_history/protein_meal/unit": "e",
+                            "info_consumption_history/protein_meal/unit_price": "1",
+                            "info_consumption_history/protein_meal/obtention": "bought",
+                            "info_consumption_history/protein_meal/unit_number": "1"
+                        }
+                    ],
+                    "info_consumption_history/date": "2020-10-29",
+                    "info_consumption_history/eat_protein_yesno": "oui",
+                    "info_consumption_history/nb_people": "1",
+                    "info_consumption_history/day_period": "matin"
+                },
+                {
+                    "info_consumption_history/code_repas": "le repas du 2020-10-28 au matin",
+                    "info_consumption_history/meal_nb": "2",
+                    "info_consumption_history/protein_meal": [
+                        {
+                            "info_consumption_history/protein_meal/state": "fresh",
+                            "info_consumption_history/protein_meal/category1": "domeat",
+                            "info_consumption_history/protein_meal/species": "100034",
+                            "info_consumption_history/protein_meal/unit": "qr",
+                            "info_consumption_history/protein_meal/unit_price": "1",
+                            "info_consumption_history/protein_meal/obtention": "own_prod",
+                            "info_consumption_history/protein_meal/unit_number": "1"
+                        },
+                        {
+                            "info_consumption_history/protein_meal/state": "cooked",
+                            "info_consumption_history/protein_meal/category1": "wildmeat",
+                            "info_consumption_history/protein_meal/species": "1256",
+                            "info_consumption_history/protein_meal/unit": "e",
+                            "info_consumption_history/protein_meal/unit_price": "1",
+                            "info_consumption_history/protein_meal/obtention": "bought",
+                            "info_consumption_history/protein_meal/unit_number": "1"
+                        }
+                    ],
+                    "info_consumption_history/date": "2020-10-28",
+                    "info_consumption_history/eat_protein_yesno": "oui",
+                    "info_consumption_history/nb_people": "27",
+                    "info_consumption_history/day_period": "matin"
+                }
+            ],
+            "child_man_number": "1",
+            "_status": "submitted_via_web",
+            "bns_matrix_pelle/bns_matrix_pelle_possess": "oui",
+            "today": "2020-10-30",
+            "__version__": "v8kAFFZiud3799WH7z4H6e",
+           
+        }

@@ -1,0 +1,48 @@
+Running ~1.1 submission per second.
+
+seconds	| submissions |	seconds/submission
+417	410	1.017073171
+502	472	1.063559322
+643	562	1.144128114
+453	410	1.104878049
+
+
+Started at: 2020-09-22T13:41:34.424Z
+Fetching data for 1 surveys.
+✓ GET succeeded. (The response body will be available in state.)
+Fetched 1331 submissions from aFQWAYHXXfh8i2cmXw9BFi (bns_2019).
+Skipped 921, 410 Posts made.
+Finished at: 2020-09-22T13:48:31.592Z
+Finished.
+
+13:48:31
+13:41:34
+00:06:57 for 410.
+
+
+Started at: 2020-09-22T14:02:39.934Z
+Fetching data for 1 surveys.
+✓ GET succeeded. (The response body will be available in state.)
+Fetched 472 submissions from ad7S4hPBN7qM4Ac3mpEdwZ (bns_2019).
+Posting 472 of 472...
+✓ POST succeeded. (The response body will be available in state.)
+Finished at: 2020-09-22T14:11:01.394Z
+Finished.
+
+14:11:01
+14:02:39
+00:08:22 for 472.
+
+
+Started at: 2020-09-22T14:14:17.523Z
+Fetching data for 3 surveys.
+✓ GET succeeded. (The response body will be available in state.)
+Fetched 562 submissions from auPGpyWbn4PhTuWFBfKYES (bns_2019).
+
+14:14:17
+14:25:00 =
+00:10:43  - 562 posts
+
+14:25:00
+14:32:33
+00:07:33 - 410 posts
