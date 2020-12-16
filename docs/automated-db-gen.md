@@ -1,33 +1,34 @@
 ---
 layout: page
-title: Automated Database Generation
+title: Automated Kobo Integration
 nav_order: 3
-permalink: /automated_db_generation/
+permalink: /kobo-automation/
 ---
 
-# Project 2: Automated Postgres Table & Kobo Form Integration
+# Project 2: Automated Database Configuration & Kobo Form Integration
 
-## Summary
+## Solution overview 
+(See Presentation for screenshots of the solution overview)
 
-WCS would like to automate the configuration of destination database tables and OpenFn jobs to integrate Kobo data when new Kobo forms are uploaded to a connected Kobo account. How this will work:
+The aim of the solution is to automatically integrate data from Kobo surveys collected across different partners and sites so that WCS administrators can regularly monitor and report across these data sources. 
 
-1. Job `automation/01-getForms.js` will run on a scheduled basis to check Kobo Toolbox for new forms. If any forms are created or updated, this will trigger 2 jobs to run.
+Specifically, this solution automates integration of Kobo survey data into a Postgres database, syncing both Kobo metadata (form design changes such as question IDs and question types) and data (actual records or form submissions) between the two systems, via OpenFn. The diagram below demonstrates this flow where OpenFn... 
 
-2a. Job `02a-syncToPostgres.js` will upsert database tables in Postgres. If the table exists, but new Kobo questions have been added - the table will be updated to include additional columns.
+1. Regularly checks for new and updated forms on Kobo from a specified list of form IDs [Requires initial manual configuration] 
+2. Analyses fetched forms and creates SQL script for creating tables and columns
+3. Updates Postgres table with new tables and columns [Optionally automated or manual step] 
+4. Creates OpenFn job for writing submission data into the tables
+5. Regularly fetches submission data from specified Kobo forms [Requires initial manual configuration] 
+6. Writes submission data to Postgres tables
 
-2b. Job `02b-syncToOpenFn.js` will upsert jobs in OpenFn to map the Kobo forms to the tables created in the above job.
+## Specifications
+### Automation Specs
+This solution delivers a semi-automatic process for integration Kobo metadata and data with a connected Postgres database. 
+...
 
-See [issue 7](https://github.com/OpenFn/wcs-consocsci/issues/7) documenting the original request.
+### Automation Assumptions
+1. OpenFn will ...
 
-## Assumptions from engineering
+## Database Auto-Configuration Specs 
+(See database...
 
-1. We will check for new or changed forms in Kobo every 60 minutes.
-2. We will not delete columns from tables in Postgres, ever.
-3. Will will not modify columns in Postgres, ever.
-4. When a new form is added to Kobo, we will create a corresponding table in
-   Postgres.
-5. When a form is modified in Kobo, if fields have been _added_, we will add
-   those columns to the existing table in Postgres.
-6. When a form is updated, records in "child" repeat group tables on Postgres
-   will be purged and _then_ the current set of repeat group entries will be
-   added as repeat group records in Postgres.
