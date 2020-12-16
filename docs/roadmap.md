@@ -1,4 +1,4 @@
-# Solution Roadmap, Backlog, & Ideas for Future Phases
+# Roadmap & Backlog for Future Phases
 
 ## 1. BNS and NGRT
 1. Implement compatibility with Postgres (This year?)
