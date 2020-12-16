@@ -28,10 +28,11 @@ Specifically, this solution automates integration of Kobo survey data into a Pos
 ## Specifications
 ### Automation Specs
 This solution delivers a semi-automatic process for integration Kobo metadata and data with a connected Postgres database. 
-...
+_[ TO COPY FROM USER GUIDE... ]_
 
 ### Automation Assumptions
 1. OpenFn will ...
+_[ TO COPY FROM USER GUIDE... ]_
 
 ### Database Auto-Configuration Specs 
 (See database...
@@ -39,6 +40,7 @@ This solution delivers a semi-automatic process for integration Kobo metadata an
 ## Administrator Guidance
 ### 1. Solution Setup
 ...
+_[ TO COPY FROM USER GUIDE... ]_
 
 ### 2. Ongoing Management
 ...
