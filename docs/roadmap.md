@@ -1,3 +1,10 @@
+---
+layout: page
+title: Roadmap & Backlog
+nav_order: 5
+permalink: /roadmap/
+---
+
 # Roadmap & Backlog for Future Phases
 
 ## 1. BNS and NGRT
