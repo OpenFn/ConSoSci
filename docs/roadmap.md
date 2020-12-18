@@ -20,5 +20,7 @@ permalink: /roadmap/
 
 ## 3. Wildmeat
 1. Updates to map species codes to specific species/ taxon records in a reference table
-2. Support for future surveys with other consumption types (i.e., hunter, market)
+2. Support for future surveys with other consumption types (i.e., `hunter`, `market`), including other sample collection methods (so far this was specifically mentioned as a possibility for `hunter` surveys)
 3. Support for `Urban Consumption` forms
+4. Collection of household ethnicity & education data and DB mappings
+5. Changes to how sample units (e.g., `kg`, `days`, `hours`) are set, converted & mapped to the DB
