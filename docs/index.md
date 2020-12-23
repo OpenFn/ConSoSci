@@ -4,9 +4,9 @@ title: Overview
 nav_order: 1
 ---
 
-# WCS Documentation
+# ConSoSci Documentation
 
-Welcome to the WCS/OpenFn integration docs site. Search or explore the
+Welcome to the ConSoSci/OpenFn integration docs site. Search or explore the
 documentation for several projects aimed at improving the efficiency of wildlife
 and wildlands conservation projects around the world.
 
@@ -18,9 +18,9 @@ and wildlands conservation projects around the world.
 
 ## OpenFn Projects
 
-Relevant WCS system administrators have access the following OpenFn.org projects for integration monitoring & management.
+Relevant ConSoSci/WCS system administrators have access the following OpenFn.org projects for integration monitoring & management.
 
 1. `WCS` --> source code hosted on `wcs` Github repo:
 2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo:
 
-[![WCS-Logo](./wcs-logo.png)](https://www.wcs.org)
+[![consosci-Logo](./ConSoSci_Logo-Horiz.png)](https://www.wcs.org)
