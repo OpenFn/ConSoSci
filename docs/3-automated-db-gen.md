@@ -41,6 +41,7 @@ See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/a
 4. When a form is modified in Kobo, if fields have been added (or if a question name has been changed), OpenFn will add those columns to the existing table in Postgres.
 5. When a new form is added to Kobo, OpenFn will create a corresponding table in Postgres, tables are labeled based on the ${tableId} specified in `Job 00 - KOBO-AUTO 0. Find Updated Forms`. This allows WCS admins to map 1 form to 1 table (1-to-1), or to map multiple forms to the same 1 table (many-to-1). 
 6. Table columns will be created with the following data types based on Kobo question data types. This will ensure all data rows will be upserted if Kobo form data is re-processed. 
+
 | Question Type in Kobotoolbox | Data Type in Postgres |
 |------------------------------|-----------------------|
 | calculate                    | varchar               |
@@ -52,6 +53,7 @@ See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/a
 | text                         | text                  |
 | jsonb                        | jsonb                 |
 | geopoint                     | text                  |
+
 7. The `end` and `start` meta columns that Kobo sends with each form submission will be saved as `date` type columns in Postgres.
 8. We have created a column on each table called `generated_uuid`. When OpenFn maps data to this column, we will set its value using the following calculation:
 `state.data._id + state.data._xform_id_string`
