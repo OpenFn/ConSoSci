@@ -1,4 +1,4 @@
-# ConSoSci on OpenFn [(Docs)](https://openfn.github.io/wcs/)
+# ConSoSci on OpenFn [(Docs)](https://openfn.github.io/ConSoSci/)
 
 Check out the [docs 📚](https://openfn.github.io/consosci/) for an overview of what's
 happening here.
