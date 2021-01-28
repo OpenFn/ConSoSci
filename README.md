@@ -1,6 +1,6 @@
-# Wildlife Conservation Society on OpenFn [(Docs)](https://openfn.github.io/wcs/)
+# ConSoSci on OpenFn [(Docs)](https://openfn.github.io/wcs/)
 
-Check out the [docs 📚](https://openfn.github.io/wcs/) for an overview of what's
+Check out the [docs 📚](https://openfn.github.io/consosci/) for an overview of what's
 happening here.
 
 To propose changes, make a branch, test your work using
