@@ -20,8 +20,8 @@ and wildlands conservation projects around the world.
 
 Relevant ConSoSci/WCS system administrators have access the following OpenFn.org projects for integration monitoring & management.
 
-1. `WCS` --> source code hosted on `wcs` Github repo: https://github.com/OpenFn/ConSoSci
-2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo: https://github.com/OpenFn/wcs-wildmeat
+1. `WCS` --> source code hosted on `wcs` Github repo: [https://github.com/OpenFn/ConSoSci](https://github.com/OpenFn/ConSoSci)
+2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo: [https://github.com/OpenFn/wcs-wildmeat](https://github.com/OpenFn/wcs-wildmeat)
 
 ## Support
 Contact support@openfn.org.  
