@@ -24,9 +24,9 @@ alterState(state => {
         destination: 'WCS_marche_Dec3SWMMarcheTest'
       },
       {
-        id: 'a2eNZrDoyreoMhCemg6R3j',
-        formName: 'Dec3 SWM Marche Test',
-        destination: 'WCS_marche_Dec3SWMMarcheTest'
+        id: 'azMgdwsbGuAhZDaMnVVBUs',
+        formName: 'Sharks & Rays Demo 0',
+        destination: 'WCS_sharksandrays_SharksandRaysDemo0'
       },
       /*
       {
