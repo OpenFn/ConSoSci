@@ -12,7 +12,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       { uid: 'a3mbXtJccsMaRRC5sn8fsv', p1: 'WCS', p2: 'group', tableId: 'WCSNewKoboForm'},
       { uid: 'a2eNZrDoyreoMhCemg6R3j', p1: 'WCS', p2: 'marche', tableId: 'Dec3SWMMarcheTest'},
       { uid: 'aREgytyFbcohkrjYLN9v33', p1: 'WCS', p2: 'marche', tableId: 'SWM EtudeMarche2020Demo'},
-      { uid: 'afgEFPYcFzCEBVUX28cSKr', p1: 'WCS', p2: 'kidsor', tableId: 'KidsORDemo1'}
+      { uid: 'azMgdwsbGuAhZDaMnVVBUs', p1: 'WCS', p2: 'sharksandrays', tableId: 'SharksandRaysDemo0'}
     
   ];
 
