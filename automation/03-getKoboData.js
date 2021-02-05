@@ -33,6 +33,11 @@ alterState(state => {
         formName: 'Sharks And Rays 1',
         destination: 'WCS_sharks_SharksAndRays1'
       },
+      {
+        id: 'ayd6iLVGgvEiXnT6bRxWvH',
+        formName: 'Sharks And Rays Demo',
+        destination: 'WCS_SR_SharksAndRaysDemo'
+      }
       /*
       {
         id: 'a3mbXtJccsMaRRC5sn8fsv',
