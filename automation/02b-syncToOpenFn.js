@@ -115,15 +115,17 @@ each(
         var uuid =
           name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : state.uuid;
 
-        let mapping = `${operation}('${name}', '${uuid}',`;
+        let mapping = `${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
-          mapping += `state => state.data['${columns[0].path.join(
-            '/'
-          )}'].map(x => (${JSON.stringify(mapKoboToPostgres, null, 2).replace(
-            /"/g,
-            ''
-          )}))`;
+          const path = columns[0].path.join('/');
+
+          mapping += `state => { const dataArray = state.data['${path}'] || [];
+          return dataArray.map(x => (${JSON.stringify(
+            mapKoboToPostgres,
+            null,
+            2
+          ).replace(/"/g, '')}))}`;
         } else {
           mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
             /"/g,
