@@ -14,7 +14,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
    //    { uid: 'aREgytyFbcohkrjYLN9v33', p1: 'WCS', p2: 'marche', tableId: 'SWM EtudeMarche2020Demo'},
   //   { uid: 'azMgdwsbGuAhZDaMnVVBUs', p1: 'WCS', p2: 'sharksandrays', tableId: 'SharksandRaysDemo0'},
   //  { uid: 'ajHtokWFi96KE7CBFMu58f', p1: 'WCS', p2: 'sharks', tableId: 'SharksAndRays1'},
-      { uid: 'aREgytyFbcohkrjYLN9v33', p1: 'WCS', p2: 'marche', tableId: 'SWMEtudeMarche2020Demo'},
+      { uid: 'aQ8cyLSn8TyJWJQnSg7p63', p1: 'WCS', p2: 'marche', tableId: 'SWMEtudeMarché9Feb'},
       { uid: 'ayd6iLVGgvEiXnT6bRxWvH', p1: 'WCS', p2: 'SR', tableId: 'SharksAndRaysDemo'},
       { uid: 'aBqKGtuFFRZrYcP5LAtB52', p1: 'WCS', p2: 'SR', tableId: 'SharksAndRaysFeb9'}
 
