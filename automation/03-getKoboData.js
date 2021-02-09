@@ -8,31 +8,6 @@ alterState(state => {
   const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
-        {
-        id: 'an92wDyVMw4yUtCo4d7EWi',
-        formName: 'WCS 4th Groups Test',
-        destination: 'WCS_4levelrepeat_fourlevel'
-      },
-       {
-        id: 'axGKmEwWdNAqWERTMGrPpy',
-        formName: 'Dec3 WCS 2nd Level Groups',
-        destination: 'WCS_group_GroupTest'
-      },
-      {
-        id: 'a2eNZrDoyreoMhCemg6R3j',
-        formName: 'Dec3 SWM Marche Test',
-        destination: 'WCS_marche_Dec3SWMMarcheTest'
-      },
-      {
-        id: 'azMgdwsbGuAhZDaMnVVBUs',
-        formName: 'Sharks & Rays Demo 0',
-        destination: 'WCS_sharksandrays_SharksandRaysDemo0'
-      },
-      {
-        id: 'ajHtokWFi96KE7CBFMu58f',
-        formName: 'Sharks And Rays 1',
-        destination: 'WCS_sharks_SharksAndRays1'
-      },
       {
         id: 'ayd6iLVGgvEiXnT6bRxWvH',
         formName: 'Sharks And Rays Demo',
