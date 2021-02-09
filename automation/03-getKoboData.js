@@ -14,9 +14,9 @@ alterState(state => {
         destination: 'WCS_SR_SharksAndRaysDemo'
       },
        {
-        id: 'aREgytyFbcohkrjYLN9v33',
-        formName: 'SWM Etude Marché 2020 Demo',
-        destination: 'WCS_marche_SWMEtudeMarche2020Demo'
+        id: 'aBqKGtuFFRZrYcP5LAtB52',
+        formName: 'Sharks And Rays 9 Feb',
+        destination: 'WCS_SR_SharksAndRaysFeb9'
       }
     ].map(survey => ({
       ...survey,
