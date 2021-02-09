@@ -17,6 +17,11 @@ alterState(state => {
         id: 'aBqKGtuFFRZrYcP5LAtB52',
         formName: 'Sharks And Rays 9 Feb',
         destination: 'WCS_SR_SharksAndRaysFeb9'
+      },
+      {
+        id: 'azg4rJb2Kk8DT2upSPyYjB',
+        formName: 'EU SWM Site Survey Demo',
+        destination: 'WCS_Livestock_LivestockProduction'
       }
     ].map(survey => ({
       ...survey,
