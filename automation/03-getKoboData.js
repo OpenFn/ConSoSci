@@ -9,9 +9,9 @@ alterState(state => {
   state.data = {
     surveys: [
       {
-        id: 'ayd6iLVGgvEiXnT6bRxWvH',
-        formName: 'Sharks And Rays Demo',
-        destination: 'WCS_SR_SharksAndRaysDemo'
+        id: 'aQ8cyLSn8TyJWJQnSg7p63',
+        formName: 'SWM Etude Marché 9Feb',
+        destination: 'WCS_marche_SWMEtudeMarché9Feb'
       },
        {
         id: 'aBqKGtuFFRZrYcP5LAtB52',
