@@ -13,28 +13,6 @@ alterState(state => {
         formName: 'Sharks And Rays Demo',
         destination: 'WCS_SR_SharksAndRaysDemo'
       }
-      /*
-      {
-        id: 'a3mbXtJccsMaRRC5sn8fsv',
-        formName: 'WCS New Kobo Form',
-        destination: 'WCS_swm_WCSNewKoboForm'
-      }*/
-      /*{
-        id: 'a9eJJ2hrRSMCJZ95WMc93j',
-        formName: 'Consommation Urbaine SWM',
-        destination: 'WCS_swm_ConsommationUrbaineSwm'
-      }*/
-      /*{
-        id: 'aDVDagX8TE9NUY7xmvAUpv',
-        formName: 'WCS_marche_SwmEtudeMarché2020VendorSales',
-        destination: 'WCS_marche_marche',
-      },
-      // { id: 'a9eJJ2hrRSMCJZ95WMc93j', name: 'WCS_swm_ConsommationUrbaineSwm'},
-      {
-        id: 'aaayFwZcjbp8gFeYeqohHu',
-        formName: '26Nov SWM Marche Test',
-        destination: 'WCS_marche_marche',
-      },*/
     ].map(survey => ({
       ...survey,
       formId: survey.id,
