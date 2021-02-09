@@ -47,7 +47,7 @@ each(
             const values = {
               FormName: "dataValue('formName')",
               DatasetId: "dataValue('_xform_id_string')",
-              LastUpdated: 'new Date()',
+              LastUpdated: 'new Date().toISOString()',
             };
             for (x in values) paths.push(values[x]);
             break;
