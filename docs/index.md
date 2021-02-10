@@ -13,7 +13,7 @@ and wildlands conservation projects around the world.
 ## About
 Conservation Social Science (ConSoSci) partnership is leveraging social science to strengthen conservation outcomes. 
 
-This repo includes integration solutions for ConSoSci partners to connect data sources, including Kobo Toolbox, PostgreSQL and MySQL databases.
+This repo includes OpenFn-powered integration solutions for ConSoSci partners to connect data sources, including Kobo Toolbox, PostgreSQL and MySQL databases.
 
 ## Workstreams
 
@@ -29,6 +29,6 @@ Relevant ConSoSci/WCS system administrators have access the following OpenFn.org
 2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo: [https://github.com/OpenFn/wcs-wildmeat](https://github.com/OpenFn/wcs-wildmeat)
 
 ## Support
-Contact support@openfn.org.  
+Contact support@openfn.org or check out [OpenFn Docs](https://docs.openfn.org). 
 
 [![consosci-Logo](./ConSoSci_Logo-Horiz.png)](https://www.wcs.org)
