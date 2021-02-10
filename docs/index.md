@@ -10,6 +10,11 @@ Welcome to the ConSoSci/OpenFn integration docs site. Search or explore the
 documentation for several projects aimed at improving the efficiency of wildlife
 and wildlands conservation projects around the world.
 
+## About
+Conservation Social Science (ConSoSci) partnership is leveraging social science to strengthen conservation outcomes. 
+
+This repo includes integration solutions for ConSoSci partners to connect data sources, including Kobo Toolbox, PostgreSQL and MySQL databases.
+
 ## Workstreams
 
 - Project 1: BNS and NGRT Kobo survey integrations for centralized data management & analysis
