@@ -18,7 +18,9 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   //    { uid: 'ayd6iLVGgvEiXnT6bRxWvH', p1: 'WCS', p2: 'SR', tableId: 'SharksAndRaysDemo'},
     //  { uid: 'aBqKGtuFFRZrYcP5LAtB52', p1: 'WCS', p2: 'SR', tableId: 'SharksAndRaysFeb9'}
     { uid: 'aiVz8c3PixgDVjwwv2DGYv', p1: 'WCS', p2: 'SR', tableId: 'SharkAndRaysTraining'},
-    { uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'}
+    { uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'},
+    { uid: 'aDgPJqN4SAYohZ4ZueEeYU', p1: 'WCS', p2: 'Arcadia', tableId: 'ArcadiaDataCollection'},
+    
     
   ];
 
