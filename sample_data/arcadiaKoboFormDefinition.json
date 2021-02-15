@@ -1,0 +1,2297 @@
+{
+    "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/?format=json",
+    "owner": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+    "owner__username": "wcs_jpalmer",
+    "parent": null,
+    "ancestors": null,
+    "settings": {
+        "sector": null,
+        "country": null,
+        "description": ""
+    },
+    "asset_type": "survey",
+    "date_created": "2020-12-16T16:38:45.899716Z",
+    "summary": {
+        "geo": false,
+        "labels": [
+            "This survey is intended to assess the support needs of Arcadia sites in terms of data management and training in the coming months. Please take a few minutes to answer the following questions. Please complete only one form per site.",
+            "What is your name?",
+            "What is your email address?",
+            "What is your role in relation to data collection at the stronghold/scape?",
+            "What is your role?"
+        ],
+        "columns": [
+            "name",
+            "type",
+            "label",
+            "required",
+            "select_from_list_name",
+            "relevant",
+            "appearance",
+            "hint",
+            "calculation"
+        ],
+        "languages": [
+            "English",
+            "Français",
+            "Espanol"
+        ],
+        "row_count": 41,
+        "default_translation": "English"
+    },
+    "date_modified": "2021-02-15T10:07:20.207092Z",
+    "version_id": "vbx6V8JiCmKd542n8KgyHb",
+    "version__content_hash": "d0e0ce58a515eb53f90f000fb445d1e2fce37b19",
+    "version_count": 18,
+    "has_deployment": true,
+    "deployed_version_id": "vbx6V8JiCmKd542n8KgyHb",
+    "deployed_versions": {
+        "count": 7,
+        "next": null,
+        "previous": null,
+        "results": [
+            {
+                "uid": "vbx6V8JiCmKd542n8KgyHb",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vbx6V8JiCmKd542n8KgyHb/?format=json",
+                "content_hash": "d0e0ce58a515eb53f90f000fb445d1e2fce37b19",
+                "date_deployed": "2021-02-15T10:07:04.768157Z",
+                "date_modified": "2021-02-15 10:07:04.768157+00:00"
+            },
+            {
+                "uid": "vmwzDG9R5sXhtyuwM5miRY",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vmwzDG9R5sXhtyuwM5miRY/?format=json",
+                "content_hash": "dfc030c39e457e6d896f886befa180bdb072a1d4",
+                "date_deployed": "2021-02-15T10:02:50.172126Z",
+                "date_modified": "2021-02-15 10:02:50.172126+00:00"
+            },
+            {
+                "uid": "vuH44YLq73aRBo97ATGTgG",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vuH44YLq73aRBo97ATGTgG/?format=json",
+                "content_hash": "a83d3cd1978d8c616828aeb317f698bce778febb",
+                "date_deployed": "2021-02-09T13:00:58.246981Z",
+                "date_modified": "2021-02-09 13:00:58.246981+00:00"
+            },
+            {
+                "uid": "vViaSVeXrE6i5k29HReQZz",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vViaSVeXrE6i5k29HReQZz/?format=json",
+                "content_hash": "c4fa02b62fb9167f0fd215dfb9063418d88db003",
+                "date_deployed": "2021-01-21T14:47:25.857165Z",
+                "date_modified": "2021-01-21 14:47:25.857165+00:00"
+            },
+            {
+                "uid": "vCD6LUmwj7ErAAF7rLuj2F",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vCD6LUmwj7ErAAF7rLuj2F/?format=json",
+                "content_hash": "c78478a99970ef6f20671d8f1842c369a1757ac9",
+                "date_deployed": "2021-01-20T23:55:27.034580Z",
+                "date_modified": "2021-01-20 23:55:27.034580+00:00"
+            },
+            {
+                "uid": "vUH7axqKfmKmwS8JCWhfCZ",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vUH7axqKfmKmwS8JCWhfCZ/?format=json",
+                "content_hash": "ed18db29b08c7cffa8a475e7587ab3aedd2b2ecf",
+                "date_deployed": "2021-01-20T23:53:21.379946Z",
+                "date_modified": "2021-01-20 23:53:21.379946+00:00"
+            },
+            {
+                "uid": "vgHwgURLNZ5GFsVZeVbr7x",
+                "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/versions/vgHwgURLNZ5GFsVZeVbr7x/?format=json",
+                "content_hash": "b4cc436a367c76b9ca00638b5cd941709c8cc20c",
+                "date_deployed": "2020-12-16T16:53:06.681613Z",
+                "date_modified": "2020-12-16 16:53:06.681613+00:00"
+            }
+        ]
+    },
+    "deployment__identifier": "https://kc.kobotoolbox.org/wcs_jpalmer/forms/aDgPJqN4SAYohZ4ZueEeYU",
+    "deployment__links": {
+        "url": "https://ee.kobotoolbox.org/waLkEp47",
+        "single_url": "https://ee.kobotoolbox.org/single/waLkEp47",
+        "single_once_url": "https://ee.kobotoolbox.org/single/9627895061aa04787a4b8a7e226bb294",
+        "offline_url": "https://ee.kobotoolbox.org/x/waLkEp47",
+        "preview_url": "https://ee.kobotoolbox.org/preview/waLkEp47",
+        "iframe_url": "https://ee.kobotoolbox.org/i/waLkEp47",
+        "single_iframe_url": "https://ee.kobotoolbox.org/single/i/waLkEp47",
+        "single_once_iframe_url": "https://ee.kobotoolbox.org/single/i/9627895061aa04787a4b8a7e226bb294"
+    },
+    "deployment__active": true,
+    "deployment__data_download_links": {
+        "xls_legacy": "https://kc.kobotoolbox.org/wcs_jpalmer/exports/aDgPJqN4SAYohZ4ZueEeYU/xls/",
+        "csv_legacy": "https://kc.kobotoolbox.org/wcs_jpalmer/exports/aDgPJqN4SAYohZ4ZueEeYU/csv/",
+        "zip_legacy": "https://kc.kobotoolbox.org/wcs_jpalmer/exports/aDgPJqN4SAYohZ4ZueEeYU/zip/",
+        "kml_legacy": "https://kc.kobotoolbox.org/wcs_jpalmer/exports/aDgPJqN4SAYohZ4ZueEeYU/kml/",
+        "xls": "https://kc.kobotoolbox.org/wcs_jpalmer/reports/aDgPJqN4SAYohZ4ZueEeYU/export.xlsx",
+        "csv": "https://kc.kobotoolbox.org/wcs_jpalmer/reports/aDgPJqN4SAYohZ4ZueEeYU/export.csv"
+    },
+    "deployment__submission_count": 12,
+    "report_styles": {
+        "default": {},
+        "specified": {
+            "end": {},
+            "start": {},
+            "al5to57": {},
+            "be0aj29": {},
+            "wd2ue78": {},
+            "welcome": {},
+            "/vp4rs63": {},
+            "datasets": {},
+            "link_dmp": {},
+            "swm_site": {},
+            "challenge": {},
+            "l33GlwuEy": {},
+            "/ESB7YyuQm": {},
+            "kobo_forms": {},
+            "other_info": {},
+            "__version__": {},
+            "participant": {},
+            "survey_type": {},
+            "datasets_note": {},
+            "email_address": {},
+            "group_qp5by62": {},
+            "other_services": {},
+            "challenge_other": {},
+            "respondent_role": {},
+            "surveys_planned": {},
+            "dataset_name_text": {},
+            "survey_type_other": {},
+            "data_analysis_tool": {},
+            "data_collection_end": {},
+            "surveys_planned_001": {},
+            "data_collection_tool": {},
+            "data_management_help": {},
+            "data_management_plan": {},
+            "data_management_tool": {},
+            "data_mgmt_help_other": {},
+            "data_collection_start": {},
+            "data_review_frequency": {},
+            "respondent_role_other": {},
+            "surveys_planned_other": {},
+            "dataset_name_calculated": {},
+            "data_analysis_tool_other": {},
+            "data_collection_tool_other": {},
+            "data_management_tool_other": {},
+            "data_review_frequency_other": {},
+            "data_analysis_completion_date": {},
+            "What_estimation_methods_do_you": {}
+        },
+        "kuid_names": {
+            "end": "1GV9QHsfe",
+            "start": "WjrMUw0JT",
+            "al5to57": "al5to57",
+            "be0aj29": "be0aj29",
+            "wd2ue78": "wd2ue78",
+            "welcome": "CJVK4fuSc",
+            "/vp4rs63": "/vp4rs63",
+            "datasets": "ESB7YyuQm",
+            "link_dmp": "ha9mkYWBl",
+            "swm_site": "h84Td5h5L",
+            "challenge": "qzwEzGR0I",
+            "l33GlwuEy": "l33GlwuEy",
+            "/ESB7YyuQm": "/ESB7YyuQm",
+            "kobo_forms": "IOKgKMuHH",
+            "other_info": "E5etBlhK9",
+            "__version__": "gj41QuVbh",
+            "participant": "lZSMM258W",
+            "survey_type": "RbgoBwGIC",
+            "datasets_note": "jPfeGU0lv",
+            "email_address": "Vs4q4GeG2",
+            "group_qp5by62": "vp4rs63",
+            "other_services": "7XGh8wuYM",
+            "challenge_other": "MbsJDzcdy",
+            "respondent_role": "cYA3DhEcT",
+            "surveys_planned": "drBLajWFm",
+            "dataset_name_text": "Yig2YSOeF",
+            "survey_type_other": "31HsDOduy",
+            "data_analysis_tool": "xpmVZIRBD",
+            "data_collection_end": "4vek45RHu",
+            "surveys_planned_001": "drBLajWFm",
+            "data_collection_tool": "CzGSV4vMz",
+            "data_management_help": "3XmTgvEGT",
+            "data_management_plan": "btbo59XPg",
+            "data_management_tool": "VyayknoKL",
+            "data_mgmt_help_other": "dqniTXVyk",
+            "data_collection_start": "2Rh1dkJYK",
+            "data_review_frequency": "vDNuenETn",
+            "respondent_role_other": "biKoOBC2K",
+            "surveys_planned_other": "6T0Fs4T23",
+            "dataset_name_calculated": "TRFVzDE2W",
+            "data_analysis_tool_other": "QktGEnHHX",
+            "data_collection_tool_other": "IAEZ9C2k2",
+            "data_management_tool_other": "JJ1ceq822",
+            "data_review_frequency_other": "Wf0eEAkhp",
+            "data_analysis_completion_date": "1djkE84r6",
+            "What_estimation_methods_do_you": "rc3gj79"
+        }
+    },
+    "report_custom": {},
+    "map_styles": {},
+    "map_custom": {},
+    "content": {
+        "schema": "1",
+        "survey": [
+            {
+                "name": "start",
+                "type": "start",
+                "$kuid": "WjrMUw0JT",
+                "$autoname": "start"
+            },
+            {
+                "name": "end",
+                "type": "end",
+                "$kuid": "1GV9QHsfe",
+                "$autoname": "end"
+            },
+            {
+                "name": "welcome",
+                "type": "note",
+                "$kuid": "CJVK4fuSc",
+                "label": [
+                    "This survey is intended to assess the support needs of Arcadia sites in terms of data management and training in the coming months. Please take a few minutes to answer the following questions. Please complete only one form per site.",
+                    "Cette enquête proposée par l'équipe R6 est destinée à évaluer les besoins en appui des sites SWM en termes de gestion des données et de formation dans les prochains mois. Veuillez prendre quelques minutes pour répondre aux questions suivantes. Veuillez remplir un seul formulaire par site.",
+                    "Esta encuesta propuesta por el equipo R6 tiene como objetivo evaluar las necesidades de soporte de los sitios de SWM en términos de gestión de datos y formación en los próximos meses. Tómese unos minutos para responder las siguientes preguntas. Por favor complete sólo un formulario por sitio."
+                ],
+                "required": false,
+                "$autoname": "welcome"
+            },
+            {
+                "name": "participant",
+                "type": "text",
+                "$kuid": "lZSMM258W",
+                "label": [
+                    "What is your name?",
+                    "Quel est votre nom ?",
+                    "¿Cómo te llamas?"
+                ],
+                "required": true,
+                "$autoname": "participant"
+            },
+            {
+                "name": "email_address",
+                "type": "text",
+                "$kuid": "Vs4q4GeG2",
+                "label": [
+                    "What is your email address?",
+                    "Quelle est votre adresse email ?",
+                    "¿Cuál es su dirección de correo electrónico?"
+                ],
+                "required": true,
+                "$autoname": "email_address"
+            },
+            {
+                "name": "respondent_role",
+                "type": "select_one",
+                "$kuid": "cYA3DhEcT",
+                "label": [
+                    "What is your role in relation to data collection at the stronghold/scape?",
+                    "Etes-vous un(e) Coordonnateur(trice) de Site ou un(e) Gestionnaire de Base de Données de Site ?",
+                    "¿Es usted un Coordinador de Sitio o un Administrador de Base de Datos de Sitio?"
+                ],
+                "required": true,
+                "$autoname": "respondent_role",
+                "select_from_list_name": "role"
+            },
+            {
+                "name": "respondent_role_other",
+                "type": "text",
+                "$kuid": "biKoOBC2K",
+                "label": [
+                    "What is your role?",
+                    "Quel est votre rôle ?",
+                    "¿Cuál es su función?"
+                ],
+                "relevant": "${respondent_role} = 'other'",
+                "required": false,
+                "$autoname": "respondent_role_other"
+            },
+            {
+                "name": "swm_site",
+                "type": "select_one",
+                "$kuid": "h84Td5h5L",
+                "label": [
+                    "Which Arcadia site are you completing this survey for?",
+                    "Quel est le site SWM pour lequel vous remplissez cette enquête ?",
+                    "¿Para qué sitio SWM estás completando esta encuesta?"
+                ],
+                "required": true,
+                "$autoname": "swm_site",
+                "appearance": "minimal",
+                "select_from_list_name": "site"
+            },
+            {
+                "name": "surveys_planned",
+                "type": "select_multiple",
+                "$kuid": "drBLajWFm",
+                "label": [
+                    "What data sets/surveys do you plan to collect data for before the end of 2021?",
+                    "Quelles études prévoyez-vous de mettre en œuvre avant la fin de 2021 ?",
+                    "¿Qué encuestas planea implementar antes de finales de 2021?"
+                ],
+                "required": true,
+                "$autoname": "surveys_planned",
+                "select_from_list_name": "survey_type"
+            },
+            {
+                "name": "surveys_planned_001",
+                "type": "select_multiple",
+                "$kuid": "drBLajWFm",
+                "label": [
+                    "What data sets/surveys do you plan to help partners to collect before the end of 2021?",
+                    "Quelles études prévoyez-vous de mettre en œuvre avant la fin de 2021 ?",
+                    "¿Qué encuestas planea implementar antes de finales de 2021?"
+                ],
+                "required": true,
+                "$autoname": "surveys_planned_001",
+                "select_from_list_name": "survey_type"
+            },
+            {
+                "name": "surveys_planned_other",
+                "type": "text",
+                "$kuid": "6T0Fs4T23",
+                "label": [
+                    "Please provide details on any other survey you expect to implement?",
+                    "Veuillez fournir des détails sur toute autre étude que vous prévoyez de mettre en œuvre ?",
+                    "Sírvase proporcionar detalles de cualquier otro estudio que tenga previsto realizar."
+                ],
+                "relevant": "selected(${surveys_planned}, 'other') or selected(${surveys_planned_001}, 'other')",
+                "required": true,
+                "$autoname": "surveys_planned_other"
+            },
+            {
+                "name": "group_qp5by62",
+                "type": "begin_group",
+                "$kuid": "vp4rs63",
+                "label": [
+                    "Please provide details on how you plan to use camera trap data",
+                    null,
+                    null
+                ],
+                "relevant": "selected(${surveys_planned}, 'camera_trapping')",
+                "required": false,
+                "$autoname": "group_qp5by62"
+            },
+            {
+                "type": "select_multiple",
+                "$kuid": "be0aj29",
+                "label": [
+                    "Which of the following apply to the camera trap data you will collect?",
+                    null,
+                    null
+                ],
+                "required": false,
+                "$autoname": "Which_of_the_followi_ata_you_will_collect",
+                "select_from_list_name": "bh8ds79"
+            },
+            {
+                "type": "select_multiple",
+                "$kuid": "al5to57",
+                "label": [
+                    "Which metrics/questions do you intend to assess with camera trap data?",
+                    null,
+                    null
+                ],
+                "required": false,
+                "$autoname": "Which_metrics_questi_ith_camera_trap_data",
+                "select_from_list_name": "bi5ok12"
+            },
+            {
+                "name": "What_estimation_methods_do_you",
+                "type": "select_multiple",
+                "$kuid": "rc3gj79",
+                "label": [
+                    "What estimation methods do you intend to use with the camera trap data you collect?",
+                    null,
+                    null
+                ],
+                "required": false,
+                "$autoname": "What_estimation_methods_do_you",
+                "select_from_list_name": "cu4yd02"
+            },
+            {
+                "type": "text",
+                "$kuid": "wd2ue78",
+                "label": [
+                    "What other estimation method do you intend to use?",
+                    null,
+                    null
+                ],
+                "relevant": "selected(${What_estimation_methods_do_you}, 'other')",
+                "required": false,
+                "$autoname": "What_other_estimatio_do_you_intend_to_use"
+            },
+            {
+                "type": "end_group",
+                "$kuid": "/vp4rs63"
+            },
+            {
+                "name": "datasets",
+                "type": "begin_repeat",
+                "$kuid": "ESB7YyuQm",
+                "label": [
+                    "Data sets",
+                    "Jeux de données",
+                    "Conjuntos de datos"
+                ],
+                "required": false,
+                "$autoname": "datasets"
+            },
+            {
+                "name": "datasets_note",
+                "type": "note",
+                "$kuid": "jPfeGU0lv",
+                "label": [
+                    "<span style=\"color:darkblue\">**Please answer the set of questions below for each data set / survey you plan to collect before the end of 2021. Click the + sign at the bottom of the page to display a new set of questions for each survey your are giving details about.**</span>",
+                    "<span style=\"color:blue\">**Veuillez s'il-vous-plaît répondre aux questions ci-dessous pour chacune des études que vous prévoyez de mettre en oeuvre d'ici la fin de 2021. Cliquez sur le signe + en bas de la page pour afficher un nouvel ensemble de questions pour chaque étude sur laquelle vous donnez des détails.**</span>",
+                    "<span style=\"color:blue\">**Por favor, responda a las siguientes preguntas para cada uno de los estudios que planea implementar para finales de 2021. Haga clic en el signo + en la parte inferior de la página para mostrar un nuevo conjunto de preguntas para cada estudio que está detallando.**</span>"
+                ],
+                "required": false,
+                "$autoname": "datasets_note"
+            },
+            {
+                "name": "survey_type",
+                "type": "select_one",
+                "$kuid": "RbgoBwGIC",
+                "label": [
+                    "What type of data set is this?",
+                    "De quel type de données s'agit-il ?",
+                    "¿Qué tipo de conjunto de datos es este?"
+                ],
+                "required": true,
+                "$autoname": "survey_type",
+                "appearance": "minimal",
+                "select_from_list_name": "survey_type"
+            },
+            {
+                "name": "survey_type_other",
+                "type": "text",
+                "$kuid": "31HsDOduy",
+                "label": [
+                    "Please let us know what type of data set this is.",
+                    "Veuillez nous indiquer de quel type de données il s'agit.",
+                    "Por favor, díganos qué tipo de conjunto de datos es."
+                ],
+                "relevant": "${survey_type} = 'other'",
+                "required": true,
+                "$autoname": "survey_type_other"
+            },
+            {
+                "hint": [
+                    "A name might be \"Serengeti Northern Sector August 2021 Camera Trap Data\"",
+                    "Un nom pourrait être \"Serengeti Northern Sector August 2021 Camera Trap Data\".",
+                    "Un nombre podría ser \"Sector Norte del Serengeti Agosto 2021 Datos de la Cámara Trampa\"."
+                ],
+                "name": "dataset_name_text",
+                "type": "text",
+                "$kuid": "Yig2YSOeF",
+                "label": [
+                    "If applicable, please provide a name for the data set.\nIf you are reporting multiple data sets of the same type, please use this field to help us know what to call this data set. For example, if you are reporting two separate camera trap surveys, say one for a survey conducted in a protected area and one for a survey conducted in its buffer zone, give the data set a name/tag so we can differentiate between the two datasets.",
+                    "Si cela est pertinent, veuillez fournir un nom pour ces données.\nSi vous signalez plusieurs jeux de données du même type, veuillez utiliser ce champ pour nous indiquer comment nommer ce jeu de données. Par exemple, si vous signalez deux études par piégeage photographique distinctes, disons une pour une étude menée dans une aire protégée et une pour une enquête menée dans sa zone tampon, attribuez un nom/une étiquette au jeude données pour que nous puissions faire la différence entre les deux jeux de données.",
+                    "Si es pertinente, sírvase dar un nombre a estos datos.\nSi está informando sobre más de un conjunto de datos del mismo tipo, por favor use este campo para decirnos cómo nombrar ese conjunto de datos. Por ejemplo, si se informa de dos estudios de fototrampeo separados, digamos uno para un estudio realizado en un área protegida y otro para un estudio realizado en su zona de amortiguación, déle un nombre/etiqueta al conjunto de datos para que podamos diferenciar entre los dos conjuntos de datos."
+                ],
+                "required": false,
+                "$autoname": "dataset_name_text"
+            },
+            {
+                "name": "data_collection_start",
+                "type": "date",
+                "$kuid": "2Rh1dkJYK",
+                "label": [
+                    "When do you plan to start collecting data?",
+                    "Quand prévoyez-vous de commencer la collecte de ces données ?",
+                    "¿Cuándo planea comenzar la recolección de datos?"
+                ],
+                "required": true,
+                "$autoname": "data_collection_start",
+                "appearance": "month-year"
+            },
+            {
+                "name": "data_collection_end",
+                "type": "date",
+                "$kuid": "4vek45RHu",
+                "label": [
+                    "When do you plan to complete data collection?",
+                    "Quand prévoyez-vous de terminer la collecte de ces données ?",
+                    "¿Cuándo planea completar la recopilación de datos?"
+                ],
+                "required": true,
+                "$autoname": "data_collection_end",
+                "appearance": "month-year"
+            },
+            {
+                "name": "data_review_frequency",
+                "type": "select_one",
+                "$kuid": "vDNuenETn",
+                "label": [
+                    "How often do you need to be able to review your data (e.g. to check the accuracy, to clean or to explore any initial patterns in the data) during the data collection period?",
+                    "À quelle fréquence devez-vous être en mesure d'examiner vos données (par exemple pour vérifier l'exactitude, pour nettoyer ou pour explorer les tendances initiales des données) pendant la période de collecte des données?",
+                    "¿Con qué frecuencia necesita poder revisar sus datos (por ejemplo, para comprobar su exactitud, depurarlos o explorar las tendencias iniciales de los datos) durante el período de reunión de datos?"
+                ],
+                "required": true,
+                "$autoname": "data_review_frequency",
+                "select_from_list_name": "frequency"
+            },
+            {
+                "name": "data_review_frequency_other",
+                "type": "text",
+                "$kuid": "Wf0eEAkhp",
+                "label": [
+                    "Please provide details of how often you need to be able to review your data (e.g. to check the accuracy, to clean or to explore any initial patterns in the data) during the data collection period?",
+                    "Veuillez s'il-vous-plaît fournir des détails sur la fréquence à laquelle vous devez être en mesure d'examiner vos données (par exemple pour vérifier l'exactitude, pour nettoyer ou pour explorer les tendances initiales dans les données) pendant la période de collecte des données.",
+                    "Por favor, sírvase proporcionar detalles sobre la frecuencia con la que necesita poder revisar sus datos (por ejemplo, para comprobar su exactitud, depurarlos o explorar las tendencias iniciales de los datos) durante el período de reunión de datos."
+                ],
+                "relevant": "${data_review_frequency} = 'other'",
+                "required": true,
+                "$autoname": "data_review_frequency_other"
+            },
+            {
+                "name": "data_analysis_completion_date",
+                "type": "date",
+                "$kuid": "1djkE84r6",
+                "label": [
+                    "When do you aim to complete the analysis of your data?",
+                    "Quand prévoyez-vous de terminer l'analyse de vos données ?",
+                    "¿Cuándo planea completar el análisis de sus datos?"
+                ],
+                "required": true,
+                "$autoname": "data_analysis_completion_date",
+                "appearance": "month-year"
+            },
+            {
+                "name": "data_management_plan",
+                "type": "select_one",
+                "$kuid": "btbo59XPg",
+                "label": [
+                    "Do you have a data management plan for this data set?",
+                    "Avez-vous un plan de gestion des données pour ce jeu de données ?",
+                    "¿Tiene un plan de gestión de datos para este conjunto de datos?"
+                ],
+                "required": true,
+                "$autoname": "data_management_plan",
+                "select_from_list_name": "yesno"
+            },
+            {
+                "name": "link_dmp",
+                "type": "text",
+                "$kuid": "ha9mkYWBl",
+                "label": [
+                    "Please add a link to the data management plan.",
+                    "Veuillez ajouter un lien vers le plan de gestion des données.",
+                    "Por favor, añada un enlace al plan de gestión de datos."
+                ],
+                "relevant": "${data_management_plan} = 'yes'",
+                "required": true,
+                "$autoname": "link_dmp"
+            },
+            {
+                "name": "data_collection_tool",
+                "type": "select_multiple",
+                "$kuid": "CzGSV4vMz",
+                "label": [
+                    "How are you collecting these data?",
+                    "Comment collectez-vous ces données ?",
+                    "¿Cómo se recogen estos datos?"
+                ],
+                "required": true,
+                "$autoname": "data_collection_tool",
+                "select_from_list_name": "data_collection_tool"
+            },
+            {
+                "name": "kobo_forms",
+                "type": "select_one",
+                "$kuid": "IOKgKMuHH",
+                "label": [
+                    "Are you using standard SWM Kobo forms or other Kobo forms to collect these data?",
+                    "Utilisez-vous des formulaires standard SWM Kobo ou d'autres formulaires Kobo pour collecter ces données ?",
+                    "¿Utiliza los formularios estándar de SWM Kobo u otros formularios Kobo para recoger estos datos?"
+                ],
+                "relevant": "selected(${data_collection_tool}, 'kobo_form')",
+                "required": true,
+                "$autoname": "kobo_forms",
+                "select_from_list_name": "kobo_form"
+            },
+            {
+                "name": "data_collection_tool_other",
+                "type": "text",
+                "$kuid": "IAEZ9C2k2",
+                "label": [
+                    "Please provide details on any other tools you expect to use to collect these data.",
+                    "Veuillez s'il-vous-plaît fournir des détails sur tout autre outil que vous comptez utiliser pour collecter ces données.",
+                    "Por favor, sírvase proporcionar detalles de cualquier otro instrumento que se proponga utilizar para reunir estos datos."
+                ],
+                "relevant": "selected(${data_collection_tool}, 'other')",
+                "required": true,
+                "$autoname": "data_collection_tool_other"
+            },
+            {
+                "name": "data_management_tool",
+                "type": "select_multiple",
+                "$kuid": "VyayknoKL",
+                "label": [
+                    "How are you managing these data?",
+                    "Comment gérez-vous ces données ?",
+                    "¿Cómo gestiona estos datos?"
+                ],
+                "required": true,
+                "$autoname": "data_management_tool",
+                "select_from_list_name": "data_management_tool"
+            },
+            {
+                "name": "data_management_tool_other",
+                "type": "text",
+                "$kuid": "JJ1ceq822",
+                "label": [
+                    "Please provide details on any other tools you expect to use to manage these data.",
+                    "Veuillez s'il-vous-plaît fournir des détails sur tout autre outil que vous comptez utiliser pour gérer ces données.",
+                    "Por favor, proporcione detalles de cualquier otra herramienta que piense utilizar para gestionar estos datos."
+                ],
+                "relevant": "selected(${data_management_tool}, 'other')",
+                "required": true,
+                "$autoname": "data_management_tool_other"
+            },
+            {
+                "name": "data_analysis_tool",
+                "type": "select_multiple",
+                "$kuid": "xpmVZIRBD",
+                "label": [
+                    "How are you analyzing these data?",
+                    "Comment analysez-vous ces données ?",
+                    "¿Cómo analizas estos datos?"
+                ],
+                "required": true,
+                "$autoname": "data_analysis_tool",
+                "select_from_list_name": "data_analysis_tool"
+            },
+            {
+                "name": "data_analysis_tool_other",
+                "type": "text",
+                "$kuid": "QktGEnHHX",
+                "label": [
+                    "Please provide details on any other tools you expect to use to analyze these data.",
+                    "Veuillez s'il-vous-plaît fournir des détails sur tout autre outil que vous comptez utiliser pour analyser ces données.",
+                    "Por favor, proporcione detalles de cualquier otra herramienta que piense utilizar para analizar estos datos."
+                ],
+                "relevant": "selected(${data_analysis_tool}, 'other')",
+                "required": true,
+                "$autoname": "data_analysis_tool_other"
+            },
+            {
+                "name": "challenge",
+                "type": "select_multiple",
+                "$kuid": "qzwEzGR0I",
+                "label": [
+                    "What challenges are you facing?",
+                    "À quels défis faites-vous face ?",
+                    "¿A qué retos te enfrentas?"
+                ],
+                "required": true,
+                "$autoname": "challenge",
+                "select_from_list_name": "challenge"
+            },
+            {
+                "name": "challenge_other",
+                "type": "text",
+                "$kuid": "MbsJDzcdy",
+                "label": [
+                    "Please provide details on any other challenges you are facing.",
+                    "Veuillez s'il-vous-plaît fournir des détails sur tout autre défi auquel vous êtes confronté.",
+                    "Por favor, proporcione detalles de cualquier otro reto al que se enfrente."
+                ],
+                "relevant": "selected(${challenge}, 'other')",
+                "required": true,
+                "$autoname": "challenge_other"
+            },
+            {
+                "name": "data_management_help",
+                "type": "select_multiple",
+                "$kuid": "3XmTgvEGT",
+                "label": [
+                    "Which of the following would help you manage and process this data set?",
+                    "Parmi les outils suivants, lesquels vous aideraient à gérer et à traiter ce jeu de données ?",
+                    "¿Cuál de las siguientes herramientas le ayudaría a gestionar y procesar este conjunto de datos?"
+                ],
+                "required": true,
+                "$autoname": "data_management_help",
+                "select_from_list_name": "data_management_help"
+            },
+            {
+                "name": "data_mgmt_help_other",
+                "type": "text",
+                "$kuid": "dqniTXVyk",
+                "label": [
+                    "Please provide details on any other help needed to manage and process this data.",
+                    "Veuillez s'il-vous-plaît fournir des détails sur toute autre aide nécessaire à la gestion et au traitement de ces données.",
+                    "Sírvase proporcionar detalles sobre cualquier otra asistencia necesaria para la gestión y el procesamiento de estos datos."
+                ],
+                "relevant": "selected(${data_management_help}, 'other')",
+                "required": true,
+                "$autoname": "data_mgmt_help_other"
+            },
+            {
+                "name": "other_services",
+                "type": "text",
+                "$kuid": "7XGh8wuYM",
+                "label": [
+                    "What other services, tools, support or training would you like to receive to support you in collecting/processing/analyzing these data?",
+                    "Quels autres services, outils, appui ou formations souhaiteriez-vous recevoir pour vous accompagner dans la collecte / le traitement / l'analyse de ces données?",
+                    "¿Qué otros servicios, herramientas, apoyo o capacitación le gustaría recibir para ayudarlo a recolectar / procesar / analizar estos datos?"
+                ],
+                "required": false,
+                "$autoname": "other_services"
+            },
+            {
+                "name": "dataset_name_calculated",
+                "type": "calculate",
+                "$kuid": "TRFVzDE2W",
+                "required": false,
+                "$autoname": "dataset_name_calculated",
+                "calculation": "concat(${data_collection_start},\" - \",${swm_site},\" - \",${survey_type})"
+            },
+            {
+                "type": "end_repeat",
+                "$kuid": "/ESB7YyuQm"
+            },
+            {
+                "name": "other_info",
+                "type": "text",
+                "$kuid": "E5etBlhK9",
+                "label": [
+                    "Please share any other information about your data collection, management or analysis efforts that will help us all deliver on the Arcadia goals",
+                    "Veuillez partager toute autre information sur vos efforts de collecte, de gestion ou d'analyse des données qui nous aideront tous à atteindre les objectifs du programme UE-SWM",
+                    "Por favor, comparta cualquier otra información sobre sus esfuerzos de recopilación, gestión o análisis de datos que nos ayude a todos a alcanzar los objetivos del programa EU-SWM."
+                ],
+                "required": false,
+                "$autoname": "other_info",
+                "appearance": "multiline"
+            },
+            {
+                "name": "__version__",
+                "type": "calculate",
+                "$kuid": "gj41QuVbh",
+                "required": false,
+                "$autoname": "__version__",
+                "calculation": "'voRMBVHaAsWtbidcyrJDJT'"
+            }
+        ],
+        "choices": [
+            {
+                "name": "wcs_stronghold_scape_director_",
+                "$kuid": "qraapfPfN",
+                "label": [
+                    "WCS Stronghold/Scape Director/Manager",
+                    null,
+                    null
+                ],
+                "order": 0,
+                "list_name": "role",
+                "$autovalue": "wcs_stronghold_scape_director_"
+            },
+            {
+                "name": "site_database_manager",
+                "$kuid": "iPDmLSu0y",
+                "label": [
+                    "Site data or research manager/coordinator",
+                    "Gestionnaire de base de données de site",
+                    "Administrador de la base de datos del sitio"
+                ],
+                "order": 2,
+                "list_name": "role",
+                "$autovalue": "site_database_manager"
+            },
+            {
+                "name": "other",
+                "$kuid": "uuhVK4zFA",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otros"
+                ],
+                "order": 3,
+                "list_name": "role",
+                "$autovalue": "other"
+            },
+            {
+                "name": "batang_ai_complex",
+                "$kuid": "IpcfgBTDT",
+                "label": [
+                    "Batang-Ai Complex",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "batang_ai_complex"
+            },
+            {
+                "name": "changtang",
+                "$kuid": "yDFJxi8IW",
+                "label": [
+                    "Changtang",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "changtang"
+            },
+            {
+                "name": "endau_rompin_complex",
+                "$kuid": "tCBWFoCq9",
+                "label": [
+                    "Endau-Rompin Complex",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "endau_rompin_complex"
+            },
+            {
+                "name": "gunung_leuser_complex",
+                "$kuid": "Ca7UhuqFr",
+                "label": [
+                    "Gunung Leuser Complex",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "gunung_leuser_complex"
+            },
+            {
+                "name": "madid___tambopata",
+                "$kuid": "rcnrVGQZy",
+                "label": [
+                    "Madidí -Tambopata",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "madid___tambopata"
+            },
+            {
+                "name": "mamabay",
+                "$kuid": "YeAgM9YkP",
+                "label": [
+                    "MaMaBay",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "mamabay"
+            },
+            {
+                "name": "manovo_complex",
+                "$kuid": "jHaPHHG69",
+                "label": [
+                    "Manovo Complex",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "manovo_complex"
+            },
+            {
+                "name": "mara_n_ucayali",
+                "$kuid": "nBBMUOPWO",
+                "label": [
+                    "Marañón Ucayali",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "mara_n_ucayali"
+            },
+            {
+                "name": "moskitia",
+                "$kuid": "JqEMtQRey",
+                "label": [
+                    "Moskitia",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "moskitia"
+            },
+            {
+                "name": "northern_sulawesi_north_maluku",
+                "$kuid": "oedNDyIZa",
+                "label": [
+                    "Northern Sulawesi-North Maluku",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "northern_sulawesi_north_maluku"
+            },
+            {
+                "name": "nouabal__ndoki_lac_tele",
+                "$kuid": "qBYeNxcOx",
+                "label": [
+                    "Nouabalé Ndoki-Lac Tele",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "nouabal__ndoki_lac_tele"
+            },
+            {
+                "name": "okapi_maiko_kahuzi_biega",
+                "$kuid": "o3nmR27L0",
+                "label": [
+                    "Okapi-Maiko-Kahuzi-Biega",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "okapi_maiko_kahuzi_biega"
+            },
+            {
+                "name": "savannas_of_orinoco",
+                "$kuid": "PlNXC5kgG",
+                "label": [
+                    "Savannas of Orinoco",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "savannas_of_orinoco"
+            },
+            {
+                "name": "selva_maya",
+                "$kuid": "PZyqmfhSF",
+                "label": [
+                    "Selva Maya",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "selva_maya"
+            },
+            {
+                "name": "tennaserim",
+                "$kuid": "XW1xBD9W8",
+                "label": [
+                    "Tennaserim",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "tennaserim"
+            },
+            {
+                "name": "valdes___patagonia_azul",
+                "$kuid": "oRSfKCzH9",
+                "label": [
+                    "Valdes - Patagonia Azul",
+                    null,
+                    null
+                ],
+                "list_name": "site",
+                "$autovalue": "valdes___patagonia_azul"
+            },
+            {
+                "name": "basic_necessities_survey",
+                "$kuid": "nQufsFs5J",
+                "label": [
+                    "Basic Necessites Survey",
+                    "Enquête sur les Nécessités de Base (BNS)",
+                    "Encuesta de Necesidades Básicas (BNS)"
+                ],
+                "order": 0,
+                "list_name": "survey_type",
+                "$autovalue": "basic_necessities_survey"
+            },
+            {
+                "name": "behavior_change",
+                "$kuid": "lj8qnSbKM",
+                "label": [
+                    "Behavior Change survey",
+                    "Etude de Changement de Comportement",
+                    "Estudio de cambio de comportamiento"
+                ],
+                "order": 1,
+                "list_name": "survey_type",
+                "$autovalue": "behavior_change"
+            },
+            {
+                "name": "camera_trapping",
+                "$kuid": "Dzb73JNf6",
+                "label": [
+                    "Camera trapping",
+                    "Piégeage photographique",
+                    "Cámara de atrapamiento"
+                ],
+                "order": 2,
+                "list_name": "survey_type",
+                "$autovalue": "camera_trapping"
+            },
+            {
+                "name": "rural_consumption",
+                "$kuid": "HxoqDEGQK",
+                "label": [
+                    "Consumption (Rural)",
+                    "Consommation (rurale)",
+                    "Consumo (rural)"
+                ],
+                "order": 3,
+                "list_name": "survey_type",
+                "$autovalue": "rural_consumption"
+            },
+            {
+                "name": "urban_consumption",
+                "$kuid": "naYEo7ED5",
+                "label": [
+                    "Consumption (Urban)",
+                    "Consommation (urbaine)",
+                    "Consumo (urbano)"
+                ],
+                "order": 4,
+                "list_name": "survey_type",
+                "$autovalue": "urban_consumption"
+            },
+            {
+                "name": "governance",
+                "$kuid": "i6a5qfCkk",
+                "label": [
+                    "Governance",
+                    "Gouvernance",
+                    "Gobernanza"
+                ],
+                "order": 5,
+                "list_name": "survey_type",
+                "$autovalue": "governance"
+            },
+            {
+                "name": "line_transect_survey",
+                "$kuid": "8rWLK4hot",
+                "label": [
+                    "Line transect wildlife survey",
+                    "Etude de faune par transects linéaires",
+                    "Encuesta de transección de línea"
+                ],
+                "order": 6,
+                "list_name": "survey_type",
+                "$autovalue": "line_transect_survey"
+            },
+            {
+                "name": "livestock_production",
+                "$kuid": "ZO9u2KY5A",
+                "label": [
+                    "Livestock production",
+                    "Production animale",
+                    "La producción animal"
+                ],
+                "order": 7,
+                "list_name": "survey_type",
+                "$autovalue": "livestock_production"
+            },
+            {
+                "name": "market_survey",
+                "$kuid": "97wZFhT8D",
+                "label": [
+                    "Market survey",
+                    "Étude de marché",
+                    "Investigación de mercado"
+                ],
+                "order": 8,
+                "list_name": "survey_type",
+                "$autovalue": "market_survey"
+            },
+            {
+                "name": "most_significant_change",
+                "$kuid": "kvBv8LHQB",
+                "label": [
+                    "Most Significant Change",
+                    "Changement le plus important (MSC)",
+                    "Cambio más significativo (MSC)"
+                ],
+                "order": 9,
+                "list_name": "survey_type",
+                "$autovalue": "most_significant_change"
+            },
+            {
+                "name": "point_transect_survey",
+                "$kuid": "sIEe1EN4x",
+                "label": [
+                    "Point transect wildlife survey (other than camera trapping)",
+                    "Etude de faune par points de transects (autre que piégeage photographique)",
+                    "Encuesta única"
+                ],
+                "order": 10,
+                "list_name": "survey_type",
+                "$autovalue": "point_transect_survey"
+            },
+            {
+                "name": "vca",
+                "$kuid": "6S3GpoL89",
+                "label": [
+                    "Value Chain Analyses",
+                    "Analyse des Chaines de Valeur",
+                    "Análisis de la cadena de valor"
+                ],
+                "order": 11,
+                "list_name": "survey_type",
+                "$autovalue": "vca"
+            },
+            {
+                "name": "offtake_survey",
+                "$kuid": "r7m383Ntt",
+                "label": [
+                    "Wildlife offtake survey",
+                    "Enquête sur les prélèvements de faune",
+                    "Investigación de las muestras"
+                ],
+                "order": 12,
+                "list_name": "survey_type",
+                "$autovalue": "offtake_survey"
+            },
+            {
+                "name": "other_passive_sensor",
+                "$kuid": "T7msHuqoc",
+                "label": [
+                    "Wildlife survey with other passive sensor (e.g. Accoustic)",
+                    "Etude de faune avec autre capteur passif",
+                    "Estudio de la fauna con otro sensor pasivo"
+                ],
+                "order": 13,
+                "list_name": "survey_type",
+                "$autovalue": "other_passive_sensor"
+            },
+            {
+                "name": "law_enforcement_monitoring___p",
+                "$kuid": "J2Lao3CvM",
+                "label": [
+                    "Law Enforcement Monitoring / Patrolling",
+                    null,
+                    null
+                ],
+                "order": 14,
+                "list_name": "survey_type",
+                "$autovalue": "law_enforcement_monitoring___p"
+            },
+            {
+                "name": "human_wildlife_conflict",
+                "$kuid": "IBaAq0PUe",
+                "label": [
+                    "Human Wildlife Conflict",
+                    null,
+                    null
+                ],
+                "order": 15,
+                "list_name": "survey_type",
+                "$autovalue": "human_wildlife_conflict"
+            },
+            {
+                "name": "intelligence",
+                "$kuid": "j3Gk67SZ5",
+                "label": [
+                    "Intelligence",
+                    null,
+                    null
+                ],
+                "order": 16,
+                "list_name": "survey_type",
+                "$autovalue": "intelligence"
+            },
+            {
+                "name": "tree_phenology",
+                "$kuid": "VPmn0KFLe",
+                "label": [
+                    "Tree phenology",
+                    null,
+                    null
+                ],
+                "order": 17,
+                "list_name": "survey_type",
+                "$autovalue": "tree_phenology"
+            },
+            {
+                "name": "tree_density",
+                "$kuid": "kWgpM9fw6",
+                "label": [
+                    "Tree density",
+                    null,
+                    null
+                ],
+                "order": 18,
+                "list_name": "survey_type",
+                "$autovalue": "tree_density"
+            },
+            {
+                "name": "other_botany",
+                "$kuid": "rpMLeAJXW",
+                "label": [
+                    "Other botany",
+                    null,
+                    null
+                ],
+                "order": 19,
+                "list_name": "survey_type",
+                "$autovalue": "other_botany"
+            },
+            {
+                "name": "other",
+                "$kuid": "geq91hNAa",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otros"
+                ],
+                "order": 20,
+                "list_name": "survey_type",
+                "$autovalue": "other"
+            },
+            {
+                "name": "none",
+                "$kuid": "bUXvY8JrT",
+                "label": [
+                    "None",
+                    null,
+                    null
+                ],
+                "list_name": "survey_type",
+                "$autovalue": "none"
+            },
+            {
+                "name": "still_images_will_be_collected",
+                "$kuid": "8AxpYrpga",
+                "label": [
+                    "Still images will be collected",
+                    null,
+                    null
+                ],
+                "list_name": "bh8ds79",
+                "$autovalue": "still_images_will_be_collected"
+            },
+            {
+                "name": "video_images_will_be_collected",
+                "$kuid": "dY6HJepBG",
+                "label": [
+                    "Video images will be collected",
+                    null,
+                    null
+                ],
+                "list_name": "bh8ds79",
+                "$autovalue": "video_images_will_be_collected"
+            },
+            {
+                "name": "the_cameras_will_be_cell_wifi_internet_e",
+                "$kuid": "G3f7DzQFc",
+                "label": [
+                    "The cameras will be cell/wifi/internet enabled",
+                    null,
+                    null
+                ],
+                "list_name": "bh8ds79",
+                "$autovalue": "the_cameras_will_be_cell_wifi_internet_e"
+            },
+            {
+                "name": "presence_absence",
+                "$kuid": "UBPf1aAoE",
+                "label": [
+                    "Presence/Absence",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "presence_absence"
+            },
+            {
+                "name": "species_richness",
+                "$kuid": "gzviCbWio",
+                "label": [
+                    "Species Richness",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "species_richness"
+            },
+            {
+                "name": "encounter_rate__per_unit_time__or_per_un",
+                "$kuid": "zTwKOFnDU",
+                "label": [
+                    "Encounter rate (per unit time, or per unit length)",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "encounter_rate__per_unit_time__or_per_un"
+            },
+            {
+                "name": "occupancy",
+                "$kuid": "Hlre8O7LE",
+                "label": [
+                    "Occupancy",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "occupancy"
+            },
+            {
+                "name": "density",
+                "$kuid": "YkLox93DY",
+                "label": [
+                    "Density",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "density"
+            },
+            {
+                "name": "abundance__density_x_area_surveyed",
+                "$kuid": "IMAkXRvdj",
+                "label": [
+                    "Abundance (Density x area surveyed)",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "abundance__density_x_area_surveyed"
+            },
+            {
+                "name": "number_of_known_individuals",
+                "$kuid": "5FJCWRyb7",
+                "label": [
+                    "Number of Known Individuals",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "number_of_known_individuals"
+            },
+            {
+                "name": "demographic_metrics",
+                "$kuid": "oquCxEX71",
+                "label": [
+                    "Demographic metrics",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "demographic_metrics"
+            },
+            {
+                "name": "species_distribution",
+                "$kuid": "6Aeb7yQsh",
+                "label": [
+                    "Species distribution",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "species_distribution"
+            },
+            {
+                "name": "species_richness__maximum_likelihood_est",
+                "$kuid": "itnXCeGqN",
+                "label": [
+                    "Species richness (maximum likelihood estimation)",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "species_richness__maximum_likelihood_est"
+            },
+            {
+                "name": "animal_wildlife_health_assessment",
+                "$kuid": "8WXoWDv0i",
+                "label": [
+                    "Animal/Wildlife Health Assessment",
+                    null,
+                    null
+                ],
+                "list_name": "bi5ok12",
+                "$autovalue": "animal_wildlife_health_assessment"
+            },
+            {
+                "name": "occupancy",
+                "$kuid": "EMKjScC1L",
+                "label": [
+                    "Occupancy",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "occupancy"
+            },
+            {
+                "name": "capture_recapture__photos_of_i",
+                "$kuid": "D7Xklm6x0",
+                "label": [
+                    "Capture-Recapture -photos of individuals",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "capture_recapture__photos_of_i"
+            },
+            {
+                "name": "spatially_explicit_capture_rec",
+                "$kuid": "wgLRQLACT",
+                "label": [
+                    "Spatially explicit capture recapture - photos of individuals",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "spatially_explicit_capture_rec"
+            },
+            {
+                "name": "count_of_individually_recognis",
+                "$kuid": "vqMOmyuai",
+                "label": [
+                    "Count of individually recognisable individuals",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "count_of_individually_recognis"
+            },
+            {
+                "name": "distance_sampling_on_point_tra",
+                "$kuid": "VV3dZCdkf",
+                "label": [
+                    "Distance sampling on point transects using camera traps",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "distance_sampling_on_point_tra"
+            },
+            {
+                "name": "demography__repeated_census_of",
+                "$kuid": "BviAZsVnJ",
+                "label": [
+                    "Demography (repeated census of a population over time) survival, mortality, immigration, emigration",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "demography__repeated_census_of"
+            },
+            {
+                "name": "trapping_rates",
+                "$kuid": "R42FQ0rcD",
+                "label": [
+                    "Trapping rates",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "trapping_rates"
+            },
+            {
+                "name": "random_encounter_model",
+                "$kuid": "ct6vbArPF",
+                "label": [
+                    "Random encounter model",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "random_encounter_model"
+            },
+            {
+                "name": "other",
+                "$kuid": "QDkeoeRQI",
+                "label": [
+                    "Other",
+                    null,
+                    null
+                ],
+                "list_name": "cu4yd02",
+                "$autovalue": "other"
+            },
+            {
+                "name": "near_real_time",
+                "$kuid": "ultdrsAyY",
+                "label": [
+                    "In near real time",
+                    "En temps quasi réel",
+                    "En casi tiempo real"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "near_real_time"
+            },
+            {
+                "name": "weekly",
+                "$kuid": "ogL5zGvje",
+                "label": [
+                    "Weekly",
+                    "Hebdomadaire",
+                    "Semanal"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "weekly"
+            },
+            {
+                "name": "monthly",
+                "$kuid": "ao4Ije3nq",
+                "label": [
+                    "Monthly",
+                    "Mensuel",
+                    "Mensual"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "monthly"
+            },
+            {
+                "name": "quarterly",
+                "$kuid": "3fJ5LxQ2f",
+                "label": [
+                    "Quarterly",
+                    "Trimestriel",
+                    "Trimestral"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "quarterly"
+            },
+            {
+                "name": "not_needed",
+                "$kuid": "0DByJSeXO",
+                "label": [
+                    "It is not relevant/necessary to review the data before the end of the survey",
+                    "Il n'est pas pertinent/nécessaire d'examiner les données avant la fin de l'enquête",
+                    "No es pertinente/necesario examinar los datos antes de que finalice el estudio"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "not_needed"
+            },
+            {
+                "name": "other",
+                "$kuid": "XkmoioQhD",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otros"
+                ],
+                "list_name": "frequency",
+                "$autovalue": "other"
+            },
+            {
+                "name": "yes",
+                "$kuid": "nMCnhDXoM",
+                "label": [
+                    "Yes",
+                    "Oui",
+                    "Si"
+                ],
+                "list_name": "yesno",
+                "$autovalue": "yes"
+            },
+            {
+                "name": "no",
+                "$kuid": "EyK0UdnVg",
+                "label": [
+                    "No",
+                    "Non",
+                    "No"
+                ],
+                "list_name": "yesno",
+                "$autovalue": "no"
+            },
+            {
+                "name": "acoustic_sensor",
+                "$kuid": "AAQ680gdj",
+                "label": [
+                    "Acoustic sensor",
+                    "Capteur acoustique",
+                    "Sensore acústico"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "acoustic_sensor"
+            },
+            {
+                "name": "audio_video_interview",
+                "$kuid": "2hkZl76W5",
+                "label": [
+                    "Audio or video interview",
+                    "Entretien audio ou vidéo",
+                    "Entrevista en audio o video"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "audio_video_interview"
+            },
+            {
+                "name": "camera_trap",
+                "$kuid": "85xqr48Sw",
+                "label": [
+                    "Camera trap",
+                    "Piège photographique",
+                    "Trampa de cámara"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "camera_trap"
+            },
+            {
+                "name": "kobo_form",
+                "$kuid": "fcORsZ7Hy",
+                "label": [
+                    "Kobo form",
+                    "Formulaire Kobo",
+                    "Forma Kobo"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "kobo_form"
+            },
+            {
+                "name": "online_dataset",
+                "$kuid": "MMKrcQPF9",
+                "label": [
+                    "Online dataset (e.g. satellite imagery)",
+                    "Jeu de données accessibles en ligne (ex : images satellitaires)",
+                    "Conjunto de datos en línea (por ejemplo, imágenes de satélite)"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "online_dataset"
+            },
+            {
+                "name": "paper",
+                "$kuid": "tPqlTqTEz",
+                "label": [
+                    "Paper form",
+                    "Formulaire papier",
+                    "Formulario en papel"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "paper"
+            },
+            {
+                "name": "smart_mobile",
+                "$kuid": "EbGPU4i7f",
+                "label": [
+                    "SMART Mobile / Cybertracker",
+                    "SMART Mobile / Cybertracker",
+                    "SMART Mobile / Cybertracker"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "smart_mobile"
+            },
+            {
+                "name": "other",
+                "$kuid": "N0pTgxpdt",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otra"
+                ],
+                "list_name": "data_collection_tool",
+                "$autovalue": "other"
+            },
+            {
+                "name": "standard_swm_kobo_form",
+                "$kuid": "NNfVIXWLZ",
+                "label": [
+                    "We are using standard SWM KoboToolBox forms to collect this data",
+                    "Nous utilisons des formulaires standard SWM KoboToolBox pour collecter ces données",
+                    "Utilizamos los formularios estándar de SWM KoboToolBox para recoger estos datos."
+                ],
+                "list_name": "kobo_form",
+                "$autovalue": "standard_swm_kobo_form"
+            },
+            {
+                "name": "other_kobo_form",
+                "$kuid": "LS0SLjbrd",
+                "label": [
+                    "We are using other KoboToolBox forms to collect this data",
+                    "Nous utilisons d'autres formulaires KoboToolBox pour collecter ces données",
+                    "Utilizamos otros formularios de KoboToolBox para recoger estos datos."
+                ],
+                "list_name": "kobo_form",
+                "$autovalue": "other_kobo_form"
+            },
+            {
+                "name": "excel",
+                "$kuid": "lCoQdmiek",
+                "label": [
+                    "Excel",
+                    "Excel",
+                    "Excel"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "excel"
+            },
+            {
+                "name": "kobo",
+                "$kuid": "VcyA59ERe",
+                "label": [
+                    "KoboToolbox",
+                    "KoboToolbox",
+                    "KoboToolbox"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "kobo"
+            },
+            {
+                "name": "smart",
+                "$kuid": "cGOA2Ihza",
+                "label": [
+                    "SMART",
+                    "SMART",
+                    "SMART"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "smart"
+            },
+            {
+                "name": "sql_database",
+                "$kuid": "EVt1Gzk7R",
+                "label": [
+                    "SQL database",
+                    "Base de données SQL",
+                    "Base de datos SQL"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "sql_database"
+            },
+            {
+                "name": "wildlife_insights",
+                "$kuid": "W2pQjwY6u",
+                "label": [
+                    "Wildlife Insights",
+                    "Wildlife Insights",
+                    "Wildlife Insights"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "wildlife_insights"
+            },
+            {
+                "name": "other",
+                "$kuid": "LG5zEXRZg",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otra"
+                ],
+                "list_name": "data_management_tool",
+                "$autovalue": "other"
+            },
+            {
+                "name": "excel",
+                "$kuid": "Pikdq0oXe",
+                "label": [
+                    "Excel",
+                    "Excel",
+                    "Excel"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "excel"
+            },
+            {
+                "name": "arcgis",
+                "$kuid": "vgAeKAKVj",
+                "label": [
+                    "Arcgis",
+                    "Arcgis",
+                    "Arcgis"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "arcgis"
+            },
+            {
+                "name": "qgis",
+                "$kuid": "h1E42aOIF",
+                "label": [
+                    "QGIS",
+                    "QGIS",
+                    "QGIS"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "qgis"
+            },
+            {
+                "name": "idrisi",
+                "$kuid": "zxzq6tMd6",
+                "label": [
+                    "Idrisi",
+                    "Idrisi",
+                    "Idrisi"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "idrisi"
+            },
+            {
+                "name": "smart",
+                "$kuid": "miuboggq7",
+                "label": [
+                    "SMART",
+                    "SMART",
+                    "SMART"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "smart"
+            },
+            {
+                "name": "sas",
+                "$kuid": "ChkpUNCYL",
+                "label": [
+                    "SAS",
+                    "SAS",
+                    "SAS"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "sas"
+            },
+            {
+                "name": "spss",
+                "$kuid": "RlBroGRk3",
+                "label": [
+                    "SPSS",
+                    "SPSS",
+                    "SPSS"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "spss"
+            },
+            {
+                "name": "stata",
+                "$kuid": "iBMU9m960",
+                "label": [
+                    "Stata",
+                    "Stata",
+                    "Stata"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "stata"
+            },
+            {
+                "name": "r",
+                "$kuid": "l5gdqkoED",
+                "label": [
+                    "R",
+                    "R",
+                    "R"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "r"
+            },
+            {
+                "name": "distance",
+                "$kuid": "OmuK116j2",
+                "label": [
+                    "Distance",
+                    "Distance",
+                    "Distance"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "distance"
+            },
+            {
+                "name": "wildlife_insights",
+                "$kuid": "ZIiBwqrFT",
+                "label": [
+                    "Wildlife Insights",
+                    "Wildlife Insights",
+                    "Wildlife Insights"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "wildlife_insights"
+            },
+            {
+                "name": "other",
+                "$kuid": "zQGHnAhxB",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otra"
+                ],
+                "list_name": "data_analysis_tool",
+                "$autovalue": "other"
+            },
+            {
+                "name": "data_collector_training",
+                "$kuid": "zxlhdYrZG",
+                "label": [
+                    "Data collector training",
+                    "Formation des personnes qui collectent les données",
+                    "Capacitación para recolectores de datos"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "data_collector_training"
+            },
+            {
+                "name": "data_collection",
+                "$kuid": "TsqEHVtii",
+                "label": [
+                    "Data collection",
+                    "Collecte des données",
+                    "Recopilación de datos"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "data_collection"
+            },
+            {
+                "name": "data_management",
+                "$kuid": "jmph5ztwu",
+                "label": [
+                    "Data management",
+                    "Gestion des données",
+                    "Manejo de datos"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "data_management"
+            },
+            {
+                "name": "data_analysis",
+                "$kuid": "PKUt5D62m",
+                "label": [
+                    "Data analysis",
+                    "Analyse des données",
+                    "Análisis de datos"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "data_analysis"
+            },
+            {
+                "name": "result_visualization_and_reporting",
+                "$kuid": "eSvdIc1rG",
+                "label": [
+                    "Result visualization and reporting",
+                    "Visualisation des données et rapportage",
+                    "Visualización de resultados e informes"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "result_visualization_and_reporting"
+            },
+            {
+                "name": "other",
+                "$kuid": "55L9X3Ly4",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otra"
+                ],
+                "list_name": "challenge",
+                "$autovalue": "other"
+            },
+            {
+                "name": "automated_data_backup",
+                "$kuid": "Ar0rgK6Lc",
+                "label": [
+                    "Automated backup of the data",
+                    "Sauvegarde automatisée des données",
+                    "Copia de seguridad automatizada de los datos"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "automated_data_backup"
+            },
+            {
+                "name": "ability_to_easily_download_the_data",
+                "$kuid": "Vd8dJtFZX",
+                "label": [
+                    "Ability to easily download the data from online",
+                    "Possibilité de télécharger facilement les données en ligne",
+                    "Capacidad de descargar fácilmente los datos en línea"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "ability_to_easily_download_the_data"
+            },
+            {
+                "name": "automated_tabular_data_summaries",
+                "$kuid": "K1Jf4q8KW",
+                "label": [
+                    "Automated tabular summaries of the data (counts, average, standard deviations etc)",
+                    "Résumés tabulaires automatisés des données (comptages, moyenne, écarts types, etc.)",
+                    "Resúmenes tabulares automatizados de datos (recuentos, media, desviaciones estándar, etc.)"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "automated_tabular_data_summaries"
+            },
+            {
+                "name": "automated_data_visualizations",
+                "$kuid": "0sKGwHTwc",
+                "label": [
+                    "Automated visualizations of the data (bar graphs, histograms, etc)",
+                    "Visualisations automatisées des données (diagrammes en barres, histogrammes, etc.)",
+                    "Visualizaciones de datos automatizadas (gráficos de barras, histogramas, etc.)"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "automated_data_visualizations"
+            },
+            {
+                "name": "automated_maps_of_the_data",
+                "$kuid": "pDMa82h3Y",
+                "label": [
+                    "Automated maps of the data",
+                    "Cartes automatisées des données",
+                    "Mapas de datos automatizados"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "automated_maps_of_the_data"
+            },
+            {
+                "name": "data_collection_summary",
+                "$kuid": "0J3HVQ075",
+                "label": [
+                    "Data collection summary information (start and end of data collection, location and time stamps of data collection)",
+                    "Informations récapitulatives sur la collecte des données (heure de début et de fin de la collecte des données, lieu de la collecte des données)",
+                    "Información resumida sobre la reunión de datos (fecha de inicio y fin de la reunión de datos, lugar y hora de la reunión)"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "data_collection_summary"
+            },
+            {
+                "name": "none",
+                "$kuid": "ARAXCqYi8",
+                "label": [
+                    "None of the above",
+                    "Aucun",
+                    "Ninguno"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "none"
+            },
+            {
+                "name": "other",
+                "$kuid": "VbfVDy6CP",
+                "label": [
+                    "Other",
+                    "Autre",
+                    "Otra"
+                ],
+                "list_name": "data_management_help",
+                "$autovalue": "other"
+            }
+        ],
+        "settings": {
+            "version": "voRMBVHaAsWtbidcyrJDJT",
+            "default_language": "English"
+        },
+        "translated": [
+            "hint",
+            "label"
+        ],
+        "translations": [
+            "English",
+            "Français",
+            "Espanol"
+        ]
+    },
+    "downloads": [
+        {
+            "format": "xls",
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/?format=json.xls"
+        },
+        {
+            "format": "xml",
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/?format=json.xml"
+        }
+    ],
+    "embeds": [
+        {
+            "format": "xls",
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/xls/?format=json"
+        },
+        {
+            "format": "xform",
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/xform/?format=json"
+        }
+    ],
+    "koboform_link": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/koboform/?format=json",
+    "xform_link": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/xform/?format=json",
+    "hooks_link": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/hooks/?format=json",
+    "tag_string": "",
+    "uid": "aDgPJqN4SAYohZ4ZueEeYU",
+    "kind": "asset",
+    "xls_link": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/xls/?format=json",
+    "name": "Arcadia Data Collection Site Survey",
+    "assignable_permissions": [
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/view_asset/?format=json",
+            "label": "View form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/change_asset/?format=json",
+            "label": "Edit form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/manage_asset/?format=json",
+            "label": "Manage project"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/add_submissions/?format=json",
+            "label": "Add submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/view_submissions/?format=json",
+            "label": "View submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/partial_submissions/?format=json",
+            "label": "View submissions only from specific users"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/change_submissions/?format=json",
+            "label": "Edit submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/delete_submissions/?format=json",
+            "label": "Delete submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/permissions/validate_submissions/?format=json",
+            "label": "Validate submissions"
+        }
+    ],
+    "permissions": [
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pyg2HGGBc55vTVsd4ErK7L/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/add_submissions/?format=json",
+            "label": "Add submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pZuC2bLNxR9TxQSBB4Ge5e/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_asset/?format=json",
+            "label": "Edit form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p4nHLpRXNhwokzLw8EqhUG/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_submissions/?format=json",
+            "label": "Edit submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p5e5Pa22GR5rE8CXDmGdD7/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/delete_submissions/?format=json",
+            "label": "Delete submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pPoogjGDER2bHbmRyppPpr/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/manage_asset/?format=json",
+            "label": "Manage project"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pTfGV8wjHVAZSTrnAVWRnk/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/validate_submissions/?format=json",
+            "label": "Validate submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pLjnT3jy8yMRZ2txbbY8tP/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_asset/?format=json",
+            "label": "View form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pqFz9bDZ8VbM7tFaubWDd5/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/openfn_kobo/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_submissions/?format=json",
+            "label": "View submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pyWzRonR4pCsY3eFbsw4VU/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/sgallo_wcs/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_asset/?format=json",
+            "label": "View form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p2vzdfAUFGqBvAsvuNfnVU/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/sgallo_wcs/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_submissions/?format=json",
+            "label": "View submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/paChcgvARhwhmcQHXQnNXd/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/add_submissions/?format=json",
+            "label": "Add submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p7DQ2YeR6WHbhBiSwC54yu/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_asset/?format=json",
+            "label": "Edit form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pUkjvhmt8WK2gKovepneno/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_submissions/?format=json",
+            "label": "Edit submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/poHaogrzuJXAA5LgudMEbN/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/delete_submissions/?format=json",
+            "label": "Delete submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pXGEDVQfcgz6scraF6Pe2y/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/manage_asset/?format=json",
+            "label": "Manage project"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pJnfqGStLd23ACLLgrgLeo/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/manage_asset/?format=json",
+            "label": "Manage project"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pvRpESMCKaGCgXjR9zHRfT/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/validate_submissions/?format=json",
+            "label": "Validate submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pEki9e8BKD7hxaBtFDEAb3/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_asset/?format=json",
+            "label": "View form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p5azFSMxgu8sKAk2yoZxLn/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_jpalmer/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_submissions/?format=json",
+            "label": "View submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p8DTwTv78brWy5fRTovU6Y/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/add_submissions/?format=json",
+            "label": "Add submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/p3eJGs5PtZKkRa74Qj5935/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_asset/?format=json",
+            "label": "Edit form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pDsN2s2vrggfTaaEpFv8fo/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/change_submissions/?format=json",
+            "label": "Edit submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pEBXThPxgmVN5pcNwvUaWr/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/delete_submissions/?format=json",
+            "label": "Delete submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pSpTHZetCSVNCJXwjW5oem/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/manage_asset/?format=json",
+            "label": "Manage project"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pAaNFfNE6Y3hNVm22AJDzW/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/validate_submissions/?format=json",
+            "label": "Validate submissions"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/ppEWURDj4ZNrBCeNiARof3/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_asset/?format=json",
+            "label": "View form"
+        },
+        {
+            "url": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/permission-assignments/pQ7MQPEZ3kD3byWHuHqofY/?format=json",
+            "user": "https://kf.kobotoolbox.org/api/v2/users/wcs_library/?format=json",
+            "permission": "https://kf.kobotoolbox.org/api/v2/permissions/view_submissions/?format=json",
+            "label": "View submissions"
+        }
+    ],
+    "data": "https://kf.kobotoolbox.org/api/v2/assets/aDgPJqN4SAYohZ4ZueEeYU/data/?format=json"
+}
