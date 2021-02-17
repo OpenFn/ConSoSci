@@ -20,7 +20,7 @@ alterState(state => {
       },
       {
         id: 'azg4rJb2Kk8DT2upSPyYjB',
-        formName: 'EU SWM Site Survey Demo',
+        formName: 'Livestock production demo',
         destination: 'WCS_Livestock_LivestockProduction'
       }
     ].map(survey => ({
