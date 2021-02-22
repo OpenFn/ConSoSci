@@ -22,6 +22,11 @@ alterState(state => {
         id: 'azg4rJb2Kk8DT2upSPyYjB',
         formName: 'Livestock production demo',
         destination: 'WCS_Livestock_LivestockProduction'
+      },
+       {
+        id: 'aDgPJqN4SAYohZ4ZueEeYU',
+        formName: 'Arcadia Data Collection Site Survey',
+        destination: 'WCSPROGRAMS_ProjectAnnualDataPlan'
       }
     ].map(survey => ({
       ...survey,
