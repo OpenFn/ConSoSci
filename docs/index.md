@@ -28,7 +28,9 @@ Relevant ConSoSci/WCS system administrators have access the following OpenFn.org
 1. `WCS` --> source code hosted on `wcs` Github repo: [https://github.com/OpenFn/ConSoSci](https://github.com/OpenFn/ConSoSci)
 2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo: [https://github.com/OpenFn/wcs-wildmeat](https://github.com/OpenFn/wcs-wildmeat)
 
-## Support
+## Training & Support
 Contact support@openfn.org or check out [OpenFn Docs](https://docs.openfn.org). 
+
+[See the Training Videos](https://www.youtube.com/watch?v=ScmZt9PIJqQ&list=PL1pD3-abjHJ3d-6hB2zN5ia2z7tH_CtX9&index=4) for the Feb 2021 ConSoSci training sessions. 
 
 [![consosci-Logo](./ConSoSci_Logo-Horiz.png)](https://www.wcs.org)
