@@ -1,4 +1,4 @@
-// Your job goes here.
+//Job based on mapping spec: https://docs.google.com/spreadsheets/d/1SjSHpYYzlRUa9rQRW3mN2ruI7k_QWTeF7qX4Rnvy_wk/edit#gid=264797739
 alterState(state => {
   const sitesMap = { //swm site lookup table to ProjectIDs
     aceh: '1785',
@@ -170,9 +170,11 @@ alterState(state => {
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider what other columns to map or mark not null in db
   DataSetUUIDID: dataValue('$.body._id'),
   Answer_ID: dataValue('$.body._id'),
-  //formName: dataValue('$.formName'), //To map? 
-  //start: dataValue('$.body.start'), //To map? 
-  //end: dataValue('$.body.end'), //To map? 
+  //formName: dataValue('$.formName'), //TODO: Capture the source survey name? 
+  //UserID_CR: ?  //TODO: Other "not null" column mappings to consider? 
+  //UserID_LM: ?
+  //CRIPAddress: ?
+  //LMIPAddress: ? 
   SubmitterName: dataValue('$.body.participant'),
   SubmitterEmail: dataValue('$.body.email_address'),
   SubmitterRole: state => {
