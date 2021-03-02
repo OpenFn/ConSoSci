@@ -19,7 +19,13 @@ alterState(state => {
     valdes___patagonia_azul: '0015',
   };
 
-  return { ...state, sitesMap };
+  const cameraTrapMap = {
+    still_images_will_be_collected: '0000',
+    video_images_will_be_collected: '1111',
+    the_cameras_will_be_cell_wifi_internet_e: '2222',
+  };
+
+  return { ...state, sitesMap, cameraTrapMap };
 });
 
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'ProjectAnnualDataPlanID', {
@@ -44,8 +50,13 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'ProjectAnnualDataPlanID', {
 
 alterState(state => {
   const { surveys_planned, surveys_planned_001 } = state.data.body;
+  const collectGroup =
+    state.data.body['group_qp5by62/Which_of_the_followi_ata_you_will_collect'];
+
   const surveysPlanned = surveys_planned.split(' ');
   const surveysPlanned001 = surveys_planned_001.split(' ');
+  const collectGroups = collectGroup.split(' ');
+
   return combine(
     upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
@@ -66,7 +77,7 @@ alterState(state => {
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
       'WCSPROGRAMS_ProjectAnnualDataPlanSurveyID',
       state =>
-      surveysPlanned001.map(sp => {
+        surveysPlanned001.map(sp => {
           return {
             WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyID:
@@ -74,6 +85,18 @@ alterState(state => {
             WCSPROGRAMS_DataSetSurveyTypeID: state.data,
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
               sp === 'other' ? dataValue('body.survey_planned_other') : '',
+          };
+        })
+    ),
+    upsertMany(
+      'WCSPROGRAMS_ProjectPlanCameraTrap',
+      'WCSPROGRAMS_ProjectPlanCameraTrapID',
+      state =>
+        collectGroups.map(cg => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+            WCSPROGRAMS_ProjectPlanCameraTrapID: dataValue('body._id') + cg,
+            WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg],
           };
         })
     )
