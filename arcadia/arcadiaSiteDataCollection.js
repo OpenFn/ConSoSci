@@ -1,6 +1,6 @@
 // Your job goes here.
 alterState(state => {
-  const sitesMap = {
+  const sitesMap = { //swm site lookup table
     aceh: '1785',
     amazon_estuary: '1786',
     badingilo_boma_gambela: '1787',
@@ -119,13 +119,13 @@ alterState(state => {
   };
   
   //TODO: Update Ids for wherever these reference records are stored
-  const cameraTrapMap = {
+  const cameraTrapMap = { //lookup table for camera trap collection types
     still_images_will_be_collected: '0000', //kobo_value: sample Ids for reference records
     video_images_will_be_collected: '1111',
     the_cameras_will_be_cell_wifi_internet_e: '2222',
   };
 
-  const dataFrequencyMap = {
+  const dataFrequencyMap = { //lookup table for DataFrequency types
     near_real_time: '1',
     weekly: '2',
     monthly: '3',
@@ -134,7 +134,7 @@ alterState(state => {
     other: '6',
   };
 
-  const dataToolsMap = {
+  const dataToolsMap = { //lookup table for DataTools
     acoustic_sensor: '1',
     audio_video_interview: '3',
     camera_trap: '4',
@@ -166,10 +166,11 @@ alterState(state => {
   return { ...state, sitesMap, cameraTrapMap, dataFrequencyMap, dataToolsMap };
 });
 
-upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
-  //formName: dataValue('$.formName'), //To map? 
+//1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
+upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider what other columns to map or mark not null in db
   DataSetUUIDID: dataValue('$.body._id'),
   Answer_ID: dataValue('$.body._id'),
+  //formName: dataValue('$.formName'), //To map? 
   //start: dataValue('$.body.start'), //To map? 
   //end: dataValue('$.body.end'), //To map? 
   SubmitterName: dataValue('$.body.participant'),
@@ -196,7 +197,7 @@ alterState(state => {
   const surveysPlanned001 = surveys_planned_001.split(' ');
   const collectGroups = collectGroup.split(' ');
 
-  //Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType
+  //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned 
   return combine(
     upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
@@ -214,6 +215,7 @@ alterState(state => {
           };
         })
     ),
+    //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
     upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
       'DataSetUUIDID',
@@ -249,12 +251,12 @@ alterState(state => {
   )(state);
 });
 
-//For every dataset...
+//For every dataset repeat group entry...
 each(
   dataPath('$.body.datasets[*]'),
   alterState(state => {
     const dataset = state.data;
-
+    //Build arrays for the Kobo multiple choice questions
     const dataCollectionTools = dataset['datasets/data_collection_tool'].split(
       ' '
     );
@@ -266,7 +268,7 @@ each(
     const dataManagementHelps = dataset['datasets/challenge'].split(' ');
 
     return combine(
-      //Upsert 1 ProjectAnnualDataPlanDataSet
+      //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
       upsert(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
         'DataSetUUIDID',
@@ -304,8 +306,8 @@ each(
           OtherNotes: dataset['datasets/other_info'],
         }
       ),
-      //Upsert many ProjectAnnualDataPlanDataSetDataTool records to log datasets' related tools
-      upsertMany( //Dataset's data collection tools
+      //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
+      upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -320,7 +322,8 @@ each(
             };
           })
       ),
-      upsertMany( //Dataset's data management tools
+      //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
+      upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -335,7 +338,8 @@ each(
             };
           })
       ),
-      upsertMany( //Dataset's data analysis tools
+      //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
+      upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -350,7 +354,8 @@ each(
             };
           })
       ),
-      upsertMany( //Dataset's data challenges
+      //3.4. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related dataChallenge
+      upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
         'DataSetUUIDID',
         state =>
@@ -364,7 +369,8 @@ each(
             };
           })
       ),
-      upsertMany( //Dataset's data assistances
+      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related dataAssistance 
+      upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
         'DataSetUUIDID',
         state =>
