@@ -1,0 +1,59 @@
+{
+  "configuration": {},
+  "data": {
+    "__query_params": {},
+    "body": {
+      "__version__": "voRMBVHaAsWtbidcyrJDJT",
+      "_attachments": [],
+      "_geolocation": [
+        null,
+        null
+      ],
+      "_id": 86638832,
+      "_notes": [],
+      "_status": "submitted_via_web",
+      "_submission_time": "2021-02-24T14:25:21",
+      "_submitted_by": null,
+      "_tags": [],
+      "_uuid": "35abab33-f6d3-4cec-ad41-286e6630f3b311",
+      "_validation_status": {},
+      "_version_": "vbx6V8JiCmKd542n8KgyHb",
+      "_xform_id_string": "aDgPJqN4SAYohZ4ZueEeYU",
+      "datasets": [
+        {
+          "datasets/challenge": "data_collection data_analysis",
+          "datasets/data_analysis_completion_date": "2021-12-01",
+          "datasets/data_analysis_tool": "excel arcgis qgis r",
+          "datasets/data_collection_end": "2021-10-01",
+          "datasets/data_collection_start": "2021-06-01",
+          "datasets/data_collection_tool": "camera_trap",
+          "datasets/data_management_help": "automated_data_backup ability_to_easily_download_the_data automated_tabular_data_summaries",
+          "datasets/data_management_plan": "yes",
+          "datasets/data_management_tool": "excel",
+          "datasets/data_review_frequency": "monthly",
+          "datasets/dataset_name_calculated": "2021-06-01 - northern_sulawesi_north_maluku - camera_trapping",
+          "datasets/dataset_name_text": "Test CT Site Monitoring TNBNW 2021",
+          "datasets/link_dmp": "https://drive.google.com/drive/u/1/folders/0B6buRvBsQZffS09KS3ZhQk1BWlE",
+          "datasets/other_services": "We need tools for species individiual identification because Anoa and Babirusa can't individual identification for capture recapture analysis",
+          "datasets/survey_type": "camera_trapping"
+        }
+      ],
+      "email_address": "test@wcs.org",
+      "end": "2021-02-24T22:25:08.425+08:00",
+      "formhub/uuid": "c55bb613216d449ebb8bac8792739ea9",
+      "group_qp5by62/What_estimation_methods_do_you": "occupancy capture_recapture__photos_of_i spatially_explicit_capture_rec count_of_individually_recognis distance_sampling_on_point_tra trapping_rates",
+      "group_qp5by62/Which_metrics_questi_ith_camera_trap_data": "presence_absence species_richness occupancy density abundance__density_x_area_surveyed number_of_known_individuals species_distribution species_richness__maximum_likelihood_est",
+      "group_qp5by62/Which_of_the_followi_ata_you_will_collect": "still_images_will_be_collected video_images_will_be_collected",
+      "meta/instanceID": "uuid:35abab33-f6d3-4cec-ad41-286e6630f3b3",
+      "other_info": "Camera trap site monitoring BNWNP 2021 will be provide occupancy, distribution data key species (Babirusa,Lowland Anoa, Maleo) and measure impact the patrol activity with population trend",
+      "participant": "Test Mamadou",
+      "respondent_role": "site_database_manager",
+      "start": "2021-02-24T21:01:29.314+08:00",
+      "surveys_planned": "camera_trapping",
+      "surveys_planned_001": "camera_trapping",
+      "swm_site": "northern_sulawesi_north_maluku"
+    },
+    "destination": "WCSPROGRAMS_ProjectAnnualDataPlan",
+    "formName": "Arcadia Data Collection Site Survey"
+  }
+}
