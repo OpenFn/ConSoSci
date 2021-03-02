@@ -245,8 +245,8 @@ alterState(state => {
             WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg], //FK to whichever camera trap reference table - see L121 for how we might look-up reference data
           };
         })
-    )
-  )(state);*/
+    )*/
+  )(state);
 });
 
 each(
