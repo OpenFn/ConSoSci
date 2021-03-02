@@ -41,3 +41,41 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'ProjectAnnualDataPlanID', {
     '$.body.group_qp5by62/What_other_estimatio_do_you_intend_to_use'
   ),
 });
+
+alterState(state => {
+  const { surveys_planned, surveys_planned_001 } = state.data.body;
+  const surveysPlanned = surveys_planned.split(' ');
+  const surveysPlanned001 = surveys_planned_001.split(' ');
+  return combine(
+    upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurveyID',
+      state =>
+        surveysPlanned.map(sp => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+            WCSPROGRAMS_ProjectAnnualDataPlanSurveyID:
+              dataValue('body._id') + sp,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.data,
+            WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+              sp === 'other' ? dataValue('body.survey_planned_other') : '',
+          };
+        })
+    ),
+    upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurveyID',
+      state =>
+      surveysPlanned001.map(sp => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+            WCSPROGRAMS_ProjectAnnualDataPlanSurveyID:
+              dataValue('body._id') + sp,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.data,
+            WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+              sp === 'other' ? dataValue('body.survey_planned_other') : '',
+          };
+        })
+    )
+  )(state);
+});
