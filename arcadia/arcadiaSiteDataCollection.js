@@ -25,7 +25,16 @@ alterState(state => {
     the_cameras_will_be_cell_wifi_internet_e: '2222',
   };
 
-  return { ...state, sitesMap, cameraTrapMap };
+  const dataFrequencyMap = {
+    near_real_time: '1',
+    weekly: '2',
+    monthly: '3',
+    quarterly: '4',
+    not_needed: '5',
+    other: '6',
+  };
+
+  return { ...state, sitesMap, cameraTrapMap, dataFrequencyMap };
 });
 
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'ProjectAnnualDataPlanID', {
@@ -102,3 +111,44 @@ alterState(state => {
     )
   )(state);
 });
+
+each(
+  dataPath('$.body.datasets[*]'),
+  upsert(
+    'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
+    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetID',
+    {
+      WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+        dataValue('body._id') + state.data['datasets/survey_type'],
+      WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+      TypeOfDataSet:
+        state.data['datasets/survey_type'] === 'other'
+          ? state.data['datasets/survey_type']
+          : state.data['datasets/survey_type_other'],
+      WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
+        state.data['datasets/dataset_name_text'],
+      CollectionStartDate: state.data['datasets/data_collection_start'],
+      CollectionEndDate: state.data['datasets/data_collection_end'],
+      WCSPROGRAMS_DataAccessFrequencyID:
+        state.dataFrequencyMap[state.data['datasets/data_review_frequency']],
+      OtherFrequency:
+        state.dataFrequencyMap[
+          state.data['datasets/data_review_frequency_other']
+        ],
+      AnalysisCompletionDate:
+        state.data['datasets/data_analysis_completion_date'],
+      DataManagementPlan:
+        state.data['datasets/data_management_plan'] === 'yes' ? 1 : 0,
+      DataManagementPlanLink:
+        state.data['datasets/link_dmp'],
+      KoboForm: state.data['datasets/kobo_forms'],
+      OtherCollectionTool: state.data['datasets/data_collection_tool'],
+      OtherManagementTool: state.data['datasets/data_management_tool_other'],
+      OtherAnalysisTool: state.data['datasets/data_analysis_tool_other'],
+      OtherChallenge: state.data['datasets/challenge_other'],
+      OtherHelpNeeded: state.data['datasets/data_mgmt_help_other'],
+      OtherAssistance: state.data['datasets/other_services'],
+      OtherNotes: state.data['datasets/other_info'],
+    }
+  )
+);
