@@ -249,6 +249,7 @@ alterState(state => {
   )(state);
 });
 
+//For every dataset...
 each(
   dataPath('$.body.datasets[*]'),
   alterState(state => {
@@ -265,13 +266,15 @@ each(
     const dataManagementHelps = dataset['datasets/challenge'].split(' ');
 
     return combine(
+      //Upsert 1 ProjectAnnualDataPlanDataSet
       upsert(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetID',
+        'DataSetUUIDID',
         {
-          WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+          DataSetUUIDID:
             dataValue('body._id') + dataset['datasets/survey_type'],
-          WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+          WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
+          Answer_ID: dataValue('body._id'),
           TypeOfDataSet:
             dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
@@ -301,83 +304,75 @@ each(
           OtherNotes: dataset['datasets/other_info'],
         }
       ),
-      upsertMany(
+      //Upsert many ProjectAnnualDataPlanDataSetDataTool records to log datasets' related tools
+      upsertMany( //Dataset's data collection tools
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataCollectionTools.map(dct => {
             return {
               DataSetUUIDID: dataValue('body._id') + dct,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              Answer_ID: dataValue('body._id'),
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForCollect: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
             };
           })
       ),
-      upsertMany(
+      upsertMany( //Dataset's data management tools
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataManagementTools.map(dmt => {
             return {
               DataSetUUIDID: dataValue('body._id') + dmt,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              Answer_ID: dataValue('body._id'),
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForManage: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
             };
           })
       ),
-      upsertMany(
+      upsertMany( //Dataset's data analysis tools
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataAnalysisTools.map(dat => {
             return {
               DataSetUUIDID: dataValue('body._id') + dat,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              Answer_ID: dataValue('body._id'),
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForAnalysis: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
             };
           })
       ),
-      upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-        'DataSetUUIDID',
-        state =>
-          dataAnalysisTools.map(dat => {
-            return {
-              DataSetUUIDID: dataValue('body._id') + dat,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                dataValue('body._id') + dataset['datasets/survey_type'],
-              IsForAnalysis: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
-            };
-          })
-      ),
-      upsertMany(
+      upsertMany( //Dataset's data challenges
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
         'DataSetUUIDID',
         state =>
           dataChallenges.map(dc => {
             return {
               DataSetUUIDID: dataValue('body._id') + dc,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              Answer_ID: dataValue('body._id'),
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
                 WCSPROGRAMS_DataChallengeID: state.dataToolsMap[dct],
             };
           })
       ),
-      upsertMany(
+      upsertMany( //Dataset's data assistances
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
         'DataSetUUIDID',
         state =>
           dataManagementHelps.map(dmh => {
             return {
               DataSetUUIDID: dataValue('body._id') + dmh,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              Answer_ID: dataValue('body._id'),
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
                 WCSPROGRAMS_DataAssistanceID: state.dataToolsMap[dct],
             };
