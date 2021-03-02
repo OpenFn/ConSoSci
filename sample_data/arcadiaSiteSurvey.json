@@ -49,8 +49,8 @@
       "participant": "Test Mamadou",
       "respondent_role": "site_database_manager",
       "start": "2021-02-24T21:01:29.314+08:00",
-      "surveys_planned": "camera_trapping",
-      "surveys_planned_001": "camera_trapping",
+      "surveys_planned": "camera_trapping behavior_change",
+      "surveys_planned_001": "camera_trapping behavior_change",
       "swm_site": "northern_sulawesi_north_maluku"
     },
     "destination": "WCSPROGRAMS_ProjectAnnualDataPlan",
