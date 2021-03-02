@@ -311,6 +311,7 @@ each(
           OtherNotes: dataset['datasets/other_info'],
         }
       ),
+      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -327,6 +328,7 @@ each(
             };
           })
       ),
+      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
       upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -343,6 +345,7 @@ each(
             };
           })
       ),
+      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
       upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -359,7 +362,7 @@ each(
             };
           })
       ),
-      //3.4. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related dataChallenge
+      //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
       upsertMany( 
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
         'DataSetUUIDID',
@@ -374,7 +377,7 @@ each(
             };
           })
       ),
-      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related dataAssistance 
+      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance 
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
         'DataSetUUIDID',
