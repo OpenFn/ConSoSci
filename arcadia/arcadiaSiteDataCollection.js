@@ -187,7 +187,9 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider 
   ),
 });
 
-alterState(state => {
+
+//TODO: Configure tables for m:m relationshtip with WCSPROGRAMS_DataSetSurveyType
+/*alterState(state => {
   //For every survey planned...
   const { surveys_planned, surveys_planned_001 } = state.data.body; 
   const collectGroup =
@@ -196,7 +198,7 @@ alterState(state => {
   const surveysPlanned = surveys_planned.split(' ');
   const surveysPlanned001 = surveys_planned_001.split(' ');
   const collectGroups = collectGroup.split(' ');
-
+  //TODO: Update mappings after configuring tables
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned 
   return combine(
     upsertMany(
@@ -215,9 +217,9 @@ alterState(state => {
           };
         })
     ),
-    //TODO: Configure tables for m:m relationshtip
+    //TODO: Update mappings after configuring tables
     //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
-    /*upsertMany(
+    upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
       'DataSetUUIDID',
       state =>
@@ -233,7 +235,7 @@ alterState(state => {
           };
         })
     ),*/
-    //TODO: Configure tables & Update mappings for all m:m relationships with Camera Trap reference tables 
+    //TODO: Update mappings after configuring tables
     //You may want to replicate this mapping set for every CT m:m table
     //See Mappings sheet 2 and 2.1 - this is needed for CameraTrap, related EstimationMethods, and Metrics
     /*upsertMany( 
@@ -248,9 +250,9 @@ alterState(state => {
             WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg], //FK to whichever camera trap reference table - see L121 for how we might look-up reference data
           };
         })
-    )*/
+    )
   )(state);
-});
+});*/
 
 //For every dataset repeat group entry...
 each(
