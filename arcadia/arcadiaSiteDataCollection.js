@@ -1,6 +1,6 @@
 // Your job goes here.
 alterState(state => {
-  const sitesMap = { //swm site lookup table
+  const sitesMap = { //swm site lookup table to ProjectIDs
     aceh: '1785',
     amazon_estuary: '1786',
     badingilo_boma_gambela: '1787',
@@ -215,8 +215,9 @@ alterState(state => {
           };
         })
     ),
+    //TODO: Configure tables for m:m relationshtip
     //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
-    upsertMany(
+    /*upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
       'DataSetUUIDID',
       state =>
@@ -231,8 +232,8 @@ alterState(state => {
               sp === 'other' ? dataValue('body.survey_planned_other') : '',
           };
         })
-    ),
-    //TODO: Update mappings for all m:m relationships with Camera Trap reference tables 
+    ),*/
+    //TODO: Configure tables & Update mappings for all m:m relationships with Camera Trap reference tables 
     //You may want to replicate this mapping set for every CT m:m table
     //See Mappings sheet 2 and 2.1 - this is needed for CameraTrap, related EstimationMethods, and Metrics
     /*upsertMany( 
