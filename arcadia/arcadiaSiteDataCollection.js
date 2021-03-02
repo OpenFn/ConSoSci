@@ -34,7 +34,36 @@ alterState(state => {
     other: '6',
   };
 
-  return { ...state, sitesMap, cameraTrapMap, dataFrequencyMap };
+  const dataToolsMap = {
+    acoustic_sensor: '1',
+    audio_video_interview: '3',
+    camera_trap: '4',
+    kobo_form: '8',
+    online_dataset: '10',
+    paper: '12',
+    smart_mobile: '17',
+    other: '11',
+    excel: '6',
+    kobo: '9',
+    smart: '16',
+    sql_database: '19',
+    wildlife_insights: '21',
+    other: '11',
+    excel: '6',
+    arcgis: '2',
+    qgis: '13',
+    idrisi: '7',
+    smart: '16',
+    sas: '15',
+    spss: '18',
+    stata: '20',
+    r: '14',
+    distance: '5',
+    wildlife_insights: '21',
+    other: '11',
+  };
+
+  return { ...state, sitesMap, cameraTrapMap, dataFrequencyMap, dataToolsMap };
 });
 
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'ProjectAnnualDataPlanID', {
@@ -114,41 +143,142 @@ alterState(state => {
 
 each(
   dataPath('$.body.datasets[*]'),
-  upsert(
-    'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
-    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetID',
-    {
-      WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-        dataValue('body._id') + state.data['datasets/survey_type'],
-      WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
-      TypeOfDataSet:
-        state.data['datasets/survey_type'] === 'other'
-          ? state.data['datasets/survey_type']
-          : state.data['datasets/survey_type_other'],
-      WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
-        state.data['datasets/dataset_name_text'],
-      CollectionStartDate: state.data['datasets/data_collection_start'],
-      CollectionEndDate: state.data['datasets/data_collection_end'],
-      WCSPROGRAMS_DataAccessFrequencyID:
-        state.dataFrequencyMap[state.data['datasets/data_review_frequency']],
-      OtherFrequency:
-        state.dataFrequencyMap[
-          state.data['datasets/data_review_frequency_other']
-        ],
-      AnalysisCompletionDate:
-        state.data['datasets/data_analysis_completion_date'],
-      DataManagementPlan:
-        state.data['datasets/data_management_plan'] === 'yes' ? 1 : 0,
-      DataManagementPlanLink:
-        state.data['datasets/link_dmp'],
-      KoboForm: state.data['datasets/kobo_forms'],
-      OtherCollectionTool: state.data['datasets/data_collection_tool'],
-      OtherManagementTool: state.data['datasets/data_management_tool_other'],
-      OtherAnalysisTool: state.data['datasets/data_analysis_tool_other'],
-      OtherChallenge: state.data['datasets/challenge_other'],
-      OtherHelpNeeded: state.data['datasets/data_mgmt_help_other'],
-      OtherAssistance: state.data['datasets/other_services'],
-      OtherNotes: state.data['datasets/other_info'],
-    }
-  )
+  alterState(state => {
+    const dataset = state.data;
+
+    const dataCollectionTools = dataset['datasets/data_collection_tool'].split(
+      ' '
+    );
+    const dataManagementTools = dataset['datasets/data_management_tool'].split(
+      ' '
+    );
+    const dataAnalysisTools = dataset['datasets/data_analysis_tool'].split(' ');
+    const dataChallenges = dataset['datasets/data_collection_tool'].split(' ');
+    const dataManagementHelps = dataset['datasets/challenge'].split(' ');
+
+    return combine(
+      upsert(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetID',
+        {
+          WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+            dataValue('body._id') + dataset['datasets/survey_type'],
+          WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'),
+          TypeOfDataSet:
+            dataset['datasets/survey_type'] === 'other'
+              ? dataset['datasets/survey_type']
+              : dataset['datasets/survey_type_other'],
+          WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
+            dataset['datasets/dataset_name_text'],
+          CollectionStartDate: dataset['datasets/data_collection_start'],
+          CollectionEndDate: dataset['datasets/data_collection_end'],
+          WCSPROGRAMS_DataAccessFrequencyID:
+            state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
+          OtherFrequency:
+            state.dataFrequencyMap[
+              dataset['datasets/data_review_frequency_other']
+            ],
+          AnalysisCompletionDate:
+            dataset['datasets/data_analysis_completion_date'],
+          DataManagementPlan:
+            dataset['datasets/data_management_plan'] === 'yes' ? 1 : 0,
+          DataManagementPlanLink: dataset['datasets/link_dmp'],
+          KoboForm: dataset['datasets/kobo_forms'],
+          OtherCollectionTool: dataset['datasets/data_collection_tool'],
+          OtherManagementTool: dataset['datasets/data_management_tool_other'],
+          OtherAnalysisTool: dataset['datasets/data_analysis_tool_other'],
+          OtherChallenge: dataset['datasets/challenge_other'],
+          OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
+          OtherAssistance: dataset['datasets/other_services'],
+          OtherNotes: dataset['datasets/other_info'],
+        }
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'DataSetUUIDID',
+        state =>
+          dataCollectionTools.map(dct => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dct,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+              IsForCollect: 1,
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+            };
+          })
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'DataSetUUIDID',
+        state =>
+          dataManagementTools.map(dmt => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dmt,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+              IsForManage: 1,
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+            };
+          })
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'DataSetUUIDID',
+        state =>
+          dataAnalysisTools.map(dat => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dat,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+              IsForAnalysis: 1,
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+            };
+          })
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'DataSetUUIDID',
+        state =>
+          dataAnalysisTools.map(dat => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dat,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+              IsForAnalysis: 1,
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+            };
+          })
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
+        'DataSetUUIDID',
+        state =>
+          dataChallenges.map(dc => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dc,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+                WCSPROGRAMS_DataChallengeID: state.dataToolsMap[dct],
+            };
+          })
+      ),
+      upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
+        'DataSetUUIDID',
+        state =>
+          dataManagementHelps.map(dmh => {
+            return {
+              DataSetUUIDID: dataValue('body._id') + dmh,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                dataValue('body._id') + dataset['datasets/survey_type'],
+                WCSPROGRAMS_DataAssistanceID: state.dataToolsMap[dct],
+            };
+          })
+      )
+    )(state);
+  })
 );
+
+alterState(state => {
+  return state;
+});
