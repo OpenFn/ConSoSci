@@ -20,9 +20,9 @@ sql({
 
 sql({
   query: `
-    SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-    FROM WCSPROGRAMS_ProjectAnnualDataSet 
-    WHERE DataSetUUIDID = '86638832camera_trapping'`
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '86638832'`
   
 });
 
