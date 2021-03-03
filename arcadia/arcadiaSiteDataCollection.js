@@ -472,7 +472,7 @@ each(
               Answer_ID: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
-              IsForAnalysis: 1,
+              IsForAnalyze: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
             };
           })
