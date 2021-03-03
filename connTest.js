@@ -24,7 +24,7 @@ alterState(state => {
     FROM WCSPROGRAMS_ProjectAnnualDataPlan 
     WHERE DataSetUUIDID = '86587778'`,
   })(state).then(state => {
-    console.log(JSON.stringify(state.data, null, 2));
+    console.log(JSON.stringify(state.response, null, 2));
     return state;
   });
 
