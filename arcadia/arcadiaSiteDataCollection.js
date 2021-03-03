@@ -273,13 +273,13 @@ alterState(state => {
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
   DataSetUUIDID: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
-  Answer_ID: dataValue('$.body._id')(state),
+  AnswerId: dataValue('$.body._id')(state),
   //TODO: Consider what other columns to map or mark not null in db
   //formName: dataValue('$.formName'), //Capture the source survey name?
-  //UserID_CR: ?
-  //UserID_LM: ?
-  //CRIPAddress: ?
-  //LMIPAddress: ?
+  UserID_CR: '0',
+  UserID_LM: '0',
+  CRIPAddress: 'wcs',
+  LMIPAddress: 'wcs',
   SubmitterName: dataValue('$.body.participant')(state),
   SubmitterEmail: dataValue('$.body.email_address')(state),
   SubmitterRole: state => {
