@@ -117,12 +117,49 @@ alterState(state => {
     blue_patagonia: '1920',
     chaco: '1800',
   };
-  
-  //TODO: Update Ids for wherever these reference records are stored
-  const cameraTrapMap = { //lookup table for camera trap collection types
-    still_images_will_be_collected: '0000', //kobo_value: sample Ids for reference records
-    video_images_will_be_collected: '1111',
-    the_cameras_will_be_cell_wifi_internet_e: '2222',
+
+  const cameraTrapMap = { // lookup table for CameraTrapSettings
+    still_images_will_be_collected: '1',
+    video_images_will_be_collected: '2',
+    the_cameras_will_be_cell_wifi_internet_e: '3',
+  };
+
+  const estimationMap = { //lookup table for TaxaMetricEstimationMethods
+    travel_recess: '1',
+    guided_recess: '2',
+    recording_sign_along_transects_but_without_perpendicular_distances: '3',
+    occupancy__various_software_available_: '4',
+    capture_recapture___dna: '5',
+    capture_recapture__photos_of_i: '6',
+    spatially_explicit_capture_recapture___dna: '7',
+    spatially_explicit_capture_rec: '8',
+    count_of_individually_recognis: '9',
+    distance_sampling_on_line_transects: '10',
+    distance_sampling_on_point_transects, _human_observer: '11',
+    distance_sampling_on_point_tra: '12',
+    demography__repeated_census_of: '13',
+    other: '15',
+    occupancy: '15',
+    trapping_rates: '16',
+    random_encounter_model: '17',
+  };
+
+  const metricsMap = { //lookup table for TaxaMetrics
+    presence_absence: '1',
+    species_richness: '2',
+    encounter_rate__per_unit_time__or_per_un: '3',
+    occupancy: '4',
+    density: '5',
+    abundance__density_x_area_surveyed: '6',
+    number_of_known_individuals: '7',
+    census: '8',
+    biomass_reef: '9',
+    demographic_metrics: '10',
+    dung_density: '11',
+    other: '12',
+    species_distribution: '13',
+    species_richness__maximum_likelihood_est: '14',
+    animal_wildlife_health_assessment: '15',
   };
 
   const dataFrequencyMap = { //lookup table for DataFrequency types
@@ -132,6 +169,26 @@ alterState(state => {
     quarterly: '4',
     not_needed: '5',
     other: '6',
+  };
+
+  const dataChallengeMap = { //lookup table for DataChallenge types
+    data_collector_training: '1',
+    data_collection: '2',
+    data_management: '3',
+    data_analysis: '4',
+    result_visualization_and_reporting: '5',
+    other: '6',
+  };
+
+  const dataAssistanceMap = { //lookup table for DataAssistance types
+    automated_data_backup: '1',
+    ability_to_easily_download_the_data: '2',
+    automated_tabular_data_summaries: '3',
+    automated_data_visualizations: '4',
+    automated_maps_of_the_data: '5',
+    data_collection_summary: '6',
+    none: '7',
+    other: '8',
   };
 
   const dataToolsMap = { //lookup table for DataTools
@@ -163,7 +220,7 @@ alterState(state => {
     other: '11',
   };
 
-  return { ...state, sitesMap, cameraTrapMap, dataFrequencyMap, dataToolsMap };
+  return { ...state, sitesMap, cameraTrapMap, estimationMap, metricsMap, dataFrequencyMap, dataChallengeMap, dataAssistanceMap, dataToolsMap };
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
@@ -237,23 +294,23 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider 
           };
         })
     ),*/
-    //TODO: Update mappings after configuring tables
-    //You may want to replicate this mapping set for every CT m:m table
-    //See Mappings sheet 2 and 2.1 - this is needed for CameraTrap, related EstimationMethods, and Metrics
-    /*upsertMany( 
-      'WCSPROGRAMS_ProjectPlanCameraTrap', //TODO: Update name of these m:m tables
-      'DataSetUUIDID',
-      state =>
-        collectGroups.map(cg => {
-          return {
-            WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: dataValue('body._id') + cg, //custom uuid for this m:m record
-            Answer_ID: dataValue('body._id'), //to configure on every table
-            WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg], //FK to whichever camera trap reference table - see L121 for how we might look-up reference data
-          };
-        })
-    )
-  )(state);
+//TODO: Update mappings after configuring tables
+//You may want to replicate this mapping set for every CT m:m table
+//See Mappings sheet 2 and 2.1 - this is needed for CameraTrap, related EstimationMethods, and Metrics
+/*upsertMany( 
+  'WCSPROGRAMS_ProjectPlanCameraTrap', //TODO: Update name of these m:m tables
+  'DataSetUUIDID',
+  state =>
+    collectGroups.map(cg => {
+      return {
+        WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+        DataSetUUIDID: dataValue('body._id') + cg, //custom uuid for this m:m record
+        Answer_ID: dataValue('body._id'), //to configure on every table
+        WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg], //FK to whichever camera trap reference table - see L121 for how we might look-up reference data
+      };
+    })
+)
+)(state);
 });*/
 
 //For every dataset repeat group entry...
@@ -294,7 +351,7 @@ each(
             state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
           OtherFrequency:
             state.dataFrequencyMap[
-              dataset['datasets/data_review_frequency_other']
+            dataset['datasets/data_review_frequency_other']
             ],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
@@ -313,7 +370,7 @@ each(
       ),
       //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
-      upsertMany( 
+      upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -330,7 +387,7 @@ each(
       ),
       //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
-      upsertMany( 
+      upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -347,7 +404,7 @@ each(
       ),
       //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
-      upsertMany( 
+      upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
@@ -363,7 +420,7 @@ each(
           })
       ),
       //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
-      upsertMany( 
+      upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
         'DataSetUUIDID',
         state =>
@@ -373,7 +430,7 @@ each(
               Answer_ID: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
-                WCSPROGRAMS_DataChallengeID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataChallengeID: state.dataToolsMap[dct],
             };
           })
       ),
@@ -388,7 +445,7 @@ each(
               Answer_ID: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
-                WCSPROGRAMS_DataAssistanceID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataAssistanceID: state.dataToolsMap[dct],
             };
           })
       )
