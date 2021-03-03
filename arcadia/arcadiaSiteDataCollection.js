@@ -456,7 +456,7 @@ each(
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForManage: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt],
             };
           })
       ),
@@ -473,7 +473,7 @@ each(
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForAnalysis: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
             };
           })
       ),
@@ -488,7 +488,7 @@ each(
               Answer_ID: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
-              WCSPROGRAMS_DataChallengeID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
             };
           })
       ),
@@ -503,7 +503,7 @@ each(
               Answer_ID: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                 dataValue('body._id') + dataset['datasets/survey_type'],
-              WCSPROGRAMS_DataAssistanceID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
             };
           })
       )
