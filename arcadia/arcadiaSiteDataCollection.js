@@ -272,15 +272,23 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider 
 
 
 //TODO: Configure tables for m:m relationshtip with WCSPROGRAMS_DataSetSurveyType
-/*alterState(state => {
+alterState(state => {
   //For every survey planned...
-  const { surveys_planned, surveys_planned_001 } = state.data.body; 
+  const { surveys_planned, surveys_planned_001 } = state.data.body;
   const collectGroup =
     state.data.body['group_qp5by62/Which_of_the_followi_ata_you_will_collect'];
+
+  const metricGroup =
+    state.data.body['group_qp5by62/Which_metrics_questi_ith_camera_trap_data'];
+
+  const estimationGroup =
+    state.data.body['group_qp5by62/What_estimation_methods_do_you'];
 
   const surveysPlanned = surveys_planned.split(' ');
   const surveysPlanned001 = surveys_planned_001.split(' ');
   const collectGroups = collectGroup.split(' ');
+  const metricGroups = metricGroup.split(' ');
+  const estimationGroups = estimationGroup.split(' ');
   //TODO: Update mappings after configuring tables
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned 
   return combine(
@@ -294,7 +302,8 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider 
             DataSetUUIDID:
               dataValue('body._id') + sp,
             Answer_ID: dataValue('body._id'),
-            WCSPROGRAMS_DataSetSurveyTypeID: state.data,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
+            //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
               sp === 'other' ? dataValue('body.survey_planned_other') : '',
           };
@@ -312,30 +321,55 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { //TODO: Consider 
             DataSetUUIDID:
               dataValue('body._id') + sp,
             Answer_ID: dataValue('body._id'),
-            WCSPROGRAMS_DataSetSurveyTypeID: state.data,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
+            //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
               sp === 'other' ? dataValue('body.survey_planned_other') : '',
           };
         })
-    ),*/
-//TODO: Update mappings after configuring tables
-//You may want to replicate this mapping set for every CT m:m table
-//See Mappings sheet 2 and 2.1 - this is needed for CameraTrap, related EstimationMethods, and Metrics
-/*upsertMany( 
-  'WCSPROGRAMS_ProjectPlanCameraTrap', //TODO: Update name of these m:m tables
-  'DataSetUUIDID',
-  state =>
-    collectGroups.map(cg => {
-      return {
-        WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-        DataSetUUIDID: dataValue('body._id') + cg, //custom uuid for this m:m record
-        Answer_ID: dataValue('body._id'), //to configure on every table
-        WCSPROGRAMS_ProjectPlanCameraTrap: state.cameraTrapMap[cg], //FK to whichever camera trap reference table - see L121 for how we might look-up reference data
-      };
-    })
-)
-)(state);
-});*/
+    ),
+    //TODO: Update mappings after configuring tables
+    upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting', //m:m to WCSPROGRAMS_CameraTrapSetting
+      'DataSetUUIDID',
+      state =>
+        collectGroups.map(cg => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: dataValue('body._id') + cg, //custom uuid for this m:m record
+            Answer_ID: dataValue('body._id'), //to configure on every table
+            WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table 
+          };
+        })
+    ),
+    upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric', //m:m to WCSPROGRAMS_TaxaMetric
+      'DataSetUUIDID',
+      state =>
+        metricGroups.map(mg => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: dataValue('body._id') + mg, //custom uuid for this m:m record
+            Answer_ID: dataValue('body._id'), //to configure on every table
+            WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
+          };
+        })
+    ),
+    upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod', //m:m to WCSPROGRAMS_TaxaMetricEstimationMethod
+      'DataSetUUIDID',
+      state =>
+        estimationGroups.map(eg => {
+          return {
+            WCSPROGRAMS_ProjectAnnualDataPlanUUID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: dataValue('body._id') + ce, //custom uuid for this m:m record
+            Answer_ID: dataValue('body._id'), //to configure on every table
+            WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table 
+          };
+        })
+    )
+  )(state);
+});
 
 //For every dataset repeat group entry...
 each(
