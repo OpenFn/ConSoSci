@@ -289,7 +289,7 @@ alterState(state => {
   const collectGroups = collectGroup.split(' ');
   const metricGroups = metricGroup.split(' ');
   const estimationGroups = estimationGroup.split(' ');
-  //TODO: Update mappings after configuring tables
+  //TODO: Do not create Survey records if survey_planned = 'none'
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned 
   return combine(
     upsertMany(
@@ -309,7 +309,7 @@ alterState(state => {
           };
         })
     ),
-    //TODO: Update mappings after configuring tables
+    //TODO: Do not create Survey records if survey_planned_001 = 'none'
     //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
     upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
@@ -328,9 +328,9 @@ alterState(state => {
           };
         })
     ),
-    //TODO: Update mappings after configuring tables
+    //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
     upsertMany(
-      'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting', //m:m to WCSPROGRAMS_CameraTrapSetting
+      'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
       'DataSetUUIDID',
       state =>
         collectGroups.map(cg => {
@@ -342,8 +342,9 @@ alterState(state => {
           };
         })
     ),
+    //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
     upsertMany(
-      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric', //m:m to WCSPROGRAMS_TaxaMetric
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric',
       'DataSetUUIDID',
       state =>
         metricGroups.map(mg => {
@@ -355,8 +356,9 @@ alterState(state => {
           };
         })
     ),
+    //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
     upsertMany(
-      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod', //m:m to WCSPROGRAMS_TaxaMetricEstimationMethod
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
       'DataSetUUIDID',
       state =>
         estimationGroups.map(eg => {
@@ -426,8 +428,10 @@ each(
           OtherNotes: dataset['datasets/other_info'],
         }
       ),
-      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
-      //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
+      //=============================================================//
+      //TODO: Collapse the below mappings so that we only insert 1 DataTool record for every unique tool 
+      //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
+      /* //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
@@ -443,7 +447,6 @@ each(
             };
           })
       ),
-      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -460,7 +463,6 @@ each(
             };
           })
       ),
-      //TODO: Update job mappings if config for this WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool table changes
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -476,7 +478,9 @@ each(
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
             };
           })
-      ),
+      ), */
+      //=============================================================//
+
       //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
