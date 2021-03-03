@@ -26,7 +26,7 @@ alterState(state => {
   })(state).then(state => {
     state.configuration = {};
     //console.log(state);
-     console.log(state.references);
+     console.log(JSON.stringify(state.references, null, 2));
     return state;
   });
 
