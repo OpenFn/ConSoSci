@@ -163,7 +163,7 @@ alterState(state => {
     spatially_explicit_capture_rec: '8',
     count_of_individually_recognis: '9',
     distance_sampling_on_line_transects: '10',
-    distance_sampling_on_point_transects,
+    distance_sampling_on_point_transects: '11',
     _human_observer: '11',
     distance_sampling_on_point_tra: '12',
     demography__repeated_census_of: '13',
