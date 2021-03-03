@@ -23,9 +23,11 @@ alterState(state => {
     SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
     FROM WCSPROGRAMS_ProjectAnnualDataPlan 
     WHERE DataSetUUIDID = '86587778'`,
-  })(state).then(state => {
+  })(state).then(response => {
+    response.configuration = {};
     state.configuration = {};
-    console.log(state);
+    //console.log(state);
+     console.log(response);
     return state;
   });
 
