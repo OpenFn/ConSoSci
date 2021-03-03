@@ -18,17 +18,23 @@
     WHERE TABLE_NAME = 'WCSPROGRAMS_KoboNgrtNgrtanswer'`,
 });*/
 
-sql({
+
+
+alterState(state=>{
+  
+  return sql({
   query: `
     SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
     FROM WCSPROGRAMS_ProjectAnnualDataPlan 
     WHERE DataSetUUIDID = '86587778'`
   
-});
-
-alterState(state=>{
-  console.log(JSON.stringify(state.references, null, 2));
+})(state).then(state => { 
+  
+  console.log(JSON.stringify(state.data, null, 2));
   return state;
+})(state);
+  
+  //return state;
 }) 
 
 // sql({
