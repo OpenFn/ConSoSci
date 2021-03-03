@@ -1,15 +1,16 @@
 //Job based on mapping spec: https://docs.google.com/spreadsheets/d/1SjSHpYYzlRUa9rQRW3mN2ruI7k_QWTeF7qX4Rnvy_wk/edit#gid=264797739
 alterState(state => {
-  const sitesMap = { //swm site lookup table to ProjectIDs
+  const sitesMap = {
+    //swm site lookup table to ProjectIDs
     aceh: '1785',
     amazon_estuary: '1786',
     badingilo_boma_gambela: '1787',
     bale_mountains_complex: '1788',
-    [`bangladesh/myanmar_coast`]: '1789',
+    'bangladesh/myanmar_coast': '1789',
     batang_ai_complex: '1790',
     bolivian_highlands: '1791',
     bolivian_piedmont: '1792',
-    [`bosque_valdiviano___parques_patagonia___pn_p.moreno`]: '1793',
+    'bosque_valdiviano___parques_patagonia___pn_p.moreno': '1793',
     bouba_ndjida_sena_oura: '1794',
     cape_winelands_complex: '1795',
     caura: '1796',
@@ -36,7 +37,7 @@ alterState(state => {
     ivindo: '1818',
     kafue_complex: '1819',
     karimunjawa: '1820',
-    [`karukinka___corazón_de_la_isla___pla._mitre___ide`]: '1821',
+    'karukinka___corazón_de_la_isla___pla._mitre___ide': '1821',
     la_amistad: '1822',
     lefarani_complex: '1823',
     loango: '1824',
@@ -88,7 +89,7 @@ alterState(state => {
     suriname: '1870',
     tennaserim: '1871',
     tsavo_east_and_west: '1872',
-    [`ts'ehlanyane`]: '1873',
+    "ts'ehlanyane": '1873',
     upper_putumayo: '1874',
     valdes: '1875',
     virunga: '1876',
@@ -106,7 +107,7 @@ alterState(state => {
     redwoods: '1908',
     high_divide: '1909',
     arctic_beringia: '1910',
-    [`ontario's_northern_boreal`]: '1911',
+    "ontario's_northern_boreal": '1911',
     torngat_mountains: '1912',
     flint_hills: '1913',
     northern_boreal_mountains: '1914',
@@ -118,7 +119,8 @@ alterState(state => {
     chaco: '1800',
   };
 
-  const surveyTypeMap = { // lookup table for DataSetSurveyTypes
+  const surveyTypeMap = {
+    // lookup table for DataSetSurveyTypes
     basic_necessities_survey: '1',
     behavior_change: '2',
     camera_trapping: '3',
@@ -142,13 +144,15 @@ alterState(state => {
     other: '21',
   };
 
-  const cameraTrapMap = { // lookup table for CameraTrapSettings
+  const cameraTrapMap = {
+    // lookup table for CameraTrapSettings
     still_images_will_be_collected: '1',
     video_images_will_be_collected: '2',
     the_cameras_will_be_cell_wifi_internet_e: '3',
   };
 
-  const estimationMap = { //lookup table for TaxaMetricEstimationMethods
+  const estimationMap = {
+    //lookup table for TaxaMetricEstimationMethods
     travel_recess: '1',
     guided_recess: '2',
     recording_sign_along_transects_but_without_perpendicular_distances: '3',
@@ -159,7 +163,8 @@ alterState(state => {
     spatially_explicit_capture_rec: '8',
     count_of_individually_recognis: '9',
     distance_sampling_on_line_transects: '10',
-    distance_sampling_on_point_transects, _human_observer: '11',
+    distance_sampling_on_point_transects,
+    _human_observer: '11',
     distance_sampling_on_point_tra: '12',
     demography__repeated_census_of: '13',
     other: '15',
@@ -168,7 +173,8 @@ alterState(state => {
     random_encounter_model: '17',
   };
 
-  const metricsMap = { //lookup table for TaxaMetrics
+  const metricsMap = {
+    //lookup table for TaxaMetrics
     presence_absence: '1',
     species_richness: '2',
     encounter_rate__per_unit_time__or_per_un: '3',
@@ -186,7 +192,8 @@ alterState(state => {
     animal_wildlife_health_assessment: '15',
   };
 
-  const dataFrequencyMap = { //lookup table for DataFrequency types
+  const dataFrequencyMap = {
+    //lookup table for DataFrequency types
     near_real_time: '1',
     weekly: '2',
     monthly: '3',
@@ -195,7 +202,8 @@ alterState(state => {
     other: '6',
   };
 
-  const dataChallengeMap = { //lookup table for DataChallenge types
+  const dataChallengeMap = {
+    //lookup table for DataChallenge types
     data_collector_training: '1',
     data_collection: '2',
     data_management: '3',
@@ -204,7 +212,8 @@ alterState(state => {
     other: '6',
   };
 
-  const dataAssistanceMap = { //lookup table for DataAssistance types
+  const dataAssistanceMap = {
+    //lookup table for DataAssistance types
     automated_data_backup: '1',
     ability_to_easily_download_the_data: '2',
     automated_tabular_data_summaries: '3',
@@ -215,7 +224,8 @@ alterState(state => {
     other: '8',
   };
 
-  const dataToolsMap = { //lookup table for DataTools
+  const dataToolsMap = {
+    //lookup table for DataTools
     acoustic_sensor: '1',
     audio_video_interview: '3',
     camera_trap: '4',
@@ -244,46 +254,59 @@ alterState(state => {
     other: '11',
   };
 
-  return { ...state, sitesMap, surveyTypeMap, cameraTrapMap, estimationMap, metricsMap, dataFrequencyMap, dataChallengeMap, dataAssistanceMap, dataToolsMap };
+  return {
+    ...state,
+    sitesMap,
+    surveyTypeMap,
+    cameraTrapMap,
+    estimationMap,
+    metricsMap,
+    dataFrequencyMap,
+    dataChallengeMap,
+    dataAssistanceMap,
+    dataToolsMap,
+  };
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
-upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', { 
-  DataSetUUIDID: dataValue('$.body._id'), //set custom uuid that can be used as ext Id to relate related tables
-  Answer_ID: dataValue('$.body._id'),
+upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
+  DataSetUUIDID: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
+  Answer_ID: dataValue('$.body._id')(state),
   //TODO: Consider what other columns to map or mark not null in db
-  //formName: dataValue('$.formName'), //Capture the source survey name? 
-  //UserID_CR: ? 
+  //formName: dataValue('$.formName'), //Capture the source survey name?
+  //UserID_CR: ?
   //UserID_LM: ?
   //CRIPAddress: ?
-  //LMIPAddress: ? 
-  SubmitterName: dataValue('$.body.participant'),
-  SubmitterEmail: dataValue('$.body.email_address'),
+  //LMIPAddress: ?
+  SubmitterName: dataValue('$.body.participant')(state),
+  SubmitterEmail: dataValue('$.body.email_address')(state),
   SubmitterRole: state => {
     const role = dataValue('$.body.respondent_role')(state);
     return role === 'other'
       ? dataValue('$.body.respondent_role_other')(state)
       : dataValue('$.body.respondent_role')(state);
   },
-  WCSPROGRAMS_ProjectID: state.sitesMap[dataValue('$.body.swm_site')],
+  WCSPROGRAMS_ProjectID: state =>
+    state.sitesMap[dataValue('$.body.swm_site')(state)],
   CameraTrapOtherEstimationDetail: dataValue(
     '$.body.group_qp5by62/What_other_estimatio_do_you_intend_to_use'
-  ),
+  )(state),
 });
-
 
 //TODO: Configure tables for m:m relationshtip with WCSPROGRAMS_DataSetSurveyType
 alterState(state => {
   //For every survey planned...
-  const { surveys_planned, surveys_planned_001 } = state.data.body;
+  const { body } = state.data;
+
+  const { surveys_planned, surveys_planned_001 } = body;
+
   const collectGroup =
-    state.data.body['group_qp5by62/Which_of_the_followi_ata_you_will_collect'];
+    body['group_qp5by62/Which_of_the_followi_ata_you_will_collect'];
 
   const metricGroup =
-    state.data.body['group_qp5by62/Which_metrics_questi_ith_camera_trap_data'];
+    body['group_qp5by62/Which_metrics_questi_ith_camera_trap_data'];
 
-  const estimationGroup =
-    state.data.body['group_qp5by62/What_estimation_methods_do_you'];
+  const estimationGroup = body['group_qp5by62/What_estimation_methods_do_you'];
 
   const surveysPlanned = surveys_planned.split(' ');
   const surveysPlanned001 = surveys_planned_001.split(' ');
@@ -291,7 +314,7 @@ alterState(state => {
   const metricGroups = metricGroup.split(' ');
   const estimationGroups = estimationGroup.split(' ');
   //TODO: Do not create Survey records if survey_planned = 'none'
-  //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned 
+  //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned
   return combine(
     upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
@@ -300,14 +323,14 @@ alterState(state => {
         surveysPlanned.map(sp => {
           return {
             ///TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: //external Id
-              dataValue('body._id') + sp, 
-            Answer_ID: dataValue('body._id'),
+            WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            //external Id
+            DataSetUUIDID: body._id + sp,
+            Answer_ID: body._id,
             WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
             //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
-              sp === 'other' ? dataValue('body.survey_planned_other') : '',
+              sp === 'other' ? body.survey_planned_other : '',
           };
         })
     ),
@@ -320,14 +343,13 @@ alterState(state => {
         surveysPlanned001.map(sp => {
           return {
             //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID:
-              dataValue('body._id') + sp,
-            Answer_ID: dataValue('body._id'),
+            WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + sp,
+            Answer_ID: body._id,
             WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
             //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
-              sp === 'other' ? dataValue('body.survey_planned_other') : '',
+              sp === 'other' ? body.survey_planned_other : '',
           };
         })
     ),
@@ -339,10 +361,10 @@ alterState(state => {
         collectGroups.map(cg => {
           return {
             //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: dataValue('body._id') + cg, //custom uuid for this m:m record
-            Answer_ID: dataValue('body._id'), //to configure on every table
-            WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table 
+            WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
+            Answer_ID: body._id, //to configure on every table
+            WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
           };
         })
     ),
@@ -354,9 +376,9 @@ alterState(state => {
         metricGroups.map(mg => {
           return {
             //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: dataValue('body._id') + mg, //custom uuid for this m:m record
-            Answer_ID: dataValue('body._id'), //to configure on every table
+            WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + mg, //custom uuid for this m:m record
+            Answer_ID: body._id, //to configure on every table
             WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
           };
         })
@@ -369,10 +391,10 @@ alterState(state => {
         estimationGroups.map(eg => {
           return {
             //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: dataValue('body._id') + ce, //custom uuid for this m:m record
-            Answer_ID: dataValue('body._id'), //to configure on every table
-            WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table 
+            WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + ce, //custom uuid for this m:m record
+            Answer_ID: body._id, //to configure on every table
+            WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
           };
         })
     )
@@ -397,48 +419,43 @@ each(
 
     return combine(
       //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
-      upsert(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
-        'DataSetUUIDID',
-        {
-          DataSetUUIDID:
-            dataValue('body._id') + dataset['datasets/survey_type'],
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          //WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlanID 
-          Answer_ID: dataValue('body._id'),
-          TypeOfDataSet:
-            dataset['datasets/survey_type'] === 'other'
-              ? dataset['datasets/survey_type']
-              : dataset['datasets/survey_type_other'],
-          WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
-            dataset['datasets/dataset_name_text'],
-          CollectionStartDate: dataset['datasets/data_collection_start'],
-          CollectionEndDate: dataset['datasets/data_collection_end'],
-          WCSPROGRAMS_DataAccessFrequencyID:
-            state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
-          OtherFrequency:
-            state.dataFrequencyMap[
+      upsert('WCSPROGRAMS_ProjectAnnualDataPlanDataSet', 'DataSetUUIDID', {
+        DataSetUUIDID: dataValue('body._id') + dataset['datasets/survey_type'],
+        //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+        //WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
+        Answer_ID: dataValue('body._id'),
+        TypeOfDataSet:
+          dataset['datasets/survey_type'] === 'other'
+            ? dataset['datasets/survey_type']
+            : dataset['datasets/survey_type_other'],
+        WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
+          dataset['datasets/dataset_name_text'],
+        CollectionStartDate: dataset['datasets/data_collection_start'],
+        CollectionEndDate: dataset['datasets/data_collection_end'],
+        WCSPROGRAMS_DataAccessFrequencyID:
+          state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
+        OtherFrequency:
+          state.dataFrequencyMap[
             dataset['datasets/data_review_frequency_other']
-            ],
-          AnalysisCompletionDate:
-            dataset['datasets/data_analysis_completion_date'],
-          DataManagementPlan:
-            dataset['datasets/data_management_plan'] === 'yes' ? 1 : 0,
-          DataManagementPlanLink: dataset['datasets/link_dmp'],
-          KoboForm: dataset['datasets/kobo_forms'],
-          OtherCollectionTool: dataset['datasets/data_collection_tool'],
-          OtherManagementTool: dataset['datasets/data_management_tool_other'],
-          OtherAnalysisTool: dataset['datasets/data_analysis_tool_other'],
-          OtherChallenge: dataset['datasets/challenge_other'],
-          OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
-          OtherAssistance: dataset['datasets/other_services'],
-          OtherNotes: dataset['datasets/other_info'],
-        }
-      ),
+          ],
+        AnalysisCompletionDate:
+          dataset['datasets/data_analysis_completion_date'],
+        DataManagementPlan:
+          dataset['datasets/data_management_plan'] === 'yes' ? 1 : 0,
+        DataManagementPlanLink: dataset['datasets/link_dmp'],
+        KoboForm: dataset['datasets/kobo_forms'],
+        OtherCollectionTool: dataset['datasets/data_collection_tool'],
+        OtherManagementTool: dataset['datasets/data_management_tool_other'],
+        OtherAnalysisTool: dataset['datasets/data_analysis_tool_other'],
+        OtherChallenge: dataset['datasets/challenge_other'],
+        OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
+        OtherAssistance: dataset['datasets/other_services'],
+        OtherNotes: dataset['datasets/other_info'],
+      }),
       //=============================================================//
-      //TODO: Collapse the below mappings so that we only insert 1 DataTool record for every unique tool 
+      //TODO: Collapse the below mappings so that we only insert 1 DataTool record for every unique tool
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
-      /* //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
+      //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
@@ -448,7 +465,8 @@ each(
               DataSetUUIDID: dataValue('body._id') + dct,
               Answer_ID: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForCollect: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
@@ -465,7 +483,8 @@ each(
               DataSetUUIDID: dataValue('body._id') + dmt,
               Answer_ID: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForManage: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt],
@@ -482,13 +501,14 @@ each(
               DataSetUUIDID: dataValue('body._id') + dat,
               Answer_ID: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                 dataValue('body._id') + dataset['datasets/survey_type'],
               IsForAnalyze: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
             };
           })
-      ), */
+      ),
       //=============================================================//
 
       //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
@@ -501,32 +521,39 @@ each(
               DataSetUUIDID: dataValue('body._id') + dc,
               Answer_ID: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                 dataValue('body._id') + dataset['datasets/survey_type'],
               WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
             };
           })
       ),
-      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance 
-      upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
-        'DataSetUUIDID',
-        state =>
-          dataManagementHelps.map(dmh => {
-            return {
-              DataSetUUIDID: dataValue('body._id') + dmh,
-              Answer_ID: dataValue('body._id'),
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-                dataValue('body._id') + dataset['datasets/survey_type'],
-              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
-            };
-          })
-      )
+      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
+      alterState(state => {
+        return sql({
+          query: `SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID FROM WCSPROGRAMS_ProjectAnnualDataSet WHERE DataSetUUIDID = '${
+            dataValue('body._id') + dataset['datasets/survey_type']
+          }'`,
+        }).then(state => {
+          console.log(state.data);
+          return upsertMany(
+            'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
+            'DataSetUUIDID',
+            state =>
+              dataManagementHelps.map(dmh => {
+                return {
+                  DataSetUUIDID: dataValue('body._id') + dmh,
+                  Answer_ID: dataValue('body._id'),
+                  //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
+                  //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+                  WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+                    dataValue('body._id') + dataset['datasets/survey_type'],
+                  WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
+                };
+              })
+          )(state);
+        })(state);
+      })
     )(state);
   })
 );
-
-alterState(state => {
-  return state;
-});
