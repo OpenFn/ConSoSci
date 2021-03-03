@@ -326,7 +326,7 @@ alterState(state => {
             WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
             //external Id
             DataSetUUIDID: body._id + sp,
-            Answer_ID: body._id,
+            AnswerID: body._id,
             WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
             //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
             WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
