@@ -5,10 +5,10 @@
    `,
   });
   
-  alterState(state=>{
-    console.log(JSON.stringify(state.references, null, 2));
-    return state;
-  }) 
+  //alterState(state=>{
+    //console.log(JSON.stringify(state.references, null, 2));
+    //return state;
+  //}) 
   
 
 sql({
@@ -17,6 +17,19 @@ sql({
     FROM INFORMATION_SCHEMA.COLUMNS
     WHERE TABLE_NAME = 'WCSPROGRAMS_KoboNgrtNgrtanswer'`,
 });
+
+sql({
+  query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+    FROM WCSPROGRAMS_ProjectAnnualDataSet 
+    WHERE DataSetUUIDID = '86638832camera_trapping'`
+  
+});
+
+alterState(state=>{
+  console.log(JSON.stringify(state.references, null, 2));
+  return state;
+}) 
 
 // sql({
 //   query: `
