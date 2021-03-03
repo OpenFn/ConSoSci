@@ -274,10 +274,10 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
   Answer_ID: dataValue('$.body._id')(state),
   //TODO: Consider what other columns to map or mark not null in db
   //formName: dataValue('$.formName'), //Capture the source survey name?
-  //UserID_CR: ?
-  //UserID_LM: ?
-  //CRIPAddress: ?
-  //LMIPAddress: ?
+  UserID_CR: '0',
+  UserID_LM: '0',
+  CRIPAddress: 'wcs',
+  LMIPAddress: 'wcs',
   SubmitterName: dataValue('$.body.participant')(state),
   SubmitterEmail: dataValue('$.body.email_address')(state),
   SubmitterRole: state => {
