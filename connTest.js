@@ -25,7 +25,7 @@ alterState(state => {
     WHERE DataSetUUIDID = '86587778'`,
   })(state).then(state => {
     state.configuration = {};
-    console.log(JSON.stringify(state, null, 2));
+    console.log(state);
     return state;
   });
 
