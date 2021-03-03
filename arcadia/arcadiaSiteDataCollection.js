@@ -118,6 +118,30 @@ alterState(state => {
     chaco: '1800',
   };
 
+  const surveyTypeMap = { // lookup table for DataSetSurveyTypes
+    basic_necessities_survey: '1',
+    behavior_change: '2',
+    camera_trapping: '3',
+    rural_consumption: '4',
+    urban_consumption: '5',
+    governance: '6',
+    line_transect_survey: '7',
+    livestock_production: '8',
+    market_survey: '9',
+    most_significant_change: '10',
+    point_transect_survey: '11',
+    vca: '12',
+    offtake_survey: '13',
+    other_passive_sensor: '14',
+    law_enforcement_monitoring___p: '15',
+    human_wildlife_conflict: '16',
+    intelligence: '17',
+    tree_phenology: '18',
+    tree_density: '19',
+    other_botany: '20',
+    other: '21',
+  };
+
   const cameraTrapMap = { // lookup table for CameraTrapSettings
     still_images_will_be_collected: '1',
     video_images_will_be_collected: '2',
@@ -220,7 +244,7 @@ alterState(state => {
     other: '11',
   };
 
-  return { ...state, sitesMap, cameraTrapMap, estimationMap, metricsMap, dataFrequencyMap, dataChallengeMap, dataAssistanceMap, dataToolsMap };
+  return { ...state, sitesMap, surveyTypeMap, cameraTrapMap, estimationMap, metricsMap, dataFrequencyMap, dataChallengeMap, dataAssistanceMap, dataToolsMap };
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
