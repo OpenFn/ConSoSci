@@ -402,7 +402,7 @@ alterState(state => {
 });
 
 //For every dataset repeat group entry...
-each(
+/* each(
   dataPath('$.body.datasets[*]'),
   alterState(state => {
     const dataset = state.data;
@@ -557,3 +557,4 @@ each(
     )(state);
   })
 );
+ */
