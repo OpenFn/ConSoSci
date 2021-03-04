@@ -586,7 +586,7 @@ each(
     return sql({
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-      FROM WCSPROGRAMS_ProjectAnnualDataSet 
+      FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
       WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
@@ -627,7 +627,7 @@ each(
     return sql({
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
       WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
@@ -666,7 +666,7 @@ each(
     return sql({
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
       WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
@@ -704,7 +704,7 @@ each(
     return sql({
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
       WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
@@ -737,7 +737,7 @@ each(
     return sql({
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
-      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
       WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
