@@ -563,6 +563,9 @@ each(
           OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
           OtherAssistance: dataset['datasets/other_services'],
           OtherNotes: dataset['datasets/other_info'],
+          //TODO: Update UserID_CR mappings
+          UserID_CR: '0',
+          UserID_LM: '0',
         }
       )(state);
     });
@@ -590,16 +593,19 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'WCSPROGRAMS_ProjectDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataCollectionTools.map(dct => {
             return {
               DataSetUUIDID: body._id + dct,
               AnswerId: dataValue('body._id'),
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
               IsForCollect: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct], //fk
+              //TODO: Update UserID_CR mappings
+              UserID_CR: '0',
+              UserID_LM: '0',
             };
           })
       )(state);
@@ -628,16 +634,19 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'WCSPROGRAMS_ProjectDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataManagementTools.map(dmt => {
             return {
               DataSetUUIDID: body.id + dmt,
               AnswerId: body._id,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
               IsForManage: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt], //fk
+              //TODO: Update UserID_CR mappings
+              UserID_CR: '0',
+              UserID_LM: '0',
             };
           })
       )(state);
@@ -663,16 +672,19 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'WCSPROGRAMS_ProjectDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataAnalysisTools.map(dat => {
             return {
               DataSetUUIDID: body._id + dat,
               AnswerId: body._id,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
               IsForAnalyze: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat], //fk
+              //TODO: Update UserID_CR mappings
+              UserID_CR: '0',
+              UserID_LM: '0',
             };
           })
       )(state);
