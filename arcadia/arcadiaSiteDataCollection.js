@@ -1,5 +1,27 @@
 //Job based on mapping spec: https://docs.google.com/spreadsheets/d/1SjSHpYYzlRUa9rQRW3mN2ruI7k_QWTeF7qX4Rnvy_wk/edit#gid=264797739
 alterState(state => {
+
+  const Map = {
+    anc_visits: 'ANC Visits',
+    early_initiation_of_anc_less_than_3_months: 'Early initiation of ANC (less than 3 months)',
+    completing_recomended_anc_visits: 'Completing recomended ANC visits',
+    danger_signs: 'Danger signs',
+    skilled_birth: 'Skilled birth',
+    immunization: 'Immunization',
+    individual_birth_plan: 'Individual Birth Plan',
+    emergency_preparedness: 'Emergency preparedness',
+    childcare_and_affection: 'Childcare and affection',
+    nutrition_counseling: 'Nutrition counseling',
+    growth_monitoring: 'Growth monitoring',
+    exclusive_breastfeeding: 'Exclusive breastfeeding',
+    complementary_feeding: 'Sleeping under LLITN',
+    sleeping_under_llitn: 'Knowing HIV status',
+    knowing_hiv_status: 'Indoor pollution',
+    indoor_pollution: 'Personal Hygiene',
+    personal_hygiene: 'Safe drinking water',
+    safe_drinking_water: 'Safe disposal of human waste',
+    safe_disposal_of_human_waste: 'Complementary feeding',
+  }
   const sitesMap = {
     //swm site lookup table to ProjectIDs
     aceh: '1785',
@@ -306,7 +328,7 @@ alterState(state => {
 
   const surveysPlanned = surveys_planned.split(' ');
   return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
     'DataSetUUIDID',
     state =>
       surveysPlanned.map(sp => {
@@ -320,6 +342,9 @@ alterState(state => {
           //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
           WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
             sp === 'other' ? body.survey_planned_other : '',
+          //TODO: Update UserID_CR mappings
+          UserID_CR: '0',
+          UserID_LM: '0',
         };
       })
   )(state);
@@ -334,7 +359,7 @@ alterState(state => {
   //TODO: Do not create Survey records if survey_planned_001 = 'none'
   //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
   return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
     'DataSetUUIDID',
     state =>
       surveysPlanned001.map(sp => {
@@ -347,6 +372,9 @@ alterState(state => {
           //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
           WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
             sp === 'other' ? body.survey_planned_other : '',
+          //TODO: Update UserID_CR mappings
+          UserID_CR: '0',
+          UserID_LM: '0',
         };
       })
   )(state);
