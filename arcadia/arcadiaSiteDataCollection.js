@@ -338,10 +338,10 @@ alterState(state => {
           //external Id
           DataSetUUIDID: body._id + sp,
           AnswerId: body._id,
-          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
-          //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
-          WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
-            sp === 'other' ? body.survey_planned_other : '',
+          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp],
+          //TODO: Confirm how to map 'other' surveys, this column below does not exist
+          /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+            sp === 'other' ? body.survey_planned_other : '',*/
           //TODO: Update UserID_CR mappings
           UserID_CR: '0',
           UserID_LM: '0',
