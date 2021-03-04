@@ -469,6 +469,9 @@ alterState(state => {
             DataSetUUIDID: body._id + mg, 
             AnswerId: body._id, 
             WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
           };
         })
     )(state);
@@ -501,6 +504,9 @@ alterState(state => {
             DataSetUUIDID: body._id + ce,
             AnswerId: body._id, 
             WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
           };
         })
     )(state);
