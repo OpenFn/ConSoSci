@@ -337,7 +337,7 @@ alterState(state => {
           WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
           //external Id
           DataSetUUIDID: body._id + sp,
-          Answer_ID: body._id,
+          AnswerId: body._id,
           WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
           //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
           WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
@@ -367,7 +367,7 @@ alterState(state => {
           //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
           WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
           DataSetUUIDID: body._id + sp,
-          Answer_ID: body._id,
+          AnswerId: body._id,
           WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
           //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
           WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
@@ -398,7 +398,7 @@ alterState(state => {
           //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
           WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
           DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
-          Answer_ID: body._id, //to configure on every table
+          AnswerId: body._id, //to configure on every table
           WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
         };
       })
@@ -423,7 +423,7 @@ alterState(state => {
           //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
           WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
           DataSetUUIDID: body._id + mg, //custom uuid for this m:m record
-          Answer_ID: body._id, //to configure on every table
+          AnswerId: body._id, //to configure on every table
           WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
         };
       })
@@ -446,7 +446,7 @@ alterState(state => {
           //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
           WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
           DataSetUUIDID: body._id + ce, //custom uuid for this m:m record
-          Answer_ID: body._id, //to configure on every table
+          AnswerId: body._id, //to configure on every table
           WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
         };
       })
@@ -475,7 +475,7 @@ alterState(state => {
         DataSetUUIDID: dataValue('body._id') + dataset['datasets/survey_type'],
         //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
         //WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
-        Answer_ID: dataValue('body._id'),
+        AnswerId: dataValue('body._id'),
         TypeOfDataSet:
           dataset['datasets/survey_type'] === 'other'
             ? dataset['datasets/survey_type']
@@ -515,7 +515,7 @@ alterState(state => {
           dataCollectionTools.map(dct => {
             return {
               DataSetUUIDID: dataValue('body._id') + dct,
-              Answer_ID: dataValue('body._id'),
+              AnswerId: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
@@ -533,7 +533,7 @@ alterState(state => {
           dataManagementTools.map(dmt => {
             return {
               DataSetUUIDID: dataValue('body._id') + dmt,
-              Answer_ID: dataValue('body._id'),
+              AnswerId: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
@@ -551,7 +551,7 @@ alterState(state => {
           dataAnalysisTools.map(dat => {
             return {
               DataSetUUIDID: dataValue('body._id') + dat,
-              Answer_ID: dataValue('body._id'),
+              AnswerId: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
@@ -571,7 +571,7 @@ alterState(state => {
           dataChallenges.map(dc => {
             return {
               DataSetUUIDID: dataValue('body._id') + dc,
-              Answer_ID: dataValue('body._id'),
+              AnswerId: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
@@ -595,7 +595,7 @@ alterState(state => {
               dataManagementHelps.map(dmh => {
                 return {
                   DataSetUUIDID: dataValue('body._id') + dmh,
-                  Answer_ID: dataValue('body._id'),
+                  AnswerId: dataValue('body._id'),
                   //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
                   //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
                   WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
