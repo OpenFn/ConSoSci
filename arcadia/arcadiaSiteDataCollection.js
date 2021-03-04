@@ -501,7 +501,7 @@ alterState(state => {
         estimationGroups.map(eg => {
           return {
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + ce,
+            DataSetUUIDID: body._id + eg,
             AnswerId: body._id, 
             WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
             //TODO: Update UserID_CR mappings
