@@ -1,9 +1,13 @@
 //Job based on mapping spec: https://docs.google.com/spreadsheets/d/1SjSHpYYzlRUa9rQRW3mN2ruI7k_QWTeF7qX4Rnvy_wk/edit#gid=264797739
 alterState(state => {
+  const fetchFromRef = references => {
+    return references[0];
+  };
 
   const Map = {
     anc_visits: 'ANC Visits',
-    early_initiation_of_anc_less_than_3_months: 'Early initiation of ANC (less than 3 months)',
+    early_initiation_of_anc_less_than_3_months:
+      'Early initiation of ANC (less than 3 months)',
     completing_recomended_anc_visits: 'Completing recomended ANC visits',
     danger_signs: 'Danger signs',
     skilled_birth: 'Skilled birth',
@@ -21,7 +25,7 @@ alterState(state => {
     personal_hygiene: 'Safe drinking water',
     safe_drinking_water: 'Safe disposal of human waste',
     safe_disposal_of_human_waste: 'Complementary feeding',
-  }
+  };
   const sitesMap = {
     //swm site lookup table to ProjectIDs
     aceh: '1785',
@@ -279,6 +283,7 @@ alterState(state => {
   const { body } = state.data;
   return {
     ...state,
+    fetchFromRef,
     body,
     sitesMap,
     surveyTypeMap,
@@ -327,27 +332,37 @@ alterState(state => {
   const { surveys_planned } = body;
 
   const surveysPlanned = surveys_planned.split(' ');
-  return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-    'DataSetUUIDID',
-    state =>
-      surveysPlanned.map(sp => {
-        return {
-          ///TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-          //external Id
-          DataSetUUIDID: body._id + sp,
-          AnswerId: body._id,
-          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp],
-          //TODO: Confirm how to map 'other' surveys, this column below does not exist
-          /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+  return sql({
+    query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '${body._id}'`,
+  })(state).then(state => {
+    const datasetuuid = state.fetchFromRef(state.references[0]);
+
+    return upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'DataSetUUIDID',
+      state =>
+        surveysPlanned.map(sp => {
+          return {
+            ///TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+            // WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            //external Id
+            DataSetUUIDID: body._id + sp,
+            AnswerId: body._id,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp],
+            //TODO: Confirm how to map 'other' surveys, this column below does not exist
+            /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
             sp === 'other' ? body.survey_planned_other : '',*/
-          //TODO: Update UserID_CR mappings
-          UserID_CR: '0',
-          UserID_LM: '0',
-        };
-      })
-  )(state);
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          };
+        })
+    )(state);
+  });
 });
 
 alterState(state => {
@@ -358,27 +373,37 @@ alterState(state => {
 
   //TODO: Do not create Survey records if survey_planned_001 = 'none'
   //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
-  return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-    'DataSetUUIDID',
-    state =>
-      surveysPlanned001.map(sp => {
-        return {
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-          DataSetUUIDID: body._id + sp,
-          AnswerId: body._id,
-          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
-          //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
-          //TODO: Confirm how to map 'other' surveys, this column below does not exist
-          /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+  return sql({
+    query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '${body._id}'`,
+  })(state).then(state => {
+    const datasetuuid = state.fetchFromRef(state.references[0]);
+    // console.log(datasetuuid);
+
+    return upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'DataSetUUIDID',
+      state =>
+        surveysPlanned001.map(sp => {
+          return {
+            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + sp,
+            AnswerId: body._id,
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
+            //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
+            //TODO: Confirm how to map 'other' surveys, this column below does not exist
+            /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
             sp === 'other' ? body.survey_planned_other : '',*/
-          //TODO: Update UserID_CR mappings
-          UserID_CR: '0',
-          UserID_LM: '0',
-        };
-      })
-  )(state);
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          };
+        })
+    )(state);
+  });
 });
 
 alterState(state => {
@@ -389,23 +414,33 @@ alterState(state => {
 
   const collectGroups = collectGroup.split(' ');
 
-  //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
-  return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
-    'DataSetUUIDID',
-    state =>
-      collectGroups.map(cg => {
-        return {
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-          DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
-          AnswerId: body._id, //to configure on every table
-          WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
-        };
-      })
-  )(state);
+  return sql({
+    query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '${body._id}'`,
+  })(state).then(state => {
+    const datasetuuid = state.fetchFromRef(state.references[0]);
+    // console.log(datasetuuid);
+    //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
+    return upsertMany(
+      'WCSPROGRAMS_ProjectPlanCameraTrap',
+      'DataSetUUIDID',
+      state =>
+        collectGroups.map(cg => {
+          return {
+            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
+            AnswerId: body._id, //to configure on every table
+            WCSPROGRAMS_ProjectPlanCameraTrapID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
+          };
+        })
+    )(state);
+  });
 });
 
+// NOTE: Table name not present in mapping sheet
 alterState(state => {
   //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
   const { body } = state;
@@ -414,44 +449,61 @@ alterState(state => {
     body['group_qp5by62/Which_metrics_questi_ith_camera_trap_data'];
 
   const metricGroups = metricGroup.split(' ');
-
-  return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric',
-    'DataSetUUIDID',
-    state =>
-      metricGroups.map(mg => {
-        return {
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-          DataSetUUIDID: body._id + mg, //custom uuid for this m:m record
-          AnswerId: body._id, //to configure on every table
-          WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
-        };
-      })
-  )(state);
+  return sql({
+    query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '${body._id}'`,
+  })(state).then(state => {
+    const datasetuuid = state.fetchFromRef(state.references[0]);
+    // console.log(datasetuuid);
+    return upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric',
+      'DataSetUUIDID',
+      state =>
+        metricGroups.map(mg => {
+          return {
+            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + mg, //custom uuid for this m:m record
+            AnswerId: body._id, //to configure on every table
+            WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
+          };
+        })
+    )(state);
+  });
 });
 
+// NOTE: Table name not present in mapping sheet
 alterState(state => {
   const { body } = state;
 
   const estimationGroup = body['group_qp5by62/What_estimation_methods_do_you'];
 
   const estimationGroups = estimationGroup.split(' ');
-  //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
-  return upsertMany(
-    'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
-    'DataSetUUIDID',
-    state =>
-      estimationGroups.map(eg => {
-        return {
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-          WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-          DataSetUUIDID: body._id + ce, //custom uuid for this m:m record
-          AnswerId: body._id, //to configure on every table
-          WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
-        };
-      })
-  )(state);
+  return sql({
+    query: `
+    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
+    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
+    WHERE DataSetUUIDID = '${body._id}'`,
+  })(state).then(state => {
+    const datasetuuid = state.fetchFromRef(state.references[0]);
+    // console.log(datasetuuid);//2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
+    return upsertMany(
+      'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
+      'DataSetUUIDID',
+      state =>
+        estimationGroups.map(eg => {
+          return {
+            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
+            DataSetUUIDID: body._id + ce, //custom uuid for this m:m record
+            AnswerId: body._id, //to configure on every table
+            WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
+          };
+        })
+    )(state);
+  });
 });
 
 //For every dataset repeat group entry...
