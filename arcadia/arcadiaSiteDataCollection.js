@@ -488,7 +488,8 @@ alterState(state => {
     WHERE DataSetUUIDID = '${body._id}'`,
   })(state).then(state => {
     const datasetuuid = state.fetchFromRef(state.references[0]);
-    // console.log(datasetuuid);//2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
+    // console.log(datasetuuid);
+    //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
     return upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
       'DataSetUUIDID',
@@ -507,159 +508,245 @@ alterState(state => {
 });
 
 //For every dataset repeat group entry...
-/* each(
+each(
   dataPath('$.body.datasets[*]'),
   alterState(state => {
     const dataset = state.data;
-    //Build arrays for the Kobo multiple choice questions
+    const { body } = state;
+
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanID
+      FROM WCSPROGRAMS_ProjectAnnualDataPlan
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
+      // console.log(datasetuuid);
+      //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
+      return upsert(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
+        'DataSetUUIDID',
+        {
+          DataSetUUIDID: body._id + dataset['datasets/survey_type'],
+          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = body._id
+          WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
+          AnswerId: body._id,
+          TypeOfDataSet:
+            dataset['datasets/survey_type'] === 'other'
+              ? dataset['datasets/survey_type']
+              : dataset['datasets/survey_type_other'],
+          WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
+            dataset['datasets/dataset_name_text'],
+          CollectionStartDate: dataset['datasets/data_collection_start'],
+          CollectionEndDate: dataset['datasets/data_collection_end'],
+          WCSPROGRAMS_DataAccessFrequencyID:
+            state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
+          OtherFrequency:
+            state.dataFrequencyMap[
+              dataset['datasets/data_review_frequency_other']
+            ],
+          AnalysisCompletionDate:
+            dataset['datasets/data_analysis_completion_date'],
+          DataManagementPlan:
+            dataset['datasets/data_management_plan'] === 'yes' ? 1 : 0,
+          DataManagementPlanLink: dataset['datasets/link_dmp'],
+          KoboForm: dataset['datasets/kobo_forms'],
+          OtherCollectionTool: dataset['datasets/data_collection_tool'],
+          OtherManagementTool: dataset['datasets/data_management_tool_other'],
+          OtherAnalysisTool: dataset['datasets/data_analysis_tool_other'],
+          OtherChallenge: dataset['datasets/challenge_other'],
+          OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
+          OtherAssistance: dataset['datasets/other_services'],
+          OtherNotes: dataset['datasets/other_info'],
+        }
+      )(state);
+    });
+  })
+);
+
+each(
+  dataPath('$.body.datasets[*]'),
+  alterState(state => {
+    const dataset = state.data;
+    const { body } = state;
+
     const dataCollectionTools = dataset['datasets/data_collection_tool'].split(
       ' '
     );
-    const dataManagementTools = dataset['datasets/data_management_tool'].split(
-      ' '
-    );
-    const dataAnalysisTools = dataset['datasets/data_analysis_tool'].split(' ');
-    const dataChallenges = dataset['datasets/data_collection_tool'].split(' ');
-    const dataManagementHelps = dataset['datasets/challenge'].split(' ');
 
-    return combine(
-      //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
-      upsert('WCSPROGRAMS_ProjectAnnualDataPlanDataSet', 'DataSetUUIDID', {
-        DataSetUUIDID: dataValue('body._id') + dataset['datasets/survey_type'],
-        //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-        //WCSPROGRAMS_ProjectAnnualDataPlanID: dataValue('body._id'), //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
-        AnswerId: dataValue('body._id'),
-        TypeOfDataSet:
-          dataset['datasets/survey_type'] === 'other'
-            ? dataset['datasets/survey_type']
-            : dataset['datasets/survey_type_other'],
-        WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
-          dataset['datasets/dataset_name_text'],
-        CollectionStartDate: dataset['datasets/data_collection_start'],
-        CollectionEndDate: dataset['datasets/data_collection_end'],
-        WCSPROGRAMS_DataAccessFrequencyID:
-          state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
-        OtherFrequency:
-          state.dataFrequencyMap[
-            dataset['datasets/data_review_frequency_other']
-          ],
-        AnalysisCompletionDate:
-          dataset['datasets/data_analysis_completion_date'],
-        DataManagementPlan:
-          dataset['datasets/data_management_plan'] === 'yes' ? 1 : 0,
-        DataManagementPlanLink: dataset['datasets/link_dmp'],
-        KoboForm: dataset['datasets/kobo_forms'],
-        OtherCollectionTool: dataset['datasets/data_collection_tool'],
-        OtherManagementTool: dataset['datasets/data_management_tool_other'],
-        OtherAnalysisTool: dataset['datasets/data_analysis_tool_other'],
-        OtherChallenge: dataset['datasets/challenge_other'],
-        OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
-        OtherAssistance: dataset['datasets/other_services'],
-        OtherNotes: dataset['datasets/other_info'],
-      }),
-      //=============================================================//
-      //TODO: Collapse the below mappings so that we only insert 1 DataTool record for every unique tool
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+      FROM WCSPROGRAMS_ProjectAnnualDataSet 
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
+      // console.log(datasetuuid);
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
-      upsertMany(
+      return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataCollectionTools.map(dct => {
             return {
-              DataSetUUIDID: dataValue('body._id') + dct,
+              DataSetUUIDID: body._id + dct,
               AnswerId: dataValue('body._id'),
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                dataValue('body._id') + dataset['datasets/survey_type'],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
               IsForCollect: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
             };
           })
-      ),
+      )(state);
+    });
+  })
+);
+
+each(
+  dataPath('$.body.datasets[*]'),
+  alterState(state => {
+    const dataset = state.data;
+    const { body } = state;
+
+    const dataManagementTools = dataset['datasets/data_management_tool'].split(
+      ' '
+    );
+
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
+      // console.log(datasetuuid);
+      //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
-      upsertMany(
+      return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataManagementTools.map(dmt => {
             return {
-              DataSetUUIDID: dataValue('body._id') + dmt,
-              AnswerId: dataValue('body._id'),
+              DataSetUUIDID: body.id + dmt,
+              AnswerId: body._id,
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                dataValue('body._id') + dataset['datasets/survey_type'],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
               IsForManage: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt],
             };
           })
-      ),
+      )(state);
+    });
+  })
+);
+
+each(
+  dataPath('$.body.datasets[*]'),
+  alterState(state => {
+    const dataset = state.data;
+    const { body } = state;
+
+    const dataAnalysisTools = dataset['datasets/data_analysis_tool'].split(' ');
+
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
+      //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
-      upsertMany(
+      return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataAnalysisTools.map(dat => {
             return {
-              DataSetUUIDID: dataValue('body._id') + dat,
-              AnswerId: dataValue('body._id'),
+              DataSetUUIDID: body._id + dat,
+              AnswerId: body._id,
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                dataValue('body._id') + dataset['datasets/survey_type'],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
               IsForAnalyze: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
             };
           })
-      ),
-      //=============================================================//
+      )(state);
+    });
+  })
+);
 
+each(
+  dataPath('$.body.datasets[*]'),
+  alterState(state => {
+    const dataset = state.data;
+    const { body } = state;
+
+    const dataChallenges = dataset['datasets/data_collection_tool'].split(' ');
+
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
       //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
-      upsertMany(
+      return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
         'DataSetUUIDID',
         state =>
           dataChallenges.map(dc => {
             return {
-              DataSetUUIDID: dataValue('body._id') + dc,
-              AnswerId: dataValue('body._id'),
+              DataSetUUIDID: body._id + dc,
+              AnswerId: body._id,
               //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
               //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                dataValue('body._id') + dataset['datasets/survey_type'],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
               WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
             };
           })
-      ),
-      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
-      alterState(state => {
-        return sql({
-          query: `SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID FROM WCSPROGRAMS_ProjectAnnualDataSet WHERE DataSetUUIDID = '${
-            dataValue('body._id') + dataset['datasets/survey_type']
-          }'`,
-        }).then(state => {
-          console.log(state.data);
-          return upsertMany(
-            'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
-            'DataSetUUIDID',
-            state =>
-              dataManagementHelps.map(dmh => {
-                return {
-                  DataSetUUIDID: dataValue('body._id') + dmh,
-                  AnswerId: dataValue('body._id'),
-                  //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-                  //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-                  WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                    dataValue('body._id') + dataset['datasets/survey_type'],
-                  WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
-                };
-              })
-          )(state);
-        })(state);
-      })
-    )(state);
+      )(state);
+    });
   })
 );
- */
+
+each(
+  dataPath('$.body.datasets[*]'),
+  alterState(state => {
+    const dataset = state.data;
+    const { body } = state;
+
+    const dataManagementHelps = dataset['datasets/challenge'].split(' ');
+
+    return sql({
+      query: `
+      SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+      FROM WCSPROGRAMS_ProjectAnnualDataSet
+      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+    })(state).then(state => {
+      const datasetuuid = state.fetchFromRef(state.references[0]);
+      //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
+        'DataSetUUIDID',
+        state =>
+          dataManagementHelps.map(dmh => {
+            return {
+              DataSetUUIDID: body._id + dmh,
+              AnswerId: body._id,
+              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
+              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
+              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
+            };
+          })
+      )(state);
+    });
+  })
+);
