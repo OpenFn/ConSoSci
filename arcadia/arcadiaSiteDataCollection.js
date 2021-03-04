@@ -628,7 +628,7 @@ each(
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+      WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       // console.log(datasetuuid);
@@ -667,7 +667,7 @@ each(
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+      WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
@@ -705,7 +705,7 @@ each(
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+      WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
@@ -738,7 +738,7 @@ each(
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+      WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
