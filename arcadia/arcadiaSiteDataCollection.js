@@ -524,7 +524,7 @@ each(
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanID
       FROM WCSPROGRAMS_ProjectAnnualDataPlan
-      WHERE DataSetUUIDID = '${body._id} ${dataset['datasets/survey_type']}'`,
+      WHERE DataSetUUIDID = '${body._id}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       // console.log(datasetuuid);
