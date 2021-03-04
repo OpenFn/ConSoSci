@@ -430,7 +430,7 @@ alterState(state => {
         collectGroups.map(cg => {
           return {
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + cg, 
+            DataSetUUIDID: body._id + cg,
             AnswerId: body._id,
             WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
             //TODO: Update UserID_CR mappings
@@ -466,8 +466,8 @@ alterState(state => {
         metricGroups.map(mg => {
           return {
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + mg, 
-            AnswerId: body._id, 
+            DataSetUUIDID: body._id + mg,
+            AnswerId: body._id,
             WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
@@ -502,7 +502,7 @@ alterState(state => {
           return {
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
             DataSetUUIDID: body._id + eg,
-            AnswerId: body._id, 
+            AnswerId: body._id,
             WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
@@ -575,6 +575,7 @@ each(
 each(
   dataPath('$.body.datasets[*]'),
   alterState(state => {
+    console.log('Upserting');
     const dataset = state.data;
     const { body } = state;
 
@@ -600,7 +601,7 @@ each(
             return {
               DataSetUUIDID: body._id + dct,
               AnswerId: dataValue('body._id'),
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForCollect: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct], //fk
               //TODO: Update UserID_CR mappings
@@ -641,7 +642,7 @@ each(
             return {
               DataSetUUIDID: body.id + dmt,
               AnswerId: body._id,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForManage: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt], //fk
               //TODO: Update UserID_CR mappings
@@ -679,7 +680,7 @@ each(
             return {
               DataSetUUIDID: body._id + dat,
               AnswerId: body._id,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet? 
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForAnalyze: 1,
               WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat], //fk
               //TODO: Update UserID_CR mappings
