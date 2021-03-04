@@ -341,7 +341,7 @@ alterState(state => {
     const datasetuuid = state.fetchFromRef(state.references[0]);
 
     return upsertMany(
-      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
       'DataSetUUIDID',
       state =>
         surveysPlanned.map(sp => {
@@ -383,7 +383,7 @@ alterState(state => {
     // console.log(datasetuuid);
 
     return upsertMany(
-      'WCSPROGRAMS_ProjectAnnualDataPlanSurvey',
+      'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
       'DataSetUUIDID',
       state =>
         surveysPlanned001.map(sp => {
