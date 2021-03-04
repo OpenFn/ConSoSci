@@ -429,11 +429,13 @@ alterState(state => {
       state =>
         collectGroups.map(cg => {
           return {
-            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
-            AnswerId: body._id, //to configure on every table
+            DataSetUUIDID: body._id + cg, 
+            AnswerId: body._id,
             WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
           };
         })
     )(state);
@@ -463,10 +465,9 @@ alterState(state => {
       state =>
         metricGroups.map(mg => {
           return {
-            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + mg, //custom uuid for this m:m record
-            AnswerId: body._id, //to configure on every table
+            DataSetUUIDID: body._id + mg, 
+            AnswerId: body._id, 
             WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
           };
         })
@@ -496,10 +497,9 @@ alterState(state => {
       state =>
         estimationGroups.map(eg => {
           return {
-            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + ce, //custom uuid for this m:m record
-            AnswerId: body._id, //to configure on every table
+            DataSetUUIDID: body._id + ce,
+            AnswerId: body._id, 
             WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
           };
         })
@@ -528,7 +528,6 @@ each(
         'DataSetUUIDID',
         {
           DataSetUUIDID: body._id + dataset['datasets/survey_type'],
-          //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = body._id
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
           AnswerId: body._id,
           TypeOfDataSet:
@@ -592,11 +591,9 @@ each(
             return {
               DataSetUUIDID: body._id + dct,
               AnswerId: dataValue('body._id'),
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               IsForCollect: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct],
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct], //fk
             };
           })
       )(state);
@@ -632,11 +629,9 @@ each(
             return {
               DataSetUUIDID: body.id + dmt,
               AnswerId: body._id,
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               IsForManage: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt],
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt], //fk
             };
           })
       )(state);
@@ -669,11 +664,9 @@ each(
             return {
               DataSetUUIDID: body._id + dat,
               AnswerId: body._id,
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               IsForAnalyze: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat],
+              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat], //fk
             };
           })
       )(state);
@@ -705,10 +698,8 @@ each(
             return {
               DataSetUUIDID: body._id + dc,
               AnswerId: body._id,
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
-              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
+              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
             };
           })
       )(state);
@@ -740,10 +731,8 @@ each(
             return {
               DataSetUUIDID: body._id + dmh,
               AnswerId: body._id,
-              //TODO: We find ID via WCSPROGRAMS_ProjectAnnualDataSet.DataSetUUIDID = dataValue('body._id') + dataset['datasets/survey_type']
-              //FK to WCSPROGRAMS_ProjectAnnualDataPlanDataSetID
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value,
-              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh],
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
+              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh], //fk
             };
           })
       )(state);
