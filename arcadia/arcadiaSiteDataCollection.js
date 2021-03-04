@@ -573,7 +573,7 @@ each(
 );
 
 each(
-  dataPath('$.body.datasets[*]'),
+  state.body.datasets,
   alterState(state => {
     console.log('Upserting');
     const dataset = state.data;
