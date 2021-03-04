@@ -573,7 +573,7 @@ each(
 );
 
 each(
-  state.body.datasets,
+  state => state.body.datasets,
   alterState(state => {
     console.log('Upserting');
     const dataset = state.data;
@@ -615,7 +615,7 @@ each(
 );
 
 each(
-  dataPath('$.body.datasets[*]'),
+  state => state.body.datasets,
   alterState(state => {
     const dataset = state.data;
     const { body } = state;
@@ -656,7 +656,7 @@ each(
 );
 
 each(
-  dataPath('$.body.datasets[*]'),
+  state => state.body.datasets,
   alterState(state => {
     const dataset = state.data;
     const { body } = state;
@@ -694,7 +694,7 @@ each(
 );
 
 each(
-  dataPath('$.body.datasets[*]'),
+  state => state.body.datasets,
   alterState(state => {
     const dataset = state.data;
     const { body } = state;
@@ -727,7 +727,7 @@ each(
 );
 
 each(
-  dataPath('$.body.datasets[*]'),
+  state => state.body.datasets,
   alterState(state => {
     const dataset = state.data;
     const { body } = state;
