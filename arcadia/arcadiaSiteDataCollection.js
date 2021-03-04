@@ -424,7 +424,7 @@ alterState(state => {
     // console.log(datasetuuid);
     //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
     return upsertMany(
-      'WCSPROGRAMS_ProjectPlanCameraTrap',
+      'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
       'DataSetUUIDID',
       state =>
         collectGroups.map(cg => {
@@ -433,7 +433,7 @@ alterState(state => {
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
             DataSetUUIDID: body._id + cg, //custom uuid for this m:m record
             AnswerId: body._id, //to configure on every table
-            WCSPROGRAMS_ProjectPlanCameraTrapID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
+            WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
           };
         })
     )(state);
