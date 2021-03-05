@@ -701,6 +701,7 @@ each(
     const { body } = state;
 
     const dataChallenges = dataset['datasets/data_collection_tool'].split(' ');
+    console.log(state.dataChallenges);
 
     return sql({
       query: `
@@ -719,7 +720,7 @@ each(
               DataSetUUIDID: body._id + dc,
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
-              WCSPROGRAMS_DataChallengeID: '2', //state.dataChallengeMap[dc], //TODO: Th
+              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
@@ -737,6 +738,7 @@ each(
     const { body } = state;
 
     const dataManagementHelps = dataset['datasets/challenge'].split(' ');
+    console.log(state.dataManagementHelps);
 
     return sql({
       query: `
@@ -755,7 +757,7 @@ each(
               DataSetUUIDID: body._id + dmh,
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
-              WCSPROGRAMS_DataAssistanceID: '1', //state.dataAssistanceMap[dmh], //fk
+              WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
