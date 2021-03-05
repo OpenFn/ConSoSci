@@ -74,6 +74,7 @@ alterState(state => {
     manovo_complex: '1828',
     manu_upper_purus: '1829',
     marañón_ucayali: '1830',
+    mara_n_ucayali: '1830',
     mato_grosso: '1831',
     mbam_djerem_deng_deng: '1832',
     middle_caqueta: '1833',
@@ -90,6 +91,7 @@ alterState(state => {
     northern_rangelands: '1844',
     northern_sulawesi_north_maluku: '1845',
     nouabalé_ndoki_lac_tele: '1846',
+    nouabal__ndoki_lac_tele: '1846',
     nusa_tenggara_barat: '1847',
     odzala: '1848',
     okapi_maiko_kahuzi_biega: '1849',
@@ -119,6 +121,7 @@ alterState(state => {
     "ts'ehlanyane": '1873',
     upper_putumayo: '1874',
     valdes: '1875',
+    valdes___patagonia_azul: '1875', //TODO: Confirm project code, this is OpenFn guess
     virunga: '1876',
     wapok_complex: '1877',
     west_namibia_complex: '1878',
