@@ -719,6 +719,9 @@ each(
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
+              //TODO: Update UserID_CR mappings
+              UserID_CR: '0',
+              UserID_LM: '0',
             };
           })
       )(state);
@@ -752,6 +755,9 @@ each(
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh], //fk
+              //TODO: Update UserID_CR mappings
+              UserID_CR: '0',
+              UserID_LM: '0',
             };
           })
       )(state);
