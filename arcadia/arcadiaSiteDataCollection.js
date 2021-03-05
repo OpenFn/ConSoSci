@@ -69,6 +69,7 @@ alterState(state => {
     loango: '1824',
     lopé: '1825',
     madidí__tambopata: '1826',
+    madid___tambopata: '1826',
     mamabay: '1827',
     manovo_complex: '1828',
     manu_upper_purus: '1829',
