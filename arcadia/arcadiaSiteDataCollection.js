@@ -228,6 +228,7 @@ alterState(state => {
     other: '6',
   };
 
+
   const dataChallengeMap = {
     //lookup table for DataChallenge types
     data_collector_training: '1',
@@ -718,7 +719,7 @@ each(
               DataSetUUIDID: body._id + dc,
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
-              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
+              WCSPROGRAMS_DataChallengeID: '2', //state.dataChallengeMap[dc], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
