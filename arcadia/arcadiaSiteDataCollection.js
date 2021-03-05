@@ -603,7 +603,7 @@ each(
               AnswerId: dataValue('body._id'),
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForCollect: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dct], //fk
+              WCSPROGRAMS_DataToolID: state.dataToolsMap[dct], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
@@ -682,7 +682,7 @@ each(
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForAnalyze: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dat], //fk
+              WCSPROGRAMS_DataToolID: state.dataToolsMap[dat], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
