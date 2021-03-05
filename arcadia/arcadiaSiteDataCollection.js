@@ -644,7 +644,7 @@ each(
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
               IsForManage: 1,
-              WCSPROGRAMS_DataToolsID: state.dataToolsMap[dmt], //fk
+              WCSPROGRAMS_DataToolID: state.dataToolsMap[dmt], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
