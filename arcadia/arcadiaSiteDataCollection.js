@@ -548,7 +548,7 @@ each(
             state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
           OtherFrequency:
             state.dataFrequencyMap[
-              dataset['datasets/data_review_frequency_other']
+            dataset['datasets/data_review_frequency_other']
             ],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
@@ -594,7 +594,7 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectDataSetDataTool',
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataCollectionTools.map(dct => {
@@ -635,7 +635,7 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectDataSetDataTool',
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataManagementTools.map(dmt => {
@@ -673,7 +673,7 @@ each(
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
       return upsertMany(
-        'WCSPROGRAMS_ProjectDataSetDataTool',
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'DataSetUUIDID',
         state =>
           dataAnalysisTools.map(dat => {
