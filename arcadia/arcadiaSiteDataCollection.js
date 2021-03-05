@@ -700,7 +700,7 @@ each(
     const dataset = state.data;
     const { body } = state;
 
-    const dataChallenges = dataset['datasets/data_collection_tool'].split(' ');
+    const dataChallenges = dataset['datasets/challenge'].split(' ');
     console.log(state.dataChallenges);
 
     return sql({
@@ -720,7 +720,7 @@ each(
               DataSetUUIDID: body._id + dc,
               AnswerId: body._id,
               WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
-              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc],
+              WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
               //TODO: Update UserID_CR mappings
               UserID_CR: '0',
               UserID_LM: '0',
@@ -737,7 +737,7 @@ each(
     const dataset = state.data;
     const { body } = state;
 
-    const dataManagementHelps = dataset['datasets/challenge'].split(' ');
+    const dataManagementHelps = dataset['datasets/data_management_help'].split(' ');
     console.log(state.dataManagementHelps);
 
     return sql({
