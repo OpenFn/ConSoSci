@@ -302,9 +302,8 @@ alterState(state => {
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
   DataSetUUIDID: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
   AnswerId: dataValue('$.body._id')(state),
-  //TODO: Consider what other columns to map or mark not null in db
-  //formName: dataValue('$.formName'), //Capture the source survey name?
-  UserID_CR: '0',
+  WCSPROGRAMS_ProjectAnnualDataPlanName: dataValue('$.formName'), //Capture the source survey name?
+  UserID_CR: '0', //TODO: Update User_ID and Address mappings? 
   UserID_LM: '0',
   CRIPAddress: 'wcs',
   LMIPAddress: 'wcs',
@@ -323,10 +322,7 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
   )(state),
 });
 
-//TODO: Configure tables for m:m relationshtip with WCSPROGRAMS_DataSetSurveyType
 //For every survey planned...
-//TODO: Do not create Survey records if survey_planned = 'none'
-
 alterState(state => {
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned
   const { body } = state;
@@ -347,18 +343,14 @@ alterState(state => {
       state =>
         surveysPlanned.map(sp => {
           return {
-            ///TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
-            // WCSPROGRAMS_ProjectAnnualDataPlanID: body._id, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            //external Id
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //fk 
             DataSetUUIDID: body._id + sp,
             AnswerId: body._id,
-            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp],
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //fk
             //TODO: Confirm how to map 'other' surveys, this column below does not exist
             /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
             sp === 'other' ? body.survey_planned_other : '',*/
-            //TODO: Update UserID_CR mappings
-            UserID_CR: '0',
+            UserID_CR: '0', //TODO: Update UserID mappings
             UserID_LM: '0',
           };
         })
@@ -372,7 +364,6 @@ alterState(state => {
 
   const surveysPlanned001 = surveys_planned_001.split(' ');
 
-  //TODO: Do not create Survey records if survey_planned_001 = 'none'
   //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
   return sql({
     query: `
@@ -389,17 +380,13 @@ alterState(state => {
       state =>
         surveysPlanned001.map(sp => {
           return {
-            //TODO: We need to find ID via WCSPROGRAMS_ProjectAnnualDataPlan.DataSetUUIDID = dataValue('body._id')
             WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-            DataSetUUIDID: body._id + sp,
+            DataSetUUIDID: body._id + sp + '001',
             AnswerId: body._id,
-            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //look-up surveys_planned value in mapping table
-            //WCSPROGRAMS_DataSetSurveyTypeID: state.data, //replace with above
-            //TODO: Confirm how to map 'other' surveys, this column below does not exist
-            /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
+            WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //fk
+            /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:  //TODO: Confirm how to map 'other' surveys, this column below does not exist
             sp === 'other' ? body.survey_planned_other : '',*/
-            //TODO: Update UserID_CR mappings
-            UserID_CR: '0',
+            UserID_CR: '0', //TODO: Update UserID mappings
             UserID_LM: '0',
           };
         })
@@ -422,7 +409,6 @@ alterState(state => {
     WHERE DataSetUUIDID = '${body._id}'`,
   })(state).then(state => {
     const datasetuuid = state.fetchFromRef(state.references[0]);
-    // console.log(datasetuuid);
     //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
     return upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
@@ -443,7 +429,6 @@ alterState(state => {
   });
 });
 
-// NOTE: Table name not present in mapping sheet
 alterState(state => {
   //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
   const { body } = state;
@@ -528,7 +513,6 @@ each(
       WHERE DataSetUUIDID = '${body._id}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
       //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
       return upsert(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
@@ -591,8 +575,7 @@ each(
       WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
-      //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
+      //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -602,7 +585,7 @@ each(
             return {
               DataSetUUIDID: body._id + dct,
               AnswerId: dataValue('body._id'),
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk
               IsForCollect: 1,
               WCSPROGRAMS_DataToolID: state.dataToolsMap[dct], //fk
               //TODO: Update UserID_CR mappings
@@ -632,7 +615,6 @@ each(
       WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
       //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
       return upsertMany(
@@ -671,7 +653,7 @@ each(
       WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
-      //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
+      //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
       //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -681,7 +663,7 @@ each(
             return {
               DataSetUUIDID: body._id + dat,
               AnswerId: body._id,
-              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
+              WCSPROGRAMS_ProjectAnnualDataPlanDataSetID: datasetuuid[0].value, //fk 
               IsForAnalyze: 1,
               WCSPROGRAMS_DataToolID: state.dataToolsMap[dat], //fk
               //TODO: Update UserID_CR mappings
