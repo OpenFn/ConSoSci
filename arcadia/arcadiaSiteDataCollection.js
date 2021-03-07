@@ -331,7 +331,7 @@ alterState(state => {
   const { body } = state;
   const { surveys_planned } = body;
 
-  if (surveys_planned && !surveys_planned_001.includes('none')) {
+  if (surveys_planned && !surveys_planned.includes('none')) {
     const surveysPlanned = surveys_planned.split(' ');
     return sql({
       query: `
