@@ -33,14 +33,6 @@ alterState(state => {
     amazon_estuary: '1786',
     badingilo_boma_gambela: '1787',
     bale_mountains_complex: '1788',
-  }
-
-  const sitesMap = {
-    //swm site lookup table to ProjectIDs
-    aceh: '1785',
-    amazon_estuary: '1786',
-    badingilo_boma_gambela: '1787',
-    bale_mountains_complex: '1788',
     'bangladesh/myanmar_coast': '1789',
     batang_ai_complex: '1790',
     bolivian_highlands: '1791',
