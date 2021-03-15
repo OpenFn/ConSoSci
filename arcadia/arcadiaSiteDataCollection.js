@@ -26,6 +26,15 @@ alterState(state => {
     safe_drinking_water: 'Safe disposal of human waste',
     safe_disposal_of_human_waste: 'Complementary feeding',
   };
+
+  const sitesMap = {
+    //swm site lookup table to ProjectIDs
+    aceh: '1785',
+    amazon_estuary: '1786',
+    badingilo_boma_gambela: '1787',
+    bale_mountains_complex: '1788',
+  }
+
   const sitesMap = {
     //swm site lookup table to ProjectIDs
     aceh: '1785',
@@ -543,6 +552,7 @@ each(
             dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
+          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[dataset['datasets/survey_type']],
           WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
             dataset['datasets/dataset_name_text'],
           CollectionStartDate: dataset['datasets/data_collection_start'],
@@ -551,7 +561,7 @@ each(
             state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
           OtherFrequency:
             state.dataFrequencyMap[
-              dataset['datasets/data_review_frequency_other']
+            dataset['datasets/data_review_frequency_other']
             ],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
@@ -566,7 +576,7 @@ each(
           OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
           OtherAssistance: dataset['datasets/other_services'],
           OtherNotes: dataset['datasets/other_info'],
-          //TODO: Update UserID_CR mappings
+          //TODO: Update UserID_CR mappings? Or keep default?
           UserID_CR: '0',
           UserID_LM: '0',
         }
