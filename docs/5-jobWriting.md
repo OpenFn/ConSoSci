@@ -36,7 +36,7 @@ alterState(state => {
         seasonally_impended: '3'
         //kobo_choice: foreignKeyId 
     }
-}
+});
 ```
 2. Then modify the job field mapping to apply this transformation to any incoming Kobo data value.  
 ```js
@@ -78,7 +78,7 @@ The Arcadia job also includes several examples of this pattern using `sql(...)` 
 ## 4. Mapping many:many relationships 
 When inserting a record that has a `m:m` relationship with 2 or more parent tables, you may need to run multiple `sql(...)` queries to look-up the parent id of each table you might want to map to. See below example job code for the `WCSPROGRAMS_VegetationVegetationObserver` m:m mapping ([see cell F14](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0)).
 ```
-lterState(state => {
+alterState(state => {
 
     //SQL query #1 to look-up parent WCSPROGRAMS_Vegetation via AnswerId
     return sql({
@@ -95,8 +95,8 @@ lterState(state => {
           SELECT WWCSPROGRAMS_VegetationObserverID
           FROM WWCSPROGRAMS_VegetationObserver
           WHERE WWCSPROGRAMS_VegetationObserverName = '${state.data.observername}'`,
-        })(state).then(state => {
-            const observerId = state.fetchFromRef(state.references[0]);
+        })(state).then(({response}) => {
+            const observerId = response.body.rows[0];
 
             //now upsert the m:m table and fill in foreign keys
             return upsertMany(
@@ -137,29 +137,30 @@ each(
           SiteID:
             state.data.siteMap[surveysGroup['repeatGroupName/site_name']],
 ```
-If you need to execute a `sql` query _before_ you map your data in order to find the Ids of data in related tables, include your `sql(...)` query within your `alterState(...)`. See below example.
+If you need to execute a `sql` query _before_ you map your data in order to find the Ids of data in related tables, include your `sql(...)` query within your `alterState(...)`. See below example for the `st_grass_repeat/grass_species` m:m mapping (see [row 56](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0)). 
 ```
-each(
-    dataPath('$.body.datasets[*]'),
+each( //for every item in the st_grass_repeat repeat group
+    dataPath('$.body.st_grass_repeat[*]'),
     alterState(state => {
-      const dataset = state.data;
+      const grassRepeat = state.data; //rename repeat group
       const { body } = state;
   
+      //Find parent WCSPROGRAMS_TaxaID via WCSPROGRAMS_TaxaName
       return sql({
         query: `
-        SELECT WCSPROGRAMS_ProjectAnnualDataPlanID
-        FROM WCSPROGRAMS_ProjectAnnualDataPlan
-        WHERE DataSetUUIDID = '${body._id}'`,
-      })(state).then(state => {
-        const datasetuuid = state.fetchFromRef(state.references[0]);
+        SELECT WCSPROGRAMS_TaxaID, WCSPROGRAMS_TaxaName
+        FROM WCSPROGRAMS_TaxaID
+        WHERE DataSetUUIDID = '${grassRepeat[`st_grass_repeat/grass_species`]}'`,
+      })(state).then(({response}) => {
+            const taxaId = response.body.rows[0];
        
         return upsert(
           'WCSPROGRAMS_VegetationGrass',
           'DataSetUUIDID',
           {
-            DataSetUUIDID: body._id + dataset['datasets/survey_type'],
-            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
-            AnswerId: body._id,
+            DataSetUUIDID: body._id,
+            WCSPROGRAMS_TaxaID: taxaId[0].value, //FK found in sql query
+            
 ```
 
 ## Additional Resources
