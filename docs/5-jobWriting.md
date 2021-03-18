@@ -8,7 +8,9 @@ permalink: /jobs/
 # Job Writing & Customizing Automated Jobs
 **Please note:** 
 - We recommend using the OpenFn `Job Studio IDE` or a code editor like [VS Code](https://code.visualstudio.com/download) if editing locally on your computer. 
+- If not using the `Job Studio IDE` and available in-line documentation on different OpenFn adaptors and helper functions, check out the relevant adaptor's repository like [`language-postgresql`](https://github.com/OpenFn/language-postgresql) for docs and examples. 
 - These examples are based on the [Vegetation form mapping](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0). [See here](https://github.com/OpenFn/ConSoSci/blob/master/vegetation/VegetationClassficationAndTreeMeasurementForm.js) for the auto-generated job. 
+- 
 
 ## 1. Changing field & table names
 When generating a destination database output, the automation solution will automatically use Kobo question names as DB columns names. 
@@ -45,12 +47,119 @@ upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
 ```
 **Note:** This option works well for Kobo choice and database ID values that do not change frequently. If the values do change a lot, you may need to regularly update the job, or consider the approach below. 
 
-## 3. Mapping many:many relationships & m:1 relationships that frequently change
-1. Updates to map species codes to specific species/ taxon records in a reference table
-2. Support for future surveys with other consumption types (i.e., `hunter`, `market`), including other sample collection methods (so far this was specifically mentioned as a possibility for `hunter` surveys)
-3. Support for `Urban Consumption` forms
-4. Collection of household ethnicity & education data and DB mappings
-5. Changes to how sample units (e.g., `kg`, `days`, `hours`) are set, converted & mapped to the DB
+## 3. Mapping m:1 relationships that frequently change & executing SQL queries to look-up existing data
+If you need to look-up the Ids of data in related parent tables before you insert records, consider first running a `sql(...)` query to find related data in parent tables to then reference in your mappings. See example job below for [cell H15](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0) mapping. 
+```js
+alterState(state => {
+    const { data } = state;
+    //search for existing WCSPROGRAMS_VegetationTopographgyID using the Kobo choice value to look-up and match against Name
+    return sql(
+        state => `select WCSPROGRAMS_VegetationTopographgyID from WCSPROGRAMS_VegetationTopographgy where WCSPROGRAMS_VegetationTopographgyName = '${data.topography}'`
+      )(state)
+        .then(({ response }) => {
+          console.log('WCSPROGRAMS_VegetationTopographgyID found:', response);
+          const topography = response.body.rows[0]; //return the first record found
+
+    return upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
+        GeneratedUuid: dataValue('__generatedUuid'),
+        WCSPROGRAMS_VegetationTopographyID:  topography[0].value, //map ID value returned by sql query above
+    });
+}
+
+upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
+    GeneratedUuid: dataValue('__generatedUuid'),
+    WCSPROGRAMS_VegetationTopographyID:  dataValue('topography')
+    ...
+});
+```
+The Arcadia job also includes several examples of this pattern using `sql(...)` queries - [see example](https://github.com/OpenFn/ConSoSci/blob/master/arcadia/arcadiaSiteDataCollection.js#L753-L770)
+
+## 4. Mapping many:many relationships 
+When inserting a record that has a `m:m` relationship with 2 or more parent tables, you may need to run multiple `sql(...)` queries to look-up the parent id of each table you might want to map to. See below example job code for the `WCSPROGRAMS_VegetationVegetationObserver` m:m mapping ([see cell F14](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0)).
+```
+lterState(state => {
+
+    //SQL query #1 to look-up parent WCSPROGRAMS_Vegetation via AnswerId
+    return sql({
+        query: `
+      SELECT WCSPROGRAMS_VegetationID
+      FROM WCSPROGRAMS_Vegetation
+      WHERE AnswerId = '${state.data._id}'`,
+    })(state).then(state => {
+        const answerId = state.fetchFromRef(state.references[0]);
+
+         //SQL query #2 to look-up parent WCSPROGRAMS_Vegetation via AnswerId
+        return sql({
+            query: `
+          SELECT WWCSPROGRAMS_VegetationObserverID
+          FROM WWCSPROGRAMS_VegetationObserver
+          WHERE WWCSPROGRAMS_VegetationObserverName = '${state.data.observername}'`,
+        })(state).then(state => {
+            const observerId = state.fetchFromRef(state.references[0]);
+
+            //now upsert the m:m table and fill in foreign keys
+            return upsertMany(
+                'WCSPROGRAMS_VegetationVegetationObserver',
+                'DataSetUUIDID',
+                state =>
+                    surveysPlanned.map(sp => {
+                        return {
+                            DataSetUUIDID: state.data._id,
+                            WWCSPROGRAMS_VegetationID: answerId[0].value, //fk found via sql query #1
+                            WWCSPROGRAMS_VegetationObserverID: observerId[0].value, //fk found via sql query #2
+
+                        }
+                    }))
+        })
+    });
+```
+
+[This Arcadia m:m example](https://github.com/OpenFn/ConSoSci/blob/master/arcadia/arcadiaSiteDataCollection.js#L329-L366) shows how one foreign key column is set by running a `sql()` query to find the parent record (see `WCSPROGRAMS_ProjectAnnualDataPlanID`), while the second foreign key column is using `surveyTypeMap`. 
+
+## 5. Repeat groups
+For repeat groups, make use of helper functions like `upsertMany(...)` or `each(...)` (see the Arcadia [repeat group example](https://github.com/OpenFn/ConSoSci/blob/master/arcadia/arcadiaSiteDataCollection.js#L521-L542). 
+```js
+//For every item in the repeat group...
+each(
+  dataPath('$.body.repeatGroupName[*]'),
+   alterState(state => {
+    const surveysGroup = state.data; //assign the group a name
+
+    return upsert(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
+        'DataSetUUIDID',
+        {
+          AnswerId: state.data._id, //this value lives outside the repeat group, so we use state.data.fieldName
+          ColumnName: surveysGroup['repeatGroupName/fieldName'], //we use this path when mapping fields that live within repeat group
+          CollectionStartDate: surveysGroup['repeatGroupName/data_collection_start'], 
+          CollectionEndDate: surveysGroup['repeatGroupName/data_collection_end'],
+          SiteID:
+            state.data.siteMap[surveysGroup['repeatGroupName/site_name']],
+```
+If you need to execute a `sql` query _before_ you map your data in order to find the Ids of data in related tables, include your `sql(...)` query within your `alterState(...)`. See below example.
+```
+each(
+    dataPath('$.body.datasets[*]'),
+    alterState(state => {
+      const dataset = state.data;
+      const { body } = state;
+  
+      return sql({
+        query: `
+        SELECT WCSPROGRAMS_ProjectAnnualDataPlanID
+        FROM WCSPROGRAMS_ProjectAnnualDataPlan
+        WHERE DataSetUUIDID = '${body._id}'`,
+      })(state).then(state => {
+        const datasetuuid = state.fetchFromRef(state.references[0]);
+       
+        return upsert(
+          'WCSPROGRAMS_VegetationGrass',
+          'DataSetUUIDID',
+          {
+            DataSetUUIDID: body._id + dataset['datasets/survey_type'],
+            WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
+            AnswerId: body._id,
+```
 
 ## Additional Resources
 - See the [Kobo Automation docs](https://openfn.github.io/ConSoSci/kobo-automation/) for more on the solution, default behavior, and naming conventions. 
