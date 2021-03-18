@@ -77,7 +77,7 @@ The Arcadia job also includes several examples of this pattern using `sql(...)` 
 
 ## 4. Mapping many:many relationships 
 When inserting a record that has a `m:m` relationship with 2 or more parent tables, you may need to run multiple `sql(...)` queries to look-up the parent id of each table you might want to map to. See below example job code for the `WCSPROGRAMS_VegetationVegetationObserver` m:m mapping ([see cell F14](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0)).
-```
+```js
 alterState(state => {
 
     //SQL query #1 to look-up parent WCSPROGRAMS_Vegetation via AnswerId
@@ -138,7 +138,7 @@ each(
             state.data.siteMap[surveysGroup['repeatGroupName/site_name']],
 ```
 If you need to execute a `sql` query _before_ you map your data in order to find the Ids of data in related tables, include your `sql(...)` query within your `alterState(...)`. See below example for the `st_grass_repeat/grass_species` m:m mapping (see [row 56](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0)). 
-```
+```js
 each( //for every item in the st_grass_repeat repeat group
     dataPath('$.body.st_grass_repeat[*]'),
     alterState(state => {
