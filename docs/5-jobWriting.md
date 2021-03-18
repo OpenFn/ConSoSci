@@ -9,7 +9,7 @@ permalink: /jobs/
 **Please note:** 
 - We recommend using the OpenFn `Job Studio IDE` or a code editor like [VS Code](https://code.visualstudio.com/download) if editing locally on your computer. 
 - If not using the `Job Studio IDE` and available in-line documentation on different OpenFn adaptors and helper functions, check out the relevant adaptor's repository like [`language-postgresql`](https://github.com/OpenFn/language-postgresql) for docs and examples. 
-- These examples are based on the [Vegetation form mapping](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0). [See here](https://github.com/OpenFn/ConSoSci/blob/master/vegetation/VegetationClassficationAndTreeMeasurementForm.js) for the auto-generated job. 
+- These examples are based on the [Vegetation form mapping](https://docs.google.com/spreadsheets/d/1LHmKtQTGZEJqm6taUqpIaylYA11CXHNWmG8U0lL7Qd0/edit?ts=604662dc#gid=0). For the auto-generated Vegetation job, [see Github version here](https://github.com/OpenFn/ConSoSci/blob/master/vegetation/VegetationClassficationAndTreeMeasurementForm.js) for the auto-generated job and [see the OpenFn view](https://www.openfn.org/projects/p5x4g4/jobs/jvnjwd/edit). 
 - 
 
 ## 1. Changing field & table names
