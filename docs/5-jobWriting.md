@@ -64,7 +64,7 @@ alterState(state => {
     return upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
         GeneratedUuid: dataValue('__generatedUuid'),
         WCSPROGRAMS_VegetationTopographyID:  topography[0].value, //map ID value returned by sql query above
-    });
+    })(state);
 }
 
 upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
@@ -110,7 +110,7 @@ alterState(state => {
                             WWCSPROGRAMS_VegetationObserverID: observerId[0].value, //fk found via sql query #2
 
                         }
-                    }))
+                    }))(state)
         })
     });
 ```
@@ -161,6 +161,44 @@ each( //for every item in the st_grass_repeat repeat group
             DataSetUUIDID: body._id,
             WCSPROGRAMS_TaxaID: taxaId[0].value, //FK found in sql query
             
+```
+
+If you want to make use of `upsertMany`, see below example...
+
+```js
+alterState(state => {
+  const { st_grass_repeat } = state.body;
+
+  const grassSpeciesString = st_grass_repeat.map(grass => grass.grass_species).joint("','");
+  return sql({
+        query: `
+        SELECT WCSPROGRAMS_TaxaID, WCSPROGRAMS_TaxaName
+        FROM WCSPROGRAMS_TaxaID
+        WHERE DataSetUUIDID in ('${grassSpeciesString}')`,
+      })(state).then(({ response }) => {
+        const taxaIdRecords = response.body.rows;
+
+        const findTaxaIDRecord = pd =>
+          taxaIdRecords.find(v => v.WCSPROGRAMS_TaxaID === pd.taxaId);
+
+        const taxaIdData = st_grass_repeat
+          .filter(x => findTaxaIDRecord(x))
+          .map(taxadata => {
+            const data = {
+              DataSetUUIDID: taxadata._id,
+              WCSPROGRAMS_TaxaID: findTaxaIDRecord(taxadata).id, //FK found in sql query
+            }
+            return data;
+          });
+      
+        return upsertMany(
+          'WCSPROGRAMS_VegetationGrass',
+          'DataSetUUIDID',
+          taxaIdData
+        
+      })
+
+})
 ```
 
 ## Additional Resources
