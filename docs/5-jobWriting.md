@@ -55,22 +55,16 @@ alterState(state => {
     const { data } = state;
     //search for existing WCSPROGRAMS_VegetationTopographgyID using the Kobo choice value to look-up and match against Name
     return sql(
-        state => `select WCSPROGRAMS_VegetationTopographgyID from WCSPROGRAMS_VegetationTopographgy where WCSPROGRAMS_VegetationTopographgyName = '${data.topography}'`
+        state => `select WCSPROGRAMS_VegetationTopographyID from WCSPROGRAMS_VegetationTopography where WCSPROGRAMS_VegetationTopographyName = '${data.topography}'`
       )(state)
         .then(({ response }) => {
-          console.log('WCSPROGRAMS_VegetationTopographgyID found:', response);
+          console.log('WCSPROGRAMS_VegetationTopographyID found:', response);
           const topography = response.body.rows[0]; //return the first record found
 
     return upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
         GeneratedUuid: dataValue('__generatedUuid'),
         WCSPROGRAMS_VegetationTopographyID:  topography[0].value, //map ID value returned by sql query above
     })(state);
-}
-
-upsert('WCSPROGRAMS_Vegetation', 'GeneratedUuid', {
-    GeneratedUuid: dataValue('__generatedUuid'),
-    WCSPROGRAMS_VegetationTopographyID:  dataValue('topography')
-    ...
 });
 ```
 The Arcadia job also includes several examples of this pattern using `sql(...)` queries - [see example](https://github.com/OpenFn/ConSoSci/blob/master/arcadia/arcadiaSiteDataCollection.js#L753-L770)
