@@ -53,6 +53,8 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     Gs: g[`good/name`],
     Price: g[`good/price`],
     LastUpdate: new Date().toISOString(),
+    //Landscape: : state => (state.data.formName === 'Ndoki' ? 'ndoki'), //We want to continue this line to specify all the other possible values that landscape can take based on the form name.
+    SurveyDate: state.data.today
   }))
 );
 
