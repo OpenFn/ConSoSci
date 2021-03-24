@@ -23,6 +23,7 @@ alterState(state => {
 
     const landscapeMap = {
       Ndoki: 'ndoki',
+      Makira: 'mamabay'
       //formName: landscapeValue,
       //other values
     }
