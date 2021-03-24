@@ -21,8 +21,15 @@ alterState(state => {
       }
     }
 
+    const landscapeMap = {
+      Ndoki: 'ndoki',
+      //formName: landscapeValue,
+      //other values
+    }
+
     return {
       ...state,
+      landscapeMap,
       data: {
         ...cleanedSubmission,
         durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
@@ -45,7 +52,7 @@ sql({
 
 insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
   state.data.good.map(g => ({
-    Id: state.data._id, 
+    Id: state.data._id,
     AnswerId: state.data._id,
     DatasetUuidId: state.data.datasetId,
     Surveyor: state.data.surveyor,
@@ -53,7 +60,7 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     Gs: g[`good/name`],
     Price: g[`good/price`],
     LastUpdate: new Date().toISOString(),
-    //Landscape: : state => (state.data.formName === 'Ndoki' ? 'ndoki'), //We want to continue this line to specify all the other possible values that landscape can take based on the form name.
+    //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value
     SurveyDate: state.data.today
   }))
 );
@@ -69,5 +76,5 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   LastUpdateTime: new Date().toISOString(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
-  
+
 });
