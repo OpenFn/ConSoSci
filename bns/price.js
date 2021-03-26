@@ -24,18 +24,19 @@ alterState(state => {
     const landscapeMap = {
       Ndoki: 'ndoki',
       'Lac Télé': 'ltlt',
-      Ituri: 'ituri', 
-      Kahuzi: 'mtkb', 
+      Ituri: 'ituri',
+      Kahuzi: 'mtkb',
       Crossriver: 'crossriver',
-      Soariake:'soariake',
-      Ankarea:'ankarea',
+      Soariake: 'soariake',
+      Ankarea: 'ankarea',
       ABS: 'baie_antongil',
-      'Nosy Be':'tandavandriva',
-      Makira: 'mamabay'
-      
+      'Nosy Be': 'tandavandriva',
+      Makira: 'mamabay',
+      'BNS Ndoki Prix 2020': 'ndoki',
+
       //formName: landscapeValue,
       //other values
-    }
+    };
 
     return {
       ...state,
@@ -46,6 +47,7 @@ alterState(state => {
         datasetId: `${formName}-${_xform_id_string}`,
         end: cleanedSubmission.end.slice(0, 10),
       },
+      formName,
     };
   } catch (error) {
     state.connection.close();
@@ -71,7 +73,12 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     Price: g[`good/price`],
     LastUpdate: new Date().toISOString(),
     //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value
-    SurveyDate: state.data.today
+    Landscape: state => {
+      for (let val in state.landscapeMap)
+        if (state.formName.includes(val)) return state.landscapeMap[val];
+      return '';
+    },
+    SurveyDate: state.data.today,
   }))
 );
 
@@ -86,5 +93,4 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   LastUpdateTime: new Date().toISOString(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
-
 });
