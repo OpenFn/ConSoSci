@@ -76,7 +76,6 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
     Landscape: state => {
       for (let val in state.landscapeMap)
         if (state.formName.includes(val)) return state.landscapeMap[val];
-      return '';
     },
     SurveyDate: state.data.today,
   }))
@@ -93,4 +92,8 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   LastUpdateTime: new Date().toISOString(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
+});
+
+alterState(state => {
+  console.log('data uploaded', state.data); 
 });
