@@ -62,8 +62,8 @@ sql({
     `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
 });
 
-insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
-  state.data.good.map(g => ({
+alterState(state => {
+  const data =  state.data.good.map(g => ({
     Id: state.data._id,
     AnswerId: state.data._id,
     DatasetUuidId: state.data.datasetId,
@@ -79,8 +79,10 @@ insertMany('WCSPROGRAMS_KoboBnsPrice', state =>
        return '';
     },
     SurveyDate: state.data.today,
-  }))
-);
+  }));
+  console.log('data', data);
+ return insertMany('WCSPROGRAMS_KoboBnsPrice', state => data)(state);
+});
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
