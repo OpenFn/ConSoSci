@@ -1,6 +1,6 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
-  try {
+  //try {
     const { body, formName } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
     let cleanedSubmission = {};
@@ -49,10 +49,10 @@ alterState(state => {
       },
       formName,
     };
-  } catch (error) {
+ /* } catch (error) {
     state.connection.close();
     throw error;
-  }
+  }*/
 });
 
 // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
