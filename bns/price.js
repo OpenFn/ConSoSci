@@ -94,6 +94,3 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   Tags: dataValue('_tags'),
 });
 
-alterState(state => {
-  console.log('data uploaded', state.data); 
-});
