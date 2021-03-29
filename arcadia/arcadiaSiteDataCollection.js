@@ -319,8 +319,10 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
       ? dataValue('$.body.respondent_role_other')(state)
       : dataValue('$.body.respondent_role')(state);
   },
-  WCSPROGRAMS_ProjectID: state =>
-    state.sitesMap[dataValue('$.body.swm_site')(state)],
+  WCSPROGRAMS_ProjectID: state =>{
+    var siteId = state.sitesMap[dataValue('$.body.swm_site')(state)]; 
+    return siteId ? siteId : dataValue('$.body.swm_site')(state); 
+    },
   CameraTrapOtherEstimationDetail: dataValue(
     '$.body.group_qp5by62/What_other_estimatio_do_you_intend_to_use'
   )(state),
