@@ -1,55 +1,55 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   //try {
-    const { body, formName } = state.data;
-    const { _submission_time, _id, _xform_id_string } = body;
-    let cleanedSubmission = {};
+  const { body, formName } = state.data;
+  const { _submission_time, _id, _xform_id_string } = body;
+  let cleanedSubmission = {};
 
-    for (const key in body) {
-      switch (body[key]) {
-        case 'yes':
-          cleanedSubmission[key] = 1;
-          break;
+  for (const key in body) {
+    switch (body[key]) {
+      case 'yes':
+        cleanedSubmission[key] = 1;
+        break;
 
-        case 'no':
-          cleanedSubmission[key] = 0;
-          break;
+      case 'no':
+        cleanedSubmission[key] = 0;
+        break;
 
-        default:
-          cleanedSubmission[key] = body[key];
-          break;
-      }
+      default:
+        cleanedSubmission[key] = body[key];
+        break;
     }
+  }
 
-    const landscapeMap = {
-      Ndoki: 'ndoki',
-      'Lac Télé': 'ltlt',
-      Ituri: 'ituri',
-      Kahuzi: 'mtkb',
-      Crossriver: 'crossriver',
-      Soariake: 'soariake',
-      Ankarea: 'ankarea',
-      ABS: 'baie_antongil',
-      'Nosy Be': 'tandavandriva',
-      Makira: 'mamabay',
-      'BNS Ndoki Prix 2020': 'ndoki',
+  const landscapeMap = {
+    Ndoki: 'ndoki',
+    'Lac Télé': 'ltlt',
+    Ituri: 'ituri',
+    Kahuzi: 'mtkb',
+    Crossriver: 'crossriver',
+    Soariake: 'soariake',
+    Ankarea: 'ankarea',
+    ABS: 'baie_antongil',
+    'Nosy Be': 'tandavandriva',
+    Makira: 'mamabay',
+    'BNS Ndoki Prix 2020': 'ndoki',
 
-      //formName: landscapeValue,
-      //other values
-    };
+    //formName: landscapeValue,
+    //other values
+  };
 
-    return {
-      ...state,
-      landscapeMap,
-      data: {
-        ...cleanedSubmission,
-        durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
-        datasetId: `${formName}-${_xform_id_string}`,
-        end: cleanedSubmission.end.slice(0, 10),
-      },
-      formName,
-    };
- /* } catch (error) {
+  return {
+    ...state,
+    landscapeMap,
+    data: {
+      ...cleanedSubmission,
+      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+      datasetId: `${formName}-${_xform_id_string}`,
+      end: cleanedSubmission.end.slice(0, 10),
+    },
+    formName,
+  };
+  /* } catch (error) {
     state.connection.close();
     throw error;
   }*/
@@ -63,7 +63,7 @@ sql({
 });
 
 alterState(state => {
-  const data =  state.data.good.map(g => ({
+  const data = state.data.good.map(g => ({
     Id: state.data._id,
     AnswerId: state.data._id,
     DatasetUuidId: state.data.datasetId,
@@ -76,12 +76,12 @@ alterState(state => {
     Landscape: state => {
       for (let val in state.landscapeMap)
         if (state.formName.includes(val)) return state.landscapeMap[val];
-       return '';
+      return '';
     },
     SurveyDate: state.data.today,
   }));
-  console.log('data', data);
- return insertMany('WCSPROGRAMS_KoboBnsPrice', state => data)(state);
+  // console.log('data', data);
+  return insertMany('WCSPROGRAMS_KoboBnsPrice', state => data)(state);
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
@@ -98,5 +98,6 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 });
 
 alterState(state => {
-  console.log('data uploaded', state.data); 
+  console.log('data uploaded', state.data);
+  return state;
 });
