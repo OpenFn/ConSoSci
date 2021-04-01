@@ -28,10 +28,14 @@ alterState(state => {
   return state;
 });
 upsert('WCSPROGRAMS__KoboDataset', 'DatasetId', {
-  FormName: dataValue('formName'),
-  DatasetId: dataValue('_xform_id_string'),
-  LastUpdated: new Date().toISOString(),
-  Payload: state.data.body
+  DatasetName: dataValue('formName'),
+  DatasetOwner: dataValue('formOwner'),
+  DatasetUuidId: dataValue('_xform_id_string'),
+  LastUpdateTime: new Date().toISOString(),
+  KoboManaged: '1',
+  //Payload: state.data.body,
+  UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+  UserID_LM: '0',
 });
 upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', {
   sbght: dataValue('sbght'),
@@ -84,17 +88,21 @@ upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', {
   //obsevername: dataValue('obsevername'), //set as m:m table, see below
   start_time: dataValue('start_time'),
   surveydate: dataValue('surveydate'),
-  Answer_ID: state.data.body_id
+  Answer_ID: state.data.body_id,
+  UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+  UserID_LM: '0',
 });
 
 //TODO: observername is a multi-select field; turn into an array in order to insert these m:m records
-upsertMany('WCSPROGRAMS_VegetationVegetationOberver', 'Generated_ID', state => {
+upsertMany('WCSPROGRAMS_VegetationVegetationObserver', 'Generated_ID', state => {
   const dataArray = state.data['observername'] || []; //TODO: turn select_multiple Kobo question into array
   return dataArray.map(x => ({
     //WCSPROGRAMS_VegetationObserverID: ___ //select WCSPROGRAMS_VegetationObserverID from WCSPROGRAMS_VegetationObserver where WCSPROGRAMS_VegetationObserverName = observername
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['observername'] //make sure this is setting correctly
+    Generated_ID: state.data.body_id + x['observername'], //make sure this is setting correctly
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
 
@@ -105,7 +113,9 @@ upsertMany('WCSPROGRAMS_VegetationVegetationDegradationDriver', 'Generated_ID', 
     //WCSPROGRAMS_VegetationDegradationDriverID: ___ //select WCSPROGRAMS_VegetationDegradationDriverID from WCSPROGRAMS_VegetationDegradationDriver where WCSPROGRAMS_VegetationDegradationDriverName = ddriver
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['ddriver'] //make sure this is setting correctly
+    Generated_ID: state.data.body_id + x['ddriver'], //make sure this is setting correctly
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
 
@@ -120,7 +130,9 @@ upsertMany('WCSPROGRAMS_VegetationVegetationGrass', 'Generated_ID', state => {
     //WCSPROGRAMS_VegetationGrassID: ___ //select WCSPROGRAMS_VegetationGrassID from WCSPROGRAMS_VegetationGrass where WCSPROGRAMS_VegetationGrassName = grass_species
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['st_grass_repeat/grass_species']
+    Generated_ID: state.data.body_id + x['st_grass_repeat/grass_species'],
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
 upsertMany('WCSPROGRAMS_VegetationVegetationBrush', 'Generated_ID', state => {
@@ -131,7 +143,9 @@ upsertMany('WCSPROGRAMS_VegetationVegetationBrush', 'Generated_ID', state => {
     //WCSPROGRAMS_VegetationBrushID: ___ //select WCSPROGRAMS_VegetationBrushID from WCSPROGRAMS_VegetationBrush where WCSPROGRAMS_VegetationBrushName = brus_species
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['brush_repeat/brus_species']
+    Generated_ID: state.data.body_id + x['brush_repeat/brus_species'],
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
 upsertMany('WCSPROGRAMS_VegetationVegetationTrees', 'Generated_ID', state => {
@@ -146,7 +160,9 @@ upsertMany('WCSPROGRAMS_VegetationVegetationTrees', 'Generated_ID', state => {
     //WCSPROGRAMS_VegetationTreesID: ___ //select WCSPROGRAMS_VegetationTreesID from WCSPROGRAMS_VegetationTrees where WCSPROGRAMS_VegetationTreesCode = SpecimenNo
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['tree_repeat/Specimen_no']
+    Generated_ID: state.data.body_id + x['tree_repeat/Specimen_no'],
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
 upsertMany('WCSPROGRAMS_VegetationVegetationBigTrees', 'Generated_ID', state => {
@@ -161,6 +177,8 @@ upsertMany('WCSPROGRAMS_VegetationVegetationBigTrees', 'Generated_ID', state => 
     //WCSPROGRAMS_VegetationBigTreesID: ___ //select WCSPROGRAMS_VegetationBigTreesID from WCSPROGRAMS_VegetationBigTrees where WCSPROGRAMS_VegetationBigTreesCode = bspecimenNo
     //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['tree_10cm/bspecimenNo']
+    Generated_ID: state.data.body_id + x['tree_10cm/bspecimenNo'],
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
   }))
 });
