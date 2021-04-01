@@ -1,7 +1,7 @@
 ---
 layout: page
 title: BNS & NRGT
-nav_order: 2
+nav_order: 3
 permalink: /bns_nrgt/
 ---
 

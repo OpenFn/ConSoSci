@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Key Terms
-nav_order: 1
+nav_order: 2
 permalink: /key_terms/
 ---
 
@@ -91,3 +91,5 @@ insert(table__KoboForm,
     ...
 }); 
 ```
+## Learn More
+Check out [`OpenFn Documentation`](https://docs.openfn.org/) for more on OpenFn, jobs, integration use cases, examples, and design help. 
