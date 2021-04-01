@@ -45,6 +45,7 @@ To learn more about OpenFn generally and its suite of open source integration to
 Kobo Toolbox ([see documentation](https://support.kobotoolbox.org/welcome.html)) is a suite of tools for field data collection for use in challenging environments. The software is _free_ and open source and works both on and offline.
 
 Kobo primarily offers a mobile application for data collection. Users will create data collection tools or surveys called `projects` or `forms`. Then, field data collectors will fill out these different forms, submitting `form submissions` to record forms responses. 
+![kobo-shots](../kobo-shots.png)
 
 Kobo also offers a web app for aggregating form submissions collected in the field, which provides basic data management and data cleaning functions. However, data management and analysis functions are limited, so typically users via export the data via CSV export options and/or REST APIs for automated data integration. If you've worked with data collection tools like `ODK`, `ONA`, or `SurveyCTO`, these are very similar mobile data collection apps. 
 
