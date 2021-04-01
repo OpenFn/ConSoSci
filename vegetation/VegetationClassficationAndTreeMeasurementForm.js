@@ -54,7 +54,7 @@ upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', {
   vegClass_same: dataValue('vegClass_same'),
   Cropstatus: dataValue('Cropstatus'),
   Year: dataValue('Year'),
-  ddriver: dataValue('ddriver'),
+  //ddriver: dataValue('ddriver'), //set as m:m table, see below
   forest_type: dataValue('forest_type'),
   vegclass: dataValue('vegclass'),
   Ownership: dataValue('Ownership'),
@@ -81,11 +81,35 @@ upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', {
   drainage: dataValue('drainage'),
   physiography: dataValue('physiography'),
   topography: dataValue('topography'),
-  obsevername: dataValue('obsevername'),
+  //obsevername: dataValue('obsevername'), //set as m:m table, see below
   start_time: dataValue('start_time'),
   surveydate: dataValue('surveydate'),
   Answer_ID: state.data.body_id
 });
+
+//TODO: observername is a multi-select field; turn into an array in order to insert these m:m records
+upsertMany('WCSPROGRAMS_VegetationVegetationOberver', 'Generated_ID', state => {
+  const dataArray = state.data['observername'] || []; //TODO: turn select_multiple Kobo question into array
+  return dataArray.map(x => ({
+    //WCSPROGRAMS_VegetationObserverID: ___ //select WCSPROGRAMS_VegetationObserverID from WCSPROGRAMS_VegetationObserver where WCSPROGRAMS_VegetationObserverName = observername
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['observername'] //make sure this is setting correctly
+  }))
+});
+
+//TODO: ddriver is a multi-select field; turn into an array in order to insert these m:m records
+upsertMany('WCSPROGRAMS_VegetationVegetationDegradationDriver', 'Generated_ID', state => {
+  const dataArray = state.data['ddriver'] || []; //TODO: turn select_multiple Kobo question into array
+  return dataArray.map(x => ({
+    //WCSPROGRAMS_VegetationDegradationDriverID: ___ //select WCSPROGRAMS_VegetationDegradationDriverID from WCSPROGRAMS_VegetationDegradationDriver where WCSPROGRAMS_VegetationDegradationDriverName = ddriver
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['ddriver'] //make sure this is setting correctly
+  }))
+});
+
+
 upsertMany('WCSPROGRAMS_VegetationVegetationGrass', 'Generated_ID', state => {
   const dataArray = state.data['st_grass_repeat'] || [];
   return dataArray.map(x => ({
