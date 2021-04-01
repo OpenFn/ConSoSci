@@ -3,7 +3,7 @@ _Leveraging Social Science to Strengthen Conservation Outcomes_
 
 Integration solutions for the Conservation Social Science (ConSoSci) partnership to connect data sources, including `Kobo Toolbox`, `PostgreSQL` and `MySQL` databases. 
 
-Check out the [docs 📚](https://openfn.github.io/consosci/) for an overview of what's
+Check out the [docs 📚](https://openfn.github.io/ConSoSci//) for an overview of what's
 happening here.
 
 To propose changes, make a branch, test your work using
