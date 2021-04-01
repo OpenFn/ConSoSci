@@ -6,7 +6,7 @@ permalink: /key_concepts/
 ---
 
 # Key Concepts
-These ConSoSci solutions and documentation take for granted that you're familiar with the following key concepts, technology, and terms. To better understand the ConSoSci technology stack and template solutions available to support centralized data collection, management, and analysis, please review the following overview. 
+ConSoSci offers a robust technology stack and template solutions to support partners with data collection, data management, and analysis. To better understand the solution options and value delivered, please read the following overview of key concepts, components, and terms refered throughout the solution documentation and training sessions. 
 
 ## Integration
 The ConSoSci stack provides an _integrated_ solution to support your complete data cycle, from data collection and maangement, to integration and analysis. The solution is made of separate components or tools that support different steps in the data cycle. 
@@ -73,7 +73,12 @@ VALUES (value1, value2, value3,...valueN);
 In other words, if you want to interact with a system to retrieve information or perform a function, an API helps you communicate what you want to that system so it can understand and fulfill the request. In the ConSoSci stack, OpenFn sends schedules requests to the Kobo API in order to extract data collected in the field, and then load it into a destination database like ConSoSci Connect. 
 ![api](../kobo-api.png)
 
-> Interested in how the tech works? Read on for the more technical bits...
+---
+**Read on for the more technical bits...**
+Planning to personally interact and configure the technology in the ConSoSci stack? Check out the following for more information on concepts core to the technical workings of the solutions. 
+
+---
+
 
 ## REST APIs
 Systems integration will leverage APIs to extract and load data to/from an application, commonly leveraging `REST` or `RESTful` APIs, which supports interactions using web services. `REST` stands for "representational state transfer" and describes the architecture of the API, which takes advantage of `HTTP`. Using `HTTP` requests and responses, information can be sent in multiple formats (`JSON`, `HTML`, `PHP`, `Plain Text`, etc.). [Read more here](https://www.redhat.com/en/topics/api/what-is-a-rest-api). 
@@ -131,3 +136,6 @@ Javascript is the “lingua franca” for coding jobs on OpenFn. Javascript is o
 On top of the Javascript base, we’ve developed a LISP-like syntax (operator, operands) that further simplifies the job writing process and exposes common transformations via “helper functions” (`insert(...)`, `update(...)`, `getForms(...)`). Some OpenFn users with no programming experience (but familiarity with Microsoft Excel syntax) have learned how to write jobs.
 
 ConSoSci OpenFn solutions offer automation that will auto-generate jobs based on Kobo forms, as well as the option for users to write their own jobs. For users hoping to write their own jobs, if jobs require complex data transformation and cleaning, strong knowledge of JavaScript is recommended. See [`OpenFn Documentation`](https://docs.openfn.org/documentation/build/jobs) for more technical documentation on job execution. 
+
+## Ready to try OpenFn? 
+Create a user account at [openfn.org/signup](https://www.openfn.org/signup).
