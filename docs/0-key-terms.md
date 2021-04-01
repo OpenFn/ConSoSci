@@ -7,7 +7,7 @@ permalink: /key_concepts/
 
 _Conservation Social Science (ConSoSci) partnership is leveraging social science to strengthen conservation outcomes._
 
-# Overview
+# Key Concepts
 ConSoSci offers a robust technology stack and template solutions to support partners with data collection, data management, and analysis. To better understand the solution options and value delivered, please read the following overview of key concepts, components, and terms refered throughout the solution documentation and training sessions. 
 
 ## Integration
@@ -75,8 +75,8 @@ VALUES (value1, value2, value3,...valueN);
 In other words, if you want to interact with a system to retrieve information or perform a function, an API helps you communicate what you want to that system so it can understand and fulfill the request. In the ConSoSci stack, OpenFn sends schedules requests to the Kobo API in order to extract data collected in the field, and then load it into a destination database like ConSoSci Connect. 
 ![api](../kobo-api.png)
 
+## Read on for the more technical bits...
 ---
-**Read on for the more technical bits...**
 Planning to personally interact and configure the technology in the ConSoSci stack? Check out the following for more information on concepts core to the technical workings of the solutions. 
 
 ---
