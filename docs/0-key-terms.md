@@ -5,7 +5,9 @@ nav_order: 2
 permalink: /key_concepts/
 ---
 
-# Key Concepts
+_Conservation Social Science (ConSoSci) partnership is leveraging social science to strengthen conservation outcomes._
+
+# Overview
 ConSoSci offers a robust technology stack and template solutions to support partners with data collection, data management, and analysis. To better understand the solution options and value delivered, please read the following overview of key concepts, components, and terms refered throughout the solution documentation and training sessions. 
 
 ## Integration
