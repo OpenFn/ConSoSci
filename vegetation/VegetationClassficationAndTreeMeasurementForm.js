@@ -1,39 +1,39 @@
 alterState(state => {
-    function generateUuid(body, uuid) {
-      for (const property in body) {
-        if (Array.isArray(body[property]) && body !== null) {
-          body['__generatedUuid'] = uuid;
-          body[property].forEach((thing, i, arr) => {
-            if (thing !== null) {
-              thing['__parentUuid'] = uuid;
-              let newUuid = uuid + '-' + (i + 1);
-              thing['__generatedUuid'] = newUuid;
-              for (const property in thing) {
-                if (Array.isArray(thing[property])) {
-                  generateUuid(thing, newUuid);
-                }
+  function generateUuid(body, uuid) {
+    for (const property in body) {
+      if (Array.isArray(body[property]) && body !== null) {
+        body['__generatedUuid'] = uuid;
+        body[property].forEach((thing, i, arr) => {
+          if (thing !== null) {
+            thing['__parentUuid'] = uuid;
+            let newUuid = uuid + '-' + (i + 1);
+            thing['__generatedUuid'] = newUuid;
+            for (const property in thing) {
+              if (Array.isArray(thing[property])) {
+                generateUuid(thing, newUuid);
               }
             }
-          });
-        }
+          }
+        });
       }
     }
+  }
 
-    generateUuid(
-      state.data.body,
-      state.data.body._id+'-'+state.data.body._xform_id_string
-    );
+  generateUuid(
+    state.data.body,
+    state.data.body._id + '-' + state.data.body._xform_id_string
+  );
 
-    state.data = { ...state.data, ...state.data.body };
-    return state;
-  }); 
-upsert('WCS__KoboDataset', 'DatasetId', {
+  state.data = { ...state.data, ...state.data.body };
+  return state;
+});
+upsert('WCSPROGRAMS__KoboDataset', 'DatasetId', {
   FormName: dataValue('formName'),
   DatasetId: dataValue('_xform_id_string'),
   LastUpdated: new Date().toISOString(),
   Payload: state.data.body
-}); 
-upsert('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm', 'GeneratedUuid', {
+});
+upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', {
   sbght: dataValue('sbght'),
   sbdbh: dataValue('sbdbh'),
   sght: dataValue('sght'),
@@ -84,48 +84,59 @@ upsert('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm', 'Generate
   obsevername: dataValue('obsevername'),
   start_time: dataValue('start_time'),
   surveydate: dataValue('surveydate'),
-  Payload: state.data.body,
-  GeneratedUuid: dataValue('__generatedUuid')
-}); 
-upsertMany('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm_StGrassRepeat', 'GeneratedUuid', state => { const dataArray = state.data['st_grass_repeat'] || [];
-            return dataArray.map(x => ({
-  grass_species: x['st_grass_repeat/grass_species'],
-  noknown: x['st_grass_repeat/noknown'],
-  grass_perc: x['st_grass_repeat/grass_perc'],
-  grass_height: x['st_grass_repeat/grass_height'],
-  VegetationClassficationAndTreeMeasurementForm_uuid: x['__parentUuid'],
-  Payload: state.data.body,
-  GeneratedUuid: x['__generatedUuid']
-}))}); 
-upsertMany('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm_BrushRepeat', 'GeneratedUuid', state => { const dataArray = state.data['brush_repeat'] || [];
-            return dataArray.map(x => ({
-  brus_species: x['brush_repeat/brus_species'],
-  brush_perc: x['brush_repeat/brush_perc'],
-  VegetationClassficationAndTreeMeasurementForm_uuid: x['__parentUuid'],
-  Payload: state.data.body,
-  GeneratedUuid: x['__generatedUuid']
-}))}); 
-upsertMany('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm_TreeRepeat', 'GeneratedUuid', state => { const dataArray = state.data['tree_repeat'] || [];
-            return dataArray.map(x => ({
-  shrub_species: x['tree_repeat/shrub_species'],
-  Specimen_no: x['tree_repeat/Specimen_no'],
-  specimen_photo: x['tree_repeat/specimen_photo'],
-  unlisted: x['tree_repeat/unlisted'],
-  dbh: x['tree_repeat/dbh'],
-  height: x['tree_repeat/height'],
-  VegetationClassficationAndTreeMeasurementForm_uuid: x['__parentUuid'],
-  Payload: state.data.body,
-  GeneratedUuid: x['__generatedUuid']
-}))}); 
-upsertMany('WCS_Vegetation_VegetationClassficationAndTreeMeasurementForm_Tree10cm', 'GeneratedUuid', state => { const dataArray = state.data['tree_10cm'] || [];
-            return dataArray.map(x => ({
-  btspecies: x['tree_10cm/btspecies'],
-  bspecimenNo: x['tree_10cm/bspecimenNo'],
-  bspecimen_photo: x['tree_10cm/bspecimen_photo'],
-  bunlisted: x['tree_10cm/bunlisted'],
-  bdbh: x['tree_10cm/bdbh'],
-  bheight: x['tree_10cm/bheight'],
-  VegetationClassficationAndTreeMeasurementForm_uuid: x['__parentUuid'],
-  Payload: state.data.body,
-  GeneratedUuid: x['__generatedUuid']
-}))}); 
+  Answer_ID: state.data.body_id
+});
+upsertMany('WCSPROGRAMS_VegetationVegetationGrass', 'Generated_ID', state => {
+  const dataArray = state.data['st_grass_repeat'] || [];
+  return dataArray.map(x => ({
+    grass_species: x['st_grass_repeat/grass_species'],
+    noknown: x['st_grass_repeat/noknown'],
+    grass_perc: x['st_grass_repeat/grass_perc'],
+    grass_height: x['st_grass_repeat/grass_height'],
+    //WCSPROGRAMS_VegetationGrassID: ___ //select WCSPROGRAMS_VegetationGrassID from WCSPROGRAMS_VegetationGrass where WCSPROGRAMS_VegetationGrassName = grass_species
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['st_grass_repeat/grass_species']
+  }))
+});
+upsertMany('WCSPROGRAMS_VegetationVegetationBrush', 'Generated_ID', state => {
+  const dataArray = state.data['brush_repeat'] || [];
+  return dataArray.map(x => ({
+    brus_species: x['brush_repeat/brus_species'],
+    brush_perc: x['brush_repeat/brush_perc'],
+    //WCSPROGRAMS_VegetationBrushID: ___ //select WCSPROGRAMS_VegetationBrushID from WCSPROGRAMS_VegetationBrush where WCSPROGRAMS_VegetationBrushName = brus_species
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['brush_repeat/brus_species']
+  }))
+});
+upsertMany('WCSPROGRAMS_VegetationVegetationTrees', 'Generated_ID', state => {
+  const dataArray = state.data['tree_repeat'] || [];
+  return dataArray.map(x => ({
+    shrub_species: x['tree_repeat/shrub_species'],
+    Specimen_no: x['tree_repeat/Specimen_no'],
+    specimen_photo: x['tree_repeat/specimen_photo'],
+    unlisted: x['tree_repeat/unlisted'],
+    dbh: x['tree_repeat/dbh'],
+    height: x['tree_repeat/height'],
+    //WCSPROGRAMS_VegetationTreesID: ___ //select WCSPROGRAMS_VegetationTreesID from WCSPROGRAMS_VegetationTrees where WCSPROGRAMS_VegetationTreesCode = SpecimenNo
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['tree_repeat/Specimen_no']
+  }))
+});
+upsertMany('WCSPROGRAMS_VegetationVegetationBigTrees', 'Generated_ID', state => {
+  const dataArray = state.data['tree_10cm'] || [];
+  return dataArray.map(x => ({
+    btspecies: x['tree_10cm/btspecies'],
+    bspecimenNo: x['tree_10cm/bspecimenNo'],
+    bspecimen_photo: x['tree_10cm/bspecimen_photo'],
+    bunlisted: x['tree_10cm/bunlisted'],
+    bdbh: x['tree_10cm/bdbh'],
+    bheight: x['tree_10cm/bheight'],
+    //WCSPROGRAMS_VegetationBigTreesID: ___ //select WCSPROGRAMS_VegetationBigTreesID from WCSPROGRAMS_VegetationBigTrees where WCSPROGRAMS_VegetationBigTreesCode = bspecimenNo
+    //WCSPROGRAMS_VegetationID: ___ //select WCSPROGRAMS_VegetationID from WCSPROGRAMS_Vegetation where Answer_ID = state.data.body_id
+    Answer_ID: state.data.body_id,
+    Generated_ID: state.data.body_id + x['tree_10cm/bspecimenNo']
+  }))
+});
