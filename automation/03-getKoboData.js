@@ -27,6 +27,11 @@ alterState(state => {
         id: 'aDgPJqN4SAYohZ4ZueEeYU',
         formName: 'Arcadia Data Collection Site Survey',
         destination: 'WCSPROGRAMS_ProjectAnnualDataPlan'
+      },
+      {
+        id: 'apZrpKcK78xzrPcAfRrfac',
+        formName: 'Sharks & Rays 24 March',
+        destination: 'WCS_SR_SharkAndRaysTraining'
       }
     ].map(survey => ({
       ...survey,
