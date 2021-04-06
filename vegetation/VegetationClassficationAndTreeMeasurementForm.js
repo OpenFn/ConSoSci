@@ -199,7 +199,7 @@ upsertMany(
       UserID_LM: '0',
     }));
   }
-)(state);
+);
 
 //TODO: ddriver is a multi-select field; turn into an array in order to insert these m:m records
 upsertMany(
