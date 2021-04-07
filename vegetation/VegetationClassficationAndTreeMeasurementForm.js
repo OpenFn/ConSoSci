@@ -61,7 +61,7 @@ alterState(async state => {
     WCSPROGRAMS_VegetationClassID_Other: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
       relation: 'WCSPROGRAMS_VegetationClass',
-      where: { WCSPROGRAMS_VegetationClassName: dataValue('plotClass') },
+      where: { WCSPROGRAMS_VegetationClassName: dataValue('plotClass')(state) },
     })(state),
     IsVegClassSame: dataValue('vegClass_same'),
     // Cropstatus: dataValue('Cropstatus'),
