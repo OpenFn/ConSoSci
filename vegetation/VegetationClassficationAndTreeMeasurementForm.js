@@ -68,44 +68,44 @@ alterState(async state => {
     WCSPROGRAMS_VegetationCropStatusID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationCropStatusID',
       relation: 'WCSPROGRAMS_VegetationCropStatus',
-      where: { WCSPROGRAMS_VegetationCropStatusName: dataValue('Cropstatus') },
+      where: { WCSPROGRAMS_VegetationCropStatusName: dataValue('Cropstatus')(state) },
     })(state),
     YearPlanted: dataValue('Year'),
     //ddriver: dataValue('ddriver'), //set as m:m table, see below
     WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
       relation: 'WCSPROGRAMS_VegetationDegradatationDriver',
-      where: { WCSPROGRAMS_VegetationDegradatationDriverName: dataValue('ddriver') },
+      where: { WCSPROGRAMS_VegetationDegradatationDriverName: dataValue('ddriver')(state) },
     })(state),
     // forest_type: dataValue('forest_type'),
     WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
       relation: 'WCSPROGRAMS_VegetationForestType',
-      where: { WCSPROGRAMS_VegetationForestTypeName: dataValue('forest_type') },
+      where: { WCSPROGRAMS_VegetationForestTypeName: dataValue('forest_type')(state) },
     })(state),
     // vegclass: dataValue('vegclass'),
     WCSPROGRAMS_VegetationClassID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
       relation: 'WCSPROGRAMS_VegetationClass',
-      where: { WCSPROGRAMS_VegetationClassName: dataValue('vegclass') },
+      where: { WCSPROGRAMS_VegetationClassName: dataValue('vegclass')(state) },
     })(state),
     // Ownership: dataValue('Ownership'),
     WCSPROGRAMS_VegetationOwnershipID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationOwnershipID',
       relation: 'WCSPROGRAMS_VegetationOwnership',
-      where: { WCSPROGRAMS_VegetationOwnershipName: dataValue('Ownership') },
+      where: { WCSPROGRAMS_VegetationOwnershipName: dataValue('Ownership')(state) },
     })(state),
     // rzon: dataValue('rzon'),
     WCSPROGRAMS_VegetationFireReasonID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationFireReasonID',
       relation: 'WCSPROGRAMS_VegetationFireReason',
-      where: { WCSPROGRAMS_VegetationFireReasonName: dataValue('rzon') },
+      where: { WCSPROGRAMS_VegetationFireReasonName: dataValue('rzon')(state) },
     })(state),
     // cause: dataValue('cause'),
     WCSPROGRAMS_VegetationFireCauseID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationFireCauseID',
       relation: 'WCSPROGRAMS_VegetationFireCause',
-      where: { WCSPROGRAMS_VegetationFireCauseName: dataValue('cause') },
+      where: { WCSPROGRAMS_VegetationFireCauseName: dataValue('cause')(state) },
     })(state),
     NumberOfTreesKilled: dataValue('no.trees'),
     Age: dataValue('age'),
@@ -116,19 +116,19 @@ alterState(async state => {
     WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSeasonalityID',
       relation: 'WCSPROGRAMS_VegetationSeasonality',
-      where: { WCSPROGRAMS_VegetationSeasonalityName: dataValue('seasonality') },
+      where: { WCSPROGRAMS_VegetationSeasonalityName: dataValue('seasonality')(state) },
     })(state),
     // erodability: dataValue('erodability'),
     WCSPROGRAMS_VegetationSoilErodabilityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
       relation: 'WCSPROGRAMS_VegetationSoilErodability',
-      where: { WCSPROGRAMS_VegetationSoilErodabilityName: dataValue('erodability') },
+      where: { WCSPROGRAMS_VegetationSoilErodabilityName: dataValue('erodability')(state) },
     })(state),
     // moisture: dataValue('moisture'),
     WCSPROGRAMS_VegetationSoilMoistureID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
       relation: 'WCSPROGRAMS_VegetationSoilMoisture',
-      where: { WCSPROGRAMS_VegetationSoilMoistureName: dataValue('moisture') },
+      where: { WCSPROGRAMS_VegetationSoilMoistureName: dataValue('moisture')(state) },
     })(state),
     // colour: dataValue('colour'),
     WCSPROGRAMS_VegetationSoilColorID: await findValue({
@@ -140,7 +140,7 @@ alterState(async state => {
     WCSPROGRAMS_VegetationSoilDescriptionID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
       relation: 'WCSPROGRAMS_VegetationSoilDescription',
-      where: { WCSPROGRAMS_VegetationSoilDescriptionName: dataValue('description') },
+      where: { WCSPROGRAMS_VegetationSoilDescriptionName: dataValue('description')(state) },
     })(state),
     North: dataValue('north'),
     East: dataValue('east'),
@@ -154,19 +154,19 @@ alterState(async state => {
     WCSPROGRAMS_VegetationDrainageID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
-      where: { WCSPROGRAMS_VegetationDrainageName: dataValue('drainage') },
+      where: { WCSPROGRAMS_VegetationDrainageName: dataValue('drainage')(state) },
     })(state),
     // physiography: dataValue('physiography'),
     WCSPROGRAMS_VegetationPhysiographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
       relation: 'WCSPROGRAMS_VegetationPhysiography',
-      where: { WCSPROGRAMS_VegetationPhysiographyName: dataValue('physiography') },
+      where: { WCSPROGRAMS_VegetationPhysiographyName: dataValue('physiography')(state) },
     })(state),
     // topography: dataValue('topography'),
     WCSPROGRAMS_VegetationTopographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationTopographyID',
       relation: 'WCSPROGRAMS_VegetationTopography',
-      where: { WCSPROGRAMS_VegetationTopographyName: dataValue('topography') },
+      where: { WCSPROGRAMS_VegetationTopographyName: dataValue('topography')(state) },
     })(state),
     //obsevername: dataValue('obsevername'), //set as m:m table, see below
     StartTime: dataValue('start_time'),
@@ -177,7 +177,7 @@ alterState(async state => {
   })(state);
 });
 
-//TODO: observername is a multi-select field; turn into an array in order to insert these m:m records
+//TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany(
   'WCSPROGRAMS_VegetationVegetationObserver',
   'Generated_ID',
@@ -229,6 +229,7 @@ upsertMany(
   }
 ); */
 
+//TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
   const dataArray = state.data['st_grass_repeat'] || [];
   return dataArray.map(async x => ({
@@ -257,6 +258,8 @@ upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
     UserID_LM: '0',
   }));
 });
+
+//TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
   const dataArray = state.data['brush_repeat'] || [];
   return dataArray.map(async x => ({
@@ -283,6 +286,8 @@ upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
     UserID_LM: '0',
   }));
 });
+
+//TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
   const dataArray = state.data['tree_repeat'] || [];
   return dataArray.map(async x => ({
@@ -313,6 +318,8 @@ upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
     UserID_LM: '0',
   }));
 });
+
+//TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany('WCSPROGRAMS_VegetationBigTrees', 'Generated_ID', state => {
   const dataArray = state.data['tree_10cm'] || [];
   return dataArray.map(async x => ({
