@@ -61,7 +61,7 @@ alterState(async state => {
     WCSPROGRAMS_VegetationClassID_Other: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
       relation: 'WCSPROGRAMS_VegetationClass',
-      where: { WCSPROGRAMS_VegetationCClassName: 'plotClass' },
+      where: { WCSPROGRAMS_VegetationClassName: 'plotClass' },
     })(state),
     IsVegClassSame: dataValue('vegClass_same'),
     // Cropstatus: dataValue('Cropstatus'),
@@ -87,7 +87,7 @@ alterState(async state => {
     WCSPROGRAMS_VegetationClassID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
       relation: 'WCSPROGRAMS_VegetationClass',
-      where: { WCSPROGRAMS_VVegetationClassName: 'vegclass' },
+      where: { WCSPROGRAMS_VegetationClassName: 'vegclass' },
     })(state),
     // Ownership: dataValue('Ownership'),
     WCSPROGRAMS_VegetationOwnershipID: await findValue({
