@@ -202,13 +202,15 @@ upsertMany(
   }
 );
 
-//TODO: ddriver is a multi-select field; turn into an array in order to insert these m:m records
+/*
+//TODO: If no `ddriver`, returns SyntaxError: Unexpected token (212:55)
+//https://openfn.org/projects/p5x4g4/runs/r5ed88xj
 upsertMany(
   'WCSPROGRAMS_VegetationVegetationDegradationDriver',
   'Generated_ID',
   state => {
     const dataArray = state.data['ddriver'] || []; //TODO: turn select_multiple Kobo question into array
-    return dataArray ? dataArray.map(x => ({
+    return dataArray.map(x => ({
       WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
         relation: 'WCSPROGRAMS_VegetationDegradationDriver',
@@ -223,9 +225,9 @@ upsertMany(
       Generated_ID: state.data.body_id + x['ddriver'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
-    })) : '';
+    }));
   }
-);
+); */
 
 upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
   const dataArray = state.data['st_grass_repeat'] || [];
