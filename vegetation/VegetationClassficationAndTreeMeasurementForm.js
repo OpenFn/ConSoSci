@@ -27,7 +27,7 @@ alterState(state => {
   state.data = { ...state.data, ...state.data.body };
   return state;
 });
-upsert('WCSPROGRAMS__KoboData', 'DatasetUuidId', {
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('_xform_id_string'),
