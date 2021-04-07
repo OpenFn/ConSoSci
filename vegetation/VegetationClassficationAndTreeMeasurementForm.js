@@ -36,6 +36,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //Payload: state.data.body,
   UserID_CR: '0', //TODO: Update User_ID and Address mappings?
   UserID_LM: '0',
+  LastCheckedTime: new Date().toISOString()
 });
 
 alterState(async state => {
