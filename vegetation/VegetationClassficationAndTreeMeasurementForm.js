@@ -46,8 +46,8 @@ alterState(state => {
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-  DatasetName: dataValue('$.body.formName'),
-  DatasetOwner: dataValue('$.body.formOwner'),
+  DatasetName: dataValue('formName'),
+  DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('$.body._xform_id_string'),
   LastUpdateTime: new Date().toISOString(),
   KoboManaged: '1',
@@ -59,7 +59,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 
 alterState(async state => {
   const mapping = {
-    WCSPROGRAMS_VegetationName: dataValue('$.body.formName'),
+    WCSPROGRAMS_VegetationName: dataValue('formName'),
     //OutPlotArea: dataValue('out_plot_area'), //TODO: CONFIGURE COLUMN
     //OutPlotRadius: dataValue('out_plot_radius'), //TODO: CONFIGURE COLUMN
     //Tree3cm: dataValue('tree_3cm'), //TODO: CONFIGURE COLUMN
