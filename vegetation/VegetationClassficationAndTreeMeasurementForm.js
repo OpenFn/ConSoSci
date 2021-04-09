@@ -82,15 +82,6 @@ alterState(async state => {
     })(state),
     YearPlanted: dataValue('Year'),
     //ddriver: dataValue('ddriver'), //set as m:m table, see below
-    WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
-      relation: 'WCSPROGRAMS_VegetationDegradatationDriver',
-      where: {
-        WCSPROGRAMS_VegetationDegradatationDriverName: dataValue('ddriver')(
-          state
-        ),
-      },
-    })(state),
     YearPlanted: dataValue('$.body.Year'),
     //ddriver: dataValue('$.body.ddriver'), //set as m:m table, see below
     // forest_type: dataValue('$.body.forest_type'),
@@ -276,7 +267,7 @@ upsertMany(
   }
 );
 
-/*
+
 //TODO: If no `ddriver`, returns SyntaxError: Unexpected token (212:55)
 //https://openfn.org/projects/p5x4g4/runs/r5ed88xj
 upsertMany(
@@ -284,7 +275,7 @@ upsertMany(
   'Generated_ID',
   state => {
     const dataArray = state.data['ddriver'] || []; //TODO: turn select_multiple Kobo question into array
-    return dataArray.map(x => ({
+    return dataArray.map(async x => ({
       WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
         relation: 'WCSPROGRAMS_VegetationDegradationDriver',
@@ -301,7 +292,7 @@ upsertMany(
       UserID_LM: '0',
     }));
   }
-); */
+); 
 
 //TODO: If no dataArray source dataValue defined, returns SyntaxError: Unexpected token (212:55)
 upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
