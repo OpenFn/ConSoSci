@@ -74,7 +74,7 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationClass',
       where: { WCSPROGRAMS_VegetationClassName: dataValue('plotClass')(state) },
     })(state),
-    IsVegClassSame: dataValue('vegClass_same'),
+    IsVegClassSame: state.convertValue(dataValue('vegClass_same')(state)),
     WCSPROGRAMS_VegetationCropStatusID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationCropStatusID',
       relation: 'WCSPROGRAMS_VegetationCropStatus',
