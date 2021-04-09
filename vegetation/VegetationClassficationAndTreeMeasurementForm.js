@@ -203,8 +203,8 @@ alterState(async state => {
         ),
       },
     })(state),
-    WCSPROGRAMS_VegetationTopographgyID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationTopographyID',
+    WCSPROGRAMS_VegetationTopographyID: await findValue({
+      uuid: 'WCSPROGRAMS_VegetationTopographgyID',
       relation: 'WCSPROGRAMS_VegetationTopographgy',
       where: {
         WCSPROGRAMS_VegetationTopographgyName: state.handleValue(
