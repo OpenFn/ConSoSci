@@ -30,8 +30,9 @@ alterState(state => {
   state.data.body.physiography = newphysio; 
   
   state.data.body.drainage = state.data.body.drainage==='welldrained' ? 'Well drained' : drainage; 
+  state.data.body.age = !state.data.body.age ? 0 : state.data.body.age; 
 
-  state.data = { ...state.data, ...state.data.body, ...state.data.body.physiography, ...state.data.body.drainage };
+  state.data = { ...state.data, ...state.data.body, ...state.data.body.physiography, ...state.data.body.drainage, ...state.data.body.age };
   return state;
 });
 
