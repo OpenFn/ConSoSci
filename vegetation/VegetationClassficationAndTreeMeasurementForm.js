@@ -59,6 +59,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 
 alterState(async state => {
   const mapping = {
+    WCSPROGRAMS_VegetationName: dataValue('$.body.formName'),
     //OutPlotArea: dataValue('out_plot_area'), //TODO: CONFIGURE COLUMN
     //OutPlotRadius: dataValue('out_plot_radius'), //TODO: CONFIGURE COLUMN
     //Tree3cm: dataValue('tree_3cm'), //TODO: CONFIGURE COLUMN
