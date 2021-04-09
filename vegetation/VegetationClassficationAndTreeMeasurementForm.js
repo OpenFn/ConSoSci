@@ -223,7 +223,7 @@ alterState(async state => {
     })(state),
     StartTime: dataValue('$.body.start_time'),
     Surveydate: dataValue('$.body.surveydate'),
-    Answer_ID: state.data.body_id,
+    Answer_ID: state.data.body._id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
   };
@@ -251,7 +251,7 @@ upsertMany(
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body_id },
       })(state),
-      Answer_ID: state.data.body_id,
+      Answer_ID: state.data.body._id,
       Generated_ID: state.data.body_id + x['observername'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
@@ -275,7 +275,7 @@ upsertMany(
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body_id },
       })(state),
-      Answer_ID: state.data.body_id,
+      Answer_ID: state.data.body._id,
       Generated_ID: state.data.body_id + x['ddriver'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
@@ -311,7 +311,7 @@ upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
       where: { Answer_ID: state.data.body_id },
     })(state),
     Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body_id + x['st_grass_repeat/grass_species'],
+    Generated_ID: state.data.body._id + x['st_grass_repeat/grass_species'],
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
   }));
@@ -340,7 +340,7 @@ upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
       relation: 'WCSPROGRAMS_Vegetation',
       where: { Answer_ID: state.data.body_id },
     })(state),
-    Answer_ID: state.data.body_id,
+    Answer_ID: state.data.body._id,
     Generated_ID: state.data.body_id + x['brush_repeat/brus_species'],
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
@@ -372,7 +372,7 @@ upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
       relation: 'WCSPROGRAMS_Vegetation',
       where: { Answer_ID: state.data.body_id },
     })(state),
-    Answer_ID: state.data.body_id,
+    Answer_ID: state.data.body._id,
     Generated_ID: state.data.body_id + x['tree_repeat/Specimen_no'],
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
@@ -406,7 +406,7 @@ upsertMany('WCSPROGRAMS_VegetationBigTrees', 'Generated_ID', state => {
       relation: 'WCSPROGRAMS_Vegetation',
       where: { Answer_ID: state.data.body_id },
     })(state),
-    Answer_ID: state.data.body_id,
+    Answer_ID: state.data.body._id,
     Generated_ID: state.data.body_id + x['tree_10cm/bspecimenNo'],
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
