@@ -176,7 +176,16 @@ alterState(async state => {
     PlotNumber: dataValue('$.body.plot_number'),
     TransectNo: dataValue('$.body.transect_no'),
     SurveySite: dataValue('$.body.name'),
-    District: dataValue('$.body.district'),
+    //District: dataValue('$.body.district'),
+    WCSPROGRAMS_VegetationDistrictID: await findValue({
+      uuid: 'WCSPROGRAMS_VegetationDistrictID',
+      relation: 'WCSPROGRAMS_VegetationDistrict',
+      where: {
+        WCSPROGRAMS_VegetationDistrictName: state.handleValue(
+          dataValue('$.body.district')(state)
+        ),
+      },
+    })(state),
     WCSPROGRAMS_VegetationDrainageID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
