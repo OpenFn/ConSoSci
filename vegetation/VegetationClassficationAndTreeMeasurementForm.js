@@ -40,9 +40,7 @@ alterState(state => {
     if (value) return value.replace(/_/g, ' ');
   };
   const convertValue = value => {
-    return value==='yes' ? 1 : 
-    value==='no' ? 0 :
-    value;
+    return value==='yes' ? 1 : no;
   };
   return { ...state, handleValue, convertValue };
 });
