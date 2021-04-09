@@ -36,7 +36,12 @@ alterState(state => {
   const handleValue = value => {
     if (value) return value.replace(/_/g, ' ');
   };
-  return { ...state, handleValue };
+  const convertValue = value => {
+    return value==='yes' ? 1 : 
+    value==='no' ? 0 :
+    value;
+  };
+  return { ...state, handleValue, convertValue };
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
@@ -59,7 +64,7 @@ alterState(async state => {
     //SbrushPer: dataValue('sbrush_per'), //TODO: CONFIGURE COLUMN
     //InnerPlotArea: dataValue('inner_plot_area'), //TODO: CONFIGURE COLUMN
     //innerPlotRadius: dataValue('inner_plot_radius'), //TODO: CONFIGURE COLUMN
-    IsGrass: dataValue('grassyes')==='yes' ? 1 : dataValue('grassyes')==='no' ? 0 : undefined,
+    IsGrass: state.convertValue[dataValue('grassyes')],
     //CenterPlotArea: dataValue('center_plot_area'), //TODO: CONFIGURE COLUMN
     //CenterPlotRadius: dataValue('center_plot_radius'), //TODO: CONFIGURE COLUMN
     Radius: dataValue('radius'),
