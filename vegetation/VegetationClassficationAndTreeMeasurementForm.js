@@ -65,7 +65,7 @@ alterState(async state => {
     //SbrushPer: dataValue('sbrush_per'), //TODO: CONFIGURE COLUMN
     //InnerPlotArea: dataValue('inner_plot_area'), //TODO: CONFIGURE COLUMN
     //innerPlotRadius: dataValue('inner_plot_radius'), //TODO: CONFIGURE COLUMN
-    IsGrass: state.convertValue[dataValue('grassyes')],
+    IsGrass: state.convertValue(dataValue('grassyes')(state)),
     //CenterPlotArea: dataValue('center_plot_area'), //TODO: CONFIGURE COLUMN
     //CenterPlotRadius: dataValue('center_plot_radius'), //TODO: CONFIGURE COLUMN
     Radius: dataValue('radius'),
@@ -132,7 +132,7 @@ alterState(async state => {
     NumberOfTreesKilled: dataValue('no.trees'),
     VegetationAgeOther: dataValue('$.body.age'), // TO VERIFY: specified as 'Age' in mappings
     PlotBurnt: dataValue('$.body.plot_burnt'),
-    IsEvidenceOfFire: state.convertValue[dataValue('$.body.fire')],
+    IsEvidenceOfFire: state.convertValue(dataValue('$.body.fire')(state)),
     Bareground: dataValue('$.body.bareground'),
     WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
