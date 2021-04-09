@@ -218,11 +218,11 @@ alterState(async state => {
       },
     })(state),
     // topography: dataValue('$.body.topography'),
-    WCSPROGRAMS_VegetationTopographyID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationTopographyID',
-      relation: 'WCSPROGRAMS_VegetationTopography',
+    WCSPROGRAMS_VegetationTopographgyID: await findValue({
+      uuid: 'WCSPROGRAMS_VegetationTopographgyID',
+      relation: 'WCSPROGRAMS_VegetationTopographgy',
       where: {
-        WCSPROGRAMS_VegetationTopographyName: state.handleValue(
+        WCSPROGRAMS_VegetationTopographgyName: state.handleValue(
           dataValue('$.body.topography')(state)
         ),
       },
