@@ -223,7 +223,7 @@ alterState(async state => {
         ),
       },
     })(state),
-    SubmissionDate: dataValue('$.body.start_time'),
+    SubmissionDate: dataValue('$.body._submission_time'),
     Surveydate: dataValue('$.body.surveydate'),
     Answer_ID: state.data.body._id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
