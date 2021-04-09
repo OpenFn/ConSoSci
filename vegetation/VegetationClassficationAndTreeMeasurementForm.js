@@ -35,7 +35,7 @@ alterState(state => {
   return { ...state, handleValue };
 });
 
-/* upsert('WCSPROGRAMS__KoboDataset', 'DatasetId', {
+upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: dataValue('$.body.formName'),
   DatasetOwner: dataValue('$.body.formOwner'),
   DatasetUuidId: dataValue('$.body._xform_id_string'),
@@ -45,7 +45,7 @@ alterState(state => {
   UserID_CR: '0', //TODO: Update User_ID and Address mappings?
   UserID_LM: '0',
   LastCheckedTime: new Date().toISOString()
-});*/
+});
 
 alterState(async state => {
   const mapping = {
@@ -222,7 +222,7 @@ alterState(async state => {
       uuid: 'WCSPROGRAMS_VegetationTopographyID',
       relation: 'WCSPROGRAMS_VegetationTopography',
       where: {
-        WCSPROGRAMS_VegetationTopographgyName: state.handleValue(
+        WCSPROGRAMS_VegetationTopographyName: state.handleValue(
           dataValue('$.body.topography')(state)
         ),
       },
