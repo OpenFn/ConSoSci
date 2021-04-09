@@ -172,7 +172,7 @@ alterState(async state => {
     North: dataValue('$.body.north'),
     East: dataValue('$.body.east'),
     Waypoint: dataValue('$.body.waypoint'),
-    PlotGPS: dataValue('$.body.plot_gps'),
+    //PlotGPS: dataValue('$.body.plot_gps'),
     PlotNumber: dataValue('$.body.plot_number'),
     TransectNo: dataValue('$.body.transect_no'),
     SurveySite: dataValue('$.body.name'),
