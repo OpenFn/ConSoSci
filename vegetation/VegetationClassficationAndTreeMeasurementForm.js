@@ -49,12 +49,12 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 
 alterState(async state => {
   const mapping = {
-    OutPlotArea: dataValue('out_plot_area'),
-    OutPlotRadius: dataValue('out_plot_radius'),
+    //OutPlotArea: dataValue('out_plot_area'), //TODO: CONFIGURE COLUMN
+    //OutPlotRadius: dataValue('out_plot_radius'), //TODO: CONFIGURE COLUMN
     Tree3cm: dataValue('tree_3cm'),
-    SbrushPer: dataValue('sbrush_per'),
-    InnerPlotArea: dataValue('inner_plot_area'),
-    innerPlotRadius: dataValue('inner_plot_radius'),
+    //SbrushPer: dataValue('sbrush_per'), //TODO: CONFIGURE COLUMN
+    //InnerPlotArea: dataValue('inner_plot_area'), //TODO: CONFIGURE COLUMN
+    //innerPlotRadius: dataValue('inner_plot_radius'), //TODO: CONFIGURE COLUMN
     IsGrass: dataValue('grassyes'),
     //CenterPlotArea: dataValue('center_plot_area'), //TODO: CONFIGURE COLUMN
     //CenterPlotRadius: dataValue('center_plot_radius'), //TODO: CONFIGURE COLUMN
