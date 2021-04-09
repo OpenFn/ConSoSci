@@ -24,15 +24,12 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
   
-  welldrained
-  
+
   const physiography = state.data.body.physiography; 
   const newphysio = physiography==='flat' ? 'Plain (flat)' : physiography==='plain' ? 'Plain (undulating)' : physiography; 
   state.data.body.physiography = newphysio; 
   
   state.data.body.drainage = state.data.body.drainage==='welldrained' ? 'Well drained' : drainage; 
-  const newphysio = physiography==='flat' ? 'Plain (flat)' : physiography==='plain' ? 'Plain (undulating)' : physiography; 
-  state.data.body.physiography = newphysio; 
 
   state.data = { ...state.data, ...state.data.body, ...state.data.body.physiography, ...state.data.body.drainage };
   return state;
