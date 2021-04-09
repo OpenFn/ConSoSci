@@ -51,7 +51,7 @@ alterState(async state => {
   const mapping = {
     //OutPlotArea: dataValue('out_plot_area'), //TODO: CONFIGURE COLUMN
     //OutPlotRadius: dataValue('out_plot_radius'), //TODO: CONFIGURE COLUMN
-    Tree3cm: dataValue('tree_3cm'),
+    //Tree3cm: dataValue('tree_3cm'), //TODO: CONFIGURE COLUMN
     //SbrushPer: dataValue('sbrush_per'), //TODO: CONFIGURE COLUMN
     //InnerPlotArea: dataValue('inner_plot_area'), //TODO: CONFIGURE COLUMN
     //innerPlotRadius: dataValue('inner_plot_radius'), //TODO: CONFIGURE COLUMN
@@ -172,11 +172,10 @@ alterState(async state => {
     North: dataValue('$.body.north'),
     East: dataValue('$.body.east'),
     Waypoint: dataValue('$.body.waypoint'),
-    //PlotGPS: dataValue('$.body.plot_gps'),
+    //PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
     PlotNumber: dataValue('$.body.plot_number'),
     TransectNo: dataValue('$.body.transect_no'),
     SurveySite: dataValue('$.body.name'),
-    //District: dataValue('$.body.district'),
     WCSPROGRAMS_VegetationDistrictID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDistrictID',
       relation: 'WCSPROGRAMS_VegetationDistrict',
