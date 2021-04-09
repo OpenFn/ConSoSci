@@ -248,7 +248,7 @@ upsertMany(
   'WCSPROGRAMS_VegetationVegetationObserver',
   'Generated_ID',
   state => {
-    const dataArray = state.data['observername'] || []; //turning select_multiple into an arrray
+    const dataArray = state.data['body.observername'] || []; //turning select_multiple into an arrray
     return dataArray.map(async x => ({
       WCSPROGRAMS_VegetationObserverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationObserverID',
@@ -276,7 +276,7 @@ upsertMany(
   'WCSPROGRAMS_VegetationVegetationDegradationDriver',
   'Generated_ID',
   state => {
-    const dataArray = state.data['ddriver'] || []; //Turning select_multiple Kobo question into array
+    const dataArray = state.data['body.ddriver'] || []; //Turning select_multiple Kobo question into array
     return dataArray.map(async x => ({
       WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
@@ -331,7 +331,7 @@ upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
 });
 
 upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
-  const dataArray = state.data['brush_repeat'] || [];
+  const dataArray = state.data['body.brush_repeat'] || [];
   return dataArray.map(async x => ({
     WCSPROGRAMS_TaxaID: await findValue({
       uuid: 'WCSPROGRAMS_TaxaID',
@@ -361,7 +361,7 @@ upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
 });
 
 upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
-  const dataArray = state.data['tree_repeat'] || [];
+  const dataArray = state.data['body.tree_repeat'] || [];
   return dataArray.map(async x => ({
     WCSPROGRAMS_TaxaID: await findValue({
       uuid: 'WCSPROGRAMS_TaxaID',
@@ -393,7 +393,7 @@ upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
 });
 
 upsertMany('WCSPROGRAMS_VegetationBigTrees', 'Generated_ID', state => {
-  const dataArray = state.data['tree_10cm'] || [];
+  const dataArray = state.data['body.tree_10cm'] || [];
   return dataArray.map(async x => ({
     WCSPROGRAMS_TaxaID: await findValue({
       uuid: 'WCSPROGRAMS_TaxaID',
