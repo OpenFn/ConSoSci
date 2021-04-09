@@ -223,7 +223,7 @@ alterState(async state => {
         ),
       },
     })(state),
-    StarTime: dataValue('$.body.start_time'),
+    StartTime: dataValue('$.body.start_time'),
     SubmissionDate: dataValue('$.body._submission_time'),
     Surveydate: dataValue('$.body.surveydate'),
     Answer_ID: state.data.body._id,
