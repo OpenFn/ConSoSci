@@ -134,7 +134,7 @@ alterState(async state => {
     NumberOfTreesKilled: dataValue('no.trees'),
     VegetationAgeOther: dataValue('$.body.age'), // TO VERIFY: specified as 'Age' in mappings
     PlotBurnt: dataValue('$.body.plot_burnt'),
-    IsEvidenceOfFire: dataValue('$.body.fire'),
+    IsEvidenceOfFire: state.convertValue[dataValue('$.body.fire')],
     Bareground: dataValue('$.body.bareground'),
     WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
