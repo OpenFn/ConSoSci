@@ -297,7 +297,7 @@ upsertMany(
 ); 
 
 upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
-  const dataArray = state.data['st_grass_repeat'] || [];
+  const dataArray = state.data['body.st_grass_repeat'] || [];
   return dataArray.map(async x => ({
     WCSPROGRAMS_TaxaID: await findValue({
       uuid: 'WCSPROGRAMS_TaxaID',
