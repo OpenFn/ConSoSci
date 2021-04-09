@@ -23,8 +23,12 @@ alterState(state => {
     state.data.body,
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
+  
+  const physiography = state.data.body.physiography; 
+  const newphysio = physiography==='flat' ? 'Plain (flat)' : physiography==='plain' ? 'Plain (undulating)' : physiography; 
+  state.data.body.physiography = newphysio; 
 
-  state.data = { ...state.data, ...state.data.body };
+  state.data = { ...state.data, ...state.data.body, ...state.data.body.physiography };
   return state;
 });
 
