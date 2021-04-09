@@ -217,7 +217,7 @@ alterState(async state => {
       },
     })(state),
     StartTime: dataValue('$.body.start_time'),
-    Surveydate: dataValue('$.body.general_observations/surveydate'),
+    Surveydate: dataValue('$.body.surveydate'),
     Answer_ID: state.data.body_id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
