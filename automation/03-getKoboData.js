@@ -9,34 +9,34 @@ alterState(state => {
   state.data = {
     surveys: [
       {
-        id: 'aQ8cyLSn8TyJWJQnSg7p63',
+        uid: 'aQ8cyLSn8TyJWJQnSg7p63',
         formName: 'SWM Etude Marché 9Feb',
-        destination: 'WCS_marche_SWMEtudeMarché9Feb'
+        tableId: 'WCS_marche_SWMEtudeMarché9Feb'
       },
-       {
-        id: 'aBqKGtuFFRZrYcP5LAtB52',
+      {
+        uid: 'aBqKGtuFFRZrYcP5LAtB52',
         formName: 'Sharks And Rays 9 Feb',
-        destination: 'WCS_SR_SharksAndRaysFeb9'
+        tableId: 'WCS_SR_SharksAndRaysFeb9'
       },
       {
-        id: 'azg4rJb2Kk8DT2upSPyYjB',
+        uid: 'azg4rJb2Kk8DT2upSPyYjB',
         formName: 'Livestock production demo',
-        destination: 'WCS_Livestock_LivestockProduction'
-      },
-       {
-        id: 'aDgPJqN4SAYohZ4ZueEeYU',
-        formName: 'Arcadia Data Collection Site Survey',
-        destination: 'WCSPROGRAMS_ProjectAnnualDataPlan'
+        tableId: 'WCS_Livestock_LivestockProduction'
       },
       {
-        id: 'apZrpKcK78xzrPcAfRrfac',
+        uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+        formName: 'Arcadia Data Collection Site Survey',
+        tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan'
+      },
+      {
+        uid: 'apZrpKcK78xzrPcAfRrfac',
         formName: 'Sharks & Rays 24 March',
-        destination: 'WCS_SR_SharkAndRaysTraining'
+        tableId: 'WCS_SR_SharkAndRaysTraining'
       }
     ].map(survey => ({
       ...survey,
-      formId: survey.id,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      formId: survey.uid,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
       query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
     })),
   };
@@ -44,12 +44,12 @@ alterState(state => {
 });
 
 each(dataPath('surveys[*]'), state => {
-  const { url, query, tag, formId, formName, destination, owner } = state.data;
+  const { url, query, tag, formId, formName, tableId, owner } = state.data;
   return get(`${url}${query}`, {}, state => {
     state.data.submissions = state.data.results.map(submission => {
       return {
         // Here we append the tags defined above to the Kobo form submission data
-        destination,
+        tableId,
         formName,
         formOwner: owner,
         body: submission,
