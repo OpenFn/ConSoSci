@@ -29,8 +29,12 @@ Relevant ConSoSci/WCS system administrators have access the following OpenFn.org
 2. `Wildmeat` --> source code hosted on `wcs-wildmeat` Github repo: [https://github.com/OpenFn/wcs-wildmeat](https://github.com/OpenFn/wcs-wildmeat)
 
 ## Training & Support
-Contact support@openfn.org or check out [OpenFn Docs](https://docs.openfn.org). 
+Contact [info@consosci.org](mailto://info@consosci.org), post on the [OpenFn Community](https://community.openfn.org/), or learn more on [OpenFn Docs](https://docs.openfn.org). 
 
-[See the Training Videos](https://www.youtube.com/watch?v=ScmZt9PIJqQ&list=PL1pD3-abjHJ3d-6hB2zN5ia2z7tH_CtX9&index=4) for the Feb 2021 ConSoSci training sessions. 
+### ConSoSci OpenFn Training Slides 2021
+1. Day 1 Slides: [https://docs.google.com/presentation/d/1lTlcWWRUiI3WO64dBiVRzxnMfe2YtbHCpNb10-bnhT4/edit?usp=sharing](https://docs.google.com/presentation/d/1lTlcWWRUiI3WO64dBiVRzxnMfe2YtbHCpNb10-bnhT4/edit?usp=sharing)
+2. Day 2 Slides: [https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0w_Eo4yOh8fQw/edit?usp=sharing](https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0w_Eo4yOh8fQw/edit?usp=sharing)
+
+[See the Training Videos](https://www.youtube.com/watch?v=uVx5aKV3XkE&list=PLWJOtbS1f2g9mbVqIkZqlpA7IwS0wuOjM) for the April 2021 ConSoSci training sessions. 
 
 [![consosci-Logo](./ConSoSci_Logo-Horiz.png)](https://www.wcs.org)
