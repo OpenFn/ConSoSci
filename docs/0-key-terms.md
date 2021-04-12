@@ -57,7 +57,7 @@ To learn more about Kobo, check out...
 - [Kobo user manuals](https://drive.google.com/drive/folders/12anHiXs2ya_7AgGPL8Oux4HXK_LylIX0)
 
 ## ConSoSci Connect
-ConSoSci Connect is a data solution in development to deliver secure data storage, centralized management, analysis and visualization tools for social science data. It provides automated queries and analyses indicators such as the Basic Necessities Survey (BNS) and ature Resources Governance tool (NRGT), and visualize and share the results in compelling dashboards and reports. This enables users to easily monitor progress towards these indicators in near real-time, as well as run further custom analysis to dissect and investigate social science data collected across sites.
+ConSoSci Connect is a data solution in development to deliver secure data storage, centralized management, analysis and visualization tools for social science data. It provides automated queries and analyses indicators such as the Basic Necessities Survey (BNS) and Natural Resource Governance Tool (NRGT), and visualize and share the results in compelling dashboards and reports. This enables users to easily monitor progress towards these indicators in near real-time, as well as run further custom analysis to dissect and investigate social science data collected across sites.
 ![consosci-dashboard](../consosci-dashboard.png)
 
 ## Databases (PostgreSQL, MSSQL)
@@ -72,7 +72,7 @@ VALUES (value1, value2, value3,...valueN);
 ## APIs 
 `API` stands for Application Programming Interface, which is a software intermediary that allows applications to talk to each other. APIs provide a set of definitions and protocols for building and integrating application software. They're sometimes referred to as a "contract" between an information provider and an information user. APIs establish the content required from the consumer (the "request") and the content required by the producer (the "response").
 
-In other words, if you want to interact with a system to retrieve information or perform a function, an API helps you communicate what you want to that system so it can understand and fulfill the request. In the ConSoSci stack, OpenFn sends schedules requests to the Kobo API in order to extract data collected in the field, and then load it into a destination database like ConSoSci Connect. 
+In other words, if you want to interact with a system to retrieve information or perform a function, an API helps you communicate what you want to that system so it can understand and fulfill the request. In the ConSoSci stack, OpenFn sends scheduled requests to the Kobo API in order to extract data collected in the field, and then load it into a destination database like ConSoSci Connect. 
 ![api](../kobo-api.png)
 
 ## Read on for the more technical bits...
