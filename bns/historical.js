@@ -10,8 +10,10 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
-     { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // resynced Feb03,2021
-     { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver' }, // resynced Feb03,2021
+    { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_price', name: 'BNS Makira 2017', owner: 'wcs_mamabay' }, // resynced Feb03,2021
+    { id: 'awAV28ebngN7GTV2nqmyKU/', tag: 'bns_price', name: 'BNS Makira 2019', owner: 'wcs_mamabay' }, // resynced Feb03,2021
+    // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // resynced Feb03,2021
+    // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver' }, // resynced Feb03,2021
       
       //******* OPENFN TEST FORMS ******///
       //{ id: 'aijj9FSpuCzMTRnMPGike8', tag: 'nrgt_historical', name: 'NRGT Makira 2017 - Test OpenFn', owner: 'bns' }, // TEST
