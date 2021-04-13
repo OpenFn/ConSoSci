@@ -35,6 +35,15 @@ each(
   return state;
 }); \n`;
 
+    function toCamelCase(str) {
+      const words = str.split('_'); // we split using '_'. With regex we would use: "match(/[a-z]+/gi)"
+      if (!words) return '';
+      return words
+        .map(word => {
+          return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+        })
+        .join('');
+    }
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, formName, depth, __newUuid } = state.data[i];
@@ -83,9 +92,11 @@ each(
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
-            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+            mapKoboToPostgres[
+              toCamelCase(columns[k].name)
+            ] = `x['${paths[k]}']`;
           else
-            mapKoboToPostgres[columns[k].name] =
+            mapKoboToPostgres[toCamelCase(columns[k].name)] =
               name !== `${state.prefix1}__KoboDataset`
                 ? `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
