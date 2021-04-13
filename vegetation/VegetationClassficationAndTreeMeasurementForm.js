@@ -212,8 +212,10 @@ alterState(async state => {
     East: dataValue('$.body.east'),
     Waypoint: dataValue('$.body.waypoint'),
     PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
-    Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0,
-    Longitude: dataValue('_geolocation')[1] ? dataValue('_geolocation')[1] : 0,
+    // Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0,
+    Latitude: dataValue('$.body.plot_gps')[0] ? dataValue('$.body.plot_gps')[0] : 0,
+    // Longitude: dataValue('_geolocation')[1] ? dataValue('_geolocation')[1] : 0,
+    Longitude: dataValue('$.body.plot_gps')[1] ? dataValue('$.body.plot_gps')[1] : 0,
     PlotNumber: dataValue('$.body.plot_number'),
     TransectNo: dataValue('$.body.transect_no'),
     SurveySite: dataValue('$.body.name'),
