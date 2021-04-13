@@ -23,16 +23,28 @@ alterState(state => {
     state.data.body,
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
-  
 
-  const physiography = state.data.body.physiography; 
-  const newphysio = physiography==='flat' ? 'Plain (flat)' : physiography==='plain' ? 'Plain (undulating)' : physiography; 
-  state.data.body.physiography = newphysio; 
-  
-  state.data.body.drainage = state.data.body.drainage==='welldrained' ? 'Well drained' : drainage; 
-  state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age; 
+  const physiography = state.data.body.physiography;
+  const drainage = state.data.body.drainage;
+  const newphysio =
+    physiography === 'flat'
+      ? 'Plain (flat)'
+      : physiography === 'plain'
+      ? 'Plain (undulating)'
+      : physiography;
+  state.data.body.physiography = newphysio;
 
-  state.data = { ...state.data, ...state.data.body, ...state.data.body.physiography, ...state.data.body.drainage, ...state.data.body.age };
+  state.data.body.drainage =
+    state.data.body.drainage === 'welldrained' ? 'Well drained' : drainage;
+  state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age;
+
+  state.data = {
+    ...state.data,
+    ...state.data.body,
+    ...state.data.body.physiography,
+    ...state.data.body.drainage,
+    ...state.data.body.age,
+  };
   return state;
 });
 
@@ -41,7 +53,7 @@ alterState(state => {
     if (value) return value.replace(/_/g, ' ');
   };
   const convertValue = value => {
-    return value==='yes' ? 1 : 0;
+    return value === 'yes' ? 1 : 0;
   };
   return { ...state, handleValue, convertValue };
 });
@@ -55,36 +67,43 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //Payload: state.data.body,
   UserID_CR: '0', //TODO: Update User_ID and Address mappings?
   UserID_LM: '0',
-  LastCheckedTime: new Date().toISOString()
+  LastCheckedTime: new Date().toISOString(),
 });
 
 alterState(async state => {
   const mapping = {
     WCSPROGRAMS_VegetationName: dataValue('formName'),
-    //OutPlotArea: dataValue('out_plot_area'), //TODO: CONFIGURE COLUMN
-    //OutPlotRadius: dataValue('out_plot_radius'), //TODO: CONFIGURE COLUMN
-    //Tree3cm: dataValue('tree_3cm'), //TODO: CONFIGURE COLUMN
-    //SbrushPer: dataValue('sbrush_per'), //TODO: CONFIGURE COLUMN
-    //InnerPlotArea: dataValue('inner_plot_area'), //TODO: CONFIGURE COLUMN
-    //innerPlotRadius: dataValue('inner_plot_radius'), //TODO: CONFIGURE COLUMN
-    IsGrass: state.convertValue(dataValue('grassyes')(state)),
-    //CenterPlotArea: dataValue('center_plot_area'), //TODO: CONFIGURE COLUMN
-    //CenterPlotRadius: dataValue('center_plot_radius'), //TODO: CONFIGURE COLUMN
-    Radius: dataValue('radius'),
+    OutPlotArea: dataValue('$.body.out_plot_area'), //TODO: CONFIGURE COLUMN
+    OutPlotRadius: dataValue('$.body.out_plot_radius'), //TODO: CONFIGURE COLUMN
+    Tree3cm: dataValue('$.body.tree_3cm'), //TODO: CONFIGURE COLUMN
+    SbrushPer: dataValue('$.body.sbrush_per'), //TODO: CONFIGURE COLUMN
+    InnerPlotArea: dataValue('$.body.inner_plot_area'), //TODO: CONFIGURE COLUMN
+    innerPlotRadius: dataValue('$.body.inner_plot_radius'), //TODO: CONFIGURE COLUMN
+    // IsGrass: state.convertValue(dataValue('$.body.grassyes')(state)),
+    CenterPlotArea: dataValue('$.body.center_plot_area'), //TODO: CONFIGURE COLUMN
+    CenterPlotRadius: dataValue('$.body.center_plot_radius'), //TODO: CONFIGURE COLUMN
+    Radius: dataValue('$.body.radius'),
     WCSPROGRAMS_VegetationClassID_Other: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
       relation: 'WCSPROGRAMS_VegetationClass',
-      where: { WCSPROGRAMS_VegetationClassName: dataValue('plotClass')(state) },
+      where: {
+        WCSPROGRAMS_VegetationClassName: state.handleValue(
+          dataValue('$.body.plotClass')(state)
+        ),
+      },
     })(state),
-    IsVegClassSame: state.convertValue(dataValue('vegClass_same')(state)),
+    IsVegClassSame: state.convertValue(
+      dataValue('$.body.vegClass_same')(state)
+    ),
     WCSPROGRAMS_VegetationCropStatusID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationCropStatusID',
       relation: 'WCSPROGRAMS_VegetationCropStatus',
       where: {
-        WCSPROGRAMS_VegetationCropStatusName: dataValue('Cropstatus')(state),
+        WCSPROGRAMS_VegetationCropStatusName: state.handleValue(
+          dataValue('$.body.Cropstatus')(state)
+        ),
       },
     })(state),
-    YearPlanted: dataValue('Year'),
     YearPlanted: dataValue('$.body.Year'),
     WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
@@ -137,7 +156,8 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationAge',
       where: {
         WCSPROGRAMS_VegetationAgeName: state.handleValue(
-          dataValue('$.body.age')(state)),
+          dataValue('$.body.age')(state)
+        ),
       },
     })(state),
     PlotBurnt: dataValue('$.body.plot_burnt'),
@@ -191,9 +211,9 @@ alterState(async state => {
     North: dataValue('$.body.north'),
     East: dataValue('$.body.east'),
     Waypoint: dataValue('$.body.waypoint'),
-    //PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
-    Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0, 
-    Longitude: dataValue('_geolocation')[1] ? dataValue('_geolocation')[1] : 0, 
+    PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
+    Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0,
+    Longitude: dataValue('_geolocation')[1] ? dataValue('_geolocation')[1] : 0,
     PlotNumber: dataValue('$.body.plot_number'),
     TransectNo: dataValue('$.body.transect_no'),
     SurveySite: dataValue('$.body.name'),
@@ -244,184 +264,245 @@ alterState(async state => {
   return upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', mapping)(state);
 });
 
-upsertMany(
-  'WCSPROGRAMS_VegetationVegetationObserver',
-  'Generated_ID',
-  state => {
-    const dataArray = state.data.body.observername || []; //turning select_multiple into an arrray
-    return dataArray.map(async x => ({
+alterState(async state => {
+  const dataArray = state.data.body.observername || []; //turning select_multiple into an arrray
+  const observers = [];
+
+  for (let data of dataArray) {
+    observers.push({
       WCSPROGRAMS_VegetationObserverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationObserverID',
         relation: 'WCSPROGRAMS_VegetationObserver',
         where: {
           WCSPROGRAMS_VegetationObserverName: state.handleValue(
-            x['observername']
+            data['observername']
           ),
         },
-      })(state), 
+      })(state),
       WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
-        where: { Answer_ID: state.data.body_id },
+        where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body_id + x['observername'], //make sure this is setting correctly
+      Generated_ID: state.data.body._id + data['observername'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
-    }));
+    });
   }
-);
+  return upsertMany(
+    'WCSPROGRAMS_VegetationVegetationObserver',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => observers
+  )(state);
+});
 
-upsertMany(
-  'WCSPROGRAMS_VegetationVegetationDegradationDriver',
-  'Generated_ID',
-  state => {
-    const dataArray = state.data.body.ddriver || []; //Turning select_multiple Kobo question into array
-    return dataArray.map(async x => ({
+alterState(async state => {
+  const dataArray = state.data.body.ddriver || []; //Turning select_multiple Kobo question into array
+  const degradation = [];
+
+  for (let data of dataArray) {
+    degradation.push({
       WCSPROGRAMS_VegetationDegradationDriverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationDegradationDriverID',
         relation: 'WCSPROGRAMS_VegetationDegradationDriver',
-        where: { WCSPROGRAMS_VegetationDegradationDriverName: x['ddriver'] },
+        where: { WCSPROGRAMS_VegetationDegradationDriverName: state.handleValue(data['ddriver']) },
       })(state),
       WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
-        where: { Answer_ID: state.data.body_id },
+        where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body_id + x['ddriver'], //make sure this is setting correctly
+      Generated_ID: state.data.body._id + data['ddriver'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
-    }));
+    });
   }
-); 
 
-upsertMany('WCSPROGRAMS_VegetationGrass', 'Generated_ID', state => {
-  const dataArray = state.data.body.st_grass_repeat || [];
-  return dataArray.map(async x => ({
-    WCSPROGRAMS_TaxaID: await findValue({
-      uuid: 'WCSPROGRAMS_TaxaID',
-      relation: 'WCSPROGRAMS_Taxa',
-      where: {
-        WCSPROGRAMS_TaxaName: state.handleValue(
-          x['st_grass_repeat/grass_species']
-        ),
-      },
-    })(state),
-    noknown: x['st_grass_repeat/noknown'],
-    grassPerc: x['st_grass_repeat/grass_perc'],
-    grassHeight: x['st_grass_repeat/grass_height'],
-    WCSPROGRAMS_VegetationGrassID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationGrassID',
-      relation: 'WCSPROGRAMS_VegetationGrass',
-      where: {
-        WCSPROGRAMS_VegetationGrassName: x['st_grass_repeat/grass_species'],
-      },
-    })(state),
-    WCSPROGRAMS_VegetationID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationID',
-      relation: 'WCSPROGRAMS_Vegetation',
-      where: { Answer_ID: state.data.body_id },
-    })(state),
-    Answer_ID: state.data.body_id,
-    Generated_ID: state.data.body._id + x['st_grass_repeat/grass_species'],
-    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-    UserID_LM: '0',
-  }));
+  return upsertMany(
+    'WCSPROGRAMS_VegetationVegetationDegradationDriver',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => degradation
+  )(state);
 });
 
-upsertMany('WCSPROGRAMS_VegetationBrush', 'Generated_ID', state => {
+// alterState(async state => {
+//   const dataArray = state.data.body.st_grass_repeat || [];
+//   const dataGrass = [];
+
+//   for (let data of dataArray) {
+//     dataGrass.push({
+//       WCSPROGRAMS_TaxaID: await findValue({
+//         uuid: 'WCSPROGRAMS_TaxaID',
+//         relation: 'WCSPROGRAMS_Taxa',
+//         where: {
+//           WCSPROGRAMS_TaxaName: state.handleValue(
+//             data['st_grass_repeat/grass_species']
+//           ),
+//         },
+//       })(state),
+//       noknown: data['st_grass_repeat/noknown'],
+//       grassPerc: data['st_grass_repeat/grass_perc'],
+//       grassHeight: data['st_grass_repeat/grass_height'],
+//       WCSPROGRAMS_VegetationGrassID: await findValue({
+//         uuid: 'WCSPROGRAMS_VegetationGrassID',
+//         relation: 'WCSPROGRAMS_VegetationGrass',
+//         where: {
+//           WCSPROGRAMS_VegetationGrassName:
+//             state.handleValue(data['st_grass_repeat/grass_species']),
+//         },
+//       })(state),
+//       WCSPROGRAMS_VegetationID: await findValue({
+//         uuid: 'WCSPROGRAMS_VegetationID',
+//         relation: 'WCSPROGRAMS_Vegetation',
+//         where: { Answer_ID: state.data.body._id },
+//       })(state),
+//       Answer_ID: state.data.body._id,
+//       Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
+//       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+//       UserID_LM: '0',
+//     });
+//   }
+
+//   return upsertMany(
+//     'WCSPROGRAMS_VegetationGrass',
+//     'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+//     () => dataGrass
+//   )(state);
+// });
+
+alterState(async state => {
   const dataArray = state.data.body.brush_repeat || [];
-  return dataArray.map(async x => ({
-    WCSPROGRAMS_TaxaID: await findValue({
-      uuid: 'WCSPROGRAMS_TaxaID',
-      relation: 'WCSPROGRAMS_Taxa',
-      where: {
-        WCSPROGRAMS_TaxaName: state.handleValue(x['brush_repeat/brus_species']),
-      },
-    })(state),
-    brushPerc: x['brush_repeat/brush_perc'],
-    WCSPROGRAMS_VegetationBrushID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationBrushID',
-      relation: 'WCSPROGRAMS_VegetationBrush',
-      where: {
-        WCSPROGRAMS_VegetationBrushName: x['brush_repeat/brus_species'],
-      },
-    })(state),
-    WCSPROGRAMS_VegetationID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationID',
-      relation: 'WCSPROGRAMS_Vegetation',
-      where: { Answer_ID: state.data.body_id },
-    })(state),
-    Answer_ID: state.data.body._id,
-    Generated_ID: state.data.body_id + x['brush_repeat/brus_species'],
-    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-    UserID_LM: '0',
-  }));
+  const brushRepeat = [];
+
+  for (let data of dataArray) {
+    brushRepeat.push({
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          WCSPROGRAMS_TaxaName: state.handleValue(
+            data['brush_repeat/brus_species']
+          ),
+        },
+      })(state),
+      brushPerc: data['brush_repeat/brush_perc'],
+      WCSPROGRAMS_VegetationBrushID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationBrushID',
+        relation: 'WCSPROGRAMS_VegetationBrush',
+        where: {
+          WCSPROGRAMS_VegetationBrushName: state.handleValue(
+            data['brush_repeat/brus_species']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationID',
+        relation: 'WCSPROGRAMS_Vegetation',
+        where: { Answer_ID: state.data.body._id },
+      })(state),
+      Answer_ID: state.data.body._id,
+      Generated_ID: state.data.body._id + data['brush_repeat/brus_species'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationBrush',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => brushRepeat
+  )(state);
 });
 
-upsertMany('WCSPROGRAMS_VegetationTrees', 'Generated_ID', state => {
+alterState(async state => {
   const dataArray = state.data.body.tree_repeat || [];
-  return dataArray.map(async x => ({
-    WCSPROGRAMS_TaxaID: await findValue({
-      uuid: 'WCSPROGRAMS_TaxaID',
-      relation: 'WCSPROGRAMS_Taxa',
-      where: {
-        WCSPROGRAMS_TaxaName: state.handleValue(x['tree_repeat/shrub_species']),
-      },
-    })(state),
-    SpecimenNo: x['tree_repeat/Specimen_no'],
-    specimenPhoto: x['tree_repeat/specimen_photo'],
-    unlisted: x['tree_repeat/unlisted'],
-    dbh: x['tree_repeat/dbh'],
-    height: x['tree_repeat/height'],
-    WCSPROGRAMS_VegetationTreesID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationTreesID',
-      relation: 'WCSPROGRAMS_VegetationTrees',
-      where: { WCSPROGRAMS_VegetationTreesCode: x['tree_repeat/Specimen_no'] },
-    })(state),
-    WCSPROGRAMS_VegetationID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationID',
-      relation: 'WCSPROGRAMS_Vegetation',
-      where: { Answer_ID: state.data.body_id },
-    })(state),
-    Answer_ID: state.data.body._id,
-    Generated_ID: state.data.body_id + x['tree_repeat/Specimen_no'],
-    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-    UserID_LM: '0',
-  }));
+  const treeRepeat = [];
+
+  for (let data of dataArray) {
+    treeRepeat.push({
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          WCSPROGRAMS_TaxaName: state.handleValue(
+            data['tree_repeat/shrub_species']
+          ),
+        },
+      })(state),
+      SpecimenNo: data['tree_repeat/Specimen_no'],
+      specimenPhoto: data['tree_repeat/specimen_photo'],
+      unlisted: data['tree_repeat/unlisted'],
+      dbh: data['tree_repeat/dbh'],
+      height: data['tree_repeat/height'],
+      WCSPROGRAMS_VegetationTreesID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationTreesID',
+        relation: 'WCSPROGRAMS_VegetationTrees',
+        where: {
+          WCSPROGRAMS_VegetationTreesCode: state.handleValue(
+            data['tree_repeat/Specimen_no']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationID',
+        relation: 'WCSPROGRAMS_Vegetation',
+        where: { Answer_ID: state.data.body._id },
+      })(state),
+      Answer_ID: state.data.body._id,
+      Generated_ID: state.data.body._id + data['tree_repeat/Specimen_no'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationTrees',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => treeRepeat
+  )(state);
 });
 
-upsertMany('WCSPROGRAMS_VegetationBigTrees', 'Generated_ID', state => {
+alterState(async state => {
   const dataArray = state.data.body.tree_10cm || [];
-  return dataArray.map(async x => ({
-    WCSPROGRAMS_TaxaID: await findValue({
-      uuid: 'WCSPROGRAMS_TaxaID',
-      relation: 'WCSPROGRAMS_Taxa',
-      where: { WCSPROGRAMS_TaxaName: x['tree_10cm/btspecies'] },
-    })(state),
-    bspecimenNo: x['tree_10cm/bspecimenNo'],
-    bspecimenPhoto: x['tree_10cm/bspecimen_photo'],
-    bunlisted: x['tree_10cm/bunlisted'],
-    bdbh: x['tree_10cm/bdbh'],
-    bheight: x['tree_10cm/bheight'],
-    WCSPROGRAMS_VegetationBigTreesID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationBigTreesID',
-      relation: 'WCSPROGRAMS_VegetationBigTrees',
-      where: {
-        WCSPROGRAMS_VegetationBigTreesCode: state.handleValue(
-          x['tree_10cm/bspecimenNo']
-        ),
-      },
-    })(state),
-    WCSPROGRAMS_VegetationID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationID',
-      relation: 'WCSPROGRAMS_Vegetation',
-      where: { Answer_ID: state.data.body_id },
-    })(state),
-    Answer_ID: state.data.body._id,
-    Generated_ID: state.data.body_id + x['tree_10cm/bspecimenNo'],
-    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-    UserID_LM: '0',
-  }));
+  const tree10cm = [];
+
+  for (let data of dataArray) {
+    tree10cm.push({
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          WCSPROGRAMS_TaxaName: state.handleValue(data['tree_10cm/btspecies']),
+        },
+      })(state),
+      bspecimenNo: data['tree_10cm/bspecimenNo'],
+      bspecimenPhoto: data['tree_10cm/bspecimen_photo'],
+      bunlisted: data['tree_10cm/bunlisted'],
+      bdbh: data['tree_10cm/bdbh'],
+      bheight: data['tree_10cm/bheight'],
+      WCSPROGRAMS_VegetationBigTreesID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationBigTreesID',
+        relation: 'WCSPROGRAMS_VegetationBigTrees',
+        where: {
+          WCSPROGRAMS_VegetationBigTreesCode: state.handleValue(
+            data['tree_10cm/bspecimenNo']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationID',
+        relation: 'WCSPROGRAMS_Vegetation',
+        where: { Answer_ID: state.data.body._id },
+      })(state),
+      Answer_ID: state.data.body._id,
+      Generated_ID: state.data.body._id + data['tree_10cm/bspecimenNo'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationBigTrees',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => tree10cm
+  )(state);
 });
