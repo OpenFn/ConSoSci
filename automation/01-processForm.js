@@ -1,5 +1,11 @@
 get(`${state.data.url}`, {}, state => {
   const { survey } = state.data.content;
+  if (survey.length === 0) {
+    console.log(
+      'No survey available or defined to analyze. Please check the Kobo form deployment status'
+    );
+    return state;
+  }
   // PREFIX HANDLER
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || 'FormGroup';
