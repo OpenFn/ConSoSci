@@ -34,6 +34,7 @@ Contact [info@consosci.org](mailto://info@consosci.org), post on the [OpenFn Com
 ### ConSoSci OpenFn Training Slides 2021
 1. Day 1 Slides: [https://docs.google.com/presentation/d/1lTlcWWRUiI3WO64dBiVRzxnMfe2YtbHCpNb10-bnhT4/edit?usp=sharing](https://docs.google.com/presentation/d/1lTlcWWRUiI3WO64dBiVRzxnMfe2YtbHCpNb10-bnhT4/edit?usp=sharing)
 2. Day 2 Slides: [https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0w_Eo4yOh8fQw/edit?usp=sharing](https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0w_Eo4yOh8fQw/edit?usp=sharing)
+3. Day 3 Slides: [https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing](https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing)
 
 [See the Training Videos](https://www.youtube.com/watch?v=uVx5aKV3XkE&list=PLWJOtbS1f2g9mbVqIkZqlpA7IwS0wuOjM) for the April 2021 ConSoSci training sessions. 
 
