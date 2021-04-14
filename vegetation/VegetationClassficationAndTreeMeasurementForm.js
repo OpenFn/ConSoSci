@@ -284,7 +284,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationObserver',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    'Generated_ID', 
     () => observers
   )(state);
 });
@@ -319,50 +319,50 @@ alterState(async state => {
   )(state);
 });
 
-// alterState(async state => {
-//   const dataArray = state.data.body.st_grass_repeat || [];
-//   const dataGrass = [];
+alterState(async state => {
+  const dataArray = state.data.body.st_grass_repeat || [];
+  const dataGrass = [];
 
-//   for (let data of dataArray) {
-//     dataGrass.push({
-//       WCSPROGRAMS_TaxaID: await findValue({
-//         uuid: 'WCSPROGRAMS_TaxaID',
-//         relation: 'WCSPROGRAMS_Taxa',
-//         where: {
-//           WCSPROGRAMS_TaxaName: state.handleValue(
-//             data['st_grass_repeat/grass_species']
-//           ),
-//         },
-//       })(state),
-//       noknown: data['st_grass_repeat/noknown'],
-//       grassPerc: data['st_grass_repeat/grass_perc'],
-//       grassHeight: data['st_grass_repeat/grass_height'],
-//       WCSPROGRAMS_VegetationGrassID: await findValue({
-//         uuid: 'WCSPROGRAMS_VegetationGrassID',
-//         relation: 'WCSPROGRAMS_VegetationGrass',
-//         where: {
-//           WCSPROGRAMS_VegetationGrassName:
-//             state.handleValue(data['st_grass_repeat/grass_species']),
-//         },
-//       })(state),
-//       WCSPROGRAMS_VegetationID: await findValue({
-//         uuid: 'WCSPROGRAMS_VegetationID',
-//         relation: 'WCSPROGRAMS_Vegetation',
-//         where: { Answer_ID: state.data.body._id },
-//       })(state),
-//       Answer_ID: state.data.body._id,
-//       Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
-//       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-//       UserID_LM: '0',
-//     });
-//   }
+  for (let data of dataArray) {
+    dataGrass.push({
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          WCSPROGRAMS_TaxaName: state.handleValue(
+            data['st_grass_repeat/grass_species']
+          ),
+        },
+      })(state),
+      noknown: data['st_grass_repeat/noknown'],
+      grassPerc: data['st_grass_repeat/grass_perc'],
+      grassHeight: data['st_grass_repeat/grass_height'],
+      WCSPROGRAMS_VegetationGrassID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationGrassID',
+        relation: 'WCSPROGRAMS_VegetationGrass',
+        where: {
+          WCSPROGRAMS_VegetationGrassName:
+            state.handleValue(data['st_grass_repeat/grass_species']),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationID',
+        relation: 'WCSPROGRAMS_Vegetation',
+        where: { Answer_ID: state.data.body._id },
+      })(state),
+      Answer_ID: state.data.body._id,
+      Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
 
-//   return upsertMany(
-//     'WCSPROGRAMS_VegetationGrass',
-//     'Generated_ID', // Note to Aleksa: Generated_ID absent from table
-//     () => dataGrass
-//   )(state);
-// });
+  return upsertMany(
+    'WCSPROGRAMS_VegetationVegetationGrass',
+    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    () => dataGrass
+  )(state);
+});
 
 alterState(async state => {
   const dataArray = state.data.body.brush_repeat || [];
@@ -401,8 +401,8 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegetationBrush',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    'WCSPROGRAMS_VegetationVegetationBrush',
+    'Generated_ID', 
     () => brushRepeat
   )(state);
 });
@@ -448,8 +448,8 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegetationTrees',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    'WCSPROGRAMS_VegetationVegetationTrees',
+    'Generated_ID', 
     () => treeRepeat
   )(state);
 });
@@ -493,7 +493,7 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegetationBigTrees',
+    'WCSPROGRAMS_VegetationVegetationBigTrees',
     'Generated_ID', // Note to Aleksa: Generated_ID absent from table
     () => tree10cm
   )(state);
