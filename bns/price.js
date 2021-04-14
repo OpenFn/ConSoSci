@@ -26,6 +26,7 @@ alterState(state => {
     'Lac Télé': 'ltlt',
     Ituri: 'ituri',
     Kahuzi: 'mtkb',
+    MTKB: 'mtkb',
     Crossriver: 'crossriver',
     Soariake: 'soariake',
     Ankarea: 'ankarea',
