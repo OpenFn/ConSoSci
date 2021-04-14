@@ -283,7 +283,7 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegetationVegetationObserver',
+    'WCSPROGRAMS_VegatationVegetationObserver',
     'Generated_ID', 
     () => observers
   )(state);
