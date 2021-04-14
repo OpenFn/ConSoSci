@@ -24,16 +24,8 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  const physiography = state.data.body.physiography;
+  
   const drainage = state.data.body.drainage;
-  const newphysio =
-    physiography === 'flat'
-      ? 'Plain (flat)'
-      : physiography === 'plain'
-      ? 'Plain (undulating)'
-      : physiography;
-  state.data.body.physiography = newphysio;
-
   state.data.body.drainage =
     state.data.body.drainage === 'welldrained' ? 'Well drained' : drainage;
   state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age;
@@ -41,7 +33,6 @@ alterState(state => {
   state.data = {
     ...state.data,
     ...state.data.body,
-    ...state.data.body.physiography,
     ...state.data.body.drainage,
     ...state.data.body.age,
   };
@@ -240,7 +231,7 @@ alterState(async state => {
       uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
       relation: 'WCSPROGRAMS_VegetationPhysiography',
       where: {
-        WCSPROGRAMS_VegetationPhysiographyName: state.handleValue(
+        WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
           dataValue('$.body.physiography')(state)
         ),
       },
