@@ -10,11 +10,14 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       // Historical  forms to migrate:
       //Make sure the tag matches the Trigger of the related Job
-    { id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_price', name: 'BNS Makira 2017', owner: 'wcs_mamabay' }, // resynced April13,2021
-    { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price', name: 'BNS Makira 2019', owner: 'wcs_mamabay' }, // resynced April13,2021
-    { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_price', name: 'BNS Cross River 2017', owner: 'wcs_crossriver' }, // resynced April13,2021
-    { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_price', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // resynced April13,2021
-    //{ id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_price', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // resynced April14,2021
+    //{ id: 'aTkDkjcfNN7vQJdZeJHkJq', tag: 'bns_price', name: 'BNS Makira 2017', owner: 'wcs_mamabay' }, // resynced April13,2021
+    //{ id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price', name: 'BNS Makira 2019', owner: 'wcs_mamabay' }, // resynced April13,2021
+    //{ id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_price', name: 'BNS Cross River 2017', owner: 'wcs_crossriver' }, // resynced April13,2021
+    //{ id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_price', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // resynced April13,2021
+    { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_price', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // resynced April14,2021
+    { id: 'aiRKYSPhXEhzkLtjPQbD9x', tag: 'bns_price', name: 'Prices MTKB 2017', owner: 'wcs_mtkb' }, // resynced April14,2021
+    { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_price', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // resynced April14,2021
+    { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_price', name: 'Prix_BNS_Ankarea/Ankivony_2019', owner: 'wcs_soariake' }, // resynced April14,2021
     // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // resynced Feb03,2021
     // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver' }, // resynced Feb03,2021
       
