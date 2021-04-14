@@ -73,15 +73,14 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 alterState(async state => {
   const mapping = {
     WCSPROGRAMS_VegetationName: dataValue('formName'),
-    OutPlotArea: dataValue('$.body.out_plot_area'), //TODO: CONFIGURE COLUMN
-    OutPlotRadius: dataValue('$.body.out_plot_radius'), //TODO: CONFIGURE COLUMN
-    Tree3cm: dataValue('$.body.tree_3cm'), //TODO: CONFIGURE COLUMN
-    SbrushPer: dataValue('$.body.sbrush_per'), //TODO: CONFIGURE COLUMN
-    InnerPlotArea: dataValue('$.body.inner_plot_area'), //TODO: CONFIGURE COLUMN
-    innerPlotRadius: dataValue('$.body.inner_plot_radius'), //TODO: CONFIGURE COLUMN
-    // IsGrass: state.convertValue(dataValue('$.body.grassyes')(state)),
-    CenterPlotArea: dataValue('$.body.center_plot_area'), //TODO: CONFIGURE COLUMN
-    CenterPlotRadius: dataValue('$.body.center_plot_radius'), //TODO: CONFIGURE COLUMN
+    OutPlotArea: dataValue('$.body.out_plot_area'), 
+    OutPlotRadius: dataValue('$.body.out_plot_radius'), 
+    SbrushPer: dataValue('$.body.sbrush_per'), 
+    InnerPlotArea: dataValue('$.body.inner_plot_area'), 
+    innerPlotRadius: dataValue('$.body.inner_plot_radius'), 
+    IsGrass: state.convertValue(dataValue('$.body.grassyes')(state)),
+    CenterPlotArea: dataValue('$.body.center_plot_area'), 
+    CenterPlotRadius: dataValue('$.body.center_plot_radius'), 
     Radius: dataValue('$.body.radius'),
     WCSPROGRAMS_VegetationClassID_Other: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
