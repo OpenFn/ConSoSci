@@ -165,8 +165,8 @@ alterState(async state => {
       uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
       relation: 'WCSPROGRAMS_VegetationSoilErodability',
       where: {
-        WCSPROGRAMS_VegetationSoilErodabilityName: state.handleValue(
-          dataValue('$.body.erodability')(state)
+        WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
+          dataValue('$.body.erodability')(state) || dataValue('$.body.groundtruthing/erodability')(state)
         ),
       },
     })(state),
