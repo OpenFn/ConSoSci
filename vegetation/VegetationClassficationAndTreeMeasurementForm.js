@@ -591,7 +591,7 @@ alterState(async state => {
           ),
         },
       })(state),
-      WCSPROGRAMS_VegetationID: await findValue({
+      WCSPROGRAMS_VegatationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
