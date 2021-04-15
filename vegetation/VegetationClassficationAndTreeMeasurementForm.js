@@ -405,7 +405,7 @@ alterState(async state => {
   )(state);
 });
 
-lterState(async state => {
+alterState(async state => {
   const dataArray = state.data.body.brush_repeat || [];
   const brushRepeat = [];
 
