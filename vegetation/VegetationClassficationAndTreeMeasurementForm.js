@@ -378,7 +378,7 @@ alterState(async state => {
       ),
       WCSPROGRAMS_VegetationGrassCode: data['st_grass_repeat/grass_species'],
       AnswerId: state.data.body._id,
-      Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
+      //Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
@@ -540,7 +540,7 @@ alterState(async state => {
       ),
       WCSPROGRAMS_VegetationTreesCode: data['tree_repeat/shrub_species'],
       AnswerId: state.data.body._id,
-      Generated_ID: state.data.body._id + data['tree_repeat/shrub_species'],
+      //Generated_ID: state.data.body._id + data['tree_repeat/shrub_species'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
       SpecimenNo: data['tree_repeat/Specimen_no'],
