@@ -367,12 +367,7 @@ alterState(async state => {
             state.handleValue(data['st_grass_repeat/grass_species']),
         },
       })(state),
-      WCSPROGRAMS_VegetationID: await findValue({
-        uuid: 'WCSPROGRAMS_VegetationID',
-        relation: 'WCSPROGRAMS_Vegetation',
-        where: { Answer_ID: state.data.body._id },
-      })(state),
-      Answer_ID: state.data.body._id,
+      AnswerId: state.data.body._id,
       Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
