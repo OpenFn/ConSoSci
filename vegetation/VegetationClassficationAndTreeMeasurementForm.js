@@ -335,7 +335,7 @@ alterState(async state => {
         },
       })(state),
       UnknownSpeciesImage: data['st_grass_repeat/noknown'],
-      GrassPerc: data['st_grass_repeat/grass_perc'],
+      GrassPercent: data['st_grass_repeat/grass_perc'],
       GrassHeight: data['st_grass_repeat/grass_height'],
       WCSPROGRAMS_VegetationGrassName: state.handleValue(data['st_grass_repeat/grass_species']),
       WCSPROGRAMS_VegetationGrassCode: data['st_grass_repeat/grass_species'],
