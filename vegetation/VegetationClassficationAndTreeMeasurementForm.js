@@ -556,7 +556,7 @@ alterState(async state => {
         },
       })(state),
       WCSPROGRAMS_VegetationBigTreesName: state.handleValue(data['tree_10cm/btspecies']),
-      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/bspecimenNo'],
+      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
       //WSPROGRAMS_VegetationBigTreesExtCode: data['tree_10cm/bspecimenNo'],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data['tree_10cm/btspecies'],
@@ -587,9 +587,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationBigTreesID',
         relation: 'WCSPROGRAMS_VegetationBigTrees',
         where: {
-          WCSPROGRAMS_VegetationBigTreesCode: state.handleValue(
-            data['tree_10cm/bspecimenNo']
-          ),
+          WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
         },
       })(state),
       WCSPROGRAMS_VegatationID: await findValue({
