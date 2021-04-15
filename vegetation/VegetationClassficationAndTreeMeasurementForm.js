@@ -351,7 +351,15 @@ alterState(async state => {
   const dataArray = state.data.body.st_grass_repeat || [];
   const dataGrass = [];
 
-  for (let data of dataArray) {
+  // Setting unique set==============================
+  const uniqueGrass = Array.from(
+    new Set(dataArray.map(tree => tree['st_grass_repeat/grass_species']))
+  ).map(id => {
+    return dataArray.find(c => id === c['st_grass_repeat/grass_species']);
+  });
+  //=================================================
+
+  for (let data of uniqueGrass) {
     dataGrass.push({
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
@@ -421,6 +429,14 @@ alterState(async state => {
   const dataArray = state.data.body.brush_repeat || [];
   const brushRepeat = [];
 
+  // Setting unique set==============================
+  const uniqueBrush = Array.from(
+    new Set(dataArray.map(tree => tree['brush_repeat/brus_species']))
+  ).map(id => {
+    return dataArray.find(c => id === c['brush_repeat/brus_species']);
+  });
+  //=================================================
+
   for (let data of dataArray) {
     brushRepeat.push({
       WCSPROGRAMS_TaxaID: await findValue({
@@ -486,7 +502,15 @@ alterState(async state => {
   const dataArray = state.data.body.tree_repeat || [];
   const treeRepeat = [];
 
-  for (let data of dataArray) {
+  // Setting unique set==============================
+  const uniqueTrees = Array.from(
+    new Set(dataArray.map(tree => tree['tree_repeat/shrub_species']))
+  ).map(id => {
+    return dataArray.find(c => id === c['tree_repeat/shrub_species']);
+  });
+  //=================================================
+
+  for (let data of uniqueTrees) {
     treeRepeat.push({
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
