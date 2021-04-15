@@ -368,7 +368,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationGrassID',
         relation: 'WCSPROGRAMS_VegetationGrass',
         where: {
-          WCSPROGRAMS_VegetationGrassCode:
+          WCSPROGRAMS_VegetationGrassName:
             state.handleValue(data['st_grass_repeat/grass_species']),
         },
       })(state),
