@@ -262,13 +262,32 @@ alterState(async state => {
 
   for (let data of dataArray) {
     observers.push({
+      WCSPROGRAMS_VegetationObserverName: state.handleValue(data['observername']),
+      WCSPROGRAMS_VegetationObserverCode: data['observername'],
+      WCSPROGRAMS_VegetationObserverExtCode: data['observername'],
+      //Generated_ID: state.data.body._id + data['observername'], //make sure this is setting correctly
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationObserver',
+    'WCSPROGRAMS_VegetationObserverExtCode',
+    () => observers
+  )(state);
+});
+
+alterState(async state => {
+  const dataArray = state.data.body.observername || []; //turning select_multiple into an arrray
+  const observers = [];
+
+  for (let data of dataArray) {
+    observers.push({
       WCSPROGRAMS_VegetationObserverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationObserverID',
         relation: 'WCSPROGRAMS_VegetationObserver',
         where: {
-          WCSPROGRAMS_VegetationObserverExtCode: state.handleValue(
-            data['observername']
-          ),
+          WCSPROGRAMS_VegetationObserverExtCode: data['observername'],
         },
       })(state),
       WCSPROGRAMS_VegetationID: await findValue({
@@ -314,7 +333,7 @@ alterState(async state => {
 
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationDegradationDriver',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    'Generated_ID',
     () => degradation
   )(state);
 });
@@ -347,7 +366,7 @@ alterState(async state => {
   }
 
   return upsertMany(
-    'WCSPROGRAMS_VegetationGrass', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
+    'WCSPROGRAMS_VegetationGrass',
     'WCSPROGRAMS_VegetationGrassCode',
     () => dataGrass
   )(state);
@@ -386,7 +405,7 @@ alterState(async state => {
   )(state);
 });
 
-alterState(async state => {
+lterState(async state => {
   const dataArray = state.data.body.brush_repeat || [];
   const brushRepeat = [];
 
@@ -396,12 +415,35 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          WCSPROGRAMS_TaxaName: state.handleValue(
+          ScientificName: state.handleValue(
             data['brush_repeat/brus_species']
           ),
         },
       })(state),
-      brushPerc: data['brush_repeat/brush_perc'],
+      WCSPROGRAMS_VegetationBrushName: state.handleValue(data['brush_repeat/brus_species']),
+      WCSPROGRAMS_VegetationBrushCode: data['brush_repeat/brus_species'],
+      LianaPercentage: data['brush_repeat/brush_perc'],
+      AnswerId: state.data.body._id,
+      //Generated_ID: state.data.body._id + data[''],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+
+  return upsertMany(
+    'WCSPROGRAMS_VegetationBrush', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
+    'WCSPROGRAMS_VegetationBrushCode',
+    () => dataGrass
+  )(state);
+});
+
+
+alterState(async state => {
+  const dataArray = state.data.body.brush_repeat || [];
+  const brushRepeat = [];
+
+  for (let data of dataArray) {
+    brushRepeat.push({
       WCSPROGRAMS_VegetationBrushID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationBrushID',
         relation: 'WCSPROGRAMS_VegetationBrush',
@@ -431,24 +473,46 @@ alterState(async state => {
 
 alterState(async state => {
   const dataArray = state.data.body.tree_repeat || [];
-  const treeRepeat = [];
+  const dataTrees = [];
 
   for (let data of dataArray) {
-    treeRepeat.push({
+    dataTrees.push({
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          WCSPROGRAMS_TaxaName: state.handleValue(
+          ScientificName: state.handleValue(
             data['tree_repeat/shrub_species']
           ),
         },
       })(state),
+      WCSPROGRAMS_VegetationTreesName: state.handleValue(data['tree_repeat/shrub_species']),
+      WCSPROGRAMS_VegetationTreesCode: data['tree_repeat/shrub_species'],
+      AnswerId: state.data.body._id,
+      Generated_ID: state.data.body._id + data['tree_repeat/shrub_species'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
       SpecimenNo: data['tree_repeat/Specimen_no'],
-      specimenPhoto: data['tree_repeat/specimen_photo'],
-      unlisted: data['tree_repeat/unlisted'],
-      dbh: data['tree_repeat/dbh'],
-      height: data['tree_repeat/height'],
+      SpecimenPhoto: data['tree_repeat/specimen_photo'],
+      Dbh: data['tree_repeat/dbh'],
+      Height: data['tree_repeat/height'],
+      //unlisted: data['tree_repeat/bunlisted'],
+    });
+  }
+
+  return upsertMany(
+    'WCSPROGRAMS_VegetationTrees',
+    'WCSPROGRAMS_VegetationTreesCode',
+    () => dataGrass
+  )(state);
+});
+
+alterState(async state => {
+  const dataArray = state.data.body.tree_repeat || [];
+  const treeRepeat = [];
+
+  for (let data of dataArray) {
+    treeRepeat.push({
       WCSPROGRAMS_VegetationTreesID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationTreesID',
         relation: 'WCSPROGRAMS_VegetationTrees',
@@ -486,14 +550,38 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          WCSPROGRAMS_TaxaName: state.handleValue(data['tree_10cm/btspecies']),
+          ScientificName: state.handleValue(
+            data['tree_10cm/btspecies']
+          ),
         },
       })(state),
-      bspecimenNo: data['tree_10cm/bspecimenNo'],
-      bspecimenPhoto: data['tree_10cm/bspecimen_photo'],
-      bunlisted: data['tree_10cm/bunlisted'],
-      bdbh: data['tree_10cm/bdbh'],
-      bheight: data['tree_10cm/bheight'],
+      WCSPROGRAMS_VegetationBigTreesName: state.handleValue(data['tree_10cm/btspecies']),
+      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
+      AnswerId: state.data.body._id,
+      //Generated_ID: state.data.body._id + data['tree_10cm/btspecies'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+      SpecimenNo: data['tree_10cm/bspecimenNo'],
+      SpecimenPhoto: data['tree_10cm/bspecimen_photo'],
+      //bunlisted: data['tree_10cm/bunlisted'],
+      Dbh: data['tree_10cm/bdbh'],
+      Height: data['tree_10cm/bheight'],
+    });
+  }
+
+  return upsertMany(
+    'WCSPROGRAMS_VegetationBigTrees',
+    'WCSPROGRAMS_VegetationBigTreesCode',
+    () => dataGrass
+  )(state);
+});
+
+alterState(async state => {
+  const dataArray = state.data.body.tree_10cm || [];
+  const tree10cm = [];
+
+  for (let data of dataArray) {
+    tree10cm.push({
       WCSPROGRAMS_VegetationBigTreesID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationBigTreesID',
         relation: 'WCSPROGRAMS_VegetationBigTrees',
@@ -516,7 +604,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationBigTrees',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+    'Generated_ID',
     () => tree10cm
   )(state);
 });
