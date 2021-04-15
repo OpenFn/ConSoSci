@@ -401,7 +401,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationGrass',
     'Generated_ID',
-    () => brushRepeat
+    () => dataGrass
   )(state);
 });
 
@@ -473,10 +473,10 @@ alterState(async state => {
 
 alterState(async state => {
   const dataArray = state.data.body.tree_repeat || [];
-  const dataTrees = [];
+  const treeRepeat = [];
 
   for (let data of dataArray) {
-    dataTrees.push({
+    treeRepeat.push({
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
@@ -503,7 +503,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationTrees',
     'WCSPROGRAMS_VegetationTreesCode',
-    () => dataTrees
+    () => treeRepeat
   )(state);
 });
 
