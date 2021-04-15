@@ -24,7 +24,7 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  
+
   const drainage = state.data.body.drainage;
   state.data.body.drainage =
     state.data.body.drainage === 'welldrained' ? 'Well drained' : drainage;
@@ -64,14 +64,14 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 alterState(async state => {
   const mapping = {
     WCSPROGRAMS_VegetationName: dataValue('formName'),
-    OutPlotArea: dataValue('$.body.out_plot_area'), 
-    OutPlotRadius: dataValue('$.body.out_plot_radius'), 
-    SbrushPer: dataValue('$.body.sbrush_per'), 
-    InnerPlotArea: dataValue('$.body.inner_plot_area'), 
-    innerPlotRadius: dataValue('$.body.inner_plot_radius'), 
+    OutPlotArea: dataValue('$.body.out_plot_area'),
+    OutPlotRadius: dataValue('$.body.out_plot_radius'),
+    SbrushPer: dataValue('$.body.sbrush_per'),
+    InnerPlotArea: dataValue('$.body.inner_plot_area'),
+    innerPlotRadius: dataValue('$.body.inner_plot_radius'),
     IsGrass: state.convertValue(dataValue('$.body.grassyes')(state)),
-    CenterPlotArea: dataValue('$.body.center_plot_area'), 
-    CenterPlotRadius: dataValue('$.body.center_plot_radius'), 
+    CenterPlotArea: dataValue('$.body.center_plot_area'),
+    CenterPlotRadius: dataValue('$.body.center_plot_radius'),
     Radius: dataValue('$.body.radius'),
     WCSPROGRAMS_VegetationClassID_Other: await findValue({
       uuid: 'WCSPROGRAMS_VegetationClassID',
@@ -284,7 +284,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationObserver',
-    'Generated_ID', 
+    'Generated_ID',
     () => observers
   )(state);
 });
@@ -348,7 +348,7 @@ alterState(async state => {
 
   return upsertMany(
     'WCSPROGRAMS_VegetationGrass', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
-    'WCSPROGRAMS_VegetationGrassCode', 
+    'WCSPROGRAMS_VegetationGrassCode',
     () => dataGrass
   )(state);
 });
@@ -359,6 +359,11 @@ alterState(async state => {
 
   for (let data of dataArray) {
     dataGrass.push({
+      WCSPROGRAMS_VegatationID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationID',
+        relation: 'WCSPROGRAMS_Vegetation',
+        where: { Answer_ID: state.data.body._id },
+      })(state),
       WCSPROGRAMS_VegetationGrassID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationGrassID',
         relation: 'WCSPROGRAMS_VegetationGrass',
@@ -374,9 +379,9 @@ alterState(async state => {
     });
   }
 
-return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationGrass', 
-    'Generated_ID', 
+  return upsertMany(
+    'WCSPROGRAMS_VegatationVegetationGrass',
+    'Generated_ID',
     () => dataGrass
   )(state);
 });
@@ -419,7 +424,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationBrush',
-    'Generated_ID', 
+    'Generated_ID',
     () => brushRepeat
   )(state);
 });
@@ -466,7 +471,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationTrees',
-    'Generated_ID', 
+    'Generated_ID',
     () => treeRepeat
   )(state);
 });
