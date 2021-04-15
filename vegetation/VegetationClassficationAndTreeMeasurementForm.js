@@ -84,15 +84,15 @@ alterState(async state => {
     IsVegClassSame: state.convertValue(
       dataValue('$.body.vegClass_same')(state)
     ),
-    WCSPROGRAMS_VegetationCropStatusID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationCropStatusID',
-      relation: 'WCSPROGRAMS_VegetationCropStatus',
-      where: {
-        WCSPROGRAMS_VegetationCropStatusName: state.handleValue(
-          dataValue('$.body.Cropstatus')(state)
-        ),
-      },
-    })(state),
+    // WCSPROGRAMS_VegetationCropStatusID: await findValue({
+    //   uuid: 'WCSPROGRAMS_VegetationCropStatusID',
+    //   relation: 'WCSPROGRAMS_VegetationCropStatus',
+    //   where: {
+    //     WCSPROGRAMS_VegetationCropStatusName: state.handleValue(
+    //       dataValue('$.body.Cropstatus')(state)
+    //     ),
+    //   },
+    // })(state),
     YearPlanted: dataValue('$.body.Year'),
     WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
