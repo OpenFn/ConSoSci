@@ -10,7 +10,7 @@ get(`${state.data.url}`, {}, state => {
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || 'FormGroup';
   const tableId = state.references[0].tableId;
-  const uuid = 'GeneratedUuid';
+  const uuid = 'generated_uuid';
   // END OF PREFIX HANDLER
 
   // TODO: Decide which metadata field to include. ========================
@@ -71,7 +71,7 @@ get(`${state.data.url}`, {}, state => {
       }
     });
     form = form.map(x => {
-      const name = x.name || x.$autoname;
+      const name = toCamelCase(x.name) || toCamelCase(x.$autoname);
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
@@ -80,16 +80,18 @@ get(`${state.data.url}`, {}, state => {
     });
 
     const parentColumn =
-      questions[0].path.length > 1
+      // questions[0].path.length > 1
+      questions[0].depth > 1
         ? `${questions[0].path.slice(-2, -1)[0]}_uuid`
         : `${tableId}_uuid`;
 
-    if (questions[0].depth > 0) form.push({ name: parentColumn, type: 'text' });
+    if (questions[0].depth > 0)
+      form.push({ name: toCamelCase(parentColumn), type: 'text' });
 
     form.push(
       // Adding a column as jsonb to take the whole payload
       { name: 'Payload', type: 'jsonb' },
-      { name: uuid, type: 'text', unique: true }
+      { name: toCamelCase(uuid), type: 'text', unique: true }
     );
 
     return form;
