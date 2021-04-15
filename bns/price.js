@@ -22,7 +22,7 @@ alterState(state => {
   }
 
   const landscapeMap = {
-    Ndoki: 'ndoki',
+    Ndoki: 'tns',
     'Lac Télé': 'ltlt',
     Ituri: 'ituri',
     Kahuzi: 'mtkb',
