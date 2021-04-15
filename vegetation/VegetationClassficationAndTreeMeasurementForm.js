@@ -266,7 +266,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationObserverID',
         relation: 'WCSPROGRAMS_VegetationObserver',
         where: {
-          WCSPROGRAMS_VegetationObserverName: state.handleValue(
+          WCSPROGRAMS_VegetationObserverExtCode: state.handleValue(
             data['observername']
           ),
         },
@@ -329,19 +329,41 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          WCSPROGRAMS_TaxaName: state.handleValue(
+          ScientificName: state.handleValue(
             data['st_grass_repeat/grass_species']
           ),
         },
       })(state),
-      noknown: data['st_grass_repeat/noknown'],
-      grassPerc: data['st_grass_repeat/grass_perc'],
-      grassHeight: data['st_grass_repeat/grass_height'],
+      UnknownSpeciesImage: data['st_grass_repeat/noknown'],
+      GrassPerc: data['st_grass_repeat/grass_perc'],
+      GrassHeight: data['st_grass_repeat/grass_height'],
+      WCSPROGRAMS_VegetationGrassName: state.handleValue(data['st_grass_repeat/grass_species']),
+      WCSPROGRAMS_VegetationGrassCode: data['st_grass_repeat/grass_species'],
+      AnswerId: state.data.body._id,
+      Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
+      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      UserID_LM: '0',
+    });
+  }
+
+  return upsertMany(
+    'WCSPROGRAMS_VegatationGrass', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
+    'WCSPROGRAMS_VegetationGrassCode', 
+    () => dataGrass
+  )(state);
+});
+
+alterState(async state => {
+  const dataArray = state.data.body.st_grass_repeat || [];
+  const dataGrass = [];
+
+  for (let data of dataArray) {
+    dataGrass.push({
       WCSPROGRAMS_VegetationGrassID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationGrassID',
         relation: 'WCSPROGRAMS_VegetationGrass',
         where: {
-          WCSPROGRAMS_VegetationGrassName:
+          WCSPROGRAMS_VegetationGrassCode:
             state.handleValue(data['st_grass_repeat/grass_species']),
         },
       })(state),
@@ -357,9 +379,9 @@ alterState(async state => {
     });
   }
 
-  return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationGrass',
-    'Generated_ID', // Note to Aleksa: Generated_ID absent from table
+return upsertMany(
+    'WCSPROGRAMS_VegatationVegetationGrass', 
+    'Generated_ID', 
     () => dataGrass
   )(state);
 });
