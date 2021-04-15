@@ -556,8 +556,8 @@ alterState(async state => {
         },
       })(state),
       WCSPROGRAMS_VegetationBigTreesName: state.handleValue(data['tree_10cm/btspecies']),
-      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
-      WSPROGRAMS_VegetationBigTreesExtCode: data['tree_10cm/bspecimenNo'],
+      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/bspecimenNo'],
+      //WSPROGRAMS_VegetationBigTreesExtCode: data['tree_10cm/bspecimenNo'],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data['tree_10cm/btspecies'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
@@ -572,7 +572,7 @@ alterState(async state => {
 
   return upsertMany(
     'WCSPROGRAMS_VegetationBigTrees',
-    'WCSPROGRAMS_VegetationBigTreesExtCode',
+    'WCSPROGRAMS_VegetationBigTreesCode',
     () => tree10cm
   )(state);
 });
@@ -587,7 +587,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationBigTreesID',
         relation: 'WCSPROGRAMS_VegetationBigTrees',
         where: {
-          WCSPROGRAMS_VegetationBigTreesExtCode: state.handleValue(
+          WCSPROGRAMS_VegetationBigTreesCode: state.handleValue(
             data['tree_10cm/bspecimenNo']
           ),
         },
