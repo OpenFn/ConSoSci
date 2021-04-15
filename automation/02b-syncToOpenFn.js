@@ -92,11 +92,9 @@ each(
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
-            mapKoboToPostgres[
-              toCamelCase(columns[k].name)
-            ] = `x['${paths[k]}']`;
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else
-            mapKoboToPostgres[toCamelCase(columns[k].name)] =
+            mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
                 ? `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
