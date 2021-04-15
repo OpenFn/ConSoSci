@@ -347,7 +347,7 @@ alterState(async state => {
   }
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationGrass', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
+    'WCSPROGRAMS_VegetationGrass', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
     'WCSPROGRAMS_VegetationGrassCode', 
     () => dataGrass
   )(state);
