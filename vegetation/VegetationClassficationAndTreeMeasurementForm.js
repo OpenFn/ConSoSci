@@ -401,7 +401,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationGrass',
     'Generated_ID',
-    () => dataGrass
+    () => brushRepeat
   )(state);
 });
 
@@ -433,7 +433,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationBrush', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
     'WCSPROGRAMS_VegetationBrushCode',
-    () => dataGrass
+    () => brushRepeat
   )(state);
 });
 
@@ -503,7 +503,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationTrees',
     'WCSPROGRAMS_VegetationTreesCode',
-    () => dataGrass
+    () => dataTrees
   )(state);
 });
 
@@ -572,7 +572,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationBigTrees',
     'WCSPROGRAMS_VegetationBigTreesCode',
-    () => dataGrass
+    () => tree10cm
   )(state);
 });
 
