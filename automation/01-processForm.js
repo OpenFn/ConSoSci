@@ -42,13 +42,20 @@ get(`${state.data.url}`, {}, state => {
 
   // Camelize columns and table name
   function toCamelCase(str) {
-    const words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi);
+    let underscores = [];
+    let i = 0;
+    while (str[i] === '_') {
+      underscores.push(str[i]);
+      i++;
+    }
+    let words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi);
     if (!words) return '';
-    return words
+    words = words
       .map(word => {
         return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
       })
       .join('');
+    return `${underscores.join('')}${words}${underscores.join('')}`;
   }
 
   function questionToType(questions) {
