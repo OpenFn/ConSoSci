@@ -395,10 +395,11 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: state.handleValue(
+          ScientificName: `%${state.handleValue(
             data['st_grass_repeat/grass_species']
-          ),
+          )}%`,
         },
+        operator: { ScientificName: 'like' },
       })(state),
       UnknownSpeciesImage: data['st_grass_repeat/noknown'],
       GrassPercent: data['st_grass_repeat/grass_perc'],
@@ -481,8 +482,11 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: state.handleValue(data['brush_repeat/brus_species']),
+          ScientificName: `%${state.handleValue(
+            data['brush_repeat/brus_species']
+          )}%`,
         },
+        operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationBrushName: state.handleValue(
         data['brush_repeat/brus_species']
@@ -562,8 +566,11 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: state.handleValue(data['tree_repeat/shrub_species']),
+          ScientificName: `%${state.handleValue(
+            data['tree_repeat/shrub_species']
+          )}%`,
         },
+        operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationTreesName: state.handleValue(
         data['tree_repeat/shrub_species']
@@ -647,8 +654,9 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: state.handleValue(data['tree_10cm/btspecies']),
+          ScientificName: `%${state.handleValue(data['tree_10cm/btspecies'])}%`,
         },
+        operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationBigTreesName: state.handleValue(
         data['tree_10cm/btspecies']
