@@ -14,11 +14,6 @@ alterState(state => {
         tableId: 'WCS_marche_SWMEtudeMarché9Feb'
       },
       {
-        uid: 'aBqKGtuFFRZrYcP5LAtB52',
-        formName: 'Sharks And Rays 9 Feb',
-        tableId: 'WCS_SR_SharksAndRaysFeb9'
-      },
-      {
         uid: 'azg4rJb2Kk8DT2upSPyYjB',
         formName: 'Livestock production demo',
         tableId: 'WCS_Livestock_LivestockProduction'
@@ -28,11 +23,11 @@ alterState(state => {
         formName: 'Arcadia Data Collection Site Survey',
         tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan'
       },
-      {
-        uid: 'apZrpKcK78xzrPcAfRrfac',
-        formName: 'Sharks & Rays 24 March',
-        tableId: 'WCS_SR_SharkAndRaysTraining'
-      }
+      //{
+      //  uid: 'apZrpKcK78xzrPcAfRrfac',
+      //  formName: 'Sharks & Rays 24 March',
+      //  tableId: 'WCS_SR_SharkAndRaysTraining'
+      //}
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
