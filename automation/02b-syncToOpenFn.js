@@ -106,7 +106,7 @@ each(
         // =====================================================================
 
         if (name !== `${state.prefix1}__KoboDataset`) {
-          mapKoboToPostgres[state.uuid] =
+          mapKoboToPostgres[toCamelCase(state.uuid)] =
             columns[0].depth > 0
               ? `x['__generatedUuid']`
               : `dataValue('__generatedUuid')`;
@@ -122,7 +122,7 @@ each(
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         var uuid =
-          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : state.uuid;
+          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : toCamelCase(state.uuid);
 
         let mapping = `${operation}('${name}', '${uuid}', `;
 
