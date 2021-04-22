@@ -113,16 +113,20 @@ each(
 
           if (columns[0].depth > 1) {
             mapKoboToPostgres[
-              `${columns[0].path.slice(-2, -1).pop()}_uuid`
+              toCamelCase(`${columns[0].path.slice(-2, -1).pop()}_uuid`)
             ] = `x['__parentUuid']`;
           } else if (columns[0].depth > 0) {
-            mapKoboToPostgres[`${state.tableId}_uuid`] = `x['__parentUuid']`;
+            mapKoboToPostgres[
+              toCamelCase(`${state.tableId}_uuid`)
+            ] = `x['__parentUuid']`;
           }
         }
 
         const operation = depth > 0 ? `upsertMany` : `upsert`;
         var uuid =
-          name === `${state.prefix1}__KoboDataset` ? 'DatasetId' : toCamelCase(state.uuid);
+          name === `${state.prefix1}__KoboDataset`
+            ? 'DatasetId'
+            : toCamelCase(state.uuid);
 
         let mapping = `${operation}('${name}', '${uuid}', `;
 
