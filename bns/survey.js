@@ -79,15 +79,15 @@ alterState(state => {
           have:
             state.data[
               `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
-            ],
+            ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
           necessary:
             state.data[
               `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
-            ],
+            ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
           quantity:
             state.data[
               `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
-            ],
+            ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
         };
       });
     // ===========================================================================
