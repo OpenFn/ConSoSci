@@ -34,6 +34,12 @@ alterState(state => {
         name: 'BNS Makira 2021',
         owner: 'wcs_mamabaie',
       },
+      {
+        id: 'aVcvLwLaG9ZCnQ9b7ACc2h',
+        tag: 'bns_price',
+        name: 'Prix Makira 2021',
+        owner: 'wcs_mamabaie',
+      },
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
