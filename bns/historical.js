@@ -22,6 +22,7 @@ alterState(state => {
      
      //******* WCS HISTORICAL FORMS ******///
 
+    { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // fetched April23,2021
     { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'wcs_ndoki' }, // resynced April23,2021
     { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs_ndoki' }, // resynced April23,2021
     { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // resynced April23,2021
