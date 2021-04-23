@@ -91,7 +91,7 @@ alterState(state => {
         };
       });
     // ===========================================================================
-
+    console.log(`bns_matrix to upload...: ${JSON.stringify(state.matrix)}`);
     return state;
   } catch (error) {
     state.connection.close();
