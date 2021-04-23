@@ -28,6 +28,12 @@ alterState(state => {
         name: 'BNS extended Uganda 2020',
         owner: 'wcs_uganda_carbon',
       },
+       {
+        id: 'aVLz2FxFcw99cv89xNY46K',
+        tag: 'bns_survey',
+        name: 'BNS Makira 2021',
+        owner: 'wcs_mamabaie',
+      },
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
