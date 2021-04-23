@@ -10,24 +10,7 @@ alterState(state => {
       //** Specify new forms to fetch here **//
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
-      {
-        id: 'atyo55YdBdfxzXiaBdrbvr',
-        tag: 'bns_survey',
-        name: 'BNS Ndoki 2020',
-        owner: 'wcs_ndoki',
-      },
-      {
-        id: 'aTRKQW2b8TJGxF7DVPfjFv',
-        tag: 'bns_price',
-        name: 'BNS Ndoki Prix 2020',
-        owner: 'wcs_ndoki',
-      },
-      {
-        id: 'ar9wXnLW2sdaamGgJsUrjP',
-        tag: 'bns_survey',
-        name: 'BNS extended Uganda 2020',
-        owner: 'wcs_uganda_carbon',
-      },
+     
        {
         id: 'aVLz2FxFcw99cv89xNY46K',
         tag: 'bns_survey',
