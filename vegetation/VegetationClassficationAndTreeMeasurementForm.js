@@ -41,7 +41,7 @@ alterState(state => {
 alterState(state => {
   const handleValue = value => {
     if (value && value !== undefined && value !== 'undefined' && value !== '')
-      return value.length() > 0 ? value.replace(/_/g, ' ') : value;
+      return value ? value.replace(/_/g, ' ') : value;
   };
   const convertValue = value => {
     return value === 'yes' ? 1 : 0;
@@ -108,7 +108,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationForestTypeName: state.handleValue(
           dataValue('$.body.forest_type')(state) ||
-          dataValue('$.body.plot_forest_area/forest_type')
+          dataValue('$.body.plot_forest_area/forest_type') ||
+          ''
         ),
       },
     })(state),
