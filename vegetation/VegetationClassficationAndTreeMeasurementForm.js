@@ -24,18 +24,11 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  const drainage = state.data.body.drainage || state.data.body['general_observations/drainage'];
-  state.data.body['general_observations/drainage'] =
-    state.data.body['general_observations/drainage'] === 'welldrained' ? 'Well drained' : drainage;
-  state.data.body.drainage =
-    state.data.body.drainage === 'welldrained' ? 'Well drained' : drainage;
   state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age;
 
   state.data = {
     ...state.data,
     ...state.data.body,
-    ...state.data.body.drainage,
-    ...state.data.body['general_observations/drainage'],
     ...state.data.body.age,
   };
   return state;
