@@ -53,7 +53,9 @@ alterState(state => {
   state.surveydate = dataValue('$.body.surveydate')(state) &&
     dataValue('$.body.surveydate')(state) !== undefined ?
     dataValue('$.body.surveydate')(state) :
-    dataValue('$.body.general_observations/surveydate')(state);
+    dataValue('$.body.general_observations/surveydate')(state) ?
+      dataValue('$.body.general_observations/surveydate')(state) :
+      dataValue('$.body._submission_time')(state);
 
   state.starttime = dataValue('$.body.start_time')(state) &&
     dataValue('$.body.start_time')(state) !== undefined ?
