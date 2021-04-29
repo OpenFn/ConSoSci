@@ -40,7 +40,8 @@ alterState(state => {
 
 alterState(state => {
   const handleValue = value => {
-    if (value && value !== undefined) return value.replace(/_/g, ' ');
+    if (value && value !== undefined && value !== 'undefined')
+      return value ? value.replace(/_/g, ' ') : value;
   };
   const convertValue = value => {
     return value === 'yes' ? 1 : 0;
