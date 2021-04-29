@@ -52,6 +52,11 @@ alterState(state => {
     dataValue('$.body.surveydate')(state) :
     dataValue('$.body.general_observations/surveydate')(state);
 
+  state.starttime = dataValue('$.body.start_time')(state) &&
+    dataValue('$.body.start_time')(state) !== undefined ?
+    dataValue('$.body.start_time')(state) :
+    dataValue('$.body.general_observations/start_time')(state);
+
   return { ...state, handleValue, convertValue };
 });
 
@@ -305,7 +310,7 @@ alterState(async state => {
         ),
       },
     })(state),
-    StartTime: dataValue('$.body.start_time'),
+    StartTime: state.starttime,
     SubmissionDate: dataValue('$.body._submission_time'),
     Surveydate: state.surveydate,
     Answer_ID: state.data.body._id,
