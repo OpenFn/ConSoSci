@@ -416,10 +416,12 @@ alterState(async state => {
     });
   }
 
+  var unGrass = dataGrass.filter(c => c['st_grass_repeat/grass_species'] && c['st_grass_repeat/grass_species'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegetationGrass',
     'WCSPROGRAMS_VegetationGrassCode',
-    () => dataGrass
+    () => unGrass
   )(state);
 });
 
@@ -458,10 +460,12 @@ alterState(async state => {
     });
   }
 
+  var unGrass = dataGrass.filter(c => c['st_grass_repeat/grass_species'] && c['st_grass_repeat/grass_species'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationGrass',
     'Generated_ID',
-    () => dataGrass
+    () => unGrass
   )(state);
 });
 
@@ -501,10 +505,12 @@ alterState(async state => {
     });
   }
 
+  var unBrush = brushRepeat.filter(c => c['brush_repeat/brus_species'] && c['brush_repeat/brus_species'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegetationBrush', //QUESTION: We first insert 1 VegetationGrass record to find Taxa ID... and then a VegetationVegetationGrass record to link to Vegetation record?
     'WCSPROGRAMS_VegetationBrushCode',
-    () => brushRepeat
+    () => unBrush
   )(state);
 });
 
@@ -542,10 +548,13 @@ alterState(async state => {
       UserID_LM: '0',
     });
   }
+
+  var unBrush = brushRepeat.filter(c => c['brush_repeat/brus_species'] && c['brush_repeat/brus_species'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationBrush',
     'Generated_ID',
-    () => brushRepeat
+    () => unBrush
   )(state);
 });
 
@@ -589,10 +598,12 @@ alterState(async state => {
     });
   }
 
+  var unTrees = treeRepeat.filter(c => c['tree_repeat/shrub_species'] && c['tree_repeat/shrub_species'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegetationTrees',
     'WCSPROGRAMS_VegetationTreesCode',
-    () => treeRepeat
+    () => unTrees
   )(state);
 });
 
@@ -630,10 +641,13 @@ alterState(async state => {
       UserID_LM: '0',
     });
   }
+
+  var unTrees = treeRepeat.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationTrees',
     'Generated_ID',
-    () => treeRepeat
+    () => unTrees
   )(state);
 });
 
