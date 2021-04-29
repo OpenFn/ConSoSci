@@ -282,9 +282,10 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
         WCSPROGRAMS_VegetationDrainageName: state.handleValue(
-          dataValue('$.body.drainage')(state) ||
-          dataValue('$.body.general_observations/drainage')(state) ||
-          ''
+          dataValue('$.body.drainage')(state) && dataValue('$.body.drainage')(state) !== undefined ?
+            dataValue('$.body.drainage')(state) :
+            dataValue('$.body.general_observations/drainage')(state) ||
+            ''
         ),
       },
     })(state),
