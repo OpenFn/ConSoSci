@@ -108,7 +108,7 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationForestTypeName: state.handleValue(
           dataValue('$.body.forest_type')(state) ||
-          dataValue('$.body.plot_forest_area/forest_type') ||
+          dataValue('$.body.plot_forest_area/forest_type')(state) ||
           ''
         ),
       },
@@ -301,7 +301,7 @@ alterState(async state => {
     })(state),
     StartTime: dataValue('$.body.start_time'),
     SubmissionDate: dataValue('$.body._submission_time'),
-    Surveydate: dataValue('$.body.surveydate') || dataValue('$.body.general_observations/surveydate'),
+    Surveydate: dataValue('$.body.surveydate') ? dataValue('$.body.surveydate') : dataValue('$.body.general_observations/surveydate'),
     Answer_ID: state.data.body._id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
