@@ -60,7 +60,8 @@ alterState(state => {
   state.starttime = dataValue('$.body.start_time')(state) &&
     dataValue('$.body.start_time')(state) !== undefined ?
     dataValue('$.body.start_time')(state) :
-    dataValue('$.body.general_observations/start_time')(state);
+    dataValue('$.body.general_observations/start_time')(state) ||
+    dataValue('$.body.plot_description/start_time')(state);
 
   return { ...state, handleValue, convertValue };
 });
@@ -323,7 +324,7 @@ alterState(async state => {
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
   };
-  console.log(mapping);
+  //console.log(mapping);
   return upsert('WCSPROGRAMS_Vegetation', 'Answer_ID', mapping)(state);
 });
 
