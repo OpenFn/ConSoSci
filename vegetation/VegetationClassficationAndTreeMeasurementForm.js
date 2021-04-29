@@ -24,7 +24,9 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  const drainage = state.data.body.drainage;
+  const drainage = state.data.body.drainage || state.data.body['general_observations/drainage'];
+  state.data.body['general_observations/drainage'] =
+    state.data.body['general_observations/drainage'] === 'welldrained' ? 'Well drained' : drainage;
   state.data.body.drainage =
     state.data.body.drainage === 'welldrained' ? 'Well drained' : drainage;
   state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age;
@@ -33,6 +35,7 @@ alterState(state => {
     ...state.data,
     ...state.data.body,
     ...state.data.body.drainage,
+    ...state.data.body['general_observations/drainage'],
     ...state.data.body.age,
   };
   return state;
@@ -282,10 +285,9 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
         WCSPROGRAMS_VegetationDrainageName: state.handleValue(
-          dataValue('$.body.drainage')(state) && dataValue('$.body.drainage')(state) !== undefined ?
-            dataValue('$.body.drainage')(state) :
-            dataValue('$.body.general_observations/drainage')(state) ||
-            ''
+          dataValue('$.body.drainage')(state) ||
+          dataValue('$.body.general_observations/drainage')(state) ||
+          ''
         ),
       },
     })(state),
