@@ -61,7 +61,8 @@ alterState(state => {
     dataValue('$.body.start_time')(state) !== undefined ?
     dataValue('$.body.start_time')(state) :
     dataValue('$.body.general_observations/start_time')(state) ||
-    dataValue('$.body.plot_description/start_time')(state);
+    dataValue('$.body.plot_description/start_time')(state) ||
+    dataValue('$.body._submission_time')(state);
 
   return { ...state, handleValue, convertValue };
 });
