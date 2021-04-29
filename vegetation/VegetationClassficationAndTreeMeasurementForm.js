@@ -691,7 +691,9 @@ alterState(async state => {
   const uniqueTrees = Array.from(
     new Set(dataArray.map(tree => tree['tree_10cm/btspecies']))
   ).map(id => {
-    return dataArray.find(c => id === c['tree_10cm/btspecies']);
+    var unTrees = dataArray.find(c => id === c['tree_10cm/btspecies']);
+    console.log('unTrees: ', unTrees);
+    return unTrees;
   });
   //=================================================
 
