@@ -718,6 +718,9 @@ alterState(async state => {
       UserID_LM: '0',
     });
   }
+
+  tree10cm = tree10cm.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
+
   return upsertMany(
     'WCSPROGRAMS_VegatationVegetationBigTrees',
     'Generated_ID',
