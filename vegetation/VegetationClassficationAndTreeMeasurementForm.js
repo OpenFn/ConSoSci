@@ -26,10 +26,17 @@ alterState(state => {
 
   state.data.body.age = !state.data.body.age ? 'Other' : state.data.body.age;
 
+  const physiography = dataValue('$.body.physiography')(state) ||
+    dataValue('$.body.general_observations/physiography')(state);
+
+  state.data.body.physiography = physiography === 'flat' ? 'plain' : physiography;
+
+
   state.data = {
     ...state.data,
     ...state.data.body,
     ...state.data.body.age,
+    ...state.data.body.physiography,
   };
   return state;
 });
