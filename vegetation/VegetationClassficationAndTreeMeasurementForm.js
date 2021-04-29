@@ -278,6 +278,7 @@ alterState(async state => {
         WCSPROGRAMS_VegetationDistrictName: state.handleValue(
           dataValue('$.body.district')(state) ||
           dataValue('$.body.plot_description/district')(state) ||
+          dataValue('$.body.plot_forest_area/district')(state) ||
           ''
         ),
       },
