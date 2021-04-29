@@ -261,6 +261,7 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationDistrictName: state.handleValue(
           dataValue('$.body.district')(state) ||
+          dataValue('$.body.plot_description/district')(state) ||
           ''
         ),
       },
@@ -271,6 +272,7 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationDrainageName: state.handleValue(
           dataValue('$.body.drainage')(state) ||
+          dataValue('$.body.general_observations/drainage')(state) ||
           ''
         ),
       },
@@ -281,6 +283,7 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
           dataValue('$.body.physiography')(state) ||
+          dataValue('$.body.general_observations/physiography')(state) ||
           ''
         ),
       },
@@ -291,13 +294,14 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationTopographgyExtCode: state.handleValue(
           dataValue('$.body.topography')(state) ||
+          dataValue('$.body.general_observations/topography')(state) ||
           ''
         ),
       },
     })(state),
     StartTime: dataValue('$.body.start_time'),
     SubmissionDate: dataValue('$.body._submission_time'),
-    Surveydate: dataValue('$.body.surveydate'),
+    Surveydate: dataValue('$.body.surveydate') || dataValue('$.body.general_observations/surveydate'),
     Answer_ID: state.data.body._id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
