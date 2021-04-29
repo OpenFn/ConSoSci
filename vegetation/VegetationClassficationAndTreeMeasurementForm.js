@@ -119,7 +119,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationClassName: state.handleValue(
           dataValue('$.body.vegclass')(state) ||
-          dataValue('$.body.plot_forest_area/vegclass')(state)
+          dataValue('$.body.plot_forest_area/vegclass')(state) ||
+          ''
         ),
       },
     })(state),
@@ -129,7 +130,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationOwnershipName: state.handleValue(
           dataValue('$.body.Ownership')(state) ||
-          dataValue('$.body.plot_forest_area/Ownership')(state)
+          dataValue('$.body.plot_forest_area/Ownership')(state) ||
+          ''
         ),
       },
     })(state),
@@ -139,7 +141,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationFireReasonName: state.handleValue(
           dataValue('$.body.rzon')(state) ||
-          dataValue('$.body.groundtruthing/rzon')(state)
+          dataValue('$.body.groundtruthing/rzon')(state) ||
+          ''
         ),
       },
     })(state),
@@ -149,7 +152,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationFireCauseName: state.handleValue(
           dataValue('$.body.cause')(state) ||
-          dataValue('$.body.groundtruthing/cause')(state)
+          dataValue('$.body.groundtruthing/cause')(state) ||
+          ''
         ),
       },
     })(state),
@@ -160,14 +164,16 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationAgeName: state.handleValue(
           dataValue('$.body.age')(state) ||
-          dataValue('$.body.groundtruthing/age')(state)
+          dataValue('$.body.groundtruthing/age')(state) ||
+          ''
         ),
       },
     })(state),
     PlotBurnt: dataValue('$.body.plot_burnt'),
     IsEvidenceOfFire: state.convertValue(
       dataValue('$.body.fire')(state) ||
-      dataValue('$.body.groundtruthing/fire')(state)
+      dataValue('$.body.groundtruthing/fire')(state) ||
+      ''
     ),
     Bareground:
       dataValue('$.body.bareground') ||
@@ -178,7 +184,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationSoilSeasonalityName: state.handleValue(
           dataValue('$.body.seasonality')(state) ||
-          dataValue('$.body.groundtruthing/seasonality')(state)
+          dataValue('$.body.groundtruthing/seasonality')(state) ||
+          ''
         ),
       },
     })(state),
@@ -188,7 +195,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
           dataValue('$.body.erodability')(state) ||
-          dataValue('$.body.groundtruthing/erodability')(state)
+          dataValue('$.body.groundtruthing/erodability')(state) ||
+          ''
         ),
       },
     })(state),
@@ -198,7 +206,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationSoilMoistureName: state.handleValue(
           dataValue('$.body.moisture')(state) ||
-          dataValue('$.body.groundtruthing/moisture')(state)
+          dataValue('$.body.groundtruthing/moisture')(state) ||
+          ''
         ),
       },
     })(state),
@@ -208,7 +217,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationSoilColorName: state.handleValue(
           dataValue('$.body.colour')(state) ||
-          dataValue('$.body.groundtruthing/colour')(state)
+          dataValue('$.body.groundtruthing/colour')(state) ||
+          ''
         ),
       },
     })(state),
@@ -218,7 +228,8 @@ alterState(async state => {
       where: {
         WCSPROGRAMS_VegetationSoilDescriptionName: state.handleValue(
           dataValue('$.body.description')(state) ||
-          dataValue('$.body.groundtruthing/description')(state)
+          dataValue('$.body.groundtruthing/description')(state) ||
+          ''
         ),
       },
     })(state),
@@ -249,7 +260,8 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationDistrict',
       where: {
         WCSPROGRAMS_VegetationDistrictName: state.handleValue(
-          dataValue('$.body.district')(state)
+          dataValue('$.body.district')(state) ||
+          ''
         ),
       },
     })(state),
@@ -258,7 +270,8 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
         WCSPROGRAMS_VegetationDrainageName: state.handleValue(
-          dataValue('$.body.drainage')(state)
+          dataValue('$.body.drainage')(state) ||
+          ''
         ),
       },
     })(state),
@@ -267,7 +280,8 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationPhysiography',
       where: {
         WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
-          dataValue('$.body.physiography')(state)
+          dataValue('$.body.physiography')(state) ||
+          ''
         ),
       },
     })(state),
@@ -276,7 +290,8 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_VegetationTopographgy',
       where: {
         WCSPROGRAMS_VegetationTopographgyExtCode: state.handleValue(
-          dataValue('$.body.topography')(state)
+          dataValue('$.body.topography')(state) ||
+          ''
         ),
       },
     })(state),
