@@ -284,7 +284,7 @@ alterState(async state => {
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
-        WCSPROGRAMS_VegetationDrainageName: state.handleValue(
+        WCSPROGRAMS_VegetationDrainageExtCode: state.handleValue(
           dataValue('$.body.drainage')(state) ||
           dataValue('$.body.general_observations/drainage')(state) ||
           ''
