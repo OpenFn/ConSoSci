@@ -46,6 +46,12 @@ alterState(state => {
   const convertValue = value => {
     return value === 'yes' ? 1 : 0;
   };
+
+  state.surveydate = dataValue('$.body.surveydate')(state) &&
+    dataValue('$.body.surveydate')(state) !== undefined ?
+    dataValue('$.body.surveydate')(state) :
+    dataValue('$.body.general_observations/surveydate')(state);
+
   return { ...state, handleValue, convertValue };
 });
 
@@ -301,7 +307,7 @@ alterState(async state => {
     })(state),
     StartTime: dataValue('$.body.start_time'),
     SubmissionDate: dataValue('$.body._submission_time'),
-    Surveydate: dataValue('$.body.surveydate') ? dataValue('$.body.surveydate') : dataValue('$.body.general_observations/surveydate'),
+    Surveydate: state.surveydate,
     Answer_ID: state.data.body._id,
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
