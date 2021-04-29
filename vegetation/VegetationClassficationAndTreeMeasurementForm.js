@@ -676,12 +676,12 @@ alterState(async state => {
     });
   }
 
-  tree10cm = tree10cm.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
+  var unTrees = tree10cm.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
 
   return upsertMany(
     'WCSPROGRAMS_VegetationBigTrees',
     'WCSPROGRAMS_VegetationBigTreesExtCode',
-    () => tree10cm
+    () => unTrees
   )(state);
 });
 
