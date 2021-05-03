@@ -23,12 +23,12 @@ get(`${state.data.url}`, {}, state => {
     decimal: 'float4',
     end: 'date',
     integer: 'int4',
-    select_one: 'varchar',
+    select_one: 'select_one',
     start: 'date',
     text: 'text',
     today: 'date',
     jsonb: 'jsonb',
-    select_multiple: 'text',
+    select_multiple: 'select_multiple',
     geopoint: 'text',
   };
 
@@ -190,6 +190,55 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       }
     );
+    questions.forEach(q => {
+      switch (q.type) {
+        case 'select_one':
+          tableName = `${prefix1}_${prefix2}_${q.name}`;
+          tables.push({
+            name: tableName,
+            columns: [
+              {
+                name: `${toCamelCase(q.name)}ID`,
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: `${toCamelCase(q.name)}Name`,
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+            ],
+            formName,
+            depth: 0,
+          });
+          break;
+
+        case 'select_multiple':
+          tableName = `${prefix1}_${prefix2}_${q.name}`;
+          tables.push({
+            name: tableName,
+            columns: [
+              {
+                name: `${toCamelCase(q.name)}ID`,
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+              {
+                name: `${toCamelCase(q.name)}Name`,
+                type: 'text',
+                depth: 0,
+                path: [],
+              },
+            ],
+            formName,
+            depth: 0,
+          });
+          break;
+      }
+    });
 
     return tables;
   }
