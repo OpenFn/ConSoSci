@@ -13,8 +13,8 @@ each('$.forms[*]', state => {
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
 
-            let columns = state.data.columns.filter(x => x.name !== undefined);
-            columns = columns.forEach(col =>
+            const columns = state.data.columns.filter(x => x.name !== undefined);
+            columns.forEach(col =>
               col.type === 'select_one' || col.type === 'select_multiple'
                 ? (col.type = 'text')
                 : col.type
@@ -28,18 +28,18 @@ each('$.forms[*]', state => {
             const columnNames = rows.map(x => x.column_name);
 
             console.log('----------------------');
-            let newColumns = state.data.columns.filter(
+            const newColumns = state.data.columns.filter(
               x =>
                 x.name !== undefined &&
                 !columnNames.includes(x.name.toLowerCase())
             );
-            newColumns = newColumns.forEach(col =>
+            newColumns.forEach(col =>
               col.type === 'select_one' || col.type === 'select_multiple'
                 ? (col.type = 'text')
                 : col.type
             );
             console.log(newColumns);
-            if (newColumns.length > 0) {
+            if (newColumns && newColumns.length > 0) {
               console.log('Existing table found in postgres --- Updating.');
               // Note: Specify options here (e.g {writeSql: false, execute: true})
               return modifyTable(name, state => newColumns, {
