@@ -13,8 +13,11 @@ each('$.forms[*]', state => {
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
 
-            const columns = state.data.columns.filter(
-              x => x.name !== undefined
+            let columns = state.data.columns.filter(x => x.name !== undefined);
+            columns = columns.forEach(col =>
+              col.type === 'select_one' || col.type === 'select_multiple'
+                ? (col.type = 'text')
+                : col.type
             );
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {
@@ -25,10 +28,15 @@ each('$.forms[*]', state => {
             const columnNames = rows.map(x => x.column_name);
 
             console.log('----------------------');
-            const newColumns = state.data.columns.filter(
+            let newColumns = state.data.columns.filter(
               x =>
                 x.name !== undefined &&
                 !columnNames.includes(x.name.toLowerCase())
+            );
+            newColumns = newColumns.forEach(col =>
+              col.type === 'select_one' || col.type === 'select_multiple'
+                ? (col.type = 'text')
+                : col.type
             );
             console.log(newColumns);
             if (newColumns.length > 0) {
