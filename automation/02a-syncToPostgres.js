@@ -19,6 +19,7 @@ each('$.forms[*]', state => {
                 ? (col.type = 'text')
                 : col.type
             );
+            console.log(columns)
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {
               writeSql: true,
