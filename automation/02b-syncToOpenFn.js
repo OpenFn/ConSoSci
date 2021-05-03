@@ -89,6 +89,11 @@ each(
           return mapping;
         }
 
+        function generateFindValue(uuid, relation, leftOperand, rightOperand) {
+          var fn = `findValue({uuid: '${uuid}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}')(state), },})`;
+          return fn;
+        }
+
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
@@ -96,7 +101,15 @@ each(
           else
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
-                ? `dataValue('${paths[k]}')`
+                ? columns[k].type === 'select_one' ||
+                  columns[k].type === 'select_multiple'
+                  ? generateFindValue(
+                      `${columns[k].name}ID`,
+                      `${state.prefix1}_${state.prefix2}_${columns[k].name}`,
+                      `${columns[k].name}Name`,
+                      columns[k].name
+                    )
+                  : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
         }
 
