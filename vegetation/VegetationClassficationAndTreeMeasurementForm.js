@@ -777,7 +777,7 @@ alterState(async state => {
   var unTrees = tree10cm.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationBigTrees',
+    'WCSPROGRAMS_VegetationVegetationBigTrees',
     'Generated_ID',
     () => unTrees
   )(state);
