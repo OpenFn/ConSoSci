@@ -502,7 +502,7 @@ alterState(async state => {
   var unGrass = dataGrass.filter(c => c['st_grass_repeat/grass_species'] && c['st_grass_repeat/grass_species'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationGrass',
+    'WCSPROGRAMS_VegetationVegetationGrass',
     'Generated_ID',
     () => unGrass
   )(state);
