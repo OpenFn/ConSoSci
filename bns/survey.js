@@ -64,7 +64,7 @@ alterState(state => {
         NrCollect: state.data[key],
       }));
 
-    state.matrix = Object.keys(state.data)
+    const matrix = Object.keys(state.data)
       .filter(key => key.includes('bns_matrix_'))
       .map(key => {
         const item = key.substring(
@@ -90,6 +90,8 @@ alterState(state => {
             ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
         };
       });
+
+    state.matrix = [...new Set(matrix)];
     // ===========================================================================
     console.log(`bns_matrix to upload...: ${JSON.stringify(state.matrix)}`);
     return state;
