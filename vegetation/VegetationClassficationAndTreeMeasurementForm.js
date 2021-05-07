@@ -591,7 +591,7 @@ alterState(async state => {
   var unBrush = brushRepeat.filter(c => c['brush_repeat/brus_species'] && c['brush_repeat/brus_species'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationBrush',
+    'WCSPROGRAMS_VegetationVegetationBrush',
     'Generated_ID',
     () => unBrush
   )(state);
