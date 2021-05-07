@@ -377,7 +377,7 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationObserver',
+    'WCSPROGRAMS_VegetationVegetationObserver',
     'Generated_ID',
     () => observers
   )(state);
@@ -478,7 +478,7 @@ alterState(async state => {
 
   for (let data of uniqueGrass) {
     dataGrass.push({
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -576,7 +576,7 @@ alterState(async state => {
           ),
         },
       })(state),
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -669,7 +669,7 @@ alterState(async state => {
           ),
         },
       })(state),
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -684,7 +684,7 @@ alterState(async state => {
   var unTrees = treeRepeat.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationTrees',
+    'WCSPROGRAMS_VegetationVegetationTrees',
     'Generated_ID',
     () => unTrees
   )(state);
@@ -761,8 +761,8 @@ alterState(async state => {
           WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
         },
       })(state),
-      //WCSPROGRAMS_VegatationID: vegId,
-      WCSPROGRAMS_VegatationID: await findValue({
+      //WCSPROGRAMS_VegetationID: vegId,
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
