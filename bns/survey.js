@@ -91,9 +91,15 @@ alterState(state => {
         };
       });
 
-    state.matrix = [...new Set(matrix)];
+    state.matrix = matrix.filter(
+      (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
+    );
     // ===========================================================================
-    console.log(`bns_matrix to upload...: ${JSON.stringify(state.matrix)}`);
+    console.log(
+      'The bns_matrix',
+      JSON.stringify(state.matrix, null, 2),
+      `contains ${state.matrix.length} items.`
+    );
     return state;
   } catch (error) {
     state.connection.close();
