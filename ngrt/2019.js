@@ -44,6 +44,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'), 
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
+  SurveyDate: dataValue('today'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
   Objective: dataValue('objective'),
