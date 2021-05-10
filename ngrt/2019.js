@@ -58,6 +58,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
+  Power: dataValue('power'),
   LastUpdate: new Date().toISOString(), 
 });
 
