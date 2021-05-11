@@ -44,6 +44,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'), 
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
+  SurveyDate: dataValue('today'),
   Gender: dataValue('gender'),
   Member: dataValue('member'),
   Objective: dataValue('objective'),
@@ -57,6 +58,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   Resources: dataValue('resources'),
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
+  Power: dataValue('power'),
   LastUpdate: new Date().toISOString(), 
 });
 

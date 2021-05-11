@@ -308,10 +308,10 @@ alterState(async state => {
       },
     })(state),
     WCSPROGRAMS_VegetationTopographyID: await findValue({
-      uuid: 'WCSPROGRAMS_VegetationTopographgyID',
-      relation: 'WCSPROGRAMS_VegetationTopographgy',
+      uuid: 'WCSPROGRAMS_VegetationTopographyID',
+      relation: 'WCSPROGRAMS_VegetationTopography',
       where: {
-        WCSPROGRAMS_VegetationTopographgyExtCode: state.handleValue(
+        WCSPROGRAMS_VegetationTopographyExtCode: state.handleValue(
           dataValue('$.body.topography')(state) ||
           dataValue('$.body.general_observations/topography')(state) ||
           ''
@@ -377,7 +377,7 @@ alterState(async state => {
     });
   }
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationObserver',
+    'WCSPROGRAMS_VegetationVegetationObserver',
     'Generated_ID',
     () => observers
   )(state);
@@ -478,7 +478,7 @@ alterState(async state => {
 
   for (let data of uniqueGrass) {
     dataGrass.push({
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -502,7 +502,7 @@ alterState(async state => {
   var unGrass = dataGrass.filter(c => c['st_grass_repeat/grass_species'] && c['st_grass_repeat/grass_species'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationGrass',
+    'WCSPROGRAMS_VegetationVegetationGrass',
     'Generated_ID',
     () => unGrass
   )(state);
@@ -576,7 +576,7 @@ alterState(async state => {
           ),
         },
       })(state),
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -591,7 +591,7 @@ alterState(async state => {
   var unBrush = brushRepeat.filter(c => c['brush_repeat/brus_species'] && c['brush_repeat/brus_species'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationBrush',
+    'WCSPROGRAMS_VegetationVegetationBrush',
     'Generated_ID',
     () => unBrush
   )(state);
@@ -669,7 +669,7 @@ alterState(async state => {
           ),
         },
       })(state),
-      WCSPROGRAMS_VegatationID: await findValue({
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -684,7 +684,7 @@ alterState(async state => {
   var unTrees = treeRepeat.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationTrees',
+    'WCSPROGRAMS_VegetationVegetationTrees',
     'Generated_ID',
     () => unTrees
   )(state);
@@ -761,8 +761,8 @@ alterState(async state => {
           WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
         },
       })(state),
-      //WCSPROGRAMS_VegatationID: vegId,
-      WCSPROGRAMS_VegatationID: await findValue({
+      //WCSPROGRAMS_VegetationID: vegId,
+      WCSPROGRAMS_VegetationID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationID',
         relation: 'WCSPROGRAMS_Vegetation',
         where: { Answer_ID: state.data.body._id },
@@ -777,7 +777,7 @@ alterState(async state => {
   var unTrees = tree10cm.filter(c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined);
 
   return upsertMany(
-    'WCSPROGRAMS_VegatationVegetationBigTrees',
+    'WCSPROGRAMS_VegetationVegetationBigTrees',
     'Generated_ID',
     () => unTrees
   )(state);

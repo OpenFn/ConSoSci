@@ -64,7 +64,7 @@ alterState(state => {
         NrCollect: state.data[key],
       }));
 
-    state.matrix = Object.keys(state.data)
+    const matrix = Object.keys(state.data)
       .filter(key => key.includes('bns_matrix_'))
       .map(key => {
         const item = key.substring(
@@ -72,7 +72,7 @@ alterState(state => {
           key.lastIndexOf('_')
         );
         return {
-          DatasetUuidId: state.data.datasetId,
+          Dataset_Id: state.data.datasetId, //DatasetUuidId
           //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
@@ -90,8 +90,16 @@ alterState(state => {
             ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
         };
       });
+
+    state.matrix = matrix.filter(
+      (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
+    );
     // ===========================================================================
-    console.log(`bns_matrix to upload...: ${JSON.stringify(state.matrix)}`);
+    console.log(
+      'The bns_matrix',
+      JSON.stringify(state.matrix, null, 2),
+      `contains ${state.matrix.length} items.`
+    );
     return state;
   } catch (error) {
     state.connection.close();
@@ -102,6 +110,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
   //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
+  SubmissionUuid: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
   SurveyDate: state =>
