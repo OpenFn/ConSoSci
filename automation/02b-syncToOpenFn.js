@@ -110,7 +110,7 @@ each(
                       paths[k]
                     )
                   : columns[k].parentColumn
-                  ? `dataValue('${columns[k].parentColumn}')`
+                  ? `dataValue('${columns[k].path.join('/')}')`
                   : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
         }
