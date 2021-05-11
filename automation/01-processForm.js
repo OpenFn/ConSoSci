@@ -227,6 +227,7 @@ get(`${state.data.url}`, {}, state => {
             ],
             formName,
             depth: 0,
+            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
           });
           break;
 
@@ -264,6 +265,7 @@ get(`${state.data.url}`, {}, state => {
             ],
             formName,
             depth: 0,
+            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
           });
           break;
       }
@@ -329,6 +331,7 @@ get(`${state.data.url}`, {}, state => {
     prefix2,
     uuid,
     tableId,
+    data: {},
     response: {},
   };
 });
