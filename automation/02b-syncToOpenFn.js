@@ -90,7 +90,7 @@ each(
         }
 
         function generateFindValue(uuid, relation, leftOperand, rightOperand) {
-          var fn = `findValue({uuid: '${uuid}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}')(state), },})`;
+          var fn = `findValue({uuid: '${uuid}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}')(state) }})`;
           return fn;
         }
 
@@ -107,7 +107,7 @@ each(
                       `${columns[k].name}ID`,
                       `${state.prefix1}_${state.prefix2}_${columns[k].name}`,
                       `${columns[k].name}Name`,
-                      columns[k].name
+                      paths[k]
                     )
                   : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
