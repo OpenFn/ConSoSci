@@ -13,7 +13,9 @@ each('$.forms[*]', state => {
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
 
-            const columns = state.data.columns.filter(x => x.name !== undefined);
+            const columns = state.data.columns.filter(
+              x => x.name !== undefined
+            );
             columns.forEach(col =>
               col.type === 'select_one' || col.type === 'select_multiple'
                 ? (col.type = 'text')
