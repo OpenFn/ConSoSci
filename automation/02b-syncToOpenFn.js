@@ -109,6 +109,8 @@ each(
                       `${columns[k].name}Name`,
                       paths[k]
                     )
+                  : columns[k].parentColumn
+                  ? `dataValue('${columns[k].parentColumn}')`
                   : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
         }
