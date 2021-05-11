@@ -204,18 +204,21 @@ get(`${state.data.url}`, {}, state => {
                 depth: 0,
                 path: [],
                 rule: 'DO_NOT_MAP',
+                parentColumn: q.name
               },
               {
                 name: `${toCamelCase(q.name)}Name`,
                 type: 'text',
                 depth: 0,
                 path: [],
+                parentColumn: q.name
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
                 depth: 0,
                 path: [],
+                parentColumn: q.name
               },
               { name: 'Payload', type: 'jsonb' },
             ],
@@ -235,18 +238,21 @@ get(`${state.data.url}`, {}, state => {
                 depth: 0,
                 path: [],
                 rule: 'DO_NOT_MAP',
+                parentColumn: q.name,
               },
               {
                 name: `${toCamelCase(q.name)}Name`,
                 type: 'text',
                 depth: 0,
                 path: [],
+                parentColumn: q.name,
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
                 depth: 0,
                 path: [],
+                parentColumn: q.name,
               },
               { name: 'Payload', type: 'jsonb' },
             ],
