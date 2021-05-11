@@ -191,7 +191,7 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       }
     );
-    questions.forEach(q => {
+    questions.forEach((q, i, arr) => {
       switch (q.type) {
         case 'select_one':
           tableName = `${prefix1}_${prefix2}_${q.name}`;
@@ -202,23 +202,26 @@ get(`${state.data.url}`, {}, state => {
                 name: `${toCamelCase(q.name)}ID`,
                 type: 'identity',
                 depth: 0,
-                path: [],
+                // path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 rule: 'DO_NOT_MAP',
-                parentColumn: q.name
+                parentColumn: q.name,
               },
               {
                 name: `${toCamelCase(q.name)}Name`,
                 type: 'text',
                 depth: 0,
-                path: [],
-                parentColumn: q.name
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
                 depth: 0,
-                path: [],
-                parentColumn: q.name
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
               },
               { name: 'Payload', type: 'jsonb' },
             ],
@@ -236,7 +239,8 @@ get(`${state.data.url}`, {}, state => {
                 name: `${toCamelCase(q.name)}ID`,
                 type: 'identity',
                 depth: 0,
-                path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
                 rule: 'DO_NOT_MAP',
                 parentColumn: q.name,
               },
@@ -244,14 +248,16 @@ get(`${state.data.url}`, {}, state => {
                 name: `${toCamelCase(q.name)}Name`,
                 type: 'text',
                 depth: 0,
-                path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
                 parentColumn: q.name,
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
                 depth: 0,
-                path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
                 parentColumn: q.name,
               },
               { name: 'Payload', type: 'jsonb' },
