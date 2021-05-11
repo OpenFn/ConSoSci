@@ -98,7 +98,7 @@ each(
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
-          else
+          else if (columns[k].rule !== 'DO_NOT_MAP')
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
                 ? columns[k].type === 'select_one' ||
