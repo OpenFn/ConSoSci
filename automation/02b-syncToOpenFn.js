@@ -206,7 +206,7 @@ each(
   alterState(state => {
     const triggerNames = state.triggers.map(t => t.name);
 
-    const name = `auto/${state.data[1].name}`;
+    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
     const criteria = state.data.triggerCriteria;
     const triggerIndex = triggerNames.indexOf(name);
 
@@ -241,14 +241,16 @@ each(
   '$.forms[*]',
   alterState(state => {
     const expression = state.data.expression;
-    console.log('Inserting / Updating job: ', `auto/${state.data[1].name}`);
+    console.log(
+      'Inserting / Updating job: ',
+      `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`
+    );
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
-    const name = `auto/${state.data[1].name}`;
+    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
     const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
     const triggerIndex = triggersName.indexOf(name);
     const triggerId = state.triggers[triggerIndex].id;
-
     const job = {
       adaptor: 'postgresql',
       expression,
