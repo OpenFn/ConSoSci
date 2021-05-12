@@ -43,8 +43,17 @@ Slides: [https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0
 Slides: [https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing](https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing)
 
 4. Day 4 topics: Automation Solution Recap & Questions. Custom Integration Options & Use Cases. Integration Design & Data Element Mapping. Practice (Design & Configuration)
+
 Slides: [https://docs.google.com/presentation/d/1Hu75OuFxqK1SJk4C2H-9RnawbIVW8W4dCUvcNOm25-A/edit#slide=id.gc90ebee775_0_161](https://docs.google.com/presentation/d/1Hu75OuFxqK1SJk4C2H-9RnawbIVW8W4dCUvcNOm25-A/edit#slide=id.gc90ebee775_0_161)
 
+5. Day 5 topics: Recap: Data Element Mapping. More on Integration Design & OpenFn Jobs. Platform Practice. Customizing the Automation Solution
+Slides: [https://docs.google.com/presentation/d/1RRCYEYlrYPPrOsu-ahEFRQsm-6BxahXhsA0JiaoMjbY/edit#slide=id.gc90ebee775_0_161](https://docs.google.com/presentation/d/1RRCYEYlrYPPrOsu-ahEFRQsm-6BxahXhsA0JiaoMjbY/edit#slide=id.gc90ebee775_0_161)
+
+6. Day 6 topics: Recap: Integration Design & Mapping. Job Configuration Practice (Jobs, Triggers, Creds). Job Writing 101
+Slides: [https://docs.google.com/presentation/d/1X-dhP6_E5H9LmXvktNFjlfw_YYCbgvKVZ-z0St2jMw0/edit#slide=id.gc90ebee775_0_161](https://docs.google.com/presentation/d/1X-dhP6_E5H9LmXvktNFjlfw_YYCbgvKVZ-z0St2jMw0/edit#slide=id.gc90ebee775_0_161)
+Job Writing Homework: [https://docs.google.com/spreadsheets/d/1gyNJ2gyFOVQVyUuBH5iegVKnwoP8fyqvuhv8DQh5XkM/edit#gid=1375732313](https://docs.google.com/spreadsheets/d/1gyNJ2gyFOVQVyUuBH5iegVKnwoP8fyqvuhv8DQh5XkM/edit#gid=1375732313)
+
+7. Day 7 topics: More Advanced Job Writing.
 
 [See the Training Videos](https://www.youtube.com/watch?v=uVx5aKV3XkE&list=PLWJOtbS1f2g9mbVqIkZqlpA7IwS0wuOjM) for the April 2021 ConSoSci training sessions. 
 
