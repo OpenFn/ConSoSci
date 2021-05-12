@@ -194,7 +194,7 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach((q, i, arr) => {
       switch (q.type) {
         case 'select_one':
-          tableName = `${prefix1}_${prefix2}_${q.name}`;
+          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
           tables.push({
             name: tableName,
             columns: [
@@ -233,7 +233,7 @@ get(`${state.data.url}`, {}, state => {
           break;
 
         case 'select_multiple':
-          tableName = `${prefix1}_${prefix2}_${q.name}`;
+          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
           tables.push({
             name: tableName,
             columns: [
