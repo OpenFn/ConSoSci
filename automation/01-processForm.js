@@ -218,6 +218,7 @@ get(`${state.data.url}`, {}, state => {
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
+                unique: true,
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
@@ -256,6 +257,7 @@ get(`${state.data.url}`, {}, state => {
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
                 type: 'text',
+                unique: true,
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
