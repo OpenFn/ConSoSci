@@ -46,7 +46,7 @@ each(
     }
     var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
-      const { columns, name, formName, depth, __newUuid } = state.data[i];
+      const { columns, name, formName, depth, ReferenceUuid } = state.data[i];
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         var paths = [];
         form_name = formName;
@@ -121,10 +121,13 @@ each(
         // =====================================================================
 
         if (name !== `${state.prefix1}__KoboDataset`) {
-          mapKoboToPostgres[toCamelCase(state.uuid)] =
-            columns[0].depth > 0
-              ? `x['__generatedUuid']`
-              : `dataValue('__generatedUuid')`;
+          // We check if that table has a defined ReferenceUuid that we should use ====
+          // instead of the default generated_uuid.
+          if (!ReferenceUuid)
+            mapKoboToPostgres[toCamelCase(state.uuid)] =
+              columns[0].depth > 0
+                ? `x['__generatedUuid']`
+                : `dataValue('__generatedUuid')`;
 
           if (columns[0].depth > 1) {
             mapKoboToPostgres[
@@ -141,7 +144,7 @@ each(
         var uuid =
           name === `${state.prefix1}__KoboDataset`
             ? 'DatasetId'
-            : toCamelCase(state.uuid);
+            : ReferenceUuid || toCamelCase(state.uuid);
 
         let mapping = `${operation}('${name}', '${uuid}', `;
 
