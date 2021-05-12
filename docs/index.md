@@ -43,6 +43,7 @@ Slides: [https://docs.google.com/presentation/d/1Q9YKKiaTg3ty4BC6f7PMsnXcrT6WaF0
 Slides: [https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing](https://docs.google.com/presentation/d/16ZenDRq3zmX6LgrH4_g3O9lISTve42ZDJgjm7RThbTY/edit?usp=sharing)
 
 4. Day 4 topics: Automation Solution Recap & Questions. Custom Integration Options & Use Cases. Integration Design & Data Element Mapping. Practice (Design & Configuration)
+Data Element Practice Sheet: [https://docs.google.com/spreadsheets/d/1I2_kIDD7wAQNTcPFlND560xrX40zquWpzx_pTqAwcUA/edit#gid=0](https://docs.google.com/spreadsheets/d/1I2_kIDD7wAQNTcPFlND560xrX40zquWpzx_pTqAwcUA/edit#gid=0)
 
 Slides: [https://docs.google.com/presentation/d/1Hu75OuFxqK1SJk4C2H-9RnawbIVW8W4dCUvcNOm25-A/edit#slide=id.gc90ebee775_0_161](https://docs.google.com/presentation/d/1Hu75OuFxqK1SJk4C2H-9RnawbIVW8W4dCUvcNOm25-A/edit#slide=id.gc90ebee775_0_161)
 
