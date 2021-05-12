@@ -30,7 +30,7 @@ get(`${state.data.url}`, {}, state => {
     jsonb: 'jsonb',
     select_multiple: 'select_multiple',
     geopoint: 'text',
-    identity: 'identity',
+    // identity: 'identity',
   };
 
   const discards = [
@@ -200,7 +200,7 @@ get(`${state.data.url}`, {}, state => {
             columns: [
               {
                 name: `${toCamelCase(q.name)}ID`,
-                type: 'identity',
+                type: 'int4',
                 depth: 0,
                 // path: [],
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
@@ -238,7 +238,7 @@ get(`${state.data.url}`, {}, state => {
             columns: [
               {
                 name: `${toCamelCase(q.name)}ID`,
-                type: 'identity',
+                type: 'int4',
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
