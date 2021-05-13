@@ -5,6 +5,9 @@ nav_order: 7
 permalink: /training/
 ---
 
+# Training
+
+
 OpenFn has conducted a series of training sessions for ConSoSci partners in April 2021, starting from an overview of the integration and the OpenFn platform, then covering integration design and concluding with more technical sessions on implementing OpenFn jobs. 
 
 ### ConSoSci OpenFn Training Materials 2021
