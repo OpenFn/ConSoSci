@@ -202,6 +202,7 @@ get(`${state.data.url}`, {}, state => {
               {
                 name: `${toCamelCase(q.name)}ID`,
                 type: 'int4',
+                identity: true,
                 depth: 0,
                 // path: [],
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
@@ -241,6 +242,7 @@ get(`${state.data.url}`, {}, state => {
               {
                 name: `${toCamelCase(q.name)}ID`,
                 type: 'int4',
+                identity: true,
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
