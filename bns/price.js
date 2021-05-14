@@ -64,8 +64,10 @@ sql({
 });
 
 alterState(state => {
+  const count = state.data.good.length;
   const data = state.data.good.map(g => ({
-    Id: state.data._id,
+    // Id: state.data._id,
+    Id: count,
     AnswerId: state.data._id,
     DatasetUuidId: state.data.datasetId,
     Surveyor: state.data.surveyor,
