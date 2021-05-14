@@ -113,6 +113,9 @@ each(
                   ? `dataValue('${columns[k].path.join('/')}')`
                   : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
+          if (columns[k].name === 'AnswerId') {
+            mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
+          }
         }
 
         // Here we use an expression, rather than a function, to take the ======
