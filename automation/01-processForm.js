@@ -99,6 +99,7 @@ get(`${state.data.url}`, {}, state => {
     form.push(
       // Adding a column as jsonb to take the whole payload
       { name: 'Payload', type: 'jsonb' },
+      { name: 'AnswerId', type: 'text' },
       { name: toCamelCase(uuid), type: 'text', unique: true }
     );
 
