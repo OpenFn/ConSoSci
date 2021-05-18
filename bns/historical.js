@@ -27,11 +27,14 @@ alterState(state => {
     { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb' }, // resynced May 10, 2021
     { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie'}, // resynced May 10, 2021
 
+    //  Resyncing BNS Makira 2019 to fix the quantity issue on radio
+    { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price', name: 'BNS Makira 2019', owner: 'wcs_mamabay' }, // resynced April13,2021
+    
      // Resyncing BNS forms to fix duplicates issue in gs table
-     { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // TO RESYNC AFTER DATA DELETED IN DB
-     { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // TO RESYNC AFTER DATA DELETED IN DB
-     { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'wcs_ndoki' }, // TO RESYNC AFTER DATA DELETED IN DB
-     { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // TO RESYNC AFTER DATA DELETED IN DB
+     //{ id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // TO RESYNC AFTER DATA DELETED IN DB
+     //{ id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'BNS extended Uganda 2020', owner: 'wcs_uganda_carbon'}, // TO RESYNC AFTER DATA DELETED IN DB
+     //{ id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki 2020', owner: 'wcs_ndoki' }, // TO RESYNC AFTER DATA DELETED IN DB
+     //{ id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // TO RESYNC AFTER DATA DELETED IN DB
       
      //BNS
       // HH 2021 
