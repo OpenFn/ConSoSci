@@ -160,15 +160,14 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
 });
 
 alterState(state => {
-  const count = state.data.hh_members.length;
   if (state.data.hh_members) {
     return insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', (
       state //then insert other members
     ) =>
-      state.data.hh_members.map(member => ({
+      state.data.hh_members.map((member, i) => ({
         DatasetUuidId: state.data.datasetId,
         // Id: state.data._id,
-        Id: count,
+        Id: i + 1,
         AnswerId: state.data._id,
         Head: '0',
         Gender: member[`hh_members/gender`],
