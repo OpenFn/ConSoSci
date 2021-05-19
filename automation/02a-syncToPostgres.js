@@ -7,7 +7,7 @@ each('$.forms[*]', state => {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
         return describeTable(name.toLowerCase(), {
           writeSql: true,
-          execute: true,
+          execute: false,
         })(state).then(postgresColumn => {
           const { rows } = postgresColumn.response.body;
           if (postgresColumn.response.body.rowCount === 0) {
@@ -24,7 +24,7 @@ each('$.forms[*]', state => {
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {
               writeSql: true,
-              execute: true,
+              execute: false,
             })(state);
           } else {
             const columnNames = rows.map(x => x.column_name);
@@ -46,7 +46,7 @@ each('$.forms[*]', state => {
               // Note: Specify options here (e.g {writeSql: false, execute: true})
               return modifyTable(name, state => newColumns, {
                 writeSql: true,
-                execute: true,
+                execute: false,
               })(state);
             } else {
               console.log('No new columns to add.');
