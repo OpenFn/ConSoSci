@@ -94,11 +94,12 @@ each(
           return fn;
         }
 
+        let logical = undefined;
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
           if (columns[k].depth > 0)
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
-          else if (columns[k].rule !== 'DO_NOT_MAP')
+          else if (columns[k].rule !== 'DO_NOT_MAP') {
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}__KoboDataset`
                 ? columns[k].type === 'select_one' ||
@@ -113,6 +114,10 @@ each(
                   ? `dataValue('${columns[k].path.join('/')}')`
                   : `dataValue('${paths[k]}')`
                 : `${paths[k]}`;
+            //generating logical
+            if (columns[k].parentColumn)
+              logical = `dataValue('${columns[k].path.join('/')}')`;
+          }
           if (columns[k].name === 'AnswerId') {
             mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
           }
@@ -143,13 +148,16 @@ each(
           }
         }
 
-        const operation = depth > 0 ? `upsertMany` : `upsert`;
+        const operation =
+          depth > 0 ? `upsertMany` : ReferenceUuid ? `upsertIf` : `upsert`;
         var uuid =
           name === `${state.prefix1}__KoboDataset`
             ? 'DatasetId'
             : ReferenceUuid || toCamelCase(state.uuid);
 
-        let mapping = `${operation}('${name}', '${uuid}', `;
+        let mapping = ReferenceUuid
+          ? `${operation}(${logical}(state) !== undefined,'${name}', '${uuid}', `
+          : `${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
           const path = columns[0].path.join('/');
