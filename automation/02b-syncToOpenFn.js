@@ -156,7 +156,7 @@ each(
             : ReferenceUuid || toCamelCase(state.uuid);
 
         let mapping = ReferenceUuid
-          ? `${operation}(${logical}(state) !== undefined,'${name}', '${uuid}', `
+          ? `${operation}(${logical},'${name}', '${uuid}', `
           : `${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
