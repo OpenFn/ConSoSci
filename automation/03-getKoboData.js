@@ -8,21 +8,21 @@ alterState(state => {
   const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
-       {
+      {
         uid: 'aDgPJqN4SAYohZ4ZueEeYU',
         formName: 'Arcadia Data Collection Site Survey',
-        tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan'
+        tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       },
       //{
-     //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
-     //  formName: 'SWM Etude Marché 9Feb',
-     //  tableId: 'WCS_marche_SWMEtudeMarché9Feb'
-     //},
-     // {
-     //   uid: 'azg4rJb2Kk8DT2upSPyYjB',
-     //  formName: 'Livestock production demo',
-     //    tableId: 'WCS_Livestock_LivestockProduction'
-     //},
+      //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
+      //  formName: 'SWM Etude Marché 9Feb',
+      //  tableId: 'WCS_marche_SWMEtudeMarché9Feb'
+      //},
+      // {
+      //   uid: 'azg4rJb2Kk8DT2upSPyYjB',
+      //  formName: 'Livestock production demo',
+      //    tableId: 'WCS_Livestock_LivestockProduction'
+      //},
       //{
       //  uid: 'apZrpKcK78xzrPcAfRrfac',
       //  formName: 'Sharks & Rays 24 March',
@@ -65,10 +65,12 @@ each(dataPath('surveys[*]'), state => {
 });
 
 alterState(state => {
-  const lastEnd = state.references
+  let lastEnd = state.references
     .filter(item => item.body)
     .map(s => s.body.end)
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+  lastEnd = new Date(lastEnd) > new Date() ? lastEnd : new Date().toISOString();
 
   console.log('New cursor value:', lastEnd);
   return { ...state, data: {}, references: [], lastEnd };
