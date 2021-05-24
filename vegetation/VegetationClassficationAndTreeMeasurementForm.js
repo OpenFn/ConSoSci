@@ -318,6 +318,11 @@ alterState(async state => {
         ),
       },
     })(state),
+    //TODO: Add destination columns to DB
+//     Sdbh: dataValue('$.body.sdbh'),
+//     Sght: dataValue('$.body.sght'),
+//     Sbdbh: dataValue('$.body.sbdbh'),
+//     Sbght: dataValue('$.body.sbght'),
     StartTime: state.starttime,
     SubmissionDate: dataValue('$.body._submission_time'),
     Surveydate: state.surveydate,
