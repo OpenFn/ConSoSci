@@ -330,9 +330,7 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.observername ? state.data.body.observername : 
-    (state.data.body['general_observations/obsevername'] ? state.data.body['general_observations/obsevername'] : 
-    state.data.body.obsevername) || []; //turning select_multiple into an arrray
+  const dataArray = state.data.body.observername || []; //turning select_multiple into an arrray
   const observers = [];
 
   for (let data of dataArray) {
