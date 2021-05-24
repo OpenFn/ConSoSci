@@ -252,8 +252,9 @@ alterState(async state => {
       },
     })(state),
     North:
-      dataValue('$.body.north') || dataValue('$.body.plot_description/north'),
-    East: dataValue('$.body.east') || dataValue('$.body.plot_description/east'),
+      dataValue('$.body.north') ? dataValue('$.body.north') : dataValue('$.body.plot_description/north'),
+    East: 
+      dataValue('$.body.east') ? dataValue('$.body.east') : dataValue('$.body.plot_description/east'),
     Waypoint:
       dataValue('$.body.waypoint') ||
       dataValue('$.body.plot_description/waypoint'),
