@@ -260,11 +260,11 @@ alterState(async state => {
       dataValue('$.body.plot_description/waypoint')},
     //PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
     Latitude: state => {
-      return dataValue('$.body.plot_gps')(state)[0]
+      return dataValue('$.body.plot_gps')(state)
       ? dataValue('$.body.plot_gps')(state)[0]
       : 0},
     Longitude: state => {
-      return dataValue('$.body.plot_gps')(state)[1]
+      return dataValue('$.body.plot_gps')(state)
       ? dataValue('$.body.plot_gps')(state)[1]
       : 0},
     // Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0, //TODO: Confirm right geolocation mapping
