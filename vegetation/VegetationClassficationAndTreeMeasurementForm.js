@@ -124,7 +124,7 @@ alterState(async state => {
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
       relation: 'WCSPROGRAMS_VegetationForestType',
       where: {
-        WCSPROGRAMS_VegetationForestTypeName: state.handleValue(
+        WCSPROGRAMS_VegetationForestTypeExtCode: state.handleValue(
           dataValue('$.body.forest_type')(state) ||
           dataValue('$.body.plot_forest_area/forest_type')(state) ||
           ''
