@@ -193,9 +193,9 @@ alterState(async state => {
       dataValue('$.body.groundtruthing/fire')(state) ||
       ''
     ),
-    Bareground:
-      dataValue('$.body.bareground') ||
-      dataValue('$.body.groundtruthing/bareground'),
+    Bareground: state => {
+      return dataValue('$.body.bareground')(state) ||
+      dataValue('$.body.groundtruthing/bareground')(state)},
     WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
       relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
@@ -251,28 +251,30 @@ alterState(async state => {
         ),
       },
     })(state),
-    North:
-      dataValue('$.body.north') ? dataValue('$.body.north') : dataValue('$.body.plot_description/north'),
-    East: 
-      dataValue('$.body.east') ? dataValue('$.body.east') : dataValue('$.body.plot_description/east'),
-    Waypoint:
-      dataValue('$.body.waypoint') ||
-      dataValue('$.body.plot_description/waypoint'),
+    North: state => {
+      return dataValue('$.body.north')(state) ? dataValue('$.body.north')(state) : dataValue('$.body.plot_description/north')(state)},
+    East: state => {
+      return dataValue('$.body.east')(state) ? dataValue('$.body.east')(state) : dataValue('$.body.plot_description/east')(state)},
+    Waypoint: state => {
+      return dataValue('$.body.waypoint')(state) ? dataValue('$.body.waypoint')(state) : 
+      dataValue('$.body.plot_description/waypoint')},
     //PlotGPS: dataValue('$.body.plot_gps'), //TODO: CONFIGURE COLUMN
-    Latitude: dataValue('$.body.plot_gps')[0]
-      ? dataValue('$.body.plot_gps')[0]
-      : 0,
-    Longitude: dataValue('$.body.plot_gps')[1]
-      ? dataValue('$.body.plot_gps')[1]
-      : 0,
+    Latitude: state => {
+      return dataValue('$.body.plot_gps')(state)[0]
+      ? dataValue('$.body.plot_gps')(state)[0]
+      : 0},
+    Longitude: state => {
+      return dataValue('$.body.plot_gps')(state)[1]
+      ? dataValue('$.body.plot_gps')(state)[1]
+      : 0},
     // Latitude: dataValue('_geolocation')[0] ? dataValue('_geolocation')[0] : 0, //TODO: Confirm right geolocation mapping
     // Longitude: dataValue('_geolocation')[1] ? dataValue('_geolocation')[1] : 0,
-    PlotNumber:
-      dataValue('$.body.plot_number') ||
-      dataValue('$.body.plot_description/plot_number'),
-    TransectNo:
-      dataValue('$.body.transect_no') ||
-      dataValue('$.body.plot_description/transect_no'),
+    PlotNumber: state => {
+      return dataValue('$.body.plot_number')(state) ? dataValue('$.body.plot_number')(state) : 
+      dataValue('$.body.plot_description/plot_number')},
+    TransectNo:state => {
+      return dataValue('$.body.transect_no')(state) ? dataValue('$.body.transect_no')(state) : 
+      dataValue('$.body.plot_description/transect_no')},
     SurveySite: dataValue('$.body.name'),
     WCSPROGRAMS_VegetationDistrictID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDistrictID',
