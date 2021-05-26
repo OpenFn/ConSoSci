@@ -44,12 +44,10 @@ each(
         })
         .join('');
     }
-    var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
-      const { columns, name, formName, depth, ReferenceUuid } = state.data[i];
+      const { columns, name, depth, ReferenceUuid } = state.data[i];
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         var paths = [];
-        form_name = formName;
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
           if (name === `${state.prefix1}__KoboDataset`) {
@@ -89,8 +87,9 @@ each(
           return mapping;
         }
 
+        // We generate findValue function (fn) for those that needs it.
         function generateFindValue(uuid, relation, leftOperand, rightOperand) {
-          var fn = `findValue({uuid: '${uuid}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}') }})`;
+          var fn = `await findValue({uuid: '${uuid.toLowerCase()}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}') }})(state)`;
           return fn;
         }
 
@@ -148,16 +147,39 @@ each(
           }
         }
 
+        // We generate a mapping variable that we are going=======
+        // to use inside our operation============================
+        const mapObject = `const mapping = ${JSON.stringify(
+          mapKoboToPostgres,
+          null,
+          2
+        ).replace(/"/g, '')}`;
+        // =======================================================
+
+        const alterSOpening = `alterState(async state => {\n ${mapObject} \n`;
+        const alterSClosing = `});`;
+
         const operation =
-          depth > 0 ? `upsertMany` : ReferenceUuid ? `upsertIf` : `upsert`;
+          depth > 0
+            ? `upsertMany`
+            : ReferenceUuid
+            ? `return upsertIf`
+            : `return upsert`;
+
         var uuid =
           name === `${state.prefix1}__KoboDataset`
             ? 'DatasetId'
             : ReferenceUuid || toCamelCase(state.uuid);
 
+        // 1. If the current table have a ReferenceUuid, then it's a lookup table
+        // We use our alterState opening and close later and the 'logical'.
+        // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
+        // Otherwise it's a flat table and we still use the opening.
         let mapping = ReferenceUuid
-          ? `${operation}(${logical},'${name}', '${uuid}', `
-          : `${operation}('${name}', '${uuid}', `;
+          ? `${alterSOpening} ${operation}(${logical},'${name}', '${uuid}', `
+          : depth > 0
+          ? `${operation}('${name}', '${uuid}', `
+          : `${alterSOpening} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
           const path = columns[0].path.join('/');
@@ -169,13 +191,18 @@ each(
             2
           ).replace(/"/g, '')}))}`;
         } else {
-          mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
-            /"/g,
-            ''
-          );
+          // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
+          //   /"/g,
+          //   ''
+          // );
+          // 'mapping' here is a variable name as we remove ========
+          // the whole object from the operation====================
+          mapping += `mapping`;
         }
-        // END OF BUILDING MAPPINGS
-        expression += wrapper(columns[0], mapping) + '); \n';
+        // END OF BUILDING MAPPINGS (state)
+        expression +=
+          wrapper(columns[0], mapping) +
+          (columns[0].depth > 0 ? '); \n' : `)(state); \n${alterSClosing} \n`);
       }
     }
     state.data.expression = expression;
