@@ -148,6 +148,16 @@ each(
           }
         }
 
+        const mapObject = `const mapping = ${JSON.stringify(
+          mapKoboToPostgres,
+          null,
+          2
+        ).replace(/"/g, '')}`;
+        // console.log('mapObject', mapObject);
+
+        const alterSOpening = `alterState(async state => {\n ${mapObject} \n`;
+        const alterSClosing = `});`;
+
         const operation =
           depth > 0 ? `upsertMany` : ReferenceUuid ? `upsertIf` : `upsert`;
         var uuid =
