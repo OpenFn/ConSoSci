@@ -767,14 +767,17 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.tree_10cm || [];
+  const dataArray =
+    state.data.body.tree_10cm || state.data.body['outering/tree_10cm'] || [];
   const tree10cm = [];
+
+  const path = state.data.body.tree_10cm ? 'tree_10cm' : 'outering/tree_10cm';
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
-    new Set(dataArray.map(tree => tree['tree_10cm/btspecies']))
+    new Set(dataArray.map(tree => tree[`${path}/btspecies`]))
   ).map(id => {
-    return dataArray.filter(c => id === c['tree_10cm/btspecies']);
+    return dataArray.filter(c => id === c[`${path}/btspecies`]);
   });
   //=================================================
 
@@ -784,29 +787,29 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: `%${state.handleValue(data['tree_10cm/btspecies'])}%`,
+          ScientificName: `%${state.handleValue(data[`${path}/btspecies`])}%`,
         },
         operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationBigTreesName: state.handleValue(
-        data['tree_10cm/btspecies']
+        data[`${path}/btspecies`]
       ),
-      WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
-      WCSPROGRAMS_VegetationBigTreesExtCode: data['tree_10cm/bspecimenNo'],
+      WCSPROGRAMS_VegetationBigTreesCode: data[`${path}/btspecies`],
+      WCSPROGRAMS_VegetationBigTreesExtCode: data[`${path}/bspecimenNo`],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data['tree_10cm/btspecies'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
-      SpecimenNo: data['tree_10cm/bspecimenNo'],
-      SpecimenPhoto: data['tree_10cm/bspecimen_photo'],
+      SpecimenNo: data[`${path}/bspecimenNo`],
+      SpecimenPhoto: data[`${path}/bspecimen_photo`],
       //bunlisted: data['tree_10cm/bunlisted'],
-      Dbh: data['tree_10cm/bdbh'],
-      Height: data['tree_10cm/bheight'],
+      Dbh: data[`${path}/bdbh`],
+      Height: data[`${path}/bheight`],
     });
   }
 
   var unTrees = tree10cm.filter(
-    c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined
+    c => c[`${path}/btspecies`] && c[`${path}/btspecies`] !== undefined
   );
 
   return upsertMany(
@@ -817,14 +820,18 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.tree_10cm || [];
+  const dataArray =
+    state.data.body.tree_10cm || state.data.body['outering/tree_10cm'] || [];
+
   const tree10cm = [];
+
+  const path = state.data.body.tree_10cm ? 'tree_10cm' : 'outering/tree_10cm';
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
-    new Set(dataArray.map(tree => tree['tree_10cm/btspecies']))
+    new Set(dataArray.map(tree => tree[`${path}/btspecies`]))
   ).map(id => {
-    var unTrees = dataArray.find(c => id === c['tree_10cm/btspecies']);
+    var unTrees = dataArray.find(c => id === c[`${path}/btspecies`]);
     //console.log('unTrees: ', unTrees);
     return unTrees;
   });
@@ -836,7 +843,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationBigTreesID',
         relation: 'WCSPROGRAMS_VegetationBigTrees',
         where: {
-          WCSPROGRAMS_VegetationBigTreesCode: data['tree_10cm/btspecies'],
+          WCSPROGRAMS_VegetationBigTreesCode: data[`${path}/btspecies`],
         },
       })(state),
       //WCSPROGRAMS_VegetationID: vegId,
@@ -846,14 +853,14 @@ alterState(async state => {
         where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['tree_10cm/btspecies'],
+      Generated_ID: state.data.body._id + data[`${path}/btspecies`],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
   }
 
   var unTrees = tree10cm.filter(
-    c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined
+    c => c[`${path}/btspecies`] && c[`${path}/btspecies`] !== undefined
   );
 
   return upsertMany(
