@@ -90,7 +90,7 @@ each(
         }
 
         function generateFindValue(uuid, relation, leftOperand, rightOperand) {
-          var fn = `findValue({uuid: '${uuid}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}') }})`;
+          var fn = `await findValue({uuid: '${uuid.toLowerCase()}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}') }})(state)`;
           return fn;
         }
 
