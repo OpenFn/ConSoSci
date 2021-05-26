@@ -159,7 +159,11 @@ each(
         const alterSClosing = `});`;
 
         const operation =
-          depth > 0 ? `upsertMany` : ReferenceUuid ? `upsertIf` : `upsert`;
+          depth > 0
+            ? `upsertMany`
+            : ReferenceUuid
+            ? `return upsertIf`
+            : `return upsert`;
         var uuid =
           name === `${state.prefix1}__KoboDataset`
             ? 'DatasetId'
