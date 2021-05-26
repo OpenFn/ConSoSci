@@ -191,8 +191,10 @@ each(
           // );
           mapping += `mapping`;
         }
-        // END OF BUILDING MAPPINGS
-        expression += wrapper(columns[0], mapping) + '); \n';
+        // END OF BUILDING MAPPINGS (state)
+        expression +=
+          wrapper(columns[0], mapping) +
+          (columns[0].depth > 0 ? '); \n' : `)(state); \n${alterSClosing} \n`);
       }
     }
     state.data.expression = expression;
