@@ -451,14 +451,20 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.st_grass_repeat || [];
+  const dataArray =
+    state.data.body.st_grass_repeat ||
+    state.data.body['plot_forest_area/st_grass_repeat'] ||
+    [];
   const dataGrass = [];
+  const path = state.data.body.st_grass_repeat
+    ? 'st_grass_repeat'
+    : 'plot_forest_area/st_grass_repeat';
 
   // Setting unique set==============================
   const uniqueGrass = Array.from(
-    new Set(dataArray.map(tree => tree['st_grass_repeat/grass_species']))
+    new Set(dataArray.map(tree => tree[`${path}/grass_species`]))
   ).map(id => {
-    return dataArray.find(c => id === c['st_grass_repeat/grass_species']);
+    return dataArray.find(c => id === c[`${path}/grass_species`]);
   });
   //=================================================
 
@@ -474,13 +480,13 @@ alterState(async state => {
         },
         operator: { ScientificName: 'like' },
       })(state),
-      UnknownSpeciesImage: data['st_grass_repeat/noknown'],
-      GrassPercent: data['st_grass_repeat/grass_perc'],
-      GrassHeight: data['st_grass_repeat/grass_height'],
+      UnknownSpeciesImage: data[`${path}/noknown`],
+      GrassPercent: data[`${path}/grass_perc`],
+      GrassHeight: data[`${path}/grass_height`],
       WCSPROGRAMS_VegetationGrassName: state.handleValue(
-        data['st_grass_repeat/grass_species']
+        data[`${path}/grass_species`]
       ),
-      WCSPROGRAMS_VegetationGrassCode: data['st_grass_repeat/grass_species'],
+      WCSPROGRAMS_VegetationGrassCode: data[`${path}/grass_species`],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
@@ -489,9 +495,7 @@ alterState(async state => {
   }
 
   var unGrass = dataGrass.filter(
-    c =>
-      c['st_grass_repeat/grass_species'] &&
-      c['st_grass_repeat/grass_species'] !== undefined
+    c => c[`${path}/grass_species`] && c[`${path}/grass_species`] !== undefined
   );
 
   return upsertMany(
@@ -505,11 +509,15 @@ alterState(async state => {
   const dataArray = state.data.body.st_grass_repeat || [];
   const dataGrass = [];
 
+  const path = state.data.body.st_grass_repeat
+    ? 'st_grass_repeat'
+    : 'plot_forest_area/st_grass_repeat';
+
   // Setting unique set==============================
   const uniqueGrass = Array.from(
-    new Set(dataArray.map(tree => tree['st_grass_repeat/grass_species']))
+    new Set(dataArray.map(tree => tree[`${path}/grass_species`]))
   ).map(id => {
-    return dataArray.find(c => id === c['st_grass_repeat/grass_species']);
+    return dataArray.find(c => id === c[`${path}/grass_species`]);
   });
   //=================================================
 
@@ -525,21 +533,19 @@ alterState(async state => {
         relation: 'WCSPROGRAMS_VegetationGrass',
         where: {
           WCSPROGRAMS_VegetationGrassName: state.handleValue(
-            data['st_grass_repeat/grass_species']
+            data[`${path}/grass_species`]
           ),
         },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['st_grass_repeat/grass_species'],
+      Generated_ID: state.data.body._id + data[`${path}/grass_species`],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
   }
 
   var unGrass = dataGrass.filter(
-    c =>
-      c['st_grass_repeat/grass_species'] &&
-      c['st_grass_repeat/grass_species'] !== undefined
+    c => c[`${path}/grass_species`] && c[`${path}/grass_species`] !== undefined
   );
 
   return upsertMany(
