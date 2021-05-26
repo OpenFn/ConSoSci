@@ -185,10 +185,11 @@ each(
             2
           ).replace(/"/g, '')}))}`;
         } else {
-          mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
-            /"/g,
-            ''
-          );
+          // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
+          //   /"/g,
+          //   ''
+          // );
+          mapping += `mapping`;
         }
         // END OF BUILDING MAPPINGS
         expression += wrapper(columns[0], mapping) + '); \n';
