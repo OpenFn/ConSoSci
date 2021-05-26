@@ -170,8 +170,10 @@ each(
             : ReferenceUuid || toCamelCase(state.uuid);
 
         let mapping = ReferenceUuid
-          ? `${operation}(${logical},'${name}', '${uuid}', `
-          : `${operation}('${name}', '${uuid}', `;
+          ? `${alterSOpening} ${operation}(${logical},'${name}', '${uuid}', `
+          : depth > 0
+          ? `${operation}('${name}', '${uuid}', `
+          : `${alterSOpening} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
           const path = columns[0].path.join('/');
