@@ -556,14 +556,19 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.brush_repeat || [];
+  const dataArray =
+    state.data.body.brush_repeat || state.data.body['liana/brush_repeat'] || [];
   const brushRepeat = [];
+
+  const path = state.data.body.brush_repeat
+    ? 'brush_repeat'
+    : 'liana/brush_repeat';
 
   // Setting unique set==============================
   const uniqueBrush = Array.from(
-    new Set(dataArray.map(tree => tree['brush_repeat/brus_species']))
+    new Set(dataArray.map(tree => tree[`${path}/brus_species`]))
   ).map(id => {
-    return dataArray.find(c => id === c['brush_repeat/brus_species']);
+    return dataArray.find(c => id === c[`${path}/brus_species`]);
   });
   //=================================================
 
@@ -574,16 +579,16 @@ alterState(async state => {
         relation: 'WCSPROGRAMS_Taxa',
         where: {
           ScientificName: `%${state.handleValue(
-            data['brush_repeat/brus_species']
+            data[`${path}/brus_species`]
           )}%`,
         },
         operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationBrushName: state.handleValue(
-        data['brush_repeat/brus_species']
+        data[`${path}/brus_species`]
       ),
-      WCSPROGRAMS_VegetationBrushCode: data['brush_repeat/brus_species'],
-      LianaPercentage: data['brush_repeat/brush_perc'],
+      WCSPROGRAMS_VegetationBrushCode: data[`${path}/brus_species`],
+      LianaPercentage: data[`${path}/brush_perc`],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data[''],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
@@ -592,9 +597,7 @@ alterState(async state => {
   }
 
   var unBrush = brushRepeat.filter(
-    c =>
-      c['brush_repeat/brus_species'] &&
-      c['brush_repeat/brus_species'] !== undefined
+    c => c[`${path}/brus_species`] && c[`${path}/brus_species'=`] !== undefined
   );
 
   return upsertMany(
