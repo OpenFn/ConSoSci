@@ -726,9 +726,9 @@ alterState(async state => {
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
-    new Set(dataArray.map(tree => tree['tree_10cm/btspecies']))
+    new Set(dataArray.map(tree => tree['tree_10cm/btspecies'])) // Note to @aleksa: Check if correct
   ).map(id => {
-    return dataArray.find(c => id === c['tree_10cm/btspecies']);
+    return dataArray.find(c => id === c['tree_10cm/btspecies']); // Note to @aleksa: Check if correct
   });
   //=================================================
 
@@ -756,6 +756,7 @@ alterState(async state => {
   }
 
   var unTrees = treeRepeat.filter(
+    // Note to @aleksa: Check if correct
     c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined
   );
 
