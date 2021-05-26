@@ -608,14 +608,19 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.brush_repeat || [];
+  const dataArray =
+    state.data.body.brush_repeat || state.data.body['liana/brush_repeat'] || [];
   const brushRepeat = [];
+
+  const path = state.data.body.brush_repeat
+    ? 'brush_repeat'
+    : 'liana/brush_repeat';
 
   // Setting unique set==============================
   const uniqueBrush = Array.from(
-    new Set(dataArray.map(tree => tree['brush_repeat/brus_species']))
+    new Set(dataArray.map(tree => tree[`${path}/brus_species`]))
   ).map(id => {
-    return dataArray.find(c => id === c['brush_repeat/brus_species']);
+    return dataArray.find(c => id === c[`${path}/brus_species`]);
   });
   //=================================================
 
@@ -626,7 +631,7 @@ alterState(async state => {
         relation: 'WCSPROGRAMS_VegetationBrush',
         where: {
           WCSPROGRAMS_VegetationBrushName: state.handleValue(
-            data['brush_repeat/brus_species']
+            data[`${path}/brus_species`]
           ),
         },
       })(state),
@@ -636,16 +641,14 @@ alterState(async state => {
         where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['brush_repeat/brus_species'],
+      Generated_ID: state.data.body._id + data[`${path}/brus_species`],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
   }
 
   var unBrush = brushRepeat.filter(
-    c =>
-      c['brush_repeat/brus_species'] &&
-      c['brush_repeat/brus_species'] !== undefined
+    c => c[`${path}/brus_species`] && c[`${path}/brus_species`] !== undefined
   );
 
   return upsertMany(
@@ -656,14 +659,19 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.tree_repeat || [];
+  const dataArray =
+    state.data.body.tree_repeat || state.data.body['liana/tree_repeat'] || [];
   const treeRepeat = [];
+
+  const path = state.data.body.tree_repeat
+    ? 'tree_repeat'
+    : 'liana/tree_repeat';
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
-    new Set(dataArray.map(tree => tree['tree_repeat/shrub_species']))
+    new Set(dataArray.map(tree => tree[`${path}/shrub_species`]))
   ).map(id => {
-    return dataArray.find(c => id === c['tree_repeat/shrub_species']);
+    return dataArray.find(c => id === c[`${path}/shrub_species`]);
   });
   //=================================================
 
@@ -674,31 +682,29 @@ alterState(async state => {
         relation: 'WCSPROGRAMS_Taxa',
         where: {
           ScientificName: `%${state.handleValue(
-            data['tree_repeat/shrub_species']
+            data[`${path}/shrub_species`]
           )}%`,
         },
         operator: { ScientificName: 'like' },
       })(state),
       WCSPROGRAMS_VegetationTreesName: state.handleValue(
-        data['tree_repeat/shrub_species']
+        data[`${path}/shrub_species`]
       ),
-      WCSPROGRAMS_VegetationTreesCode: data['tree_repeat/shrub_species'],
+      WCSPROGRAMS_VegetationTreesCode: data[`${path}/shrub_species`],
       AnswerId: state.data.body._id,
       //Generated_ID: state.data.body._id + data['tree_repeat/shrub_species'],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
-      SpecimenNo: data['tree_repeat/Specimen_no'],
-      SpecimenPhoto: data['tree_repeat/specimen_photo'],
-      Dbh: data['tree_repeat/dbh'],
-      Height: data['tree_repeat/height'],
+      SpecimenNo: data[`${path}/Specimen_no`],
+      SpecimenPhoto: data[`${path}/specimen_photo`],
+      Dbh: data[`${path}/dbh`],
+      Height: data[`${path}/height`],
       //unlisted: data['tree_repeat/bunlisted'],
     });
   }
 
   var unTrees = treeRepeat.filter(
-    c =>
-      c['tree_repeat/shrub_species'] &&
-      c['tree_repeat/shrub_species'] !== undefined
+    c => c[`${path}/shrub_species`] && c[`${path}/shrub_species`] !== undefined
   );
 
   return upsertMany(
@@ -709,8 +715,14 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.data.body.tree_repeat || [];
+  const dataArray =
+    state.data.body.tree_repeat || state.data.body['liana/tree_repeat'] || [];
+
   const treeRepeat = [];
+
+  const path = state.data.body.tree_repeat
+    ? 'tree_repeat'
+    : 'liana/tree_repeat';
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
@@ -727,7 +739,7 @@ alterState(async state => {
         relation: 'WCSPROGRAMS_VegetationTrees',
         where: {
           WCSPROGRAMS_VegetationTreesCode: state.handleValue(
-            data['tree_repeat/Specimen_no']
+            data[`${path}/Specimen_no`]
           ),
         },
       })(state),
@@ -737,7 +749,7 @@ alterState(async state => {
         where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['tree_repeat/Specimen_no'],
+      Generated_ID: state.data.body._id + data[`${path}/Specimen_no`],
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
