@@ -44,12 +44,10 @@ each(
         })
         .join('');
     }
-    var form_name = '';
     for (var i = 0; i < state.data.length; i++) {
-      const { columns, name, formName, depth, ReferenceUuid } = state.data[i];
+      const { columns, name, depth, ReferenceUuid } = state.data[i];
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         var paths = [];
-        form_name = formName;
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
           if (name === `${state.prefix1}__KoboDataset`) {
