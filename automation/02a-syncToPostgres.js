@@ -7,7 +7,7 @@ each('$.forms[*]', state => {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
         return describeTable(name.toLowerCase(), {
           writeSql: true,
-          execute: false,
+          execute: false, // This always needs to be true
         })(state).then(postgresColumn => {
           const { rows } = postgresColumn.response.body;
           if (postgresColumn.response.body.rowCount === 0) {
