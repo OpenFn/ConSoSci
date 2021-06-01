@@ -163,7 +163,7 @@ each(
 
         const operation =
           depth > 0
-            ? `upsertMany`
+            ? `return upsertMany`
             : ReferenceUuid
             ? `return upsertIf`
             : `return upsert`;
