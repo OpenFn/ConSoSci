@@ -177,10 +177,10 @@ each(
         // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
         // Otherwise it's a flat table and we still use the opening.
         let mapping = ReferenceUuid
-          ? `${alterSOpening} ${operation}(${logical},'${name}', '${uuid}', `
+          ? `${opening} ${operation}(${logical},'${name}', '${uuid}', `
           : depth > 0
           ? `${operation}('${name}', '${uuid}', `
-          : `${alterSOpening} ${operation}('${name}', '${uuid}', `;
+          : `${opening} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
           const path = columns[0].path.join('/');
