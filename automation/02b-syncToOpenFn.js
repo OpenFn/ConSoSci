@@ -77,7 +77,8 @@ each(
             for (var i = 0; i < depth - 1; i++) {
               prefix += `each(dataPath('${column.path[i]}[*]'), `;
             }
-            prefix += mapping;
+            // prefix += mapping;
+            prefix += mapping + `)(state); \n${alterSClosing} \n`;
             for (var i = 0; i < depth - 1; i++) {
               prefix += ')';
             }
@@ -156,13 +157,26 @@ each(
         ).replace(/"/g, '')}`;
         // =======================================================
 
-        const alterSOpening = `alterState(async state => {\n`;
-        const opening = `${alterSOpening} ${mapObject} \n`;
-        const alterSClosing = `});`;
+        // We build a set of statements for when depth > 0=============
+        const path = columns[0].path.join('/');
+
+        const statements = `const dataArray = state.data['${path}'] || [] \n
+        const mapping = []; \n 
+        for (let x of dataArray) { \n
+          mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}) \n
+          }`;
+        // =======================================================
+
+        const alterSOpeningNoDepth = `alterState(async state => {\n ${mapObject} \n`;
+        const alterSOpeningDepth = `alterState(async state => {\n ${statements} \n`;
+        const alterSClosing = `})`;
 
         const operation =
           depth > 0
-            ? `upsertMany`
+            ? `return upsertMany`
             : ReferenceUuid
             ? `return upsertIf`
             : `return upsert`;
@@ -177,20 +191,21 @@ each(
         // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
         // Otherwise it's a flat table and we still use the opening.
         let mapping = ReferenceUuid
-          ? `${opening} ${operation}(${logical},'${name}', '${uuid}', `
+          ? `${alterSOpeningNoDepth} ${operation}(${logical},'${name}', '${uuid}', `
           : depth > 0
-          ? `${operation}('${name}', '${uuid}', `
-          : `${opening} ${operation}('${name}', '${uuid}', `;
+          ? `${alterSOpeningDepth} ${operation}('${name}', '${uuid}', `
+          : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
-          const path = columns[0].path.join('/');
+          // const path = columns[0].path.join('/');
 
-          mapping += `state => { const dataArray = state.data['${path}'] || [];
-          return dataArray.map(x => (${JSON.stringify(
-            mapKoboToPostgres,
-            null,
-            2
-          ).replace(/"/g, '')}))}`;
+          // mapping += `state => { const dataArray = state.data['${path}'] || [];
+          // return dataArray.map(x => (${JSON.stringify(
+          //   mapKoboToPostgres,
+          //   null,
+          //   2
+          // ).replace(/"/g, '')}))}`;
+          mapping += `() => mapping`;
         } else {
           // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
           //   /"/g,
@@ -203,7 +218,7 @@ each(
         // END OF BUILDING MAPPINGS (state)
         expression +=
           wrapper(columns[0], mapping) +
-          (columns[0].depth > 0 ? '); \n' : `)(state); \n${alterSClosing} \n`);
+          (columns[0].depth > 1 ? '\n' : `)(state); \n${alterSClosing} \n`);
       }
     }
     state.data.expression = expression;
