@@ -157,8 +157,21 @@ each(
         ).replace(/"/g, '')}`;
         // =======================================================
 
-        const alterSOpening = `alterState(async state => {\n`;
-        const opening = `${alterSOpening} ${mapObject} \n`;
+        // We build a set of statements for when depth > 0=============
+        const path = columns[0].path.join('/');
+
+        const statements = `const dataArray = state.data['${path}'] || [] \n
+        const mapping = []; \n 
+        for (let x of dataArray) { \n
+          mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}) \n
+          }`;
+        // =======================================================
+
+        const alterSOpeningNoDepth = `alterState(async state => {\n ${mapObject} \n`;
+        const alterSOpeningDepth = `alterState(async state => {\n ${statements} \n`;
         const alterSClosing = `})`;
 
         const operation =
