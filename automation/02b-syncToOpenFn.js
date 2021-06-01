@@ -197,14 +197,15 @@ each(
           : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
-          const path = columns[0].path.join('/');
+          // const path = columns[0].path.join('/');
 
-          mapping += `state => { const dataArray = state.data['${path}'] || [];
-          return dataArray.map(x => (${JSON.stringify(
-            mapKoboToPostgres,
-            null,
-            2
-          ).replace(/"/g, '')}))}`;
+          // mapping += `state => { const dataArray = state.data['${path}'] || [];
+          // return dataArray.map(x => (${JSON.stringify(
+          //   mapKoboToPostgres,
+          //   null,
+          //   2
+          // ).replace(/"/g, '')}))}`;
+          mapping += `() => mapping`;
         } else {
           // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
           //   /"/g,
