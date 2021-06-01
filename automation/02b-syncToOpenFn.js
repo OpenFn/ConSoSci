@@ -156,7 +156,8 @@ each(
         ).replace(/"/g, '')}`;
         // =======================================================
 
-        const alterSOpening = `alterState(async state => {\n ${mapObject} \n`;
+        const alterSOpening = `alterState(async state => {\n`;
+        const opening = `${alterSOpening} ${mapObject} \n`;
         const alterSClosing = `});`;
 
         const operation =
