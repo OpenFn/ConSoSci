@@ -77,7 +77,8 @@ each(
             for (var i = 0; i < depth - 1; i++) {
               prefix += `each(dataPath('${column.path[i]}[*]'), `;
             }
-            prefix += mapping;
+            // prefix += mapping;
+            prefix += mapping + `)(state); \n${alterSClosing} \n`;
             for (var i = 0; i < depth - 1; i++) {
               prefix += ')';
             }
