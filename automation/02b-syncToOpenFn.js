@@ -180,7 +180,7 @@ each(
         let mapping = ReferenceUuid
           ? `${opening} ${operation}(${logical},'${name}', '${uuid}', `
           : depth > 0
-          ? `${operation}('${name}', '${uuid}', `
+          ? `${alterSOpening} ${operation}('${name}', '${uuid}', `
           : `${opening} ${operation}('${name}', '${uuid}', `;
 
         if (columns[0].depth > 0) {
