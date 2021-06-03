@@ -368,11 +368,11 @@ alterState(async state => {
   for (let data of dataArray) {
     observers.push({
       WCSPROGRAMS_VegetationObserverName: state.handleValue(
-        data['observername'] || data['obsevername']
+        data['observername'] || data['obsevername'] || data['general_observations/obsevername']
       ),
-      WCSPROGRAMS_VegetationObserverCode: data['observername'] || data['obsevername'],
-      WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'],
-      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'],
+      WCSPROGRAMS_VegetationObserverCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+      WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
       UserID_CR: '0',
       UserID_LM: '0',
     });
