@@ -380,7 +380,9 @@ alterState(async state => {
 
   var unObservers = observers.filter(
     data => data['obsevername'] && data['obsevername'] !== undefined).filter(
-      c => data['observername'] && data['observername'] !== undefined
+      data => data['observername'] && data['observername'] !== undefined
+    ).filter(
+      data => data['general_observations/obsevername'] && data['general_observations/obsevername'] !== undefined
     )
 
   return upsertMany(
@@ -404,7 +406,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationObserverID',
         relation: 'WCSPROGRAMS_VegetationObserver',
         where: {
-          WCSPROGRAMS_VegetationObserverExtCode: data['observername'],
+          WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
         },
       })(state),
       WCSPROGRAMS_VegetationID: await findValue({
@@ -413,7 +415,7 @@ alterState(async state => {
         where: { Answer_ID: state.data.body._id },
       })(state),
       Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['observername'], //make sure this is setting correctly
+      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'], //make sure this is setting correctly
       UserID_CR: '0', //TODO: Update User_ID and Address mappings?
       UserID_LM: '0',
     });
