@@ -729,9 +729,9 @@ alterState(async state => {
 
   // Setting unique set==============================
   const uniqueTrees = Array.from(
-    new Set(dataArray.map(tree => tree['tree_10cm/btspecies'])) // Note to @aleksa: Check if correct
+    new Set(dataArray.map(tree => tree['tree_repeat/btspecies'] || tree['liana/tree_repeat/btspecies']))
   ).map(id => {
-    return dataArray.find(c => id === c['tree_10cm/btspecies']); // Note to @aleksa: Check if correct
+    return dataArray.find(c => id === c['tree_repeat/btspecies'] || c['liana/tree_repeat/btspecies']);
   });
   //=================================================
 
@@ -759,9 +759,10 @@ alterState(async state => {
   }
 
   var unTrees = treeRepeat.filter(
-    // Note to @aleksa: Check if correct
-    c => c['tree_10cm/btspecies'] && c['tree_10cm/btspecies'] !== undefined
-  );
+    // Note: checking both path versions for unique trees
+    c => c['tree_repeat/btspecies'] && c['tree_repeat/btspecies'] !== undefined).filter(
+      c => c['liana/tree_repeat/btspecies'] && c['liana/tree_repeat/btspecies'] !== undefined
+    )
 
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationTrees',
