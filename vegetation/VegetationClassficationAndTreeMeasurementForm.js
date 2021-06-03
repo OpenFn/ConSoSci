@@ -368,19 +368,25 @@ alterState(async state => {
   for (let data of dataArray) {
     observers.push({
       WCSPROGRAMS_VegetationObserverName: state.handleValue(
-        data['observername']
+        data['observername'] || data['obsevername']
       ),
-      WCSPROGRAMS_VegetationObserverCode: data['observername'],
-      WCSPROGRAMS_VegetationObserverExtCode: data['observername'],
-      Generated_ID: state.data.body._id + data['observername'], //make sure this is setting correctly
-      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+      WCSPROGRAMS_VegetationObserverCode: data['observername'] || data['obsevername'],
+      WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'],
+      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'],
+      UserID_CR: '0',
       UserID_LM: '0',
     });
   }
+
+  var unObservers = observers.filter(
+    data => data['obsevername'] && data['obsevername'] !== undefined).filter(
+      c => data['observername'] && data['observername'] !== undefined
+    )
+
   return upsertMany(
     'WCSPROGRAMS_VegetationObserver',
     'WCSPROGRAMS_VegetationObserverExtCode',
-    () => observers
+    () => unObservers
   )(state);
 });
 
