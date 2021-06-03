@@ -408,26 +408,45 @@ alterState(async state => {
     []; //turning select_multiple into an arrray
   const observers = [];
 
-  for (let data of dataArray) {
-    observers.push({
-      WCSPROGRAMS_VegetationObserverID: await findValue({
-        uuid: 'WCSPROGRAMS_VegetationObserverID',
-        relation: 'WCSPROGRAMS_VegetationObserver',
-        where: {
-          WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
-        },
-      })(state),
-      WCSPROGRAMS_VegetationID: await findValue({
-        uuid: 'WCSPROGRAMS_VegetationID',
-        relation: 'WCSPROGRAMS_Vegetation',
-        where: { Answer_ID: state.data.body._id },
-      })(state),
-      Answer_ID: state.data.body._id,
-      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'], //make sure this is setting correctly
-      UserID_CR: '0', //TODO: Update User_ID and Address mappings?
-      UserID_LM: '0',
-    });
-  }
+  // for (let data of dataArray) {
+  //   observers.push({
+  //     WCSPROGRAMS_VegetationObserverID: await findValue({
+  //       uuid: 'WCSPROGRAMS_VegetationObserverID',
+  //       relation: 'WCSPROGRAMS_VegetationObserver',
+  //       where: {
+  //         WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+  //       },
+  //     })(state),
+  //     WCSPROGRAMS_VegetationID: await findValue({
+  //       uuid: 'WCSPROGRAMS_VegetationID',
+  //       relation: 'WCSPROGRAMS_Vegetation',
+  //       where: { Answer_ID: state.data.body._id },
+  //     })(state),
+  //     Answer_ID: state.data.body._id,
+  //     Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'], //make sure this is setting correctly
+  //     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+  //     UserID_LM: '0',
+  //   });
+  // }
+
+  observers.push({
+    WCSPROGRAMS_VegetationObserverID: await findValue({
+      uuid: 'WCSPROGRAMS_VegetationObserverID',
+      relation: 'WCSPROGRAMS_VegetationObserver',
+      where: {
+        WCSPROGRAMS_VegetationObserverExtCode: dataArray,
+      },
+    })(state),
+    WCSPROGRAMS_VegetationID: await findValue({
+      uuid: 'WCSPROGRAMS_VegetationID',
+      relation: 'WCSPROGRAMS_Vegetation',
+      where: { Answer_ID: state.data.body._id },
+    })(state),
+    Answer_ID: state.data.body._id,
+    Generated_ID: state.data.body._id + dataArray, //make sure this is setting correctly
+    UserID_CR: '0', //TODO: Update User_ID and Address mappings?
+    UserID_LM: '0',
+  });
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationObserver',
     'Generated_ID',
