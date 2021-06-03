@@ -365,25 +365,33 @@ alterState(async state => {
     []; //turning select_multiple into an arrray
   const observers = [];
 
-  for (let data of dataArray) {
-    observers.push({
-      WCSPROGRAMS_VegetationObserverName: state.handleValue(
-        data['observername'] || data['obsevername'] || data['general_observations/obsevername']
-      ),
-      WCSPROGRAMS_VegetationObserverCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
-      WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
-      Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
-      UserID_CR: '0',
-      UserID_LM: '0',
-    });
-  }
+  // for (let data of dataArray) {
+  //   observers.push({
+  //     WCSPROGRAMS_VegetationObserverName: state.handleValue(
+  //       data['observername'] || data['obsevername'] || data['general_observations/obsevername']
+  //     ),
+  //     WCSPROGRAMS_VegetationObserverCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+  //     WCSPROGRAMS_VegetationObserverExtCode: data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+  //     Generated_ID: state.data.body._id + data['observername'] || data['obsevername'] || data['general_observations/obsevername'],
+  //     UserID_CR: '0',
+  //     UserID_LM: '0',
+  //   });
+  // }
+  observers.push({
+    WCSPROGRAMS_VegetationObserverName: state.handleValue(dataArray),
+    WCSPROGRAMS_VegetationObserverCode: dataArray,
+    WCSPROGRAMS_VegetationObserverExtCode: dataArray,
+    Generated_ID: state.data.body._id + dataArray,
+    UserID_CR: '0',
+    UserID_LM: '0',
+  });
 
   var unObservers = observers.filter(
-    data => data['obsevername'] && data['obsevername'] !== undefined).filter(
+    data => data !== undefined);/* .filter(
       data => data['observername'] && data['observername'] !== undefined
     ).filter(
       data => data['general_observations/obsevername'] && data['general_observations/obsevername'] !== undefined
-    )
+    ) */
 
   return upsertMany(
     'WCSPROGRAMS_VegetationObserver',
