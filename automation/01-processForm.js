@@ -18,7 +18,7 @@ get(`${state.data.url}`, {}, state => {
   // ======================================================================
 
   const mapType = {
-    calculate: 'varchar',
+    calculate: 'varchar(100)',
     date: 'date',
     decimal: 'float4',
     end: 'date',
@@ -211,7 +211,7 @@ get(`${state.data.url}`, {}, state => {
               },
               {
                 name: `${toCamelCase(q.name)}Name`,
-                type: 'text',
+                type: 'varchar(100)',
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
@@ -219,7 +219,7 @@ get(`${state.data.url}`, {}, state => {
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'text',
+                type: 'varchar(100)',
                 unique: true,
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
@@ -251,7 +251,7 @@ get(`${state.data.url}`, {}, state => {
               },
               {
                 name: `${toCamelCase(q.name)}Name`,
-                type: 'text',
+                type: 'varchar(100)',
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
                 // path: [],
@@ -259,7 +259,7 @@ get(`${state.data.url}`, {}, state => {
               },
               {
                 name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'text',
+                type: 'varchar(100)',
                 unique: true,
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
