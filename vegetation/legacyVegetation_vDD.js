@@ -30,19 +30,76 @@ upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
           dataValue('Vegetation_field')(state) 
         ),
       },
-    WCSPROGRAMS_VegetationPhysiographyID: dataValue('Physiography'),
-    
-    SpecimenPhoto: dataValue('Photos'),
-    WCSPROGRAMS_VegetationTopographyID: dataValue('Topography'),
-    WCSPROGRAMS_VegetationDrainageID: dataValue('Drainage'),
-    WCSPROGRAMS_VegetationSoilDescriptionID: dataValue('Soil description'),
-    WCSPROGRAMS_VegetationSoilColorID: dataValue('Soil_colour'),
+    WCSPROGRAMS_VegetationPhysiographyID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
+      relation: 'WCSPROGRAMS_VegetationPhysiography',
+      where: {
+        WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
+          dataValue('Physiography')(state)
+        ),
+      },
+    //SpecimenPhoto: dataValue('Photos'),
+    WCSPROGRAMS_VegetationTopographyID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationTopographyID',
+      relation: 'WCSPROGRAMS_VegetationTopography',
+      where: {
+        WCSPROGRAMS_VegetationTopographyExtCode: state.handleValue(
+          dataValue('Topography')(state) 
+        ),
+      },
+    WCSPROGRAMS_VegetationDrainageID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationDrainageID',
+      relation: 'WCSPROGRAMS_VegetationDrainage',
+      where: {
+        WCSPROGRAMS_VegetationDrainageExtCode: state.handleValue(
+          dataValue('Drainage')(state) 
+        ),
+      },
+    WCSPROGRAMS_VegetationSoilDescriptionID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
+      relation: 'WCSPROGRAMS_VegetationSoilDescription',
+      where: {
+        WCSPROGRAMS_VegetationSoilDescriptionName: state.handleValue(
+          dataValue('Soil description')(state) 
+        ),
+      },
+    WCSPROGRAMS_VegetationSoilColorID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationSoilColorID',
+      relation: 'WCSPROGRAMS_VegetationSoilColor',
+      where: {
+        WCSPROGRAMS_VegetationSoilColorName: state.handleValue(
+          dataValue('Soil_colour')(state) 
+        ),
+      },
     IsEvidenceOfFire: dataValue('Evidence_fire'),
-    WCSPROGRAMS_VegetationSoilMoistureID: dataValue('Soil_Moisture'),
-    WCSPROGRAMS_VegetationSoilErodabilityID: dataValue('Soil Erodability'),
-    WCSPROGRAMS_VegetationSoilSeasonalityID: dataValue('Soil Seasonality'),
+    WCSPROGRAMS_VegetationSoilMoistureID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
+      relation: 'WCSPROGRAMS_VegetationSoilMoisture',
+      where: {
+        WCSPROGRAMS_VegetationSoilMoistureName: state.handleValue(
+          dataValue('Soil_Moisture')(state) ||
+          dataValue('$.body.groundtruthing/moisture')(state) ||
+          ''
+        ),
+      },
+    WCSPROGRAMS_VegetationSoilErodabilityID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
+      relation: 'WCSPROGRAMS_VegetationSoilErodability',
+      where: {
+        WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
+          dataValue('Soil Erodability')(state) 
+        ),
+      },
+    WCSPROGRAMS_VegetationSoilSeasonalityID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
+      relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
+      where: {
+        WCSPROGRAMS_VegetationSoilSeasonalityName: state.handleValue(
+          dataValue('Soil Seasonality')(state) 
+        ),
+      },
     Bareground: dataValue('Bare ground %')
-});
+ });
 
 upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', {
     AnswerId: dataValue('surveyid'),
