@@ -1,3 +1,10 @@
+alterState(state => {
+  state.survey = state.data.surveys[0];
+  return state;
+});
+
+each(
+  'survey.general[*]',
 upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
     AnswerId: dataValue('surveyid'),
     Surveydate: dataValue('Date of survey'),
