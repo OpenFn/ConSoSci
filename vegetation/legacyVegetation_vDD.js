@@ -6,7 +6,7 @@ alterState(state => {
 each(
   'survey.general[*]',
 upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
+    Answer_Id: dataValue('surveyid'),
     Surveydate: dataValue('Date of survey'),
     SurveySite: dataValue('Survey site'),
     TransectNo: dataValue('Transect No'),
