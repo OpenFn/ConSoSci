@@ -181,4 +181,5 @@ each(
     WCSPROGRAMS_TaxaID: dataValue('Species'),
     Dbh: dataValue('DBH'),
     Height: dataValue('Height')
-});
+})
+);
