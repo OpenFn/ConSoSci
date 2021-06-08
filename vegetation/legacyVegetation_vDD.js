@@ -5,7 +5,7 @@ alterState(state => {
 
 each(
   'survey.general[*]',
-upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
+  upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
     Answer_Id: dataValue('surveyid'),
     Surveydate: dataValue('Date of survey'),
     SurveySite: dataValue('Survey site'),
@@ -98,46 +98,83 @@ upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
           dataValue('Soil Seasonality')(state) 
         ),
       },
-    Bareground: dataValue('Bare ground %')
- });
+    Bareground: dataValue('Bare ground %'),
+  })
+);
 
-upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
-    WCSPROGRAMS_TaxaID: dataValue('Liana'),
+each(
+  'survey.liana_old[*]',
+   upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', {
+    Answer_Id: dataValue('surveyid'),
+    WCSPROGRAMS_TaxaID: findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          ScientificName: `%${state.handleValue(
+            data[`Liana`]
+          )}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
     LianaPercentage: dataValue('Liana percentage'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no')
-});
+ })
+);
 
-upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
+each(
+  'survey.ground_species[*]',
+  psert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
+    Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
-    GrassPercent: dataValue('Species_%')
-});
+    GrassPercent: dataValue('Species_%'),
+ })
+);
 
-upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+each(
+  'survey.ground_species[*]',
+   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+    Answer_Id: dataValue('surveyid'),
+    SurveySite: dataValue('survey_area'),
+    TransectNo: dataValue('Transect_no'),
+    PlotNumber: dataValue('Plot_no'),
+    StGrassRepeat: dataValue('Ground_Spp_No'),
+    WCSPROGRAMS_TaxaID: dataValue('G_species'),
+    GrassPercent: dataValue('Species_%'),
+  })
+);
+    
+each(
+  'survey.native_tree_shrubs[*]',
+   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     AnswerId: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
     WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
-    SbrushPer: dataValue('shrub percentage')
-});
+    SbrushPer: dataValue('shrub percentage'),
+  })
+);
 
-upsert('WCSPROGRAMS_VegetationVegetationObservers', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
+each(
+  'survey.general[*]',
+  upsert('WCSPROGRAMS_VegetationVegetationObservers', 'AnswerId', {
+    Answer_Id: dataValue('surveyid'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer3'),
-});
+})
+);
 
-upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
+each(
+  'survey.ground_species[*]',
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+    Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
