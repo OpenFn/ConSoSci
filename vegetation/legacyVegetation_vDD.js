@@ -99,7 +99,7 @@ each(
         ),
       },
     Bareground: dataValue('Bare ground %'),
-  })
+    })
 );
 
 each(
