@@ -20,8 +20,9 @@ each(
       where: {
         WCSPROGRAMS_VegetationClassName: state.handleValue(
           dataValue('Vegetation_type')(state)
-        ),
-      },
+        )
+       },
+      }), // new line added and in following findValue as well
     WCSPROGRAMS_VegetationForestTypeID: findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
       relation: 'WCSPROGRAMS_VegetationForestType',
@@ -30,6 +31,7 @@ each(
           dataValue('Vegetation_field')(state) 
         ),
       },
+    }),
     WCSPROGRAMS_VegetationPhysiographyID: findValue({
       uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
       relation: 'WCSPROGRAMS_VegetationPhysiography',
@@ -38,6 +40,7 @@ each(
           dataValue('Physiography')(state)
         ),
       },
+    }),
     //SpecimenPhoto: dataValue('Photos'),
     WCSPROGRAMS_VegetationTopographyID: findValue({
       uuid: 'WCSPROGRAMS_VegetationTopographyID',
@@ -47,6 +50,7 @@ each(
           dataValue('Topography')(state) 
         ),
       },
+    }),
     WCSPROGRAMS_VegetationDrainageID: findValue({
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
@@ -55,6 +59,7 @@ each(
           dataValue('Drainage')(state) 
         ),
       },
+    }),
     WCSPROGRAMS_VegetationSoilDescriptionID: findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
       relation: 'WCSPROGRAMS_VegetationSoilDescription',
@@ -63,6 +68,7 @@ each(
           dataValue('Soil description')(state) 
         ),
       },
+    }),
     WCSPROGRAMS_VegetationSoilColorID: findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilColorID',
       relation: 'WCSPROGRAMS_VegetationSoilColor',
@@ -71,6 +77,7 @@ each(
           dataValue('Soil_colour')(state) 
         ),
       },
+    }),
     IsEvidenceOfFire: dataValue('Evidence_fire'),
     WCSPROGRAMS_VegetationSoilMoistureID: findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
@@ -82,6 +89,7 @@ each(
           ''
         ),
       },
+    }),
     WCSPROGRAMS_VegetationSoilErodabilityID: findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
       relation: 'WCSPROGRAMS_VegetationSoilErodability',
@@ -90,6 +98,7 @@ each(
           dataValue('Soil Erodability')(state) 
         ),
       },
+    }),
     WCSPROGRAMS_VegetationSoilSeasonalityID: findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
       relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
@@ -98,6 +107,7 @@ each(
           dataValue('Soil Seasonality')(state) 
         ),
       },
+    }),
     Bareground: dataValue('Bare ground %'),
     })
 );
