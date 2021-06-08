@@ -170,7 +170,7 @@ alterState(state => {
         Id: i + 1,
         AnswerId: state.data._id,
         Head: '0',
-        Gender: member[`hh_members/gender`],
+        Gender: member[`hh_members/gender`] || member[`hh_members/gender_001`],
         Ethnicity: member[`hh_members/ethnicity`],
         Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
         LastUpdate: new Date().toISOString(),
