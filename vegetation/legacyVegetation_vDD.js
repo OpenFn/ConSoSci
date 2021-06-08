@@ -14,9 +14,24 @@ upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
     East: dataValue('Easting'),
     North: dataValue('Northing'),
     PlotGPS: dataValue('Altitude'),
-    WCSPROGRAMS_VegetationClassID: dataValue('Vegetation_type'),
-    WCSPROGRAMS_VegetationForestTypeID: dataValue('Vegetation_field'),
+    WCSPROGRAMS_VegetationClassID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationClassID',
+      relation: 'WCSPROGRAMS_VegetationClass',
+      where: {
+        WCSPROGRAMS_VegetationClassName: state.handleValue(
+          dataValue('Vegetation_type')(state)
+        ),
+      },
+    WCSPROGRAMS_VegetationForestTypeID: findValue({
+      uuid: 'WCSPROGRAMS_VegetationForestTypeID',
+      relation: 'WCSPROGRAMS_VegetationForestType',
+      where: {
+        WCSPROGRAMS_VegetationForestTypeExtCode: state.handleValue(
+          dataValue('Vegetation_field')(state) 
+        ),
+      },
     WCSPROGRAMS_VegetationPhysiographyID: dataValue('Physiography'),
+    
     SpecimenPhoto: dataValue('Photos'),
     WCSPROGRAMS_VegetationTopographyID: dataValue('Topography'),
     WCSPROGRAMS_VegetationDrainageID: dataValue('Drainage'),
