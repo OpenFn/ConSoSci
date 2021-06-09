@@ -279,12 +279,16 @@ alterState(async state => {
     Latitude: state => {
       return dataValue('$.body.plot_gps')(state)
         ? dataValue('$.body.plot_gps')(state)[0]
-        : 0;
+        : dataValue('$.body.east')(state) ?
+          dataValue('$.body.east')(state) :
+          dataValue('$.body.plot_description/east')(state);
     },
     Longitude: state => {
       return dataValue('$.body.plot_gps')(state)
         ? dataValue('$.body.plot_gps')(state)[1]
-        : 0;
+        : dataValue('$.body.north')(state) ?
+          dataValue('$.body.north')(state) :
+          dataValue('$.body.plot_description/north')(state);
     },
     PlotNumber: state => {
       return dataValue('$.body.plot_number')(state)
