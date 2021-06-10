@@ -100,7 +100,7 @@ get(`${state.data.url}`, {}, state => {
       // Adding a column as jsonb to take the whole payload
       { name: 'Payload', type: 'jsonb' },
       { name: 'AnswerId', type: 'text' },
-      { name: toCamelCase(uuid), type: 'text', unique: true }
+      { name: toCamelCase(uuid), type: 'varchar(100)', unique: true }
     );
 
     return form;
@@ -170,7 +170,7 @@ get(`${state.data.url}`, {}, state => {
           },
           {
             name: 'DatasetId',
-            type: 'text',
+            type: 'varchar(100)',
             depth: 0,
             path: [],
             unique: true,
