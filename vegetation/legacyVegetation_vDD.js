@@ -24,7 +24,7 @@ alterState(async state => {
         )
        },
       }), // new line added and in following findValue as well
-    WCSPROGRAMS_VegetationForestTypeID: findValue({
+    WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
       relation: 'WCSPROGRAMS_VegetationForestType',
       where: {
@@ -33,7 +33,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationPhysiographyID: findValue({
+    WCSPROGRAMS_VegetationPhysiographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
       relation: 'WCSPROGRAMS_VegetationPhysiography',
       where: {
@@ -43,7 +43,7 @@ alterState(async state => {
       },
     }),
     //SpecimenPhoto: dataValue('Photos'),
-    WCSPROGRAMS_VegetationTopographyID: findValue({
+    WCSPROGRAMS_VegetationTopographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationTopographyID',
       relation: 'WCSPROGRAMS_VegetationTopography',
       where: {
@@ -52,7 +52,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationDrainageID: findValue({
+    WCSPROGRAMS_VegetationDrainageID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
@@ -61,7 +61,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilDescriptionID: findValue({
+    WCSPROGRAMS_VegetationSoilDescriptionID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
       relation: 'WCSPROGRAMS_VegetationSoilDescription',
       where: {
@@ -70,7 +70,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilColorID: findValue({
+    WCSPROGRAMS_VegetationSoilColorID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilColorID',
       relation: 'WCSPROGRAMS_VegetationSoilColor',
       where: {
@@ -80,7 +80,7 @@ alterState(async state => {
       },
     }),
     IsEvidenceOfFire: dataValue('Evidence_fire'),
-    WCSPROGRAMS_VegetationSoilMoistureID: findValue({
+    WCSPROGRAMS_VegetationSoilMoistureID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
       relation: 'WCSPROGRAMS_VegetationSoilMoisture',
       where: {
@@ -91,7 +91,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilErodabilityID: findValue({
+    WCSPROGRAMS_VegetationSoilErodabilityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
       relation: 'WCSPROGRAMS_VegetationSoilErodability',
       where: {
@@ -100,7 +100,7 @@ alterState(async state => {
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilSeasonalityID: findValue({
+    WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
       relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
       where: {
