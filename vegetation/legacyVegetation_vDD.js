@@ -119,7 +119,7 @@ each(
 alterState(async state => {
   const BrushMap = {
     Answer_Id: dataValue('surveyid'),
-    WCSPROGRAMS_TaxaID: findValue({
+    WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
