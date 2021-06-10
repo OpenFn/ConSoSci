@@ -124,6 +124,8 @@ alterState(state => {
 //   })
 // );
 
+// THIS OPERATION REPLACES THE ONE BELOW IT.
+// It shows an optimal way of dealing with async/await on mssql
 alterState(async state => {
   const dataArray = state.survey['liana_old'];
   const BrushMap = [];
@@ -150,6 +152,7 @@ alterState(async state => {
     () => BrushMap
   )(state);
 });
+// =============================================================
 
 // each(
 //   'survey.liana_old[*]',
