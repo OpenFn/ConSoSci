@@ -5,7 +5,8 @@ alterState(state => {
 
 each(
   'survey.general[*]',
-  upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
+alterState(async state => {
+  const VegMap = {
     Answer_Id: dataValue('surveyid'),
     Surveydate: dataValue('Date of survey'),
     SurveySite: dataValue('Survey site'),
@@ -23,7 +24,7 @@ each(
         )
        },
       }), // new line added and in following findValue as well
-    WCSPROGRAMS_VegetationForestTypeID: findValue({
+    WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
       relation: 'WCSPROGRAMS_VegetationForestType',
       where: {
@@ -32,7 +33,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationPhysiographyID: findValue({
+    WCSPROGRAMS_VegetationPhysiographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
       relation: 'WCSPROGRAMS_VegetationPhysiography',
       where: {
@@ -42,7 +43,7 @@ each(
       },
     }),
     //SpecimenPhoto: dataValue('Photos'),
-    WCSPROGRAMS_VegetationTopographyID: findValue({
+    WCSPROGRAMS_VegetationTopographyID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationTopographyID',
       relation: 'WCSPROGRAMS_VegetationTopography',
       where: {
@@ -51,7 +52,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationDrainageID: findValue({
+    WCSPROGRAMS_VegetationDrainageID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationDrainageID',
       relation: 'WCSPROGRAMS_VegetationDrainage',
       where: {
@@ -60,7 +61,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilDescriptionID: findValue({
+    WCSPROGRAMS_VegetationSoilDescriptionID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
       relation: 'WCSPROGRAMS_VegetationSoilDescription',
       where: {
@@ -69,7 +70,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilColorID: findValue({
+    WCSPROGRAMS_VegetationSoilColorID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilColorID',
       relation: 'WCSPROGRAMS_VegetationSoilColor',
       where: {
@@ -79,7 +80,7 @@ each(
       },
     }),
     IsEvidenceOfFire: dataValue('Evidence_fire'),
-    WCSPROGRAMS_VegetationSoilMoistureID: findValue({
+    WCSPROGRAMS_VegetationSoilMoistureID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
       relation: 'WCSPROGRAMS_VegetationSoilMoisture',
       where: {
@@ -90,7 +91,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilErodabilityID: findValue({
+    WCSPROGRAMS_VegetationSoilErodabilityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
       relation: 'WCSPROGRAMS_VegetationSoilErodability',
       where: {
@@ -99,7 +100,7 @@ each(
         ),
       },
     }),
-    WCSPROGRAMS_VegetationSoilSeasonalityID: findValue({
+    WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
       relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
       where: {
@@ -109,14 +110,16 @@ each(
       },
     }),
     Bareground: dataValue('Bare ground %'),
-    })
-);
+    };
+  return upsert('WCSPROGRAMS_Vegetation', 'AnswerId', VegMap)(state);
+}));
 
 each(
   'survey.liana_old[*]',
-   upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', {
+alterState(async state => {
+  const BrushMap = {
     Answer_Id: dataValue('surveyid'),
-    WCSPROGRAMS_TaxaID: findValue({
+    WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
@@ -129,13 +132,14 @@ each(
     LianaPercentage: dataValue('Liana percentage'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no')
- })
-);
+    PlotNumber: dataValue('Plot_no'),
+  };
+    return upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', BrushMap)(state);
+})); 
 
 each(
   'survey.ground_species[*]',
-  psert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
     Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -143,12 +147,12 @@ each(
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
     GrassPercent: dataValue('Species_%'),
- })
+  })
 );
 
 each(
   'survey.ground_species[*]',
-   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -161,7 +165,7 @@ each(
     
 each(
   'survey.native_tree_shrubs[*]',
-   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     AnswerId: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -170,6 +174,7 @@ each(
     SbrushPer: dataValue('shrub percentage'),
   })
 );
+
 
 each(
   'survey.general[*]',
