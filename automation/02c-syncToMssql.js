@@ -8,9 +8,9 @@ each('$.forms[*]', state => {
         return describeTable(name.toLowerCase(), {
           writeSql: true, // Keep to true to log query.
           execute: true, // This always needs to be true so we know if we need to insert or update
-        })(state).then(postgresColumn => {
-          const { rows } = postgresColumn.response.body;
-          if (postgresColumn.response.body.rowCount === 0) {
+        })(state).then(mssqlColumn => {
+          const { rows } = mssqlColumn.response.body;
+          if (mssqlColumn.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
             const columns = state.data.columns.filter(
@@ -22,7 +22,7 @@ each('$.forms[*]', state => {
                 : col.type === 'int4' || col.type === 'float4'
                 ? (col.type = col.type.substring(0, col.type.length - 1))
                 : col.type === 'jsonb'
-                ? (col.type = 'nvarchar')
+                ? (col.type = 'nvarchar(max)')
                 : col.type
             );
             // Note: Specify options here (e.g {writeSql: false, execute: true})
@@ -31,7 +31,7 @@ each('$.forms[*]', state => {
               execute: true, // keep to false to not alter DB
             })(state);
           } else {
-            const columnNames = rows.map(x => x.column_name);
+            const columnNames = rows.map(x => x.column_name.toLowerCase());
 
             console.log('----------------------');
             const newColumns = state.data.columns.filter(
@@ -45,7 +45,7 @@ each('$.forms[*]', state => {
                 : col.type === 'int4' || col.type === 'float4'
                 ? (col.type = col.type.substring(0, col.type.length - 1))
                 : col.type === 'jsonb'
-                ? (col.type = 'nvarchar')
+                ? (col.type = 'nvarchar(max)')
                 : col.type
             );
             console.log(newColumns);
