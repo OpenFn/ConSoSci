@@ -5,7 +5,8 @@ alterState(state => {
 
 each(
   'survey.general[*]',
-  upsert('WCSPROGRAMS_Vegetation', 'AnswerId', {
+alterState(async state => {
+  const VegMap = {
     Answer_Id: dataValue('surveyid'),
     Surveydate: dataValue('Date of survey'),
     SurveySite: dataValue('Survey site'),
@@ -109,12 +110,14 @@ each(
       },
     }),
     Bareground: dataValue('Bare ground %'),
-    })
-);
+    };
+  return upsert('WCSPROGRAMS_Vegetation', 'AnswerId', VegMap)(state);
+}));
 
 each(
   'survey.liana_old[*]',
-   upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', {
+alterState(async state => {
+  const BrushMap = {
     Answer_Id: dataValue('surveyid'),
     WCSPROGRAMS_TaxaID: findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
@@ -129,13 +132,14 @@ each(
     LianaPercentage: dataValue('Liana percentage'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no')
- })
-);
+    PlotNumber: dataValue('Plot_no'),
+  };
+    return upsert('WCSPROGRAMS_VegetationBrush', 'AnswerId', BrushMap)(state);
+})); 
 
 each(
   'survey.ground_species[*]',
-  psert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
     Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -143,12 +147,12 @@ each(
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
     GrassPercent: dataValue('Species_%'),
- })
+  })
 );
 
 each(
   'survey.ground_species[*]',
-   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     Answer_Id: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -161,7 +165,7 @@ each(
     
 each(
   'survey.native_tree_shrubs[*]',
-   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     AnswerId: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
@@ -170,6 +174,7 @@ each(
     SbrushPer: dataValue('shrub percentage'),
   })
 );
+
 
 each(
   'survey.general[*]',
