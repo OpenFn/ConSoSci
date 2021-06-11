@@ -13,7 +13,7 @@ alterState(state => {
 });
 
 // THIS OPERATION REPLACES THE ONE BELOW IT.
-alterSate(async state => {
+alterState(async state => {
   const dataArray = state.survey['general'];
   const VegMap = [];
   for (let data of dataArray) {
