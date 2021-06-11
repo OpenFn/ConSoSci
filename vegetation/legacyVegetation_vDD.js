@@ -20,7 +20,7 @@ alterState(async state => {
       Answer_ID: data['surveyid'],
       WCSPROGRAMS_VegetationName: 'LegacyData',
       SubmissionDate:'11/06/2021',
-      StartTime: '0',
+      StartTime: '00:00:00',
       Surveydate: data['Date of survey'],
       SurveySite: data['Survey site'],
       TransectNo: data['Transect No'],
