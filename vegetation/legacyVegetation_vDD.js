@@ -12,7 +12,6 @@ alterState(state => {
   return { ...state, handleValue, convertValue };
 });
 
-// THIS OPERATION REPLACES THE ONE BELOW IT.
 alterState(async state => {
   const dataArray = state.survey['general'];
   const VegMap = [];
