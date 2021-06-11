@@ -17,116 +17,112 @@ alterState(async state => {
   const VegMap = [];
   for (let data of dataArray) {
     VegMap.push({
-       Answer_ID: dataValue('surveyid'),
-       Surveydate: dataValue('Date of survey'),
-       SurveySite: dataValue('Survey site'),
-       TransectNo: dataValue('Transect No'),
-       PlotNumber: dataValue('Plot No'),
-       East: dataValue('Easting'),
-       North: dataValue('Northing'),
-       PlotGPS: dataValue('Altitude'),
-       WCSPROGRAMS_VegetationClassID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationClassID',
-         relation: 'WCSPROGRAMS_VegetationClass',
-         where: {
-           WCSPROGRAMS_VegetationClassName: state.handleValue(
-             dataValue('Vegetation_type')(state)
-           ),
-         },
-       }),        
-       WCSPROGRAMS_VegetationForestTypeID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationForestTypeID',
-         relation: 'WCSPROGRAMS_VegetationForestType',
-         where: {
-           WCSPROGRAMS_VegetationForestTypeExtCode: state.handleValue(
-             dataValue('Vegetation_field')(state)
-           ),
-         },
-      }),
-       WCSPROGRAMS_VegetationPhysiographyID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
-         relation: 'WCSPROGRAMS_VegetationPhysiography',
-         where: {
-           WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
-             dataValue('Physiography')(state)
-           ),
-         },
-       }),
-       //SpecimenPhoto: dataValue('Photos'),
-       WCSPROGRAMS_VegetationTopographyID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationTopographyID',
-         relation: 'WCSPROGRAMS_VegetationTopography',
-         where: {
-           WCSPROGRAMS_VegetationTopographyExtCode: state.handleValue(
-             dataValue('Topography')(state)
-           ),
-         },
-       }),
-       WCSPROGRAMS_VegetationDrainageID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationDrainageID',
-         relation: 'WCSPROGRAMS_VegetationDrainage',
-         where: {
-           WCSPROGRAMS_VegetationDrainageExtCode: state.handleValue(
-             dataValue('Drainage')(state)
-         ),
-         },
-       }),
-     WCSPROGRAMS_VegetationSoilDescriptionID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
-         relation: 'WCSPROGRAMS_VegetationSoilDescription',
-         where: {
-           WCSPROGRAMS_VegetationSoilDescriptionName: state.handleValue(
-             dataValue('Soil description')(state)
-           ),
-         },
-       }),
-       WCSPROGRAMS_VegetationSoilColorID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationSoilColorID',
-         relation: 'WCSPROGRAMS_VegetationSoilColor',
-         where: {
-           WCSPROGRAMS_VegetationSoilColorName: state.handleValue(
-             dataValue('Soil_colour')(state)
-           ),
-         },
-       }),
-       IsEvidenceOfFire: dataValue('Evidence_fire'),
-       WCSPROGRAMS_VegetationSoilMoistureID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
-         relation: 'WCSPROGRAMS_VegetationSoilMoisture',
-         where: {
-           WCSPROGRAMS_VegetationSoilMoistureName: state.handleValue(
-             dataValue('Soil_Moisture')(state) ||
-               dataValue('$.body.groundtruthing/moisture')(state) ||
-               ''
-           ),
-         },
-       }),
-       WCSPROGRAMS_VegetationSoilErodabilityID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
-         relation: 'WCSPROGRAMS_VegetationSoilErodability',
-         where: {
+      Answer_ID: data['surveyid'],
+      Surveydate: data['Date of survey'],
+      SurveySite: data['Survey site'],
+      TransectNo: data['Transect No'],
+      PlotNumber: data['Plot No'],
+      East: data['Easting'],
+      North: data['Northing'],
+      // PlotGPS: data['Altitude'], // check column name
+      WCSPROGRAMS_VegetationClassID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationClassID',
+        relation: 'WCSPROGRAMS_VegetationClass',
+        where: {
+          WCSPROGRAMS_VegetationClassName: state.handleValue(
+            data['Vegetation_type']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationForestTypeID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationForestTypeID',
+        relation: 'WCSPROGRAMS_VegetationForestType',
+        where: {
+          WCSPROGRAMS_VegetationForestTypeExtCode: state.handleValue(
+            data['Vegetation_field']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationPhysiographyID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
+        relation: 'WCSPROGRAMS_VegetationPhysiography',
+        where: {
+          WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
+            data['Physiography']
+          ),
+        },
+      })(state),
+      //SpecimenPhoto: dataValue('Photos'),
+      WCSPROGRAMS_VegetationTopographyID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationTopographyID',
+        relation: 'WCSPROGRAMS_VegetationTopography',
+        where: {
+          WCSPROGRAMS_VegetationTopographyExtCode: state.handleValue(
+            data['Topography']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationDrainageID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationDrainageID',
+        relation: 'WCSPROGRAMS_VegetationDrainage',
+        where: {
+          WCSPROGRAMS_VegetationDrainageExtCode: state.handleValue(
+            data['Drainage']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationSoilDescriptionID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationSoilDescriptionID',
+        relation: 'WCSPROGRAMS_VegetationSoilDescription',
+        where: {
+          WCSPROGRAMS_VegetationSoilDescriptionName: state.handleValue(
+            data['Soil description']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationSoilColorID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationSoilColorID',
+        relation: 'WCSPROGRAMS_VegetationSoilColor',
+        where: {
+          WCSPROGRAMS_VegetationSoilColorName: state.handleValue(
+            data['Soil_colour']
+          ),
+        },
+      })(state),
+      IsEvidenceOfFire: data['Evidence_fire'],
+      WCSPROGRAMS_VegetationSoilMoistureID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationSoilMoistureID',
+        relation: 'WCSPROGRAMS_VegetationSoilMoisture',
+        where: {
+          WCSPROGRAMS_VegetationSoilMoistureName: state.handleValue(
+            data['Soil_Moisture'] ||
+              data['$.body.groundtruthing/moisture'] ||
+              ''
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationSoilErodabilityID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationSoilErodabilityID',
+        relation: 'WCSPROGRAMS_VegetationSoilErodability',
+        where: {
           WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
-             dataValue('Soil Erodability')(state)
-           ),
-         },
-}),
-       WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
-         relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
-         where: {
-           WCSPROGRAMS_VegetationSoilSeasonalityName: state.handleValue(
-             dataValue('Soil Seasonality')(state)
-           ),
-         },
-       }),
-       Bareground: dataValue('Bare ground %'),
-     });
+            data['Soil Erodability']
+          ),
+        },
+      })(state),
+      WCSPROGRAMS_VegetationSoilSeasonalityID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationSoilSeasonalityID',
+        relation: 'WCSPROGRAMS_VegetationSoilSeasonality',
+        where: {
+          WCSPROGRAMS_VegetationSoilSeasonalityName: state.handleValue(
+            data['Soil Seasonality']
+          ),
+        },
+      })(state),
+      Bareground: data['Bare ground %'],
+    });
   }
-  return upsertMany(
-    'WCSPROGRAMS_Vegetation',
-    'Answer_ID',
-    () => VegMap
-  )(state);
+  return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap)(state);
 });
 
 alterState(async state => {
