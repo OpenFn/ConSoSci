@@ -131,7 +131,7 @@ alterState(async state => {
   const BrushMap = [];
   for (let data of dataArray) {
     BrushMap.push({
-      Answer_Id: data['surveyid'],
+      Answer_ID: data['surveyid'],
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
@@ -179,7 +179,7 @@ alterState(async state => {
 each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
-    Answer_Id: dataValue('surveyid'),
+    Answer_ID: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
@@ -192,7 +192,7 @@ each(
 each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
-    Answer_Id: dataValue('surveyid'),
+    Answer_ID: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
@@ -205,7 +205,7 @@ each(
 each(
   'survey.native_tree_shrubs[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
-    AnswerId: dataValue('surveyid'),
+    Answer_ID: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
@@ -217,7 +217,7 @@ each(
 each(
   'survey.general[*]',
   upsert('WCSPROGRAMS_VegetationVegetationObservers', 'AnswerId', {
-    Answer_Id: dataValue('surveyid'),
+    Answer_ID: dataValue('surveyid'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer3'),
@@ -227,7 +227,7 @@ each(
 each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
-    Answer_Id: dataValue('surveyid'),
+    Answer_ID: dataValue('surveyid'),
     SurveySite: dataValue('survey_area'),
     TransectNo: dataValue('Transect_no'),
     PlotNumber: dataValue('Plot_no'),
