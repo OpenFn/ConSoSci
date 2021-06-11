@@ -152,7 +152,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegetationBrush',
-    'AnswerId',
+    'Answer_ID',
     () => BrushMap
   )(state);
 });
