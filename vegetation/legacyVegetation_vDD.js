@@ -18,6 +18,7 @@ alterState(async state => {
   for (let data of dataArray) {
     VegMap.push({
       Answer_ID: data['surveyid'],
+      WCSPROGRAMS_VegetationName: 'LegacyData',
       Surveydate: data['Date of survey'],
       SurveySite: data['Survey site'],
       TransectNo: data['Transect No'],
