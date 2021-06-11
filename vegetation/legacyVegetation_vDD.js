@@ -22,8 +22,8 @@ alterState(async state => {
       SubmissionDate:'11/06/2021', //Date when job is run
       StartTime: '00:00:00', //We don't know the time so putting 0
       WCSPROGRAMS_VegetationDistrictID: '0', //We don't know the district so putting 0
-      UserID_CR: '0',
-      UserID_LM: '0',
+      UserID_CR: '0', // Don't know so putting 0
+      UserID_LM: '0', // Don't know so putting 0
       Surveydate: data['Date of survey'],
       SurveySite: data['Survey site'],
       TransectNo: data['Transect No'],
