@@ -21,7 +21,7 @@ alterState(async state => {
       WCSPROGRAMS_VegetationName: 'LegacyData',
       SubmissionDate:'11/06/2021',
       StartTime: '00:00:00',
-      WCSPROGRAMS_VegetationDistrictID: 'Unknown',
+      WCSPROGRAMS_VegetationDistrictID: '0',
       Surveydate: data['Date of survey'],
       SurveySite: data['Survey site'],
       TransectNo: data['Transect No'],
