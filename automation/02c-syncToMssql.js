@@ -23,6 +23,8 @@ each('$.forms[*]', state => {
                 ? (col.type = col.type.substring(0, col.type.length - 1))
                 : col.type === 'jsonb'
                 ? (col.type = 'nvarchar(max)')
+                : col.type === 'timestamp'
+                ? (col.type = 'datetime')
                 : col.type
             );
             // Note: Specify options here (e.g {writeSql: false, execute: true})
@@ -46,6 +48,8 @@ each('$.forms[*]', state => {
                 ? (col.type = col.type.substring(0, col.type.length - 1))
                 : col.type === 'jsonb'
                 ? (col.type = 'nvarchar(max)')
+                : col.type === 'timestamp'
+                ? (col.type = 'datetime')
                 : col.type
             );
             console.log(newColumns);
