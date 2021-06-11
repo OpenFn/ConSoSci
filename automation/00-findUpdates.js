@@ -6,7 +6,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    { uid: 'apZrpKcK78xzrPcAfRrfac', p1:'WCSPROGRAMS', p2: 'SharksRays', tableId: 'SharksRays'},
+    { uid: 'apZrpKcK78xzrPcAfRrfac', p1:'WCSPROGRAMS', p2: 'SharksRays', tableId: 'WCSPROGRAMS_SharksRays'},
     //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'OpenFn', p2: 'Sharks', tableId: 'SharkRaysMay4Test'},
     //{ uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'},
     //{ uid: 'aDgPJqN4SAYohZ4ZueEeYU', p1: 'WCS', p2: 'Arcadia', tableId: 'ArcadiaDataCollection'},
