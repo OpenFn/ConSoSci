@@ -28,8 +28,8 @@ alterState(async state => {
       PlotNumber: data['Plot No'],
       East: data['Easting'],
       North: data['Northing'],
-      Latitude: data['Easting'],
-      Longitude: data['Northing'],
+      Latitude: '0',
+      Longitude: '0',
       WCSPROGRAMS_VegetationClassID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationClassID',
         relation: 'WCSPROGRAMS_VegetationClass',
