@@ -59,3 +59,12 @@ each('$.forms[*]', state => {
     })
   )(state);
 });
+
+alterState(state => {
+  console.log('----------------------');
+  console.log('Logging queries.');
+  for (query of state.queries) console.log(query);
+  console.log('----------------------');
+
+  return state;
+});
