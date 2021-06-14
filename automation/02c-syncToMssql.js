@@ -30,7 +30,7 @@ each('$.forms[*]', state => {
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {
               writeSql: true, // Keep to true to log query (otherwise make it false).
-              execute: false, // keep to false to not alter DB
+              execute: true, // keep to false to not alter DB
             })(state);
           } else {
             const columnNames = rows.map(x => x.column_name.toLowerCase());
@@ -58,7 +58,7 @@ each('$.forms[*]', state => {
               // Note: Specify options here (e.g {writeSql: false, execute: true})
               return modifyTable(name, state => newColumns, {
                 writeSql: true, // Keep to true to log query (otherwise make it false).
-                execute: false, // keep to false to not alter DB
+                execute: true, // keep to false to not alter DB
               })(state);
             } else {
               console.log('No new columns to add.');
