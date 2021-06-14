@@ -8,7 +8,7 @@ get(`${state.data.url}`, {}, state => {
   }
   // PREFIX HANDLER
   const prefix1 = state.references[0].prefix1 || 'WCS';
-  const prefix2 = state.references[0].prefix2 || 'FormGroup';
+  const prefix2 = state.references[0].prefix2 || '';
   const tableId = state.references[0].tableId;
   const uuid = 'generated_uuid';
   // END OF PREFIX HANDLER
