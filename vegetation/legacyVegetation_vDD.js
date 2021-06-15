@@ -55,7 +55,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationPhysiographyID',
         relation: 'WCSPROGRAMS_VegetationPhysiography',
         where: {
-          WCSPROGRAMS_VegetationPhysiographyExtCode: state.handleValue(
+          WCSPROGRAMS_VegetationPhysiographyName: state.handleValue(
             data['Physiography']
           ),
         },
