@@ -46,7 +46,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationForestTypeID',
         relation: 'WCSPROGRAMS_VegetationForestType',
         where: {
-          WCSPROGRAMS_VegetationForestTypeName: state.handleValue(
+          WCSPROGRAMS_VegetationForestTypeExtCode: state.handleValue(
             data['Vegetation_field']
           ),
         },
