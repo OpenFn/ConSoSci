@@ -32,7 +32,7 @@ alterState(async state => {
       North: data['Northing'],
       Latitude: '0', //TO DO / East should be converted to UTM zone 36N
       Longitude: '0', //TO DO / North should be converted to UTM zone 36N
-      WCSPROGRAMS_VegetationAgeID : 'Other', // We don't know age so putting 0
+      WCSPROGRAMS_VegetationAgeID : '4', // We don't know age so putting Other, ID 4 TO CHECK
       WCSPROGRAMS_VegetationClassID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationClassID',
         relation: 'WCSPROGRAMS_VegetationClass',
