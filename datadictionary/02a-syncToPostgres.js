@@ -23,6 +23,7 @@ alterState(state => {
     {
       name: 'form_id',
       type: 'varchar(100)',
+      unique: true,
     },
     {
       name: 'form_group',
@@ -59,7 +60,7 @@ alterState(state => {
 
   const forms = [
     {
-      name: 'kobo_form',
+      name: 'kobo_forms',
       columns: koboForm,
     },
     {
@@ -68,6 +69,7 @@ alterState(state => {
     },
   ];
 
+  state.data = state.formDefinition;
   return { ...state, forms };
 });
 
@@ -75,7 +77,6 @@ each(
   '$.forms[*]',
   alterState(state => {
     const { name, columns } = state.data;
-    
 
     return describeTable(name.toLowerCase(), {
       writeSql: true,
@@ -125,23 +126,36 @@ each(
   })
 );
 
-// upsert('kobo_forms', 'form_id', {
-//   form_name: '',
-//   date_created: '',
-//   date_modified: '',
-//   form_owner: '',
-//   languages: '',
-//   form_id: '',
-//   form_group: '',
-//   table_id: '',
-// });
+upsert('kobo_forms', 'form_id', {
+  form_name: state.formDefinition.name,
+  date_created: state.formDefinition.date_created,
+  date_modified: state.formDefinition.date_modified,
+  form_owner: state.formDefinition.owner__username,
+  languages: state.formDefinition.languages,
+  form_id: state.formDefinition.uid,
+  form_group: state => state.prefix2,
+  table_id: state => `${state.prefix1}_${state.prefix2}_${state.tableId}`,
+});
 
-// alterState(state => {
-//   console.log('----------------------');
-//   console.log('Logging queries.');
-//   for (query of state.queries) console.log(query);
-//   console.log('----------------------');
+upsertMany('kobo_choices', '???', state => {
+  const { choices } = state.formDefinition.content;
+  const formId = state.formDefinition.uid;
+  return choices.map(x => ({
+    list_id: `${x.list_name}${formId}`, // proposing to add ${x.name} to list_id and use as uuid
+    list_name: x.list_name,
+    choice_name: x.name,
+    choice_label: x.label,
+    formUid: formId,
+  }));
+});
 
-//   return state;
-// });
+each('content.choices[*]', upsert('kobo_choices', '???', {}));
 
+alterState(state => {
+  console.log('----------------------');
+  console.log('Logging queries.');
+  for (query of state.queries) console.log(query);
+  console.log('----------------------');
+
+  return state;
+});
