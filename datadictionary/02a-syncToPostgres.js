@@ -35,6 +35,45 @@ alterState(state => {
     },
   ];
 
+  const koboQuestions = [
+    {
+      name: 'question_id',
+      type: 'varchar(100)',
+    },
+    {
+      name: 'form_id',
+      type: 'varchar(100)',
+    },
+    {
+      name: 'analytics_label',
+      type: 'text',
+    },
+    {
+      name: 'question_name',
+      type: 'text',
+    },
+    {
+      name: 'label_EN',
+      type: 'text',
+    },
+    {
+      name: 'label_FR',
+      type: 'text',
+    },
+    {
+      name: 'type',
+      type: 'varchar(100)',
+    },
+    {
+      name: 'select_from_list_name',
+      type: 'varchar(100)',
+    },
+    {
+      name: 'constraint',
+      type: 'varchar(100)',
+    },
+  ];
+
   const koboChoices = [
     {
       name: 'list_id',
@@ -50,7 +89,7 @@ alterState(state => {
     },
     {
       name: 'choice_label',
-      type: 'varchar(100)',
+      type: 'text',
     },
     {
       name: 'formUid',
@@ -62,6 +101,10 @@ alterState(state => {
     {
       name: 'kobo_forms',
       columns: koboForm,
+    },
+    {
+      name: 'kobo_questions',
+      columns: koboQuestions,
     },
     {
       name: 'kobo_choices',
@@ -149,7 +192,21 @@ upsertMany('kobo_choices', '???', state => {
   }));
 });
 
-each('content.choices[*]', upsert('kobo_choices', '???', {}));
+upsertMany('kobo_questions', 'question_id', state => {
+  const { survey } = state.formDefinition.content;
+  const formId = state.formDefinition.uid;
+  return survey.map(x => ({
+    question_id: `${x['$kuid']}-${formId}`,
+    form_id: formId,
+    analytics_label: '',
+    question_name: x.name,
+    label_EN: x.label,
+    label_FR: '',
+    type: x.type,
+    select_from_list_name: x.select_from_list_name,
+    constraint: x.constraint,
+  }));
+});
 
 alterState(state => {
   console.log('----------------------');
