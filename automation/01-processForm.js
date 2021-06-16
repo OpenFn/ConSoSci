@@ -1,4 +1,5 @@
 get(`${state.data.url}`, {}, state => {
+  state.formDefinition = state.data; // keeping form definition for data dictionary
   const { survey } = state.data.content;
   if (survey.length === 0) {
     console.log(
