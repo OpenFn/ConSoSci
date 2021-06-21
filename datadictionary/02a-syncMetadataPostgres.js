@@ -97,7 +97,7 @@ alterState(state => {
     },
   ];
 
-  const forms = [
+  const MetadataForms = [
     {
       name: 'kobo_forms',
       columns: koboForm,
@@ -113,11 +113,11 @@ alterState(state => {
   ];
 
   state.data = state.formDefinition;
-  return { ...state, forms };
+  return { ...state, MetadataForms };
 });
 
 each(
-  '$.forms[*]',
+  '$.MetadataForms[*]',
   alterState(state => {
     const { name, columns } = state.data;
 
