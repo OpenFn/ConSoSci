@@ -157,58 +157,80 @@ alterState(async state => {
  // )(state);
 //});
 
-//each(
-//  'survey.ground_species[*]',
-//  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
-//    AnswerID: dataValue('surveyid'),
-//    StGrassRepeat: dataValue('Ground_Spp_No'),
-//    GrassPercent: dataValue('Species_%'),
-//    WCSPROGRAMS_TaxaID: await findValue({
-//       uuid: 'WCSPROGRAMS_TaxaID',
-//        relation: 'WCSPROGRAMS_Taxa',
-//        where: {
-//         ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-//        },
-//        operator: { ScientificName: 'like' },
-//      })(state),
-//  )
-//);
-
-//each(
-//  'survey.ground_species[*]',
-//  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-//    AnswerID: dataValue('surveyid'),
-//    StGrassRepeat: dataValue('Ground_Spp_No'),
- //   WCSPROGRAMS_TaxaID: dataValue('G_species'),
- //   GrassPercent: dataValue('Species_%'),
- // })
-//);
-
-//each(
-//  'survey.native_tree_shrubs[*]',
-//  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-//    AnswerID: dataValue('surveyid'),
-//    WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
-//    SbrushPer: dataValue('shrub percentage'),
-//  })
-//);
-
-//each(
-//  'survey.general[*]',
-//  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
-//    Answer_ID: dataValue('surveyid'),
-//    WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
-//    WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
- //   WCSPROGRAMS_VegetationObserverID: dataValue('Observer3'),
-//  })
-//);
+each(
+  'survey.ground_species[*]',
+  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
+    AnswerID: dataValue('surveyid'),
+    StGrassRepeat: dataValue('Ground_Spp_No'),
+    GrassPercent: dataValue('Species_%'),
+    WCSPROGRAMS_TaxaID: await findValue({
+       uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+         ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
+  })
+);
 
 each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
     AnswerID: dataValue('surveyid'),
-//    WCSPROGRAMS_TaxaID: dataValue('Species'),
-    Dbh: dataValue('DBH'),
-    Height: dataValue('Height'),
+    StGrassRepeat: dataValue('Ground_Spp_No'),
+    GrassPercent: dataValue('Species_%'),
+    WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
+  })
+);
+
+each(
+  'survey.native_tree_shrubs[*]',
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
+    AnswerID: dataValue('surveyid'),
+    SbrushPer: dataValue('shrub percentage'),//   
+     WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          ScientificName: `%${state.handleValue(data[`Native_tree_Shrub`])}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
+  })
+);
+
+each(
+  'survey.general[*]',
+  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
+    Answer_ID: dataValue('surveyid'),
+    WCSPROGRAMS_VegetationObserverID: await findValue({
+         uuid: 'WCSPROGRAMS_VegetationObserverID',
+         relation: 'WCSPROGRAMS_VegetationObserver',
+         where: {
+           WCSPROGRAMS_VegetationObserverExtCode: data['Observer1'],
+         },
+       })(state),
+    WCSPROGRAMS_VegetationObserverID: await findValue({
+         uuid: 'WCSPROGRAMS_VegetationObserverID',
+         relation: 'WCSPROGRAMS_VegetationObserver',
+         where: {
+           WCSPROGRAMS_VegetationObserverExtCode: data['Observer2'],
+         },
+       })(state),
+    WCSPROGRAMS_VegetationObserverID: await findValue({
+         uuid: 'WCSPROGRAMS_VegetationObserverID',
+         relation: 'WCSPROGRAMS_VegetationObserver',
+         where: {
+           WCSPROGRAMS_VegetationObserverExtCode: data['Observer3'],
+         },
+       })(state),
   })
 );
