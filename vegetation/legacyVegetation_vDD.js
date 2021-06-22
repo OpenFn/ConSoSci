@@ -193,15 +193,15 @@ alterState(async state => {
 //  })
 //);
 
-each(
-  'survey.general[*]',
-  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
-    Answer_ID: dataValue('surveyid'),
-    WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
-    WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
-    WCSPROGRAMS_VegetationObserverID: dataValue('Observer3'),
-  })
-);
+//each(
+//  'survey.general[*]',
+//  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
+//    Answer_ID: dataValue('surveyid'),
+//    WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
+//    WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
+ //   WCSPROGRAMS_VegetationObserverID: dataValue('Observer3'),
+//  })
+//);
 
 each(
   'survey.ground_species[*]',
