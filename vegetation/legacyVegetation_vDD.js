@@ -184,14 +184,14 @@ alterState(async state => {
  // })
 //);
 
-each(
-  'survey.native_tree_shrubs[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
-    SbrushPer: dataValue('shrub percentage'),
-  })
-);
+//each(
+//  'survey.native_tree_shrubs[*]',
+//  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
+//    AnswerID: dataValue('surveyid'),
+//    WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
+//    SbrushPer: dataValue('shrub percentage'),
+//  })
+//);
 
 each(
   'survey.general[*]',
