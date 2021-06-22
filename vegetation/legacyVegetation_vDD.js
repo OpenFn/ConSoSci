@@ -150,7 +150,7 @@ alterState(async state => {
  //     LianaPercentage: data['Liana percentage'],
   //  });
  // }
-  return upsertMany(
+ // return upsertMany(
  //   'WCSPROGRAMS_VegetationBrush',
  //   'AnswerID',
  //   () => BrushMap
