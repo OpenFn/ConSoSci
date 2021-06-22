@@ -174,15 +174,15 @@ alterState(async state => {
 //  )
 //);
 
-each(
-  'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    StGrassRepeat: dataValue('Ground_Spp_No'),
-    WCSPROGRAMS_TaxaID: dataValue('G_species'),
-    GrassPercent: dataValue('Species_%'),
-  })
-);
+//each(
+//  'survey.ground_species[*]',
+//  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
+//    AnswerID: dataValue('surveyid'),
+//    StGrassRepeat: dataValue('Ground_Spp_No'),
+ //   WCSPROGRAMS_TaxaID: dataValue('G_species'),
+ //   GrassPercent: dataValue('Species_%'),
+ // })
+//);
 
 each(
   'survey.native_tree_shrubs[*]',
