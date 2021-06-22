@@ -195,7 +195,7 @@ alterState(async state => {
 
 each(
   'survey.general[*]',
-  upsert('WCSPROGRAMS_VegetationVegetationObservers', 'Answer_ID', {
+  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
