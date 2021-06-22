@@ -157,15 +157,22 @@ alterState(async state => {
  // )(state);
 //});
 
-each(
-  'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    StGrassRepeat: dataValue('Ground_Spp_No'),
-    WCSPROGRAMS_TaxaID: dataValue('G_species'),
-    GrassPercent: dataValue('Species_%'),
-  })
-);
+//each(
+//  'survey.ground_species[*]',
+//  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
+//    AnswerID: dataValue('surveyid'),
+//    StGrassRepeat: dataValue('Ground_Spp_No'),
+//    GrassPercent: dataValue('Species_%'),
+//    WCSPROGRAMS_TaxaID: await findValue({
+//       uuid: 'WCSPROGRAMS_TaxaID',
+//        relation: 'WCSPROGRAMS_Taxa',
+//        where: {
+//         ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+//        },
+//        operator: { ScientificName: 'like' },
+//      })(state),
+//  )
+//);
 
 each(
   'survey.ground_species[*]',
