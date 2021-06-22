@@ -133,29 +133,29 @@ alterState(async state => {
   return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap)(state);
 });
 
-alterState(async state => {
-  const dataArray = state.survey['liana_old'];
-  const BrushMap = [];
-  for (let data of dataArray) {
-    BrushMap.push({
-      AnswerID: data['surveyid'],
-      WCSPROGRAMS_TaxaID: await findValue({
-        uuid: 'WCSPROGRAMS_TaxaID',
-        relation: 'WCSPROGRAMS_Taxa',
-        where: {
-          ScientificName: `%${state.handleValue(data[`Liana`])}%`,
-        },
-        operator: { ScientificName: 'like' },
-      })(state),
-      LianaPercentage: data['Liana percentage'],
-    });
-  }
+//alterState(async state => { // Only 1 item in Liana_old and says the plot have no trees so no need to map it
+//  const dataArray = state.survey['liana_old'];
+//  const BrushMap = [];
+//  for (let data of dataArray) {
+//    BrushMap.push({
+ //     AnswerID: data['surveyid'],
+ //     WCSPROGRAMS_TaxaID: await findValue({
+  //      uuid: 'WCSPROGRAMS_TaxaID',
+ //       relation: 'WCSPROGRAMS_Taxa',
+ //       where: {
+ //         ScientificName: `%${state.handleValue(data[`Liana`])}%`,
+ //       },
+ //       operator: { ScientificName: 'like' },
+ //     })(state),
+ //     LianaPercentage: data['Liana percentage'],
+  //  });
+ // }
   return upsertMany(
-    'WCSPROGRAMS_VegetationBrush',
-    'AnswerID',
-    () => BrushMap
-  )(state);
-});
+ //   'WCSPROGRAMS_VegetationBrush',
+ //   'AnswerID',
+ //   () => BrushMap
+ // )(state);
+//});
 
 each(
   'survey.ground_species[*]',
