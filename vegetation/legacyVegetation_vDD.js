@@ -148,9 +148,6 @@ alterState(async state => {
         operator: { ScientificName: 'like' },
       })(state),
       LianaPercentage: data['Liana percentage'],
-      SurveySite: data['survey_area'],
-      TransectNo: data['Transect_no'],
-      PlotNumber: data['Plot_no'],
     });
   }
   return upsertMany(
@@ -164,9 +161,6 @@ each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
     Answer_ID: dataValue('surveyid'),
-    SurveySite: dataValue('survey_area'),
-    TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
     GrassPercent: dataValue('Species_%'),
@@ -177,9 +171,6 @@ each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     Answer_ID: dataValue('surveyid'),
-    SurveySite: dataValue('survey_area'),
-    TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
     GrassPercent: dataValue('Species_%'),
@@ -190,9 +181,6 @@ each(
   'survey.native_tree_shrubs[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     Answer_ID: dataValue('surveyid'),
-    SurveySite: dataValue('survey_area'),
-    TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no'),
     WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
     SbrushPer: dataValue('shrub percentage'),
   })
@@ -212,9 +200,6 @@ each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
     Answer_ID: dataValue('surveyid'),
-    SurveySite: dataValue('survey_area'),
-    TransectNo: dataValue('Transect_no'),
-    PlotNumber: dataValue('Plot_no'),
     WCSPROGRAMS_TaxaID: dataValue('Species'),
     Dbh: dataValue('DBH'),
     Height: dataValue('Height'),
