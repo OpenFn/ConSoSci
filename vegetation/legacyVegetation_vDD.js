@@ -186,8 +186,8 @@ each(
 
 each(
   'survey.native_tree_shrubs[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'Answer_ID', {
-    Answer_ID: dataValue('surveyid'),
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
+    AnswerID: dataValue('surveyid'),
     WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
     SbrushPer: dataValue('shrub percentage'),
   })
@@ -205,8 +205,8 @@ each(
 
 each(
   'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'Answer_ID', {
-    Answer_ID: dataValue('surveyid'),
+  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
+    AnswerID: dataValue('surveyid'),
     WCSPROGRAMS_TaxaID: dataValue('Species'),
     Dbh: dataValue('DBH'),
     Height: dataValue('Height'),
