@@ -138,7 +138,7 @@ alterState(async state => {
   const BrushMap = [];
   for (let data of dataArray) {
     BrushMap.push({
-      Answer_ID: data['surveyid'],
+      AnswerID: data['surveyid'],
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
@@ -155,7 +155,7 @@ alterState(async state => {
   }
   return upsertMany(
     'WCSPROGRAMS_VegetationBrush',
-    'Answer_ID',
+    'AnswerID',
     () => BrushMap
   )(state);
 });
