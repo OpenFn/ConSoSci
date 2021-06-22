@@ -159,7 +159,7 @@ alterState(async state => {
 
 each(
   'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationGrass', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
@@ -169,7 +169,7 @@ each(
 
 each(
   'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
@@ -179,7 +179,7 @@ each(
 
 each(
   'survey.native_tree_shrubs[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     WCSPROGRAMS_TaxaID: dataValue('Native_tree_Shrub'),
     SbrushPer: dataValue('shrub percentage'),
@@ -188,7 +188,7 @@ each(
 
 each(
   'survey.general[*]',
-  upsert('WCSPROGRAMS_VegetationVegetationObservers', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationVegetationObservers', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer1'),
     WCSPROGRAMS_VegetationObserverID: dataValue('Observer2'),
@@ -198,7 +198,7 @@ each(
 
 each(
   'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerId', {
+  upsert('WCSPROGRAMS_VegetationTrees', 'Answer_ID', {
     Answer_ID: dataValue('surveyid'),
     WCSPROGRAMS_TaxaID: dataValue('Species'),
     Dbh: dataValue('DBH'),
