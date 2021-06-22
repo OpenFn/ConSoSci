@@ -159,8 +159,8 @@ alterState(async state => {
 
 each(
   'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationGrass', 'Answer_ID', {
-    Answer_ID: dataValue('surveyid'),
+  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
+    AnswerID: dataValue('surveyid'),
     StGrassRepeat: dataValue('Ground_Spp_No'),
     WCSPROGRAMS_TaxaID: dataValue('G_species'),
     GrassPercent: dataValue('Species_%'),
