@@ -207,7 +207,7 @@ each(
   'survey.ground_species[*]',
   upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
     AnswerID: dataValue('surveyid'),
-    WCSPROGRAMS_TaxaID: dataValue('Species'),
+//    WCSPROGRAMS_TaxaID: dataValue('Species'),
     Dbh: dataValue('DBH'),
     Height: dataValue('Height'),
   })
