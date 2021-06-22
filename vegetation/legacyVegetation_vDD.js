@@ -65,7 +65,7 @@ alterState(async state => {
         uuid: 'WCSPROGRAMS_VegetationTopographyID',
         relation: 'WCSPROGRAMS_VegetationTopography',
         where: {
-          WCSPROGRAMS_VegetationTopographyExtCode: state.handleValue(
+          WCSPROGRAMS_VegetationTopographyName: state.handleValue(
             data['Topography']
           ),
         },
