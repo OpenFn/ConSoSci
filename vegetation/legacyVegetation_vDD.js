@@ -19,7 +19,7 @@ alterState(async state => {
     VegMap.push({
       Answer_ID: data['surveyid'],
       WCSPROGRAMS_VegetationName: 'LegacyData',
-      SubmissionDate:'11/06/2021', //Date when job is run
+      SubmissionDate: '11/06/2021', //Date when job is run
       StartTime: '00:00:00', //We don't know the time so putting 0
       WCSPROGRAMS_VegetationDistrictID: '0', //We don't know the district so putting 0
       UserID_CR: '0', // Don't know so putting 0
@@ -32,7 +32,7 @@ alterState(async state => {
       North: data['Northing'],
       Latitude: '0', //TO DO / East should be converted to UTM zone 36N
       Longitude: '0', //TO DO / North should be converted to UTM zone 36N
-      WCSPROGRAMS_VegetationAgeID : '4', // We don't know age so putting Other, ID 4 TO CHECK
+      WCSPROGRAMS_VegetationAgeID: '4', // We don't know age so putting Other, ID 4 TO CHECK
       WCSPROGRAMS_VegetationClassID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationClassID',
         relation: 'WCSPROGRAMS_VegetationClass',
@@ -138,49 +138,34 @@ alterState(async state => {
 //  const BrushMap = [];
 //  for (let data of dataArray) {
 //    BrushMap.push({
- //     AnswerID: data['surveyid'],
- //     WCSPROGRAMS_TaxaID: await findValue({
-  //      uuid: 'WCSPROGRAMS_TaxaID',
- //       relation: 'WCSPROGRAMS_Taxa',
- //       where: {
- //         ScientificName: `%${state.handleValue(data[`Liana`])}%`,
- //       },
- //       operator: { ScientificName: 'like' },
- //     })(state),
- //     LianaPercentage: data['Liana percentage'],
-  //  });
- // }
- // return upsertMany(
- //   'WCSPROGRAMS_VegetationBrush',
- //   'AnswerID',
- //   () => BrushMap
- // )(state);
+//     AnswerID: data['surveyid'],
+//     WCSPROGRAMS_TaxaID: await findValue({
+//      uuid: 'WCSPROGRAMS_TaxaID',
+//       relation: 'WCSPROGRAMS_Taxa',
+//       where: {
+//         ScientificName: `%${state.handleValue(data[`Liana`])}%`,
+//       },
+//       operator: { ScientificName: 'like' },
+//     })(state),
+//     LianaPercentage: data['Liana percentage'],
+//  });
+// }
+// return upsertMany(
+//   'WCSPROGRAMS_VegetationBrush',
+//   'AnswerID',
+//   () => BrushMap
+// )(state);
 //});
 
-each(
-  'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationGrass', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    StGrassRepeat: dataValue('Ground_Spp_No'),
-    GrassPercent: dataValue('Species_%'),
-    WCSPROGRAMS_TaxaID: await findValue({
-       uuid: 'WCSPROGRAMS_TaxaID',
-        relation: 'WCSPROGRAMS_Taxa',
-        where: {
-         ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-        },
-        operator: { ScientificName: 'like' },
-      })(state),
-  })
-);
-
-each(
-  'survey.ground_species[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    StGrassRepeat: dataValue('Ground_Spp_No'),
-    GrassPercent: dataValue('Species_%'),
-    WCSPROGRAMS_TaxaID: await findValue({
+alterState(async state => {
+  const dataArray = state.survey['ground_species'];
+  const groupSpeciesMap = [];
+  for (let data of dataArray) {
+    groupSpeciesMap.push({
+      AnswerID: data.surveyid,
+      StGrassRepeat: data.Ground_Spp_No,
+      GrassPercent: data['Species_%'],
+      WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
@@ -188,49 +173,96 @@ each(
         },
         operator: { ScientificName: 'like' },
       })(state),
-  })
-);
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationGrass',
+    'AnswerID',
+    () => groupSpeciesMap
+  );
+});
 
-each(
-  'survey.native_tree_shrubs[*]',
-  upsert('WCSPROGRAMS_VegetationTrees', 'AnswerID', {
-    AnswerID: dataValue('surveyid'),
-    SbrushPer: dataValue('shrub percentage'),//   
-     WCSPROGRAMS_TaxaID: await findValue({
+alterState(async state => {
+  const dataArray = state.survey['ground_species'];
+  const groupSpeciesMap = [];
+  for (let data of dataArray) {
+    groupSpeciesMap.push({
+      AnswerID: data.surveyid,
+      StGrassRepeat: data.Ground_Spp_No,
+      GrassPercent: data['Species_%'],
+      WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
         relation: 'WCSPROGRAMS_Taxa',
         where: {
-          ScientificName: `%${state.handleValue(data[`Native_tree_Shrub`])}%`,
+          ScientificName: `%${state.handleValue(data[`G_species`])}%`,
         },
         operator: { ScientificName: 'like' },
       })(state),
-  })
-);
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationTrees',
+    'AnswerID',
+    () => groupSpeciesMap
+  );
+});
 
-each(
-  'survey.general[*]',
-  upsert('WCSPROGRAMS_VegetationVegetationObserver', 'Answer_ID', {
-    Answer_ID: dataValue('surveyid'),
-    WCSPROGRAMS_VegetationObserverID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationObserverID',
-         relation: 'WCSPROGRAMS_VegetationObserver',
-         where: {
-           WCSPROGRAMS_VegetationObserverExtCode: data['Observer1'],
-         },
-       })(state),
-    WCSPROGRAMS_VegetationObserverID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationObserverID',
-         relation: 'WCSPROGRAMS_VegetationObserver',
-         where: {
-           WCSPROGRAMS_VegetationObserverExtCode: data['Observer2'],
-         },
-       })(state),
-    WCSPROGRAMS_VegetationObserverID: await findValue({
-         uuid: 'WCSPROGRAMS_VegetationObserverID',
-         relation: 'WCSPROGRAMS_VegetationObserver',
-         where: {
-           WCSPROGRAMS_VegetationObserverExtCode: data['Observer3'],
-         },
-       })(state),
-  })
-);
+alterState(async state => {
+  const dataArray = state.survey['native_tree_shrubs'];
+  const native_tree_shrubs = [];
+  for (let data of dataArray) {
+    native_tree_shrubs.push({
+      AnswerID: data.surveyid,
+      SbrushPer: data['shrub percentage'], //
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          ScientificName: `%${state.handleValue(data['Native_tree_Shrub'])}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationTrees',
+    'AnswerID',
+    () => native_tree_shrubs
+  );
+});
+
+alterState(async state => {
+  const dataArray = state.survey['general'];
+  const general = [];
+  for (let data of dataArray) {
+    general.push({
+      Answer_ID: data.surveyid,
+      WCSPROGRAMS_VegetationObserverID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationObserverID',
+        relation: 'WCSPROGRAMS_VegetationObserver',
+        where: {
+          WCSPROGRAMS_VegetationObserverExtCode: data['Observer1'],
+        },
+      })(state),
+      WCSPROGRAMS_VegetationObserverID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationObserverID',
+        relation: 'WCSPROGRAMS_VegetationObserver',
+        where: {
+          WCSPROGRAMS_VegetationObserverExtCode: data['Observer2'],
+        },
+      })(state),
+      WCSPROGRAMS_VegetationObserverID: await findValue({
+        uuid: 'WCSPROGRAMS_VegetationObserverID',
+        relation: 'WCSPROGRAMS_VegetationObserver',
+        where: {
+          WCSPROGRAMS_VegetationObserverExtCode: data['Observer3'],
+        },
+      })(state),
+    });
+  }
+  return upsertMany(
+    'WCSPROGRAMS_VegetationVegetationObserver',
+    'Answer_ID',
+    () => general
+  );
+});
