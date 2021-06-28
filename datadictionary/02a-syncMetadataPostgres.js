@@ -202,7 +202,7 @@ upsertMany('kobo_questions', 'question_id', state => {
     question_name: x.name,
     label_EN: x.label,
     label_FR: '',
-    type: x.type,
+    question_type: x.type,
     select_from_list_name: x.select_from_list_name,
     constraint: x.constraint,
   }));
