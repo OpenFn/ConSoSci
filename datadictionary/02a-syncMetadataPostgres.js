@@ -69,7 +69,7 @@ alterState(state => {
       type: 'varchar(100)',
     },
     {
-      name: 'constraint',
+      name: 'question_constraint',
       type: 'varchar(100)',
     },
   ];
@@ -204,7 +204,7 @@ upsertMany('kobo_questions', 'question_id', state => {
     label_FR: '',
     question_type: x.type,
     select_from_list_name: x.select_from_list_name,
-    constraint: x.constraint,
+    question_constraint: x.constraint,
   }));
 });
 
