@@ -61,7 +61,7 @@ alterState(state => {
       type: 'text',
     },
     {
-      name: 'type',
+      name: 'question_type',
       type: 'varchar(100)',
     },
     {
