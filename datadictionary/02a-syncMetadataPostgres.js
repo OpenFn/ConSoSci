@@ -39,6 +39,7 @@ alterState(state => {
     {
       name: 'question_id',
       type: 'varchar(100)',
+      unique: true,
     },
     {
       name: 'form_id',
@@ -78,6 +79,7 @@ alterState(state => {
     {
       name: 'list_id',
       type: 'varchar(100)',
+      unique: true,
     },
     {
       name: 'list_name',
@@ -187,7 +189,7 @@ upsertMany('kobo_choices', 'list_id', state => {
     list_id: `${x.list_name}${formId}${x.name}`, // proposing to add ${x.name} to list_id and use as uuid
     list_name: x.list_name,
     choice_name: x.name,
-    choice_label: x.label,
+    choice_label: x.label.join(','),
     formUid: formId,
   }));
 });
@@ -200,7 +202,7 @@ upsertMany('kobo_questions', 'question_id', state => {
     form_id: formId,
     analytics_label: '',
     question_name: x.name,
-    label_EN: x.label,
+    label_EN: x.label.join(','),
     label_FR: '',
     question_type: x.type,
     select_from_list_name: x.select_from_list_name,
