@@ -186,7 +186,7 @@ upsertMany('kobo_choices', 'list_id', state => {
   const { choices } = state.formDefinition.content;
   const formId = state.formDefinition.uid;
   return choices.map(x => ({
-    list_id: `${x.list_name}${formId}${x.name}`, // proposing to add ${x.name} to list_id and use as uuid
+    list_id: `${x.list_name}${formId}${x['$kuid']}`,
     list_name: x.list_name,
     choice_name: x.name,
     choice_label: x.label.join(','),
