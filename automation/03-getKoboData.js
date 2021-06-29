@@ -13,6 +13,12 @@ alterState(state => {
         formName: 'Arcadia Data Collection Site Survey',
         tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       },
+      { 
+        uid: 'avLpvrukkvuFzCHacjHdRs', 
+        p1: 'WCS', 
+        p2: 'Vegetation', 
+        tableId: 'VegetationClassficationAndTreeMeasurementForm'
+      },
       //{
       //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
       //  formName: 'SWM Etude Marché 9Feb',
