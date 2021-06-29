@@ -8,11 +8,11 @@ alterState(state => {
   const manualCursor = '2020-05-25T14:32:43.325+01:00';
   state.data = {
     surveys: [
-      {
-        uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-        formName: 'Arcadia Data Collection Site Survey',
-        tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-      },
+      //{
+      //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+      //  formName: 'Arcadia Data Collection Site Survey',
+      //  tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+      //},
       { 
         uid: 'avLpvrukkvuFzCHacjHdRs', 
         p1: 'WCS', 
