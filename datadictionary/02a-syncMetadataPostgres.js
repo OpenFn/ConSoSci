@@ -189,7 +189,7 @@ upsertMany('kobo_choices', 'list_id', state => {
     list_id: `${x.list_name}${formId}${x['$kuid']}`,
     list_name: x.list_name,
     choice_name: x.name,
-    choice_label: x.label.join(','),
+    choice_label: x.label ? x.label.join(',') : '',
     formUid: formId,
   }));
 });
@@ -202,7 +202,7 @@ upsertMany('kobo_questions', 'question_id', state => {
     form_id: formId,
     analytics_label: '',
     question_name: x.name,
-    label_EN: x.label.join(','),
+    label_EN: x.label ? x.label.join(',') : '',
     label_FR: '',
     question_type: x.type,
     select_from_list_name: x.select_from_list_name,
