@@ -170,43 +170,18 @@ alterState(async state => {
       AnswerID: data.surveyid,
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
-      WCSPROGRAMS_TaxaID: await findValue({
-        uuid: 'WCSPROGRAMS_TaxaID',
-        relation: 'WCSPROGRAMS_Taxa',
-        where: {
-          ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-        },
-        operator: { ScientificName: 'like' },
-      })(state),
+     // WCSPROGRAMS_TaxaID: await findValue({
+      //  uuid: 'WCSPROGRAMS_TaxaID',
+      //  relation: 'WCSPROGRAMS_Taxa',
+      //  where: {
+      //    ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+      //  },
+      //  operator: { ScientificName: 'like' },
+      //})(state),
     });
   }
   return upsertMany(
     'WCSPROGRAMS_VegetationGrass',
-    'AnswerID',
-    () => groupSpeciesMap
-  );
-});
-
-alterState(async state => {
-  const dataArray = state.survey['ground_species'];
-  const groupSpeciesMap = [];
-  for (let data of dataArray) {
-    groupSpeciesMap.push({
-      AnswerID: data.surveyid,
-      StGrassRepeat: data.Ground_Spp_No,
-      GrassPercent: data['Species_%'],
-     // WCSPROGRAMS_TaxaID: await findValue({
-    //    uuid: 'WCSPROGRAMS_TaxaID',
-    //    relation: 'WCSPROGRAMS_Taxa',
-    //    where: {
-    //      ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-    //    },
-    //    operator: { ScientificName: 'like' },
-   //    })(state),
-    });
-  }
-  return upsertMany(
-    'WCSPROGRAMS_VegetationTrees',
     'AnswerID',
     () => groupSpeciesMap
   );
