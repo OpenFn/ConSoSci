@@ -5,7 +5,12 @@ alterState(state => {
   };
   const convertValue = value => {
     return value === 'yes' ? 1 : 0;
+    
   };
+  
+ // if dataValue('surveys.0.ground_species.6.G_species') === null {
+//      return dataValue('surveys.0.ground_species.6.G_species') = 'unknown'}
+//    }
 
   state.survey = state.data.surveys[0];
 
@@ -190,14 +195,14 @@ alterState(async state => {
       AnswerID: data.surveyid,
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
-      WCSPROGRAMS_TaxaID: await findValue({
-        uuid: 'WCSPROGRAMS_TaxaID',
-        relation: 'WCSPROGRAMS_Taxa',
-        where: {
-          ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-        },
-        operator: { ScientificName: 'like' },
-      })(state),
+     // WCSPROGRAMS_TaxaID: await findValue({
+    //    uuid: 'WCSPROGRAMS_TaxaID',
+    //    relation: 'WCSPROGRAMS_Taxa',
+    //    where: {
+    //      ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+    //    },
+    //    operator: { ScientificName: 'like' },
+   //    })(state),
     });
   }
   return upsertMany(
