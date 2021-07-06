@@ -170,14 +170,14 @@ alterState(async state => {
       AnswerID: data.surveyid,
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
-     // WCSPROGRAMS_TaxaID: await findValue({
-      //  uuid: 'WCSPROGRAMS_TaxaID',
-      //  relation: 'WCSPROGRAMS_Taxa',
-      //  where: {
-      //    ScientificName: `%${state.handleValue(data[`G_species`])}%`,
-      //  },
-      //  operator: { ScientificName: 'like' },
-      //})(state),
+      WCSPROGRAMS_TaxaID: await findValue({
+        uuid: 'WCSPROGRAMS_TaxaID',
+        relation: 'WCSPROGRAMS_Taxa',
+        where: {
+          ScientificName: `%${state.handleValue(data[`G_species`])}%`,
+        },
+        operator: { ScientificName: 'like' },
+      })(state),
     });
   }
   return upsertMany(
