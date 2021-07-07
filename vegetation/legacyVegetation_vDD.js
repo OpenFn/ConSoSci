@@ -144,16 +144,16 @@ alterState(async state => {
       Bareground: data['Bare ground %'],
     });
   }
-  return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap
-  )(state);
+  return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap)(state);
 });
 
 alterState(async state => {
   const dataArray = state.survey['ground_species'];
   const groupSpeciesMap = [];
+
   for (let data of dataArray) {
     groupSpeciesMap.push({
-      AnswerID: data.surveyid,
+      AnswerID: `${data.surveyid}${data.Ground_Spp_No}`, // build custom AnswerID. TO BE CONFIRMED
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
       WCSPROGRAMS_TaxaID: await findValue({
