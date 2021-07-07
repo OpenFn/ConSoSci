@@ -7,22 +7,20 @@ alterState(state => {
     return value === 'yes' ? 1 : 0;
   };
 
- // Replacing nulls in Ground_species by unknown
+  // Replacing nulls in Ground_species by unknown
   const ground_species = state.data.surveys[0].ground_species;
   for (species of ground_species) {
     if (species.G_species === null) species.G_species = 'unknown';
   }
   state.data.surveys[0].ground_species = ground_species;
 
-// Replacing nulls in native_tree_shrubs by unknown
+  // Replacing nulls in native_tree_shrubs by unknown
   const native_tree_shrubs = state.data.surveys[0].native_tree_shrubs;
   for (tree of native_tree_shrubs) {
     if (tree.Native_tree_Shrub === null) tree.Native_tree_Shrub = 'unknown';
   }
   state.data.surveys[0].native_tree_shrubs = native_tree_shrubs;
-  
-  console.log(state.data.surveys[0].native_tree_shrubs)
-  
+
   state.survey = state.data.surveys[0];
 
   return { ...state, handleValue, convertValue };
@@ -195,7 +193,7 @@ alterState(async state => {
     'WCSPROGRAMS_VegetationGrass',
     'AnswerID',
     () => groupSpeciesMap
-  );
+  )(state);
 });
 
 alterState(async state => {
@@ -219,7 +217,7 @@ alterState(async state => {
     'WCSPROGRAMS_VegetationTrees',
     'AnswerID',
     () => native_tree_shrubs
-  );
+  )(state);
 });
 
 alterState(async state => {
@@ -255,5 +253,5 @@ alterState(async state => {
     'WCSPROGRAMS_VegetationVegetationObserver',
     'Answer_ID',
     () => general
-  );
+  )(state);
 });
