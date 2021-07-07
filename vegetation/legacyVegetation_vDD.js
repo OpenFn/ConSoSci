@@ -12,6 +12,8 @@ alterState(state => {
   for (species in ground_species) {
     if (species.G_species === null) species.G_species = 'unknown';
   }
+  
+  state.data.surveys[0].groud_species = ground_species;
 
   state.survey = state.data.surveys[0];
 
