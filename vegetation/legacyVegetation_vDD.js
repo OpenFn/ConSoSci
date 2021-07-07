@@ -7,13 +7,11 @@ alterState(state => {
     return value === 'yes' ? 1 : 0;
   };
 
-  // if dataValue('surveys.0.ground_species.6.G_species') === null {
-  //      return dataValue('surveys.0.ground_species.6.G_species') = 'unknown'}
-  //    }
-
-  if (state.data['surveys'][0]['ground_species'][6]['G_species'] === null) {
-    state.data['surveys'][0]['ground_species'][6]['G_species'] = 'unknown';
+  const ground_species = state.data.surveys[0].ground_species;
+  for (species of ground_species) {
+    if (species.G_species === null) species.G_species = 'unknown';
   }
+  state.data.surveys[0].ground_species = ground_species;
 
   state.survey = state.data.surveys[0];
 
