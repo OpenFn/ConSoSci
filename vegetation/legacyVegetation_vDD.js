@@ -22,7 +22,7 @@ alterState(state => {
   state.data.surveys[0].native_tree_shrubs = native_tree_shrubs;
   
   
-  state.survey = state.data.surveys[0];
+  //state.survey = state.data.surveys[0];
 
   return { ...state, handleValue, convertValue };
 });
