@@ -21,6 +21,7 @@ alterState(state => {
   }
   state.data.surveys[0].native_tree_shrubs = native_tree_shrubs;
   
+  console.log(state.data.surveys[0].native_tree_shrubs)
   
   state.survey = state.data.surveys[0];
 
