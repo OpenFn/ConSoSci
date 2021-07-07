@@ -144,7 +144,8 @@ alterState(async state => {
       Bareground: data['Bare ground %'],
     });
   }
-  return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap)(state);
+  return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap
+  )(state);
 });
 
 //alterState(async state => { // Only 1 item in Liana_old and says the plot have no trees so no need to map it
