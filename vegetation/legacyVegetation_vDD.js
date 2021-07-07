@@ -154,6 +154,7 @@ alterState(async state => {
   for (let data of dataArray) {
     groupSpeciesMap.push({
       AnswerID: data.surveyid,
+      VegetationGrassName: data.G_species,
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
       WCSPROGRAMS_TaxaID: await findValue({
