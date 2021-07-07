@@ -209,6 +209,8 @@ alterState(async state => {
   for (let data of dataArray) {
     general.push({
       Answer_ID: data.surveyid,
+      UserID_CR: '0', // Don't know so putting 0
+      UserID_LM: '0', // Don't know so putting 0
       WCSPROGRAMS_VegetationObserverID: await findValue({
         uuid: 'WCSPROGRAMS_VegetationObserverID',
         relation: 'WCSPROGRAMS_VegetationObserver',
