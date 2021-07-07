@@ -156,6 +156,7 @@ alterState(async state => {
       AnswerID: data.surveyid,
       WCSPROGRAMS_VegetationGrassName: data.G_species,
       UserID_CR: '0', // Don't know so putting 0
+      UserID_LM: '0', // Don't know so putting 0
       StGrassRepeat: data.Ground_Spp_No,
       GrassPercent: data['Species_%'],
       WCSPROGRAMS_TaxaID: await findValue({
