@@ -183,6 +183,8 @@ alterState(async state => {
     native_tree_shrubs.push({
       AnswerID: data.surveyid,
       WCSPROGRAMS_VegetationTreesName: data.Native_tree_Shrub,
+      UserID_CR: '0', // Don't know so putting 0
+      UserID_LM: '0', // Don't know so putting 0
       SbrushPer: data['shrub percentage'], //
       WCSPROGRAMS_TaxaID: await findValue({
         uuid: 'WCSPROGRAMS_TaxaID',
