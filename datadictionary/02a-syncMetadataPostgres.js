@@ -176,7 +176,7 @@ upsert('kobo_forms', 'form_id', {
   date_created: state.formDefinition.date_created,
   date_modified: state.formDefinition.date_modified,
   form_owner: state.formDefinition.owner__username,
-  languages: state.formDefinition.languages,
+  languages: state.formDefinition.summary.languages.join(','),
   form_id: state.formDefinition.uid,
   form_group: state => state.prefix2,
   table_id: state => `${state.prefix1}_${state.prefix2}_${state.tableId}`,
