@@ -73,6 +73,7 @@ alterState(state => {
         );
         return {
           Dataset_Id: state.data.datasetId, //DatasetUuidId
+          DatasetUuidId : state.data.datasetId,
           //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
