@@ -17,7 +17,8 @@ alterState(state => {
         uid: 'avLpvrukkvuFzCHacjHdRs', 
         p1: 'WCS', 
         p2: 'Vegetation', 
-        tableId: 'VegetationClassficationAndTreeMeasurementForm'
+        tableId: 'VegetationClassficationAndTreeMeasurementForm',
+        formType:'vegetation'
       },
       //{
       //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
