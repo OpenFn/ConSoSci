@@ -19,26 +19,27 @@ alterState(state => {
   });
 
   // Replacing nulls in Ground_species by unknown
-  const ground_species = state.data.surveys[0].ground_species;
-  for (species of ground_species) {
+  for (let species of ground_species) {
     if (species.G_species === null) species.G_species = 'unknown';
   }
-  state.data.surveys[0].ground_species = ground_species;
 
   // Replacing nulls in native_tree_shrubs by unknown
-  const native_tree_shrubs = state.data.surveys[0].native_tree_shrubs;
-  for (tree of native_tree_shrubs) {
+  for (let tree of native_tree_shrubs) {
     if (tree.Native_tree_Shrub === null) tree.Native_tree_Shrub = 'unknown';
   }
-  state.data.surveys[0].native_tree_shrubs = native_tree_shrubs;
 
-  state.survey = state.data.surveys[0];
-
-  return { ...state, handleValue, convertValue };
+  return {
+    ...state,
+    handleValue,
+    convertValue,
+    general,
+    ground_species,
+    native_tree_shrubs,
+  };
 });
 
 alterState(async state => {
-  const dataArray = state.survey['general'];
+  const dataArray = state.general;
   const VegMap = [];
   for (let data of dataArray) {
     VegMap.push({
@@ -159,7 +160,7 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.survey['ground_species'];
+  const dataArray = state.ground_species;
   const groupSpeciesMap = [];
 
   for (let data of dataArray) {
@@ -188,7 +189,7 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.survey['native_tree_shrubs'];
+  const dataArray = state.native_tree_shrubs;
   const native_tree_shrubs = [];
   for (let data of dataArray) {
     native_tree_shrubs.push({
@@ -215,7 +216,7 @@ alterState(async state => {
 });
 
 alterState(async state => {
-  const dataArray = state.survey['general'];
+  const dataArray = state.general;
   const general = [];
   for (let data of dataArray) {
     general.push({
