@@ -39,7 +39,8 @@ alterState(state => {
       ...survey,
       formId: survey.uid,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
+      //query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
+      query: `&query={"end":{"$gte":"${manualCursor}"}}`,
     })),
   };
   return state;
