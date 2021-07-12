@@ -13,12 +13,12 @@ alterState(state => {
       //  formName: 'Arcadia Data Collection Site Survey',
       //  tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       //},
-      { 
-        uid: 'avLpvrukkvuFzCHacjHdRs', 
-        p1: 'WCS', 
-        p2: 'Vegetation', 
+      {
+        uid: 'avLpvrukkvuFzCHacjHdRs',
+        p1: 'WCS',
+        p2: 'Vegetation',
         tableId: 'VegetationClassficationAndTreeMeasurementForm',
-        formType:'vegetation'
+        formType: 'vegetation',
       },
       //{
       //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
@@ -39,7 +39,9 @@ alterState(state => {
       ...survey,
       formId: survey.uid,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
+      query: `&query={"_submission_time":{"$gte":"${
+        state.lastEnd || manualCursor
+      }"}}`,
     })),
   };
   return state;
