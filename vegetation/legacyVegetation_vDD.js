@@ -7,6 +7,17 @@ alterState(state => {
     return value === 'yes' ? 1 : 0;
   };
 
+  const general = [];
+  const ground_species = [];
+  const native_tree_shrubs = [];
+
+  state.data.surveys.forEach(survey => {
+    if (survey.general) general.push(...survey.general);
+    if (survey.ground_species) ground_species.push(...survey.ground_species);
+    if (survey.native_tree_shrubs)
+      native_tree_shrubs.push(...survey.native_tree_shrubs);
+  });
+
   // Replacing nulls in Ground_species by unknown
   const ground_species = state.data.surveys[0].ground_species;
   for (species of ground_species) {
