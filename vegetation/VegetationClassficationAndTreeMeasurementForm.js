@@ -159,7 +159,7 @@ alterState(state => {
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-  DatasetName: dataValue('formName'),
+  DatasetName: 'Vegetation EU 2021',
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('$.body._xform_id_string'),
   LastUpdateTime: new Date().toISOString(),
@@ -186,7 +186,7 @@ alterState(async state => {
   const latlong = state.UTMToLatLng(36, East, North, true);
 
   const mapping = {
-    WCSPROGRAMS_VegetationName: dataValue('formName'),
+    WCSPROGRAMS_VegetationName: 'Vegetation EU 2021',
     OutPlotArea: dataValue('$.body.out_plot_area'),
     OutPlotRadius: dataValue('$.body.out_plot_radius'),
     SbrushPer: dataValue('$.body.sbrush_per'),
