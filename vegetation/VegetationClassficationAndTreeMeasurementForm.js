@@ -199,31 +199,11 @@ alterState(async state => {
     CenterPlotArea: dataValue('$.body.center_plot_area'),
     CenterPlotRadius: dataValue('$.body.center_plot_radius'),
     Radius: dataValue('$.body.radius'),
-    //ERROR: TO FIX ==========
-    // Executing query: select WCSPROGRAMS_VegetationClassID from WCSPROGRAMS_VegetationClass where WCSPROGRAMS_VegetationClassName = 'undefined'
-    // TypeError [Error]: value.replace is not a function
-    //==========================
-    // WCSPROGRAMS_VegetationClassID_Other: await findValue({
-    //   uuid: 'WCSPROGRAMS_VegetationClassID',
-    //   relation: 'WCSPROGRAMS_VegetationClass',
-    //   where: {
-    //     WCSPROGRAMS_VegetationClassName: state.handleValue(
-    //       dataValue('$.body.plotClass')(state)
-    //     ),
-    //   },
-    // })(state),
+
     IsVegClassSame: state.convertValue(
       dataValue('$.body.vegClass_same')(state)
     ),
-    // WCSPROGRAMS_VegetationCropStatusID: await findValue({
-    //   uuid: 'WCSPROGRAMS_VegetationCropStatusID',
-    //   relation: 'WCSPROGRAMS_VegetationCropStatus',
-    //   where: {
-    //     WCSPROGRAMS_VegetationCropStatusName: state.handleValue(
-    //       dataValue('$.body.Cropstatus')(state)
-    //     ),
-    //   },
-    // })(state),
+   
     YearPlanted: dataValue('$.body.Year'),
     WCSPROGRAMS_VegetationForestTypeID: await findValue({
       uuid: 'WCSPROGRAMS_VegetationForestTypeID',
