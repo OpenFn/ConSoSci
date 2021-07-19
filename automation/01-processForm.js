@@ -60,7 +60,7 @@ get(`${state.data.url}`, {}, state => {
     return `${underscores.join('')}${words}${underscores.join('')}`;
   }
 
-  function questionToType(questions) {
+  function questionsToColumns(questions) {
     var form = questions.filter(elt => !discards.includes(elt.type));
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
     form.forEach(obj => {
@@ -145,7 +145,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name,
-        columns: questionToType(group),
+        columns: questionsToColumns(group),
         formName,
         depth: group[0].depth,
       });
@@ -156,7 +156,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: `${prefix1}_${prefix2}_${tableId}`,
-        columns: questionToType(questions),
+        columns: questionsToColumns(questions),
         formName,
         depth: 0,
       },
