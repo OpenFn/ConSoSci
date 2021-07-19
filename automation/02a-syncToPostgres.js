@@ -1,7 +1,7 @@
 each('$.forms[*]', state => {
   return each(
     '$.data[*]',
-    alterState(state => {
+    fn(state => {
       const { name } = state.data;
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
@@ -60,7 +60,7 @@ each('$.forms[*]', state => {
   )(state);
 });
 
-alterState(state => {
+fn(state => {
   console.log('----------------------');
   console.log('Logging queries.');
   for (query of state.queries) console.log(query);
