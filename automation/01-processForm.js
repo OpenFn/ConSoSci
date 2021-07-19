@@ -107,6 +107,27 @@ get(`${state.data.url}`, {}, state => {
     return form;
   }
 
+  function standardColumns(tableName) {
+    // prettier-ignore
+    return [
+      { name: `${tableName}ID`, type: 'INT', required: true },
+      { name: `${tableName}Name`, type: 'NVARCHAR(255)', required: false },
+      { name: `${tableName}Code`, type: 'NVARCHAR(255)', required: false },
+      { name: `${tableName}Description`, type: 'NVARCHAR(MAX)', required: false },
+      { name: 'TablePrefix_OrganizationID_Owner', type: 'INT', required: true },
+      { name: 'TablePrefix_SecuritySettingID_Row', type: 'INT', required: true },
+      { name: 'TablePrefix_TableNameExtCode', type: 'NVARCHAR(50)', required: true },
+      { name: 'Archive', type: 'BIT', required: true },
+      { name: 'IsPublic', type: 'BIT', required: true },
+      { name: 'CRDate', type: 'DATETIME', required: true },
+      { name: 'LMDate', type: 'DATETIME', required: true },
+      { name: 'UserID_CR', type: 'INT', required: true },
+      { name: 'UserID_LM', type: 'INT', required: true },
+      { name: 'CRIPAddress', type: 'NVARCHAR(32)', required: true },
+      { name: 'LMIPAddress', type: 'NVARCHAR(32)', required: true },
+    ];
+  }
+
   function tablesFromQuestions(questions, formName, tables) {
     const backwardsFirstBegin = questions
       .reverse()
@@ -145,7 +166,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name,
-        columns: questionsToColumns(group),
+        columns: [...questionsToColumns(group), ...standardColumns(name)],
         formName,
         depth: group[0].depth,
       });
@@ -153,10 +174,11 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
+    const tName = `${prefix1}_${prefix2}_${tableId}`;
     tables.push(
       {
-        name: `${prefix1}_${prefix2}_${tableId}`,
-        columns: questionsToColumns(questions),
+        name: tName,
+        columns: [...questionsToColumns(group), ...standardColumns(tName)],
         formName,
         depth: 0,
       },
