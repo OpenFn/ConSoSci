@@ -19,7 +19,7 @@ get(`${state.data.url}`, {}, state => {
   // ======================================================================
 
   const mapType = {
-    calculate: 'varchar(100)',
+    calculate: 'decimal',
     date: 'date',
     decimal: 'float4',
     end: 'date',
