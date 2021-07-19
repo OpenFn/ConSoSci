@@ -12,11 +12,11 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       p2: '',
       tableId: 'SharksRays',
     },
-    { 
-      uid: 'avLpvrukkvuFzCHacjHdRs', 
-      p1: 'WCS', 
-      p2: 'Vegetation', 
-      tableId: 'VegetationClassficationAndTreeMeasurementForm'},
+    // { 
+    //   uid: 'avLpvrukkvuFzCHacjHdRs', 
+    //   p1: 'WCS', 
+    //   p2: 'Vegetation', 
+    //   tableId: 'VegetationClassficationAndTreeMeasurementForm'},
 
     //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'OpenFn', p2: 'Sharks', tableId: 'SharkRaysMay4Test'},
     //{ uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'},
