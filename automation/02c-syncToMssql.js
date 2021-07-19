@@ -17,8 +17,10 @@ each('$.forms[*]', state => {
               x => x.name !== undefined
             );
             columns.forEach(col =>
-              col.type === 'select_one' || col.type === 'select_multiple'
-                ? (col.type = 'text')
+              col.type === 'select_one' ||
+              col.type === 'select_multiple' ||
+              col.type === 'text'
+                ? (col.type = 'nvarchar')
                 : col.type === 'int4' || col.type === 'float4'
                 ? (col.type = col.type.substring(0, col.type.length - 1))
                 : col.type === 'jsonb'
