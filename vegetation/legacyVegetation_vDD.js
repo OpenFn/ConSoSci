@@ -37,6 +37,21 @@ alterState(state => {
   for (let color of general) {
     if (color.Soil_colour === null) color.Soil_colour = 'unknown';
   }
+  
+  // Replacing nulls in soil moisture by unknown
+  for (let moisture of general) {
+    if (moisture.Soil_Moisture === null) moisture.Soil_Moisture = 'unknown';
+  }
+  
+  // Replacing nulls in soil erodability by unknown
+  for (let erod of general) {
+    if (erod['Soil Erodability'] === null) erod['Soil Erodability'] = 'unknown';
+  }
+  
+  // Replacing nulls in soil seasonibility by unknown
+  for (let season of general) {
+    if (season['Soil Seasonability'] === null) season['Soil Seasonability'] = 'unknown';
+  }
 
   return {
     ...state,
