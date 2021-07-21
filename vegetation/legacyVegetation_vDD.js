@@ -32,6 +32,11 @@ alterState(state => {
   for (let soil of general) {
     if (soil['Soil description'] === null) soil['Soil description'] = 'unknown';
   }
+  
+  // Replacing nulls in soil color by unknown
+  for (let color of general) {
+    if (color.Soil_colour === null) color.Soil_colour = 'unknown';
+  }
 
   return {
     ...state,
