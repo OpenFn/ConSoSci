@@ -50,7 +50,7 @@ alterState(state => {
   
   // Replacing nulls in soil seasonibility by unknown
   for (let season of general) {
-    if (season['Soil Seasonability'] === null) season['Soil Seasonability'] = 'unknown';
+    if (season['Soil Seasonality'] === null) season['Soil Seasonality'] = 'unknown';
   }
 
   return {
