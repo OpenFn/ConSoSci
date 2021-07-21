@@ -30,7 +30,7 @@ alterState(state => {
   
   // Replacing nulls in soil description by unknown
   for (let soil of general) {
-    if (soil.Soil_description === null) soil.Soil_description = 'unknown';
+    if (soil['Soil description'] === null) soil['Soil description'] = 'unknown';
   }
 
   return {
