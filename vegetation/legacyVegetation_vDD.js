@@ -27,6 +27,11 @@ alterState(state => {
   for (let tree of native_tree_shrubs) {
     if (tree.Native_tree_Shrub === null) tree.Native_tree_Shrub = 'unknown';
   }
+  
+  // Replacing nulls in soil description by unknown
+  for (let soil of general) {
+    if (soil.Soil_description === null) soil.Soil_description = 'unknown';
+  }
 
   return {
     ...state,
