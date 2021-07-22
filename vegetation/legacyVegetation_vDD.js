@@ -275,7 +275,8 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationObserver',
     'Answer_ID',
-    () => general
+    () => general,
+    { writeSql: true } // <-- options go here!
   )(state);
 });
 
