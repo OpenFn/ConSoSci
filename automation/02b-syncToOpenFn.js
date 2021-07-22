@@ -118,8 +118,20 @@ each(
             if (columns[k].parentColumn)
               logical = `dataValue('${columns[k].path.join('/')}')`;
           }
+          
           if (columns[k].name === 'AnswerId') {
             mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
+          }
+
+          if (columns[k].name === 'latitude') {
+            mapKoboToPostgres[
+              columns[k].name
+            ] = `state => state.data.gps.split(' ')[0]`;
+          }
+          if (columns[k].name === 'longitude') {
+            mapKoboToPostgres[
+              columns[k].name
+            ] = `state => state.data.gps.split(' ')[1]`;
           }
         }
 
