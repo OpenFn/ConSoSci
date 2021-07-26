@@ -1,7 +1,7 @@
 each('$.forms[*]', state => {
   return each(
     '$.data[*]',
-    alterState(state => {
+    fn(state => {
       const { name } = state.data;
       if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
@@ -10,12 +10,15 @@ each('$.forms[*]', state => {
           execute: true, // This always needs to be true so we know if we need to insert or update
         })(state).then(postgresColumn => {
           const { rows } = postgresColumn.response.body;
+          let mergedColumns = [];
+          if (state.data.defaultColumns)
+            mergedColumns = [
+              ...state.data.columns,
+              ...state.data.defaultColumns,
+            ];
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
-
-            const columns = state.data.columns.filter(
-              x => x.name !== undefined
-            );
+            const columns = mergedColumns.filter(x => x.name !== undefined);
             columns.forEach(col =>
               col.type === 'select_one' || col.type === 'select_multiple'
                 ? (col.type = 'text')
@@ -30,7 +33,7 @@ each('$.forms[*]', state => {
             const columnNames = rows.map(x => x.column_name);
 
             console.log('----------------------');
-            const newColumns = state.data.columns.filter(
+            const newColumns = mergedColumns.filter(
               x =>
                 x.name !== undefined &&
                 !columnNames.includes(x.name.toLowerCase())
@@ -60,7 +63,7 @@ each('$.forms[*]', state => {
   )(state);
 });
 
-alterState(state => {
+fn(state => {
   console.log('----------------------');
   console.log('Logging queries.');
   for (query of state.queries) console.log(query);

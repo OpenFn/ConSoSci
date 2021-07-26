@@ -117,6 +117,27 @@ get(`${state.data.url}`, {}, state => {
     return form;
   }
 
+  function standardColumns(tableName) {
+    // prettier-ignore
+    return [
+      { name: `${tableName}ID`, type: 'INT', required: true, identity: true },
+      { name: `${tableName}Name`, type: 'NVARCHAR(255)', required: false },
+      { name: `${tableName}Code`, type: 'NVARCHAR(255)', required: false },
+      { name: `${tableName}Description`, type: 'NVARCHAR(MAX)', required: false },
+      { name: `${tableName}_OrganizationID_Owner`, type: 'INT', required: true, default: '1' },
+      { name: `${tableName}_SecuritySettingID_Row`, type: 'INT', required: true, default: '1' },
+      { name: `${tableName}_TableNameExtCode`, type: 'NVARCHAR(50)', required: true, default: '' },
+      { name: 'Archive', type: 'BIT', required: true, default: '0' },
+      { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
+      { name: 'CRDate', type: 'DATETIME', required: true, default: 'GETDATE()' },
+      { name: 'LMDate', type: 'DATETIME', required: true, default: 'GETDATE()' },
+      { name: 'UserID_CR', type: 'INT', required: true },
+      { name: 'UserID_LM', type: 'INT', required: true },
+      { name: 'CRIPAddress', type: 'NVARCHAR(32)', required: true, default: '' },
+      { name: 'LMIPAddress', type: 'NVARCHAR(32)', required: true, default: '' },
+    ];
+  }
+
   function tablesFromQuestions(questions, formName, tables) {
     const backwardsFirstBegin = questions
       .reverse()
@@ -156,6 +177,7 @@ get(`${state.data.url}`, {}, state => {
       tables.push({
         name,
         columns: questionsToColumns(group),
+        defaultColumns: standardColumns(name),
         formName,
         depth: group[0].depth,
       });
@@ -163,10 +185,12 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
+    const tName = `${prefix1}_${prefix2}_${tableId}`;
     tables.push(
       {
-        name: `${prefix1}_${prefix2}_${tableId}`,
+        name: tName,
         columns: questionsToColumns(questions),
+        defaultColumns: standardColumns(tName),
         formName,
         depth: 0,
       },
