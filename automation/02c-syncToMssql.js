@@ -10,10 +10,14 @@ each('$.forms[*]', state => {
           execute: true, // This always needs to be true so we know if we need to insert or update
         })(state).then(mssqlColumn => {
           const { rows } = mssqlColumn.response.body;
+          const mergedColumns = [
+            ...state.data.columns,
+            ...state.data.defaultColumns,
+          ];
           if (mssqlColumn.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
-            const columns = state.data.columns.filter(
+            const columns = mergedColumns.filter(
               x => x.name !== undefined
             );
             columns.forEach(col =>
@@ -36,7 +40,7 @@ each('$.forms[*]', state => {
             const columnNames = rows.map(x => x.column_name.toLowerCase());
 
             console.log('----------------------');
-            const newColumns = state.data.columns.filter(
+            const newColumns = mergedColumns.filter(
               x =>
                 x.name !== undefined &&
                 !columnNames.includes(x.name.toLowerCase())
