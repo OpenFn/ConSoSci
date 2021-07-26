@@ -166,7 +166,8 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name,
-        columns: [...questionsToColumns(group), ...standardColumns(name)],
+        columns: questionsToColumns(group),
+        defaultColumns: standardColumns(name),
         formName,
         depth: group[0].depth,
       });
@@ -178,7 +179,8 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: tName,
-        columns: [...questionsToColumns(group), ...standardColumns(tName)],
+        columns: questionsToColumns(questions),
+        defaultColumns: standardColumns(tName),
         formName,
         depth: 0,
       },
