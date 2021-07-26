@@ -10,16 +10,16 @@ each('$.forms[*]', state => {
           execute: true, // This always needs to be true so we know if we need to insert or update
         })(state).then(mssqlColumn => {
           const { rows } = mssqlColumn.response.body;
-          const mergedColumns = [
-            ...state.data.columns,
-            ...state.data.defaultColumns,
-          ];
+          let mergedColumns = [];
+          if (state.data.defaultColumns)
+            mergedColumns = [
+              ...state.data.columns,
+              ...state.data.defaultColumns,
+            ];
           if (mssqlColumn.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
-            const columns = mergedColumns.filter(
-              x => x.name !== undefined
-            );
+            const columns = mergedColumns.filter(x => x.name !== undefined);
             columns.forEach(col =>
               col.type === 'select_one' || col.type === 'select_multiple'
                 ? (col.type = 'text')
