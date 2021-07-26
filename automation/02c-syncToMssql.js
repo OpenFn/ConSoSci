@@ -35,6 +35,7 @@ each('$.forms[*]', state => {
             console.log('No matching table found in mssql --- Inserting.');
 
             const columns = mergedColumns.filter(x => x.name !== undefined);
+
             columns.forEach(convertToMssqlTypes);
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {

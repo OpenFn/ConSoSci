@@ -28,6 +28,32 @@ alterState(state => {
     if (tree.Native_tree_Shrub === null) tree.Native_tree_Shrub = 'unknown';
   }
 
+  // Replacing nulls in soil description by unknown
+  for (let soil of general) {
+    if (soil['Soil description'] === null) soil['Soil description'] = 'unknown';
+  }
+
+  // Replacing nulls in soil color by unknown
+  for (let color of general) {
+    if (color.Soil_colour === null) color.Soil_colour = 'unknown';
+  }
+
+  // Replacing nulls in soil moisture by unknown
+  for (let moisture of general) {
+    if (moisture.Soil_Moisture === null) moisture.Soil_Moisture = 'unknown';
+  }
+
+  // Replacing nulls in soil erodability by unknown
+  for (let erod of general) {
+    if (erod['Soil Erodability'] === null) erod['Soil Erodability'] = 'unknown';
+  }
+
+  // Replacing nulls in soil seasonibility by unknown
+  for (let season of general) {
+    if (season['Soil Seasonality'] === null)
+      season['Soil Seasonality'] = 'unknown';
+  }
+
   return {
     ...state,
     handleValue,
@@ -156,6 +182,9 @@ alterState(async state => {
       Bareground: data['Bare ground %'],
     });
   }
+
+  console.log('VegMap:', VegMap);
+
   return upsertMany('WCSPROGRAMS_Vegetation', 'Answer_ID', () => VegMap)(state);
 });
 
@@ -250,7 +279,8 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_VegetationVegetationObserver',
     'Answer_ID',
-    () => general
+    () => general,
+    { writeSql: true } // <-- options go here!
   )(state);
 });
 

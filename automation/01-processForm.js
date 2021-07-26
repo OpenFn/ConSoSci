@@ -62,7 +62,9 @@ get(`${state.data.url}`, {}, state => {
 
   function questionsToColumns(questions) {
     var form = questions.filter(elt => !discards.includes(elt.type));
+
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
+
     form.forEach(obj => {
       // At some point we might need a list of 'question' that should be renamed, and their new values.
       // List of reserved keys in postgresql
@@ -79,6 +81,14 @@ get(`${state.data.url}`, {}, state => {
         obj.name = 'date_value';
       }
     });
+
+    form.forEach(q => {
+      if (q.name === 'gps') {
+        form.push({ name: 'latitude', type: 'float4' });
+        form.push({ name: 'longitude', type: 'float4' });
+      }
+    });
+
     form = form.map(x => {
       const name = toCamelCase(x.name) || toCamelCase(x.$autoname);
       return {
