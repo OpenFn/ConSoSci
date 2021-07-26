@@ -10,10 +10,12 @@ each('$.forms[*]', state => {
           execute: true, // This always needs to be true so we know if we need to insert or update
         })(state).then(postgresColumn => {
           const { rows } = postgresColumn.response.body;
-          const mergedColumns = [
-            ...state.data.columns,
-            ...state.data.defaultColumns,
-          ];
+          let mergedColumns = [];
+          if (state.data.defaultColumns)
+            mergedColumns = [
+              ...state.data.columns,
+              ...state.data.defaultColumns,
+            ];
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
             const columns = mergedColumns.filter(x => x.name !== undefined);
