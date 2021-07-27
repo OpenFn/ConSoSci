@@ -121,20 +121,20 @@ get(`${state.data.url}`, {}, state => {
     // prettier-ignore
     return [
       { name: `${tableName}ID`, type: 'int4', required: true, identity: true },
-      { name: `${tableName}Name`, type: 'VARCHAR(255)', required: false },
-      { name: `${tableName}Code`, type: 'VARCHAR(255)', required: false },
-      { name: `${tableName}Description`, type: 'VARCHAR(255)', required: false },
+      { name: `${tableName}Name`, type: 'varchar(255)', required: false },
+      { name: `${tableName}Code`, type: 'varchar(255)', required: false },
+      { name: `${tableName}Description`, type: 'varchar(255)', required: false },
       { name: `${tableName}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
       { name: `${tableName}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
-      { name: `${tableName}ExtCode`, type: 'VARCHAR(50)', required: true, default: '' },
+      { name: `${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
       { name: 'LMDate', type: 'timestamp', required: true, default: 'NOW()' },
       { name: 'UserID_CR', type: 'int4', required: true },
       { name: 'UserID_LM', type: 'int4', required: true },
-      { name: 'CRIPAddress', type: 'VARCHAR(32)', required: true, default: '' },
-      { name: 'LMIPAddress', type: 'VARCHAR(32)', required: true, default: '' },
+      { name: 'CRIPAddress', type: 'varchar(32)', required: true, default: '' },
+      { name: 'LMIPAddress', type: 'varchar(32)', required: true, default: '' },
     ];
   }
 
