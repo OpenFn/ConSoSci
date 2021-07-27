@@ -25,12 +25,9 @@ each('$.forms[*]', state => {
           execute: true, // This always needs to be true so we know if we need to insert or update
         })(state).then(mssqlColumn => {
           const { rows } = mssqlColumn.response.body;
-          let mergedColumns = [];
+          let mergedColumns = state.data.columns;
           if (state.data.defaultColumns)
-            mergedColumns = [
-              ...state.data.columns,
-              ...state.data.defaultColumns,
-            ];
+            mergedColumns = [...state.data.defaultColumns];
           if (mssqlColumn.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
@@ -69,7 +66,7 @@ each('$.forms[*]', state => {
                 : col.type === 'jsonb'
                 ? (col.type = 'nvarchar(max)')
                 : col.type === 'timestamp'
-                ? (col.type = 'datetime')
+                ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
                 : col.type
             );
             console.log(newColumns);
