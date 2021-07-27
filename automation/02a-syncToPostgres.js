@@ -12,7 +12,10 @@ each('$.forms[*]', state => {
           const { rows } = postgresColumn.response.body;
           let mergedColumns = state.data.columns;
           if (state.data.defaultColumns)
-            mergedColumns = [...state.data.defaultColumns];
+            mergedColumns = [
+              ...state.data.columns,
+              ...state.data.defaultColumns,
+            ];
           if (postgresColumn.response.body.rowCount === 0) {
             console.log('No matching table found in postgres --- Inserting.');
             const columns = mergedColumns.filter(x => x.name !== undefined);

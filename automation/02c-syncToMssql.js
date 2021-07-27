@@ -27,7 +27,10 @@ each('$.forms[*]', state => {
           const { rows } = mssqlColumn.response.body;
           let mergedColumns = state.data.columns;
           if (state.data.defaultColumns)
-            mergedColumns = [...state.data.defaultColumns];
+            mergedColumns = [
+              ...state.data.columns,
+              ...state.data.defaultColumns,
+            ];
           if (mssqlColumn.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
