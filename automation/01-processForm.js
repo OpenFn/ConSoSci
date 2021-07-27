@@ -120,19 +120,19 @@ get(`${state.data.url}`, {}, state => {
   function standardColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${tableName}ID`, type: 'INT4', required: true, identity: true },
+      { name: `${tableName}ID`, type: 'int4', required: true, identity: true },
       { name: `${tableName}Name`, type: 'VARCHAR(255)', required: false },
       { name: `${tableName}Code`, type: 'VARCHAR(255)', required: false },
       { name: `${tableName}Description`, type: 'VARCHAR(255)', required: false },
-      { name: `${tableName}_OrganizationID_Owner`, type: 'INT4', required: true, default: '1' },
-      { name: `${tableName}_SecuritySettingID_Row`, type: 'INT4', required: true, default: '1' },
+      { name: `${tableName}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
+      { name: `${tableName}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
       { name: `${tableName}_TableNameExtCode`, type: 'VARCHAR(50)', required: true, default: '' },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
       { name: 'LMDate', type: 'timestamp', required: true, default: 'NOW()' },
-      { name: 'UserID_CR', type: 'INT4', required: true },
-      { name: 'UserID_LM', type: 'INT4', required: true },
+      { name: 'UserID_CR', type: 'int4', required: true },
+      { name: 'UserID_LM', type: 'int4', required: true },
       { name: 'CRIPAddress', type: 'VARCHAR(32)', required: true, default: '' },
       { name: 'LMIPAddress', type: 'VARCHAR(32)', required: true, default: '' },
     ];
