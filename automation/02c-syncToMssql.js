@@ -44,7 +44,7 @@ each('$.forms[*]', state => {
                 : col.type === 'jsonb'
                 ? (col.type = 'nvarchar(max)')
                 : col.type === 'timestamp'
-                ? (col.type = 'datetime')
+                ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
                 : col.type
             );
             // Note: Specify options here (e.g {writeSql: false, execute: true})
