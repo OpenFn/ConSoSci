@@ -126,7 +126,7 @@ get(`${state.data.url}`, {}, state => {
       { name: `${tableName}Description`, type: 'VARCHAR(255)', required: false },
       { name: `${tableName}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
       { name: `${tableName}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
-      { name: `${tableName}_TableNameExtCode`, type: 'VARCHAR(50)', required: true, default: '' },
+      { name: `${tableName}ExtCode`, type: 'VARCHAR(50)', required: true, default: '' },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
