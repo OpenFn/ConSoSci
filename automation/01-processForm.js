@@ -131,8 +131,8 @@ get(`${state.data.url}`, {}, state => {
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
       { name: 'LMDate', type: 'timestamp', required: true, default: 'NOW()' },
-      { name: 'UserID_CR', type: 'int4', required: true },
-      { name: 'UserID_LM', type: 'int4', required: true },
+      { name: 'UserID_CR', type: 'int4', required: true, default: -1 },
+      { name: 'UserID_LM', type: 'int4', required: true, default: -1 },
       { name: 'CRIPAddress', type: 'varchar(32)', required: true, default: '' },
       { name: 'LMIPAddress', type: 'varchar(32)', required: true, default: '' },
     ];
