@@ -59,22 +59,6 @@ const landscapeMap = {
     //formName: landscapeValue,
     //other values
   };
-
-  return {
-    ...state,
-    landscapeMap,
-    data: {
-      ...cleanedSubmission,
-      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
-      datasetId: `${formName}-${_xform_id_string}`,
-      end: cleanedSubmission.end.slice(0, 10),
-    },
-    formName,
-  };
-  /* } catch (error) {
-    state.connection.close();
-    throw error;
-  }*/
   
   
     // ===========================================================================
