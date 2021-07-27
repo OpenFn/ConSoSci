@@ -1,4 +1,5 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
+
 alterState(state => {
   try {
     const { body, formName } = state.data;
@@ -43,6 +44,39 @@ alterState(state => {
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
     state.data = cleanedSubmission;
 
+const landscapeMap = {
+    Ndoki: 'ndoki',
+    'Lac Télé': 'lac_tele',
+    Ituri: 'ituri',
+    Kahuzi: 'kahuzi',
+    MTKB: 'kahuzi',
+    Crossriver: 'crossriver',
+    Soariake: 'soariake',
+    Ankarea: 'ankarea',
+    ABS: 'baie_antongil',
+    'Nosy Be': 'tandavandriva',
+    Makira: 'makira',
+    //formName: landscapeValue,
+    //other values
+  };
+
+  return {
+    ...state,
+    landscapeMap,
+    data: {
+      ...cleanedSubmission,
+      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+      datasetId: `${formName}-${_xform_id_string}`,
+      end: cleanedSubmission.end.slice(0, 10),
+    },
+    formName,
+  };
+  /* } catch (error) {
+    state.connection.close();
+    throw error;
+  }*/
+  
+  
     // ===========================================================================
     //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
     //  'NR' and 'BNS matrix' questions should follow the naming conventions below
@@ -116,7 +150,11 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
   SurveyDate: state =>
     state.data.today ? state.data.today : state.data._submission_time,
-  Landscape: dataValue('landscape'),
+  Landscape: state => {
+      for (let val in state.landscapeMap)
+        if (state.formName.includes(val)) return state.landscapeMap[val];
+      return '';
+    },
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
   Arrival: dataValue('arrival'),

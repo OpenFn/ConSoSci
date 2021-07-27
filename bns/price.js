@@ -22,17 +22,17 @@ alterState(state => {
   }
 
   const landscapeMap = {
-    Ndoki: 'tns',
-    'Lac Télé': 'ltlt',
+    Ndoki: 'ndoki',
+    'Lac Télé': 'lac_tele',
     Ituri: 'ituri',
-    Kahuzi: 'mtkb',
-    MTKB: 'mtkb',
+    Kahuzi: 'kahuzi',
+    MTKB: 'kahuzi',
     Crossriver: 'crossriver',
     Soariake: 'soariake',
     Ankarea: 'ankarea',
     ABS: 'baie_antongil',
     'Nosy Be': 'tandavandriva',
-    Makira: 'mamabay',
+    Makira: 'makira',
     'BNS Ndoki Prix 2020': 'ndoki',
 
     //formName: landscapeValue,
