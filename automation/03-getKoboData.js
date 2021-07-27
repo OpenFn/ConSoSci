@@ -13,13 +13,13 @@ alterState(state => {
       //  formName: 'Arcadia Data Collection Site Survey',
       //  tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       //},
-      // {
-      //   uid: 'avLpvrukkvuFzCHacjHdRs',
-      //   p1: 'WCS',
-      //   p2: 'Vegetation',
-      //   tableId: 'VegetationClassficationAndTreeMeasurementForm',
-      //   formType: 'vegetation',
-      // },
+      {
+        uid: 'avLpvrukkvuFzCHacjHdRs',
+        p1: 'WCS',
+        p2: 'Vegetation',
+        tableId: 'VegetationClassficationAndTreeMeasurementForm',
+        formType: 'vegetation',
+      },
       //{
       //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
       //  formName: 'SWM Etude Marché 9Feb',
@@ -36,11 +36,11 @@ alterState(state => {
       //  tableId: 'WCS_SR_SharkAndRaysTraining'
       //},
       
-      {
-      uid: 'apZrpKcK78xzrPcAfRrfac',
-      formName: 'Sharks & Rays TEST FORM 11 june',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
+    //   {
+    //   uid: 'apZrpKcK78xzrPcAfRrfac',
+    //   formName: 'Sharks & Rays TEST FORM 11 june',
+    //   tableId: 'WCSPROGRAMS_SharksRays',
+    // },
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
