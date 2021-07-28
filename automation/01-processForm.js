@@ -138,6 +138,117 @@ get(`${state.data.url}`, {}, state => {
     ];
   }
 
+  function buildTablesFromSelect(questions, formName, tables) {
+    questions.forEach((q, i, arr) => {
+      switch (q.type) {
+        case 'select_one':
+          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
+          tables.push({
+            name: tableName,
+            columns: [
+              {
+                name: `${toCamelCase(q.name)}ID`,
+                type: 'int4',
+                identity: true,
+                depth: 0,
+                // path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                rule: 'DO_NOT_MAP',
+                parentColumn: q.name,
+              },
+              {
+                name: `${toCamelCase(q.name)}Name`,
+                type: 'varchar(100)',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              {
+                name: `${toCamelCase(q.name)}ExtCode`,
+                type: 'varchar(100)',
+                unique: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              { name: 'Payload', type: 'jsonb' },
+            ],
+            formName,
+            depth: 0,
+            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+          });
+          break;
+
+        case 'select_multiple':
+          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
+          const junctionTableName = `${prefix1}_${prefix2}_${tableId}${toCamelCase(
+            q.name
+          )}`;
+          console.log(junctionTableName);
+          tables.push({
+            name: tableName,
+            columns: [
+              {
+                name: `${toCamelCase(q.name)}ID`,
+                type: 'int4',
+                identity: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                rule: 'DO_NOT_MAP',
+                parentColumn: q.name,
+              },
+              {
+                name: `${toCamelCase(q.name)}Name`,
+                type: 'varchar(100)',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              {
+                name: `${toCamelCase(q.name)}ExtCode`,
+                type: 'varchar(100)',
+                unique: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              { name: 'Payload', type: 'jsonb' },
+            ],
+            formName,
+            depth: 0,
+            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+          });
+          tables.push({
+            name: junctionTableName,
+            columns: [
+              {
+                name: `${prefix1}_${prefix2}_${toCamelCase(q.name)}ID`,
+                type: 'int4',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              },
+              {
+                name: `${prefix1}_${prefix2}_${tableId}ID`,
+                type: 'int4',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              },
+            ],
+            formName,
+            depth: 0,
+            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+          });
+          break;
+      }
+    });
+    return tables;
+  }
+
   function tablesFromQuestions(questions, formName, tables) {
     const backwardsFirstBegin = questions
       .reverse()
@@ -227,89 +338,6 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       }
     );
-    questions.forEach((q, i, arr) => {
-      switch (q.type) {
-        case 'select_one':
-          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
-          tables.push({
-            name: tableName,
-            columns: [
-              {
-                name: `${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                identity: true,
-                depth: 0,
-                // path: [],
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                rule: 'DO_NOT_MAP',
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}Name`,
-                type: 'varchar(100)',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'varchar(100)',
-                unique: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              { name: 'Payload', type: 'jsonb' },
-            ],
-            formName,
-            depth: 0,
-            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
-          });
-          break;
-
-        case 'select_multiple':
-          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
-          tables.push({
-            name: tableName,
-            columns: [
-              {
-                name: `${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                identity: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                rule: 'DO_NOT_MAP',
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}Name`,
-                type: 'varchar(100)',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'varchar(100)',
-                unique: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              { name: 'Payload', type: 'jsonb' },
-            ],
-            formName,
-            depth: 0,
-            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
-          });
-          break;
-      }
-    });
 
     return tables;
   }
@@ -362,7 +390,12 @@ get(`${state.data.url}`, {}, state => {
     }
   });
 
-  const tables = tablesFromQuestions(survey, state.data.name, []).reverse();
+  const tempTables = buildTablesFromSelect(survey, state.data.name, []);
+  const tables = tablesFromQuestions(
+    survey,
+    state.data.name,
+    tempTables
+  ).reverse();
 
   return {
     ...state,

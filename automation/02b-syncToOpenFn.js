@@ -118,7 +118,7 @@ each(
             if (columns[k].parentColumn)
               logical = `dataValue('${columns[k].path.join('/')}')`;
           }
-          
+
           if (columns[k].name === 'AnswerId') {
             mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
           }
@@ -234,6 +234,7 @@ each(
       }
     }
     state.data.expression = expression;
+    console.log(expression);
     state.data.triggerCriteria = {
       tableId: `${state.prefix1}_${state.prefix2}_${state.tableId}`,
     };
@@ -241,93 +242,93 @@ each(
   })
 );
 
-alterState(state => {
-  return request(
-    {
-      method: 'get',
-      path: 'triggers',
-      params: {
-        project_id: state.projectId,
-      },
-    },
-    state => ({ ...state, triggers: state.data })
-  )(state);
-});
+// alterState(state => {
+//   return request(
+//     {
+//       method: 'get',
+//       path: 'triggers',
+//       params: {
+//         project_id: state.projectId,
+//       },
+//     },
+//     state => ({ ...state, triggers: state.data })
+//   )(state);
+// });
 
-alterState(state => {
-  return request(
-    {
-      method: 'get',
-      path: 'jobs',
-      params: {
-        project_id: state.projectId,
-      },
-    },
-    state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
-  )(state);
-});
+// alterState(state => {
+//   return request(
+//     {
+//       method: 'get',
+//       path: 'jobs',
+//       params: {
+//         project_id: state.projectId,
+//       },
+//     },
+//     state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
+//   )(state);
+// });
 
-each(
-  '$.forms[*]',
-  alterState(state => {
-    const triggerNames = state.triggers.map(t => t.name);
+// each(
+//   '$.forms[*]',
+//   alterState(state => {
+//     const triggerNames = state.triggers.map(t => t.name);
 
-    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
-    const criteria = state.data.triggerCriteria;
-    const triggerIndex = triggerNames.indexOf(name);
+//     const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
+//     const criteria = state.data.triggerCriteria;
+//     const triggerIndex = triggerNames.indexOf(name);
 
-    const trigger = {
-      project_id: state.projectId,
-      name,
-      type: 'message',
-      criteria,
-    };
-    if (triggerIndex === -1) {
-      console.log('Inserting triggers.');
-      return request(
-        {
-          method: 'post',
-          path: 'triggers',
-          data: {
-            trigger,
-          },
-        },
-        state => {
-          return { ...state, triggers: [...state.triggers, state.data] };
-        }
-      )(state);
-    } else {
-      console.log('Trigger already existing.');
-    }
-    return state;
-  })
-);
+//     const trigger = {
+//       project_id: state.projectId,
+//       name,
+//       type: 'message',
+//       criteria,
+//     };
+//     if (triggerIndex === -1) {
+//       console.log('Inserting triggers.');
+//       return request(
+//         {
+//           method: 'post',
+//           path: 'triggers',
+//           data: {
+//             trigger,
+//           },
+//         },
+//         state => {
+//           return { ...state, triggers: [...state.triggers, state.data] };
+//         }
+//       )(state);
+//     } else {
+//       console.log('Trigger already existing.');
+//     }
+//     return state;
+//   })
+// );
 
-each(
-  '$.forms[*]',
-  alterState(state => {
-    const expression = state.data.expression;
-    console.log(
-      'Inserting / Updating job: ',
-      `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`
-    );
-    const jobNames = state.jobs.map(j => j.name);
-    const triggersName = state.triggers.map(t => t.name);
-    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
-    const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-    const triggerIndex = triggersName.indexOf(name);
-    const triggerId = state.triggers[triggerIndex].id;
-    const job = {
-      adaptor: 'postgresql',
-      expression,
-      name,
-      project_id: state.projectId,
-      trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-    };
-    const method = jobIndex !== -1 ? 'put' : 'post';
-    const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
-    return request({ method, path, data: { job } }, state => {
-      return state;
-    })(state);
-  })
-);
+// each(
+//   '$.forms[*]',
+//   alterState(state => {
+//     const expression = state.data.expression;
+//     console.log(
+//       'Inserting / Updating job: ',
+//       `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`
+//     );
+//     const jobNames = state.jobs.map(j => j.name);
+//     const triggersName = state.triggers.map(t => t.name);
+//     const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
+//     const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
+//     const triggerIndex = triggersName.indexOf(name);
+//     const triggerId = state.triggers[triggerIndex].id;
+//     const job = {
+//       adaptor: 'postgresql',
+//       expression,
+//       name,
+//       project_id: state.projectId,
+//       trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
+//     };
+//     const method = jobIndex !== -1 ? 'put' : 'post';
+//     const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
+//     return request({ method, path, data: { job } }, state => {
+//       return state;
+//     })(state);
+//   })
+// );
