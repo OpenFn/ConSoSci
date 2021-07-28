@@ -51,7 +51,23 @@ each('$.forms[*]', state => {
             return insertTable(name, state => columns, {
               writeSql: true, // Keep to true to log query (otherwise make it false).
               execute: true, // keep to false to not alter DB
-            })(state);
+            })(state).then(state => {
+              return sql({
+                query: state =>
+                  `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY(${name}_OrganizationID_Owner)
+                  REFERENCES ${name}_Organization] (${name}_OrganizationID)
+                  GO
+                  ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_OrganizationID_Owner]
+                  GO
+                  ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY(${name}_SecuritySettingID_Row)
+                  REFERENCES ${name}_SecuritySetting (${name}_SecuritySettingID)
+                  GO
+                  ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row
+                  GO
+                  `,
+              })(state);
+              return state;
+            });
           } else {
             const columnNames = rows.map(x => x.column_name.toLowerCase());
 
