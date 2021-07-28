@@ -171,15 +171,11 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 });
 
 alterState(async state => {
-  const North = dataValue('$.body.plot_gps')(state)
-    ? dataValue('$.body.plot_gps')(state).split(' ')[1]
-    : dataValue('$.body.north')(state)
+  const North = dataValue('$.body.north')(state)
     ? parseInt(dataValue('$.body.north')(state))
     : parseInt(dataValue('$.body.plot_description/north')(state));
 
-  const East = dataValue('$.body.plot_gps')(state)
-    ? dataValue('$.body.plot_gps')(state).split(' ')[0]
-    : dataValue('$.body.east')(state)
+  const East = dataValue('$.body.east')(state)
     ? parseInt(dataValue('$.body.east')(state))
     : parseInt(dataValue('$.body.plot_description/east')(state));
 
@@ -347,19 +343,21 @@ alterState(async state => {
     East: state => {
       return dataValue('$.body.east')(state)
         ? dataValue('$.body.east')(state)
-        : dataValue('$.body.plot_gps')(state)
-        ? dataValue('$.body.plot_gps')(state).split(' ')[0]
         : dataValue('$.body.plot_description/east')(state);
     },
     Waypoint: state => {
       return dataValue('$.body.waypoint')(state)
         ? dataValue('$.body.waypoint')(state)
         : dataValue('$.body.plot_gps')(state)
-        ? dataValue('$.body.plot_gps')(state).split(' ')[1]
+        ? dataValue('$.body.plot_gps')(state)[1]
         : dataValue('$.body.plot_description/waypoint');
     },
-    Latitude: latlong.latitude,
-    Longitude: latlong.longitude,
+    Latitude: !isNaN(latlong.latitude)
+      ? latlong.latitude
+      : dataValue('$.body.plot_gps')(state).split(' ')[0],
+    Longitude: !isNaN(latlong.longitude)
+      ? latlong.longitude
+      : dataValue('$.body.plot_gps')(state).split(' ')[0],
     PlotNumber: state => {
       return dataValue('$.body.plot_number')(state)
         ? dataValue('$.body.plot_number')(state)
