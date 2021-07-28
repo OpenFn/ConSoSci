@@ -120,7 +120,7 @@ get(`${state.data.url}`, {}, state => {
   function standardColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${tableName}ID`, type: 'int4', required: true, identity: true },
+      { name: `${tableName}ID`, type: 'int4', required: true },
       { name: `${tableName}Name`, type: 'varchar(255)', required: false },
       { name: `${tableName}Code`, type: 'varchar(255)', required: false },
       { name: `${tableName}Description`, type: 'varchar(255)', required: false },
