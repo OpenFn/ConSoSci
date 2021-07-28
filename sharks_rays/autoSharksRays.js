@@ -112,6 +112,8 @@ alterState(async state => {
   EndDate: dataValue('end'),
   Start: dataValue('start'),
   Today: dataValue('today'),
+  Latitude: dataValue('undefined'),
+  Longitude: dataValue('undefined'),
   Payload: state.data.body,
   AnswerId: dataValue('_id'),
   GeneratedUuid: dataValue('__generatedUuid')
