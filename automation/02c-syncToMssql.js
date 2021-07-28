@@ -4,17 +4,15 @@ each('$.forms[*]', state => {
     alterState(state => {
       const { name, defaultColumns } = state.data;
 
-      function convertToMssqlTypes(element) {
-        return col.type === 'select_one' ||
-          col.type === 'select_multiple' ||
-          col.type === 'text'
-          ? (col.type = 'nvarchar')
+      function convertToMssqlTypes(col) {
+        col.type === 'select_one' || col.type === 'select_multiple'
+          ? (col.type = 'text')
           : col.type === 'int4' || col.type === 'float4'
           ? (col.type = col.type.substring(0, col.type.length - 1))
           : col.type === 'jsonb'
           ? (col.type = 'nvarchar(max)')
           : col.type === 'timestamp'
-          ? (col.type = 'datetime')
+          ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
           : col.type;
       }
 
@@ -36,17 +34,7 @@ each('$.forms[*]', state => {
 
             const columns = mergedColumns.filter(x => x.name !== undefined);
 
-            columns.forEach(col =>
-              col.type === 'select_one' || col.type === 'select_multiple'
-                ? (col.type = 'text')
-                : col.type === 'int4' || col.type === 'float4'
-                ? (col.type = col.type.substring(0, col.type.length - 1))
-                : col.type === 'jsonb'
-                ? (col.type = 'nvarchar(max)')
-                : col.type === 'timestamp'
-                ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
-                : col.type
-            );
+            columns.forEach(col => convertToMssqlTypes(col));
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return insertTable(name, state => columns, {
               writeSql: true, // Keep to true to log query (otherwise make it false).
@@ -75,17 +63,7 @@ each('$.forms[*]', state => {
                 x.name !== undefined &&
                 !columnNames.includes(x.name.toLowerCase())
             );
-            newColumns.forEach(col =>
-              col.type === 'select_one' || col.type === 'select_multiple'
-                ? (col.type = 'text')
-                : col.type === 'int4' || col.type === 'float4'
-                ? (col.type = col.type.substring(0, col.type.length - 1))
-                : col.type === 'jsonb'
-                ? (col.type = 'nvarchar(max)')
-                : col.type === 'timestamp'
-                ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
-                : col.type
-            );
+            newColumns.forEach(col => convertToMssqlTypes(col));
             console.log(newColumns);
             if (newColumns && newColumns.length > 0) {
               console.log('Existing table found in mssql --- Updating.');
