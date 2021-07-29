@@ -21,7 +21,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     // },
     {
       uid: 'a8ffyF7HgbFUEnYBppEL79',
-      p1: 'WCSPROGRAMS',
+      p1: 'TT',
       p2: '',
       tableId: 'Land',
     },
