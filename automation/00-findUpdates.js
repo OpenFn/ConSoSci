@@ -13,18 +13,18 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     //   tableId: 'SharksRays',
     // },
     //=== Trillion Trees forms =====
-    { 
-      uid: 'aHPGTtrrLB4k3xDA9UZipu',
-      p1: 'TT',
-      p2: '',
-      tableId: 'Site',
-    },
-    // {
-    //   uid: 'a8ffyF7HgbFUEnYBppEL79',
-    //   p1: 'WCSPROGRAMS',
+    // { 
+    //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
+    //   p1: 'TT',
     //   p2: '',
-    //   tableId: 'Land',
+    //   tableId: 'Site',
     // },
+    {
+      uid: 'a8ffyF7HgbFUEnYBppEL79',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'Land',
+    },
     //=================================
     // { 
     //   uid: 'avLpvrukkvuFzCHacjHdRs', 
