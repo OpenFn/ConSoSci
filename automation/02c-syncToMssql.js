@@ -48,10 +48,10 @@ each('$.forms[*]', state => {
                 // Creating foreign keys constraints to standard WCS DB and fields
                 return sql({
                   query: state =>
-                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${name}_OrganizationID_Owner)
+                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${state.prefix1}_OrganizationID_Owner)
                     REFERENCES WCSPROGRAMS_Organization (WCSPROGRAMS_OrganizationID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_OrganizationID_Owner;
-                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${name}_SecuritySettingID_Row)
+                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${state.prefix1}_SecuritySettingID_Row)
                     REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row;
                   `,
