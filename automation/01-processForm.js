@@ -120,13 +120,13 @@ get(`${state.data.url}`, {}, state => {
   function standardColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
-      { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
+      // { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
+      // { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
+      // { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
       { name: `${prefix1}_${tableName}Code`, type: 'varchar(255)', required: false },
       { name: `${prefix1}_${tableName}Description`, type: 'varchar(255)', required: false },
       { name: `${prefix1}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
       { name: `${prefix1}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
-      { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
@@ -138,6 +138,15 @@ get(`${state.data.url}`, {}, state => {
     ];
   }
 
+  function customColumns(tableName) {
+    // prettier-ignore
+    return [
+      { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
+      { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
+      { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+    ];
+  }
+
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       switch (q.type) {
@@ -146,40 +155,39 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: tableName,
             columns: [
-              // {
-              //   name: `${toCamelCase(q.name)}ID`,
-              //   type: 'int4',
-              //   identity: true,
-              //   depth: 0,
-              //   // path: [],
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   rule: 'DO_NOT_MAP',
-              //   parentColumn: q.name,
-              // },
-              // {
-              //   name: `${toCamelCase(q.name)}Name`,
-              //   type: 'varchar(100)',
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   // path: [],
-              //   parentColumn: q.name,
-              // },
-              // {
-              //   name: `${toCamelCase(q.name)}ExtCode`,
-              //   type: 'varchar(100)',
-              //   unique: true,
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   // path: [],
-              //   parentColumn: q.name,
-              // },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}ID`,
+                type: 'int4',
+                identity: true,
+                depth: 0,
+                // path: [],
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                rule: 'DO_NOT_MAP',
+                parentColumn: q.name,
+              },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}Name`,
+                type: 'varchar(100)',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+                type: 'varchar(100)',
+                unique: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
               { name: 'Payload', type: 'jsonb' },
             ],
-            columns: [],
             defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
-            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+            ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
           });
           break;
 
@@ -192,40 +200,39 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: tableName,
             columns: [
-              // {
-              //   name: `${toCamelCase(q.name)}ID`,
-              //   type: 'int4',
-              //   identity: true,
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   // path: [],
-              //   rule: 'DO_NOT_MAP',
-              //   parentColumn: q.name,
-              // },
-              // {
-              //   name: `${toCamelCase(q.name)}Name`,
-              //   type: 'varchar(100)',
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   // path: [],
-              //   parentColumn: q.name,
-              // },
-              // {
-              //   name: `${toCamelCase(q.name)}ExtCode`,
-              //   type: 'varchar(100)',
-              //   unique: true,
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              //   // path: [],
-              //   parentColumn: q.name,
-              // },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}ID`,
+                type: 'int4',
+                identity: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                rule: 'DO_NOT_MAP',
+                parentColumn: q.name,
+              },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}Name`,
+                type: 'varchar(100)',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
+              {
+                name: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+                type: 'varchar(100)',
+                unique: true,
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                // path: [],
+                parentColumn: q.name,
+              },
               { name: 'Payload', type: 'jsonb' },
             ],
-            columns: [],
             defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
-            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+            ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
           });
           tables.push({
             name: junctionTableName,
@@ -246,7 +253,7 @@ get(`${state.data.url}`, {}, state => {
             defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
-            ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
+            ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
           });
           break;
       }
@@ -292,7 +299,10 @@ get(`${state.data.url}`, {}, state => {
       tables.push({
         name,
         columns: questionsToColumns(group),
-        defaultColumns: standardColumns(tableName),
+        defaultColumns: [
+          ...customColumns(tableName),
+          ...standardColumns(tableName),
+        ],
         formName,
         depth: group[0].depth,
       });
@@ -305,7 +315,10 @@ get(`${state.data.url}`, {}, state => {
       {
         name: tName,
         columns: questionsToColumns(questions),
-        defaultColumns: standardColumns(tableId),
+        defaultColumns: [
+          ...customColumns(tableId),
+          ...standardColumns(tableId),
+        ],
         formName,
         depth: 0,
       },
@@ -338,7 +351,10 @@ get(`${state.data.url}`, {}, state => {
             path: [],
           },
         ],
-        defaultColumns: standardColumns('KoboDataset'),
+        defaultColumns: [
+          ...customColumns('KoboDataset'),
+          ...standardColumns('KoboDataset'),
+        ],
         formName,
         depth: 0,
       }
