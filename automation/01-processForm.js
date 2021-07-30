@@ -338,6 +338,7 @@ get(`${state.data.url}`, {}, state => {
             path: [],
           },
         ],
+        defaultColumns: standardColumns('KoboDataset'),
         formName,
         depth: 0,
       }
