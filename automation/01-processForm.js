@@ -237,20 +237,29 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: junctionTableName,
             columns: [
-              // {
-              //   name: `${prefix1}_${prefix2}_${toCamelCase(q.name)}ID`,
-              //   type: 'int4',
-              //   depth: 0,
-              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              // },
               {
-                name: `${prefix1}_${prefix2}_${tableId}ID`,
-                type: 'int4',
+                name: `${prefix1}_${toCamelCase(q.name)}ID`,
+                type: 'select_multiple',
                 depth: 0,
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                parentTable: `${prefix1}_${prefix2}_${toCamelCase(q.name)}`,
+              },
+              {
+                name: `${prefix1}_${tableId}ID`,
+                type: 'select_multiple',
+                depth: 0,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                parentTable: `${prefix1}_${prefix2}_${tableId}`,
               },
             ],
-            defaultColumns: standardColumns(toCamelCase(q.name)),
+            defaultColumns: [
+              // prettier-ignore
+              ...[
+                { name: `${prefix1}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
+                { name: `${prefix1}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+              ],
+              ...standardColumns(toCamelCase(q.name)),
+            ],
             formName,
             depth: 0,
             ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
