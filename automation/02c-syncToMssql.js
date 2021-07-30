@@ -5,8 +5,12 @@ each('$.forms[*]', state => {
       const { name, defaultColumns } = state.data;
 
       function convertToMssqlTypes(col) {
-        col.type === 'select_one' || col.type === 'select_multiple'
-          ? (col.type = 'text')
+        col.type === 'select_one' ||
+        col.type === 'select_multiple' ||
+        col.type === 'text'
+          ? (col.type = 'nvarchar(max)')
+          : col.type.includes('varchar')
+          ? (col.type = col.type.replace('varchar', 'nvarchar'))
           : col.type === 'int4' || col.type === 'float4'
           ? (col.type = col.type.substring(0, col.type.length - 1))
           : col.type === 'jsonb'
