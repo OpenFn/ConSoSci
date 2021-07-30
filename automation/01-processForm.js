@@ -120,13 +120,13 @@ get(`${state.data.url}`, {}, state => {
   function standardColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${tableName}ID`, type: 'int4', required: true, identity: true },
-      { name: `${tableName}Name`, type: 'varchar(255)', required: false },
-      { name: `${tableName}Code`, type: 'varchar(255)', required: false },
-      { name: `${tableName}Description`, type: 'varchar(255)', required: false },
-      { name: `${tableName}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
-      { name: `${tableName}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
-      { name: `${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+      { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
+      { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
+      { name: `${prefix1}_${tableName}Code`, type: 'varchar(255)', required: false },
+      { name: `${prefix1}_${tableName}Description`, type: 'varchar(255)', required: false },
+      { name: `${prefix1}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
+      { name: `${prefix1}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
+      { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
@@ -146,35 +146,37 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: tableName,
             columns: [
-              {
-                name: `${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                identity: true,
-                depth: 0,
-                // path: [],
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                rule: 'DO_NOT_MAP',
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}Name`,
-                type: 'varchar(100)',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'varchar(100)',
-                unique: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
+              // {
+              //   name: `${toCamelCase(q.name)}ID`,
+              //   type: 'int4',
+              //   identity: true,
+              //   depth: 0,
+              //   // path: [],
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   rule: 'DO_NOT_MAP',
+              //   parentColumn: q.name,
+              // },
+              // {
+              //   name: `${toCamelCase(q.name)}Name`,
+              //   type: 'varchar(100)',
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   // path: [],
+              //   parentColumn: q.name,
+              // },
+              // {
+              //   name: `${toCamelCase(q.name)}ExtCode`,
+              //   type: 'varchar(100)',
+              //   unique: true,
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   // path: [],
+              //   parentColumn: q.name,
+              // },
               { name: 'Payload', type: 'jsonb' },
             ],
+            columns: [],
+            defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
             ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
@@ -190,35 +192,37 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: tableName,
             columns: [
-              {
-                name: `${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                identity: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                rule: 'DO_NOT_MAP',
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}Name`,
-                type: 'varchar(100)',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              {
-                name: `${toCamelCase(q.name)}ExtCode`,
-                type: 'varchar(100)',
-                unique: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
+              // {
+              //   name: `${toCamelCase(q.name)}ID`,
+              //   type: 'int4',
+              //   identity: true,
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   // path: [],
+              //   rule: 'DO_NOT_MAP',
+              //   parentColumn: q.name,
+              // },
+              // {
+              //   name: `${toCamelCase(q.name)}Name`,
+              //   type: 'varchar(100)',
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   // path: [],
+              //   parentColumn: q.name,
+              // },
+              // {
+              //   name: `${toCamelCase(q.name)}ExtCode`,
+              //   type: 'varchar(100)',
+              //   unique: true,
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              //   // path: [],
+              //   parentColumn: q.name,
+              // },
               { name: 'Payload', type: 'jsonb' },
             ],
+            columns: [],
+            defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
             ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
@@ -226,12 +230,12 @@ get(`${state.data.url}`, {}, state => {
           tables.push({
             name: junctionTableName,
             columns: [
-              {
-                name: `${prefix1}_${prefix2}_${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-              },
+              // {
+              //   name: `${prefix1}_${prefix2}_${toCamelCase(q.name)}ID`,
+              //   type: 'int4',
+              //   depth: 0,
+              //   path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              // },
               {
                 name: `${prefix1}_${prefix2}_${tableId}ID`,
                 type: 'int4',
@@ -239,6 +243,7 @@ get(`${state.data.url}`, {}, state => {
                 path: i === 0 ? [] : [...arr[i - 1].path, q.name],
               },
             ],
+            defaultColumns: standardColumns(toCamelCase(q.name)),
             formName,
             depth: 0,
             ReferenceUuid: `${toCamelCase(q.name)}ExtCode`,
@@ -274,21 +279,20 @@ get(`${state.data.url}`, {}, state => {
         firstEndAfterLastBegin - lastBegin + 1
       );
 
-      const name =
-        `${prefix1}_${prefix2}_${tableId}_` +
-        toCamelCase(
-          group[0].path
-            .slice(-1)
-            .pop()
-            .split(/\s|-|'/)
-            .join('_')
-            .replace('.', '')
-        );
+      const tableName = toCamelCase(
+        group[0].path
+          .slice(-1)
+          .pop()
+          .split(/\s|-|'/)
+          .join('_')
+          .replace('.', '')
+      );
+      const name = `${prefix1}_${prefix2}_${tableId}_${tableName}`;
 
       tables.push({
         name,
         columns: questionsToColumns(group),
-        defaultColumns: standardColumns(name),
+        defaultColumns: standardColumns(tableName),
         formName,
         depth: group[0].depth,
       });
@@ -301,7 +305,7 @@ get(`${state.data.url}`, {}, state => {
       {
         name: tName,
         columns: questionsToColumns(questions),
-        defaultColumns: standardColumns(tName),
+        defaultColumns: standardColumns(tableId),
         formName,
         depth: 0,
       },
