@@ -46,7 +46,11 @@ each(
     }
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, depth, ReferenceUuid } = state.data[i];
-      if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
+
+      if (
+        columns.length > 0 &&
+        name !== `${state.prefix1}_${state.prefix2}_Untitled`
+      ) {
         var paths = [];
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
