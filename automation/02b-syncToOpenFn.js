@@ -93,8 +93,36 @@ each(
         }
 
         // We generate findValue function (fn) for those that needs it.
-        function generateFindValue(uuid, relation, leftOperand, rightOperand) {
-          var fn = `await findValue({uuid: '${uuid.toLowerCase()}', relation: '${relation}', where: { ${leftOperand}: dataValue('${rightOperand}') }})(state)`;
+        function generateFindValue(
+          questionType,
+          parentTable,
+          uuid,
+          relation,
+          leftOperand,
+          rightOperand
+        ) {
+          let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
+          generateUUid = !uuid.includes(state.prefix1)
+            ? `${state.prefix1}_${uuid}ID`
+            : `${uuid}`;
+
+          const relationParts = relation.split('_');
+          let generatedRelation =
+            questionType === 'select_multiple'
+              ? `${state.prefix1}_${state.prefix2}_${
+                  relationParts[relationParts.length - 1]
+                }`
+              : `${relation}`;
+
+          let generatedLeftOp = leftOperand.replace('ID', '');
+
+          // if (parentTable) {
+          // }
+
+          var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
+            'ID',
+            ''
+          )}', where: { ${generatedLeftOp}: dataValue('${rightOperand}') }})(state)`;
           return fn;
         }
 
