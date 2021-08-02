@@ -194,6 +194,26 @@ get(`${state.data.url}`, {}, state => {
       depth: q.type === 'select_multiple' ? 1 : 0,
       ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefix1}_${toCamelCase(q.name)}ExtCode`,
     });
+  }
+
+  function buildTablesFromSelect(questions, formName, tables) {
+    questions.forEach((q, i, arr) => {
+      if (['select_one', 'select_multiple'].includes(q.type)) {
+        const lookupTableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
+        addLookupTable(tables, lookupTableName, prefix1, q, i, formName, arr);
+      }
+      if (q.type === 'select_multiple') {
+        multiSelectIds.push(q.name);
+        const lookupTableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
+        const junctionTableName = `${prefix1}_${prefix2}_${toCamelCase(
+          q.path[q.path.length - 1]
+        )}${toCamelCase(q.name)}`;
+
+        // prettier-ignore
+        const parentTableName = `${prefix1}_${prefix2}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}`;
+        // prettier-ignore
+        const parentTableReferenceColumn = `${prefix1}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}ID`;
+
           tables.push({
             name: junctionTableName,
             columns: [
