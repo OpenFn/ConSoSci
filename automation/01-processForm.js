@@ -167,7 +167,6 @@ get(`${state.data.url}`, {}, state => {
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
         path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-        // path: [],
         parentColumn: q.name,
       },
       {
@@ -177,7 +176,6 @@ get(`${state.data.url}`, {}, state => {
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
         path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-        // path: [],
         parentColumn: q.name,
       },
       { name: 'Payload', type: 'jsonb' },
@@ -214,37 +212,38 @@ get(`${state.data.url}`, {}, state => {
         // prettier-ignore
         const parentTableReferenceColumn = `${prefix1}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}ID`;
 
-          tables.push({
-            name: junctionTableName,
-            columns: [
-              {
-                name: `${prefix1}_${toCamelCase(q.name)}ID`,
-                type: 'select_multiple',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                parentTable: `${prefix1}_${prefix2}_${toCamelCase(q.name)}`,
-              },
-              {
-                name: `${prefix1}_${tableId}ID`,
-                type: 'select_multiple',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                parentTable: `${prefix1}_${prefix2}_${tableId}`,
-              },
-            ],
-            defaultColumns: [
-              // prettier-ignore
-              ...[
-                { name: `${prefix1}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
-                { name: `${prefix1}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
-              ],
-              ...standardColumns(toCamelCase(q.name)),
-            ],
-            formName,
-            depth: 0,
-            ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
-          });
-          break;
+        tables.push({
+          name: junctionTableName,
+          columns: [
+            {
+              name: `${prefix1}_${toCamelCase(q.name)}ID`,
+              type: 'select_multiple',
+              referent: lookupTableName,
+              parent: false,
+              depth: 3,
+              path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+            },
+            {
+              name: parentTableReferenceColumn, // WCSPROGRAMS__SharksRays_CatchDetails
+              type: 'select_multiple',
+              referent: parentTableName,
+              parent: true,
+              depth: 3,
+              path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+            },
+          ],
+          defaultColumns: [
+            // prettier-ignore
+            ...[
+            { name: `${prefix1}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
+            { name: `${prefix1}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+          ],
+            ...standardColumns(toCamelCase(q.name)),
+          ],
+          formName,
+          depth: 1,
+          // ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+        });
       }
     });
     return tables;
@@ -416,5 +415,6 @@ get(`${state.data.url}`, {}, state => {
     tableId,
     data: {},
     response: {},
+    multiSelectIds,
   };
 });
