@@ -6,12 +6,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    // {
-    //   uid: 'apZrpKcK78xzrPcAfRrfac',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'SharksRays',
-    // },
+    {
+      uid: 'apZrpKcK78xzrPcAfRrfac',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
     //=== Trillion Trees forms =====
     // { 
     //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
@@ -19,12 +19,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     //   p2: '',
     //   tableId: 'Site',
     // },
-    {
-      uid: 'a8ffyF7HgbFUEnYBppEL79',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'Land',
-    },
+    // {
+    //   uid: 'a8ffyF7HgbFUEnYBppEL79',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'Land',
+    // },
     //=================================
     // { 
     //   uid: 'avLpvrukkvuFzCHacjHdRs', 
