@@ -155,7 +155,13 @@ each(
         let logical = undefined;
         // FROM HERE WE ARE BUILDING MAPPINGS
         for (var k = 0; k < columns.length; k++) {
-          if (columns[k].depth > 0)
+          if (columns[k].referent) {
+            if (!columns[k].parent)
+              mapKoboToPostgres[columns[k].name] = `x['name']`;
+            else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
+          } else if (columns[k].select_multiple === true) {
+            mapKoboToPostgres[columns[k].name] = `x['name']`;
+          } else if (columns[k].depth > 0)
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else if (columns[k].rule !== 'DO_NOT_MAP') {
             mapKoboToPostgres[columns[k].name] =
