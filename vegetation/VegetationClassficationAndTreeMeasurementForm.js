@@ -298,7 +298,7 @@ alterState(async state => {
         WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
           dataValue('$.body.erodability')(state) ||
             dataValue('$.body.groundtruthing/erodability')(state) ||
-            '`'
+            ''
         ),
       },
     })(state),
