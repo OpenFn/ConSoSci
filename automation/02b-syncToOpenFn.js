@@ -119,36 +119,41 @@ each(
         }
 
         // We generate findValue function (fn) for those that needs it.
-        function generateFindValue(
-          questionType,
-          parentTable,
-          uuid,
-          relation,
-          leftOperand,
-          rightOperand
-        ) {
+        // prettier-ignore
+        function generateFindValue(question, relation, leftOperand, rightOperand) {
+          const uuid =
+            question.type === 'select_multiple'
+              ? question.name.replace(`${state.tableId}_`, '')
+              : question.name;
+
           let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
           generateUUid = !uuid.includes(state.prefix1)
             ? `${state.prefix1}_${uuid}ID`
             : `${uuid}`;
 
-          const relationParts = relation.split('_');
           let generatedRelation =
-            questionType === 'select_multiple'
-              ? `${state.prefix1}_${state.prefix2}_${
-                  relationParts[relationParts.length - 1]
-                }`
-              : `${relation}`;
+            question.type === 'select_multiple'
+              ? question.referent
+              : relation;
 
           let generatedLeftOp = leftOperand.replace('ID', '');
+          generatedLeftOp = question.parent
+            ? 'GeneratedUuid'
+            : !generatedLeftOp.includes(state.prefix1)
+            ? `${state.prefix1}_${generatedLeftOp}Name`
+            : `${generatedLeftOp}Name`;
 
-          // if (parentTable) {
-          // }
+          let generatedRightOP =
+            question.variant === 'submissionId'
+              ? `dataValue('._id')`
+              : question.variant === 'lookupTableId'
+              ? `dataValue('gear')`
+              : `dataValue('${rightOperand}')`;
 
           var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
             'ID',
             ''
-          )}', where: { ${generatedLeftOp}: dataValue('${rightOperand}') }})(state)`;
+          )}', where: { ${generatedLeftOp}: ${generatedRightOP} }})(state)`;
           return fn;
         }
 
