@@ -18,6 +18,8 @@ get(`${state.data.url}`, {}, state => {
   //survey.push({ name: 'generated_uuid', type: 'text' });
   // ======================================================================
 
+  const multiSelectIds = [];
+
   const mapType = {
     calculate: 'decimal',
     date: 'date',
