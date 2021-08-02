@@ -352,10 +352,10 @@ alterState(async state => {
         ? dataValue('$.body.plot_gps')(state)[1]
         : dataValue('$.body.plot_description/waypoint');
     },
-    Latitude: !isNaN(latlong.latitude)
+    Latitude: latlong.latitude===undefined || latlong.latitude===null
       ? latlong.latitude
       : dataValue('$.body.plot_gps')(state).split(' ')[0],
-    Longitude: !isNaN(latlong.longitude)
+    Longitude: latlong.longitude===undefined || latlong.longitude===null
       ? latlong.longitude
       : dataValue('$.body.plot_gps')(state).split(' ')[0],
     PlotNumber: state => {
