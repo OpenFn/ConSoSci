@@ -185,49 +185,16 @@ get(`${state.data.url}`, {}, state => {
           });
           break;
 
-        case 'select_multiple':
-          tableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
-          const junctionTableName = `${prefix1}_${prefix2}_${tableId}${toCamelCase(
-            q.name
-          )}`;
-          console.log(junctionTableName);
-          tables.push({
-            name: tableName,
-            columns: [
-              {
-                name: `${prefix1}_${toCamelCase(q.name)}ID`,
-                type: 'int4',
-                identity: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                rule: 'DO_NOT_MAP',
-                parentColumn: q.name,
-              },
-              {
-                name: `${prefix1}_${toCamelCase(q.name)}Name`,
-                type: 'varchar(100)',
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              {
-                name: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
-                type: 'varchar(100)',
-                unique: true,
-                depth: 0,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-                // path: [],
-                parentColumn: q.name,
-              },
-              { name: 'Payload', type: 'jsonb' },
-            ],
-            defaultColumns: standardColumns(toCamelCase(q.name)),
-            formName,
-            depth: 0,
-            ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
-          });
+  // prettier-ignore
+  function addLookupTable(tables, lookupTableName, prefix1, q, i, formName, arr) {
+    tables.push({
+      name: lookupTableName,
+      columns: buildLookupTableColumns(prefix1, q, i, arr),
+      defaultColumns: standardColumns(toCamelCase(q.name)),
+      formName,
+      depth: 0,
+      ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+    });
           tables.push({
             name: junctionTableName,
             columns: [
