@@ -287,7 +287,7 @@ alterState(async state => {
         WCSPROGRAMS_VegetationSoilSeasonalityName: state.handleValue(
           dataValue('$.body.seasonality')(state) ||
             dataValue('$.body.groundtruthing/seasonality')(state) ||
-            ''
+            'unknown'
         ),
       },
     })(state),
@@ -298,7 +298,7 @@ alterState(async state => {
         WCSPROGRAMS_VegetationSoilErodabilityExtCode: state.handleValue(
           dataValue('$.body.erodability')(state) ||
             dataValue('$.body.groundtruthing/erodability')(state) ||
-            ''
+            'unknown'
         ),
       },
     })(state),
