@@ -80,7 +80,7 @@ alterState(state => {
       latitude: latitude,
       longitude: longitude,
     };
-
+    console.log(obj); 
     return obj;
   };
   return { ...state, UTMToLatLng };
