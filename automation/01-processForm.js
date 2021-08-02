@@ -191,8 +191,8 @@ get(`${state.data.url}`, {}, state => {
       columns: buildLookupTableColumns(prefix1, q, i, arr),
       defaultColumns: standardColumns(toCamelCase(q.name)),
       formName,
-      depth: 0,
-      ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+      depth: q.type === 'select_multiple' ? 1 : 0,
+      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefix1}_${toCamelCase(q.name)}ExtCode`,
     });
           tables.push({
             name: junctionTableName,
