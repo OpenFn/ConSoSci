@@ -163,13 +163,11 @@ each(
                 ? columns[k].type === 'select_one' ||
                   columns[k].type === 'select_multiple'
                   ? generateFindValue(
-                      columns[k].type,
-                      columns[k].parentTable,
-                      columns[k].name,
+                      columns[k],
                       !columns[k].name.includes(state.prefix1)
                         ? `${state.prefix1}_${state.prefix2}_${columns[k].name}`
                         : `${columns[k].name}`,
-                      `${columns[k].name}Name`,
+                      `${columns[k].name}`,
                       paths[k]
                     )
                   : columns[k].parentColumn
