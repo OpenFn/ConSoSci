@@ -5,21 +5,26 @@ alterState(state => {
   console.log('Current cursor value:', state.lastEnd);
 
   // Set a manual cursor if you'd like to only fetch data after this date.
-  const manualCursor = '2020-05-01T14:32:43.325+01:00';
+  const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
+      {
+        uid: 'aukhdejQU76K33caCkF4rP',
+        formName: 'WCS Socio-Economic Projects Database',
+        tableId: 'WCSPROGRAMS_SocioEcoDB',
+      },
       //{
       //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
       //  formName: 'Arcadia Data Collection Site Survey',
       //  tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       //},
-      {
-        uid: 'avLpvrukkvuFzCHacjHdRs',
-        p1: 'WCS',
-        p2: 'Vegetation',
-        tableId: 'VegetationClassficationAndTreeMeasurementForm',
-        formType: 'vegetation',
-      },
+      //{
+      //  uid: 'avLpvrukkvuFzCHacjHdRs',
+      //  p1: 'WCS',
+      //  p2: 'Vegetation',
+      //  tableId: 'VegetationClassficationAndTreeMeasurementForm',
+      //  formType: 'vegetation',
+      //},
       //{
       //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
       //  formName: 'SWM Etude Marché 9Feb',
