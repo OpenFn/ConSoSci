@@ -288,7 +288,7 @@ each(
           //   null,
           //   2
           // ).replace(/"/g, '')}))}`;
-          mapping += `() => mapping`;
+          mapping += `() => mapping, {setNull: ["''", "'undefined'"]}`;
         } else {
           // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
           //   /"/g,
@@ -296,7 +296,7 @@ each(
           // );
           // 'mapping' here is a variable name as we remove ========
           // the whole object from the operation====================
-          mapping += `mapping`;
+          mapping += `mapping, {setNull: ["''", "'undefined'"]}`;
         }
         // END OF BUILDING MAPPINGS (state)
         expression +=
