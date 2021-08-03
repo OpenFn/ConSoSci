@@ -389,7 +389,8 @@ each(
     const triggerIndex = triggersName.indexOf(name);
     const triggerId = state.triggers[triggerIndex].id;
     const job = {
-      adaptor: 'postgresql',
+      adaptor: 'mssql',
+      adaptor_version: 'v2.6.0',
       expression,
       name,
       project_id: state.projectId,
