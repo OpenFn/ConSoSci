@@ -1,6 +1,6 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 
-alterState(state => {
+fn(state => {
   try {
     const { body, formName } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
@@ -44,23 +44,22 @@ alterState(state => {
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
     state.data = cleanedSubmission;
 
-const landscapeMap = {
-    Ndoki: 'ndoki',
-    'Lac Télé': 'lac_tele',
-    Ituri: 'ituri',
-    Kahuzi: 'kahuzi',
-    MTKB: 'kahuzi',
-    Crossriver: 'crossriver',
-    Soariake: 'soariake',
-    Ankarea: 'ankarea',
-    ABS: 'baie_antongil',
-    'Nosy Be': 'tandavandriva',
-    Makira: 'makira',
-    //formName: landscapeValue,
-    //other values
-  };
-  
-  
+    const landscapeMap = {
+      Ndoki: 'ndoki',
+      'Lac Télé': 'lac_tele',
+      Ituri: 'ituri',
+      Kahuzi: 'kahuzi',
+      MTKB: 'kahuzi',
+      Crossriver: 'crossriver',
+      Soariake: 'soariake',
+      Ankarea: 'ankarea',
+      ABS: 'baie_antongil',
+      'Nosy Be': 'tandavandriva',
+      Makira: 'makira',
+      //formName: landscapeValue,
+      //other values
+    };
+
     // ===========================================================================
     //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
     //  'NR' and 'BNS matrix' questions should follow the naming conventions below
@@ -91,7 +90,7 @@ const landscapeMap = {
         );
         return {
           Dataset_Id: state.data.datasetId, //DatasetUuidId
-          DatasetUuidId : state.data.datasetId,
+          DatasetUuidId: state.data.datasetId,
           //Id: state.data._id,
           AnswerId: state.data._id,
           gs: item.replace(/_/g, ' '),
@@ -134,7 +133,11 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
   SurveyDate: state =>
     state.data.today ? state.data.today : state.data._submission_time,
-  Landscape: state => state.landscapeMap[state.formName] || '',
+  Landscape: state => {
+    console.log(state.landscapeMap);
+    console.log(state.formName);
+    return state.landscapeMap[state.formName] || '';
+  },
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
   Arrival: dataValue('arrival'),
@@ -162,6 +165,7 @@ sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = '${state.data._id}'`,
 });
+
 insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   //insert hh head first
   DatasetUuidId: dataValue('datasetId'),
@@ -178,22 +182,25 @@ insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
   LastUpdate: new Date().toISOString(),
 });
 
-alterState(state => {
+fn(state => {
   if (state.data.hh_members) {
-    return insertMany('WCSPROGRAMS_KoboBnsAnswerhhmembers', (
-      state //then insert other members
-    ) =>
-      state.data.hh_members.map((member, i) => ({
-        DatasetUuidId: state.data.datasetId,
-        // Id: state.data._id,
-        Id: i + 1,
-        AnswerId: state.data._id,
-        Head: '0',
-        Gender: member[`hh_members/gender`] || member[`hh_members/gender_001`],
-        Ethnicity: member[`hh_members/ethnicity`],
-        Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
-        LastUpdate: new Date().toISOString(),
-      }))
+    return insertMany(
+      'WCSPROGRAMS_KoboBnsAnswerhhmembers',
+      (
+        state //then insert other members
+      ) =>
+        state.data.hh_members.map((member, i) => ({
+          DatasetUuidId: state.data.datasetId,
+          // Id: state.data._id,
+          Id: i + 1,
+          AnswerId: state.data._id,
+          Head: '0',
+          Gender:
+            member[`hh_members/gender`] || member[`hh_members/gender_001`],
+          Ethnicity: member[`hh_members/ethnicity`],
+          Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
+          LastUpdate: new Date().toISOString(),
+        }))
     )(state);
   }
 
@@ -207,7 +214,8 @@ sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'`,
 });
-alterState(state => {
+
+fn(state => {
   if (state.nr && state.nr.length > 0) {
     return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
   }
@@ -223,7 +231,8 @@ sql({
   query: state =>
     `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where AnswerId = '${state.data._id}'`,
 });
-alterState(state => {
+
+fn(state => {
   if (state.matrix && state.matrix.length > 0) {
     return insertMany(
       'WCSPROGRAMS_KoboBnsAnswerGS',
