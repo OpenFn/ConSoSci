@@ -68,13 +68,15 @@ get(`${state.data.url}`, {}, state => {
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
 
     form.forEach(obj => {
-      // At some point we might need a list of 'question' that should be renamed, and their new values.
-      // List of reserved keys in postgresql
+      // At some point we might need a list of questions that should be renamed,
+      // and their new values.
+
+      // List of reserved keys in postgresql and their transformations
       if (obj.name === 'group') {
         obj.name = 'kobogroup';
       }
       if (obj.name == 'end') {
-        obj.name = 'end_date';
+        obj.name = 'form_date__end';
       }
       if (obj.name == 'column') {
         obj.name = 'column_name';
