@@ -44,7 +44,7 @@ fn(state => {
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
     state.data = cleanedSubmission;
 
-    const landscapeMap = {
+    state.landscapeMap = {
       Ndoki: 'ndoki',
       'Lac Télé': 'lac_tele',
       Ituri: 'ituri',
@@ -134,9 +134,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   SurveyDate: state =>
     state.data.today ? state.data.today : state.data._submission_time,
   Landscape: state => {
-    console.log(state.landscapeMap);
-    console.log(state.formName);
-    return state.landscapeMap[state.formName] || '';
+    return state.landscapeMap[state.data.formName] || '';
   },
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
@@ -257,8 +255,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //renamed from DatasetUuid
   //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
-  DatasetName: state.data.formName,
-  DatasetOwner: state.data.formOwner,
+  DatasetName: dataValue('formName'),
+  DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
