@@ -134,11 +134,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
   SurveyDate: state =>
     state.data.today ? state.data.today : state.data._submission_time,
-  Landscape: state => {
-      for (let val in state.landscapeMap)
-        if (state.formName.includes(val)) return state.landscapeMap[val];
-      return '';
-    },
+  Landscape: state => state.landscapeMap[state.formName] || '',
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
   Arrival: dataValue('arrival'),
