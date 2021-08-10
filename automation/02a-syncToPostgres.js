@@ -3,7 +3,7 @@ each('$.forms[*]', state => {
     '$.data[*]',
     fn(state => {
       const { name } = state.data;
-      if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
+      if (name !== `${state.prefixes}_Untitled`) {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
         return describeTable(name.toLowerCase(), {
           writeSql: true, // Keep to true to log query.

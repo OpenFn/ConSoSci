@@ -12,6 +12,7 @@ get(`${state.data.url}`, {}, state => {
   const prefix2 = state.references[0].prefix2 || '';
   const tableId = state.references[0].tableId;
   const uuid = 'generated_uuid';
+  const prefixes = [prefix1, prefix2].filter(x => x).join('_');
   // END OF PREFIX HANDLER
 
   // TODO: Decide which metadata field to include. ========================
@@ -127,10 +128,10 @@ get(`${state.data.url}`, {}, state => {
       // { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
       // { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
       // { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
-      { name: `${prefix1}_${tableName}Code`, type: 'varchar(255)', required: false },
-      { name: `${prefix1}_${tableName}Description`, type: 'varchar(255)', required: false },
-      { name: `${prefix1}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
-      { name: `${prefix1}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
+      { name: `${prefixes}_${tableName}Code`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}_${tableName}Description`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
+      { name: `${prefixes}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
@@ -145,13 +146,13 @@ get(`${state.data.url}`, {}, state => {
   function customColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
-      { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
-      { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+      { name: `${prefixes}_${tableName}ID`, type: 'int4', required: true, identity: true },
+      { name: `${prefixes}_${tableName}Name`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
     ];
   }
 
-  function buildLookupTableColumns(prefix1, q, i, arr) {
+  function buildLookupTableColumns(prefixes, q, i, arr) {
     return [
       {
         name: `${prefix1}_${toCamelCase(q.name)}ID`,
@@ -185,40 +186,40 @@ get(`${state.data.url}`, {}, state => {
   }
 
   // prettier-ignore
-  function addLookupTable(tables, lookupTableName, prefix1, q, i, formName, arr) {
+  function addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr) {
     tables.push({
       name: lookupTableName,
-      columns: buildLookupTableColumns(prefix1, q, i, arr),
+      columns: buildLookupTableColumns(prefixes, q, i, arr),
       defaultColumns: standardColumns(toCamelCase(q.name)),
       formName,
       depth: q.type === 'select_multiple' ? 1 : 0,
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.name)}ExtCode`,
     });
   }
 
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (['select_one', 'select_multiple'].includes(q.type)) {
-        const lookupTableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
-        addLookupTable(tables, lookupTableName, prefix1, q, i, formName, arr);
+        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
       }
       if (q.type === 'select_multiple') {
         multiSelectIds.push(q.name);
-        const lookupTableName = `${prefix1}_${prefix2}_${toCamelCase(q.name)}`;
-        const junctionTableName = `${prefix1}_${prefix2}_${toCamelCase(
+        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        const junctionTableName = `${prefixes}_${toCamelCase(
           q.path[q.path.length - 1]
         )}${toCamelCase(q.name)}`;
 
         // prettier-ignore
-        const parentTableName = `${prefix1}_${prefix2}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}`;
+        const parentTableName = `${prefixes}_${tableId}${toCamelCase(q.path[q.path.length - 1])}`;
         // prettier-ignore
-        const parentTableReferenceColumn = `${prefix1}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}ID`;
+        const parentTableReferenceColumn = `${prefixes}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}ID`;
 
         tables.push({
           name: junctionTableName,
           columns: [
             {
-              name: `${prefix1}_${toCamelCase(q.name)}ID`,
+              name: `${prefixes}_${toCamelCase(q.name)}ID`,
               type: 'select_multiple',
               referent: lookupTableName,
               parent: false,
@@ -237,14 +238,14 @@ get(`${state.data.url}`, {}, state => {
           defaultColumns: [
             // prettier-ignore
             ...[
-            { name: `${prefix1}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
-            { name: `${prefix1}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+            { name: `${prefixes}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
+            { name: `${prefixes}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
           ],
             ...standardColumns(toCamelCase(q.name)),
           ],
           formName,
           depth: 1,
-          // ReferenceUuid: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+          // ReferenceUuid: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         });
       }
     });
@@ -260,6 +261,8 @@ get(`${state.data.url}`, {}, state => {
       backwardsFirstBegin !== -1
         ? questions.length - backwardsFirstBegin - 1
         : false;
+
+    const tName = `${prefixes}_${tableId}`;
 
     if (lastBegin) {
       const firstEndAfterLastBegin =
@@ -284,7 +287,7 @@ get(`${state.data.url}`, {}, state => {
           .join('_')
           .replace('.', '')
       );
-      const name = `${prefix1}_${prefix2}_${tableId}${tableName}`;
+      const name = `${prefixes}_${tableId}${tableName}`;
 
       tables.push({
         name,
@@ -313,7 +316,7 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       },
       {
-        name: `${prefix1}__KoboDataset`,
+        name: `${prefixes}__KoboDataset`,
         columns: [
           {
             name: 'FormName',
@@ -411,6 +414,7 @@ get(`${state.data.url}`, {}, state => {
   return {
     ...state,
     forms: [tables],
+    prefixes,
     prefix1,
     prefix2,
     uuid,

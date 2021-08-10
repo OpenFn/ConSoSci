@@ -73,14 +73,11 @@ each(
     for (var i = 0; i < state.data.length; i++) {
       const { columns, name, depth, ReferenceUuid } = state.data[i];
 
-      if (
-        columns.length > 0 &&
-        name !== `${state.prefix1}_${state.prefix2}_Untitled`
-      ) {
+      if (columns.length > 0 && name !== `${state.prefixes}_Untitled`) {
         var paths = [];
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
-          if (name === `${state.prefix1}__KoboDataset`) {
+          if (name === `${state.prefixes}__KoboDataset`) {
             const values = {
               FormName: "dataValue('formName')",
               DatasetId: "dataValue('_xform_id_string')",
@@ -127,8 +124,8 @@ each(
               : question.name;
 
           let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
-          generateUUid = !uuid.includes(state.prefix1)
-            ? `${state.prefix1}_${uuid}ID`
+          generateUUid = !uuid.includes(state.prefixes)
+            ? `${state.prefixes}_${uuid}ID`
             : `${uuid}`;
 
           let generatedRelation =
@@ -139,8 +136,8 @@ each(
           let generatedLeftOp = leftOperand.replace('ID', '');
           generatedLeftOp = question.parent
             ? 'GeneratedUuid'
-            : !generatedLeftOp.includes(state.prefix1)
-            ? `${state.prefix1}_${generatedLeftOp}Name`
+            : !generatedLeftOp.includes(state.prefixes)
+            ? `${state.prefixes}_${generatedLeftOp}Name`
             : `${generatedLeftOp}Name`;
 
           let generatedRightOP =
@@ -170,13 +167,13 @@ each(
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else if (columns[k].rule !== 'DO_NOT_MAP') {
             mapKoboToPostgres[columns[k].name] =
-              name !== `${state.prefix1}__KoboDataset`
+              name !== `${state.prefixes}__KoboDataset`
                 ? columns[k].type === 'select_one' ||
                   columns[k].type === 'select_multiple'
                   ? generateFindValue(
                       columns[k],
-                      !columns[k].name.includes(state.prefix1)
-                        ? `${state.prefix1}_${state.prefix2}_${columns[k].name}`
+                      !columns[k].name.includes(state.prefixes)
+                        ? `${state.prefixes}_${columns[k].name}`
                         : `${columns[k].name}`,
                       `${columns[k].name}`,
                       paths[k]
@@ -211,7 +208,7 @@ each(
         mapKoboToPostgres.Payload = `state.data.body`;
         // =====================================================================
 
-        if (name !== `${state.prefix1}__KoboDataset`) {
+        if (name !== `${state.prefixes}__KoboDataset`) {
           // We check if that table has a defined ReferenceUuid that we should use ====
           // instead of the default generated_uuid.
           if (!ReferenceUuid)
@@ -265,7 +262,7 @@ each(
             : `return upsert`;
 
         var uuid =
-          name === `${state.prefix1}__KoboDataset`
+          name === `${state.prefixes}__KoboDataset`
             ? 'DatasetId'
             : ReferenceUuid || toCamelCase(state.uuid);
 
@@ -306,7 +303,7 @@ each(
     }
     state.data.expression = expression;
     state.data.triggerCriteria = {
-      tableId: `${state.prefix1}_${state.prefix2}_${state.tableId}`,
+      tableId: `${state.prefixes}_${state.tableId}`,
     };
     return state;
   })
@@ -343,7 +340,7 @@ each(
   alterState(state => {
     const triggerNames = state.triggers.map(t => t.name);
 
-    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
+    const name = `auto/${state.prefixes}_${state.tableId}`;
     const criteria = state.data.triggerCriteria;
     const triggerIndex = triggerNames.indexOf(name);
 
@@ -380,11 +377,11 @@ each(
     const expression = state.data.expression;
     console.log(
       'Inserting / Updating job: ',
-      `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`
+      `auto/${state.prefixes}_${state.tableId}`
     );
     const jobNames = state.jobs.map(j => j.name);
     const triggersName = state.triggers.map(t => t.name);
-    const name = `auto/${state.prefix1}_${state.prefix2}_${state.tableId}`;
+    const name = `auto/${state.prefixes}_${state.tableId}`;
     const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
     const triggerIndex = triggersName.indexOf(name);
     const triggerId = state.triggers[triggerIndex].id;
