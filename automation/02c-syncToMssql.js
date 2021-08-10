@@ -20,7 +20,7 @@ each('$.forms[*]', state => {
           : col.type;
       }
 
-      if (name !== `${state.prefix1}_${state.prefix2}_Untitled`) {
+      if (name !== `${state.prefixes}_Untitled`) {
         // Note: Specify options here (e.g {writeSql: false, execute: true})
         return describeTable(name.toLowerCase(), {
           writeSql: true, // Keep to true to log query.
@@ -44,18 +44,27 @@ each('$.forms[*]', state => {
               writeSql: true, // Keep to true to log query (otherwise make it false).
               execute: true, // keep to false to not alter DB
             })(state).then(state => {
-              if (defaultColumns)
+              if (defaultColumns) {
+                let foreignKeyQuery = '';
+                if (state.data.FK) {
+                  const { parentTable } = state.data;
+                  foreignKeyQuery = `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${parentTable}ID FOREIGN KEY (${parentTable}ID)
+                    REFERENCES ${parentTable} (${parentTable}ID);
+                    ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${parentTable}ID;`;
+                }
                 // Creating foreign keys constraints to standard WCS DB and fields
                 return sql({
                   query: state =>
-                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${state.prefix1}_OrganizationID_Owner)
+                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${state.prefixes}_OrganizationID_Owner)
                     REFERENCES WCSPROGRAMS_Organization (WCSPROGRAMS_OrganizationID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_OrganizationID_Owner;
-                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${state.prefix1}_SecuritySettingID_Row)
+                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${state.prefixes}_SecuritySettingID_Row)
                     REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row;
+                    ${foreignKeyQuery}
                   `,
                 })(state);
+              }
               return state;
             });
           } else {

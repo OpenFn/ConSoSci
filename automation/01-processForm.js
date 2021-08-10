@@ -298,6 +298,8 @@ get(`${state.data.url}`, {}, state => {
           ...customColumns(tableName),
           ...standardColumns(tableName),
         ],
+        FK: true,
+        parentTable: tName,
         formName,
         depth: group[0].depth,
       });
