@@ -293,6 +293,8 @@ get(`${state.data.url}`, {}, state => {
         name,
         columns: questionsToColumns(group),
         defaultColumns: [
+          // prettier-ignore
+          ...[ { name: `${tName}ID`, type: 'int4', required: false } ],
           ...customColumns(tableName),
           ...standardColumns(tableName),
         ],
