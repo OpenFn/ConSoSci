@@ -307,7 +307,6 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
-    const tName = `${prefix1}_${prefix2}_${tableId}`;
     tables.push(
       {
         name: tName,
