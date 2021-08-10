@@ -155,7 +155,7 @@ get(`${state.data.url}`, {}, state => {
   function buildLookupTableColumns(prefixes, q, i, arr) {
     return [
       {
-        name: `${prefix1}_${toCamelCase(q.name)}ID`,
+        name: `${prefixes}_${toCamelCase(q.name)}ID`,
         type: 'int4',
         identity: true,
         depth: q.type === 'select_multiple' ? 3 : 0,
@@ -165,7 +165,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefix1}_${toCamelCase(q.name)}Name`,
+        name: `${prefixes}_${toCamelCase(q.name)}Name`,
         type: 'varchar(100)',
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
@@ -173,7 +173,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefix1}_${toCamelCase(q.name)}ExtCode`,
+        name: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         type: 'varchar(100)',
         unique: true,
         depth: q.type === 'select_multiple' ? 3 : 0,
