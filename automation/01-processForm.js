@@ -284,7 +284,7 @@ get(`${state.data.url}`, {}, state => {
           .join('_')
           .replace('.', '')
       );
-      const name = `${prefix1}_${prefix2}_${tableId}_${tableName}`;
+      const name = `${prefix1}_${prefix2}_${tableId}${tableName}`;
 
       tables.push({
         name,
