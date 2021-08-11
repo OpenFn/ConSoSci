@@ -5,19 +5,22 @@ each('$.forms[*]', state => {
       const { name, defaultColumns } = state.data;
 
       function convertToMssqlTypes(col) {
-        col.type === 'select_one' ||
-        col.type === 'select_multiple' ||
-        col.type === 'text'
-          ? (col.type = 'nvarchar(max)')
+        col.type = col.referent
+          ? 'int'
+          : col.type === 'select_one' ||
+            col.type === 'select_multiple' ||
+            col.type === 'text' ||
+            col.type === 'jsonb'
+          ? 'nvarchar(max)'
           : col.type.includes('varchar')
-          ? (col.type = col.type.replace('varchar', 'nvarchar'))
+          ? col.type.replace('varchar', 'nvarchar')
           : col.type === 'int4' || col.type === 'float4'
-          ? (col.type = col.type.substring(0, col.type.length - 1))
-          : col.type === 'jsonb'
-          ? (col.type = 'nvarchar(max)')
+          ? col.type.substring(0, col.type.length - 1)
           : col.type === 'timestamp'
-          ? ((col.type = 'datetime'), (col.default = 'GETDATE()'))
+          ? 'datetime'
           : col.type;
+
+        if (col.type === 'datetime') col.default = 'GETDATE()';
       }
 
       if (name !== `${state.prefixes}_Untitled`) {
