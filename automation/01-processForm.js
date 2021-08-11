@@ -199,10 +199,6 @@ get(`${state.data.url}`, {}, state => {
 
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
-      if (['select_one', 'select_multiple'].includes(q.type)) {
-        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
-        addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
-      }
       if (q.type === 'select_multiple') {
         multiSelectIds.push(q.name);
         const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
@@ -213,7 +209,7 @@ get(`${state.data.url}`, {}, state => {
         // prettier-ignore
         const parentTableName = `${prefixes}_${tableId}${toCamelCase(q.path[q.path.length - 1])}`;
         // prettier-ignore
-        const parentTableReferenceColumn = `${prefixes}_${tableId}_${toCamelCase(q.path[q.path.length - 1])}ID`;
+        const parentTableReferenceColumn = `${prefixes}_${toCamelCase(q.path[q.path.length - 1])}ID`;
 
         tables.push({
           name: junctionTableName,
@@ -243,10 +239,24 @@ get(`${state.data.url}`, {}, state => {
           ],
             ...standardColumns(toCamelCase(q.name)),
           ],
+          foreignTables: [
+            {
+              table: lookupTableName,
+              id: `${lookupTableName}ID`,
+            },
+            {
+              table: parentTableName,
+              id: `${prefixes}_${toCamelCase(q.path[q.path.length - 1])}ID`,
+            },
+          ],
           formName,
           depth: 1,
           // ReferenceUuid: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         });
+      }
+      if (['select_one', 'select_multiple'].includes(q.type)) {
+        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
       }
     });
     return tables;
@@ -298,8 +308,12 @@ get(`${state.data.url}`, {}, state => {
           ...customColumns(tableName),
           ...standardColumns(tableName),
         ],
-        FK: true,
-        parentTable: tName,
+        foreignTables: [
+          {
+            table: tName,
+            id: `${tName}ID`,
+          },
+        ],
         formName,
         depth: group[0].depth,
       });
