@@ -48,23 +48,30 @@ each('$.forms[*]', state => {
               execute: true, // keep to false to not alter DB
             })(state).then(state => {
               if (defaultColumns) {
-                let foreignKeyQuery = '';
-                if (state.data.FK) {
-                  const { parentTable } = state.data;
-                  foreignKeyQuery = `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${parentTable}ID FOREIGN KEY (${parentTable}ID)
-                    REFERENCES ${parentTable} (${parentTable}ID);
-                    ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${parentTable}ID;`;
+                let foreignKeyQueries = [];
+                if (state.data.foreignTables) {
+                  const { foreignTables } = state.data;
+                  for (let ft of foreignTables) {
+                    const { table, id } = ft;
+                    foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${id} FOREIGN KEY (${id})
+                      REFERENCES ${table} (${id});
+                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${id};`);
+                  }
                 }
                 // Creating foreign keys constraints to standard WCS DB and fields
                 return sql({
                   query: state =>
-                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${state.prefixes}_OrganizationID_Owner)
+                    `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${
+                      state.prefixes
+                    }_OrganizationID_Owner)
                     REFERENCES WCSPROGRAMS_Organization (WCSPROGRAMS_OrganizationID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_OrganizationID_Owner;
-                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${state.prefixes}_SecuritySettingID_Row)
+                    ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${
+                      state.prefixes
+                    }_SecuritySettingID_Row)
                     REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row;
-                    ${foreignKeyQuery}
+                    ${foreignKeyQueries.join('\n')}
                   `,
                 })(state);
               }
