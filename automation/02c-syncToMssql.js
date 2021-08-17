@@ -73,6 +73,10 @@ each('$.forms[*]', state => {
                     ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row;
                     ${foreignKeyQueries.join('\n')}
                   `,
+                  options: {
+                    writeSql: true, // Keep to true to log query (otherwise make it false).
+                    execute: true, // keep to false to not alter DB
+                  },
                 })(state);
               }
               return state;
