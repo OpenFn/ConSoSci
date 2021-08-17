@@ -27,7 +27,7 @@ alterState(state => {
     Ituri: 'ituri',
     Kahuzi: 'kahuzi',
     MTKB: 'kahuzi',
-    Crossriver: 'crossriver',
+    'Cross River': 'crossriver',
     Soariake: 'soariake',
     Ankarea: 'ankarea',
     ABS: 'baie_antongil',
