@@ -8,11 +8,11 @@ alterState(state => {
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
-      {
-        uid: 'aukhdejQU76K33caCkF4rP',
-        formName: 'WCS Socio-Economic Projects Database',
-        tableId: 'WCSPROGRAMS__SocioEcoDB',
-      },
+      // {
+      //   uid: 'aukhdejQU76K33caCkF4rP',
+      //   formName: 'WCS Socio-Economic Projects Database',
+      //   tableId: 'WCSPROGRAMS__SocioEcoDB',
+      // },
       //{
       //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
       //  formName: 'Arcadia Data Collection Site Survey',
@@ -41,11 +41,11 @@ alterState(state => {
       //  tableId: 'WCS_SR_SharkAndRaysTraining'
       //},
       
-    //   {
-    //   uid: 'apZrpKcK78xzrPcAfRrfac',
-    //   formName: 'Sharks & Rays TEST FORM 11 june',
-    //   tableId: 'WCSPROGRAMS_SharksRays',
-    // },
+      {
+      uid: 'apZrpKcK78xzrPcAfRrfac',
+      formName: 'Sharks & Rays TEST FORM 11 june',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    }
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
