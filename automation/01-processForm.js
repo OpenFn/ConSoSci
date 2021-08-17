@@ -332,7 +332,7 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       },
       {
-        name: `${prefixes}__KoboDataset`,
+        name: `${prefixes}_KoboDataset`,
         columns: [
           {
             name: 'FormName',
