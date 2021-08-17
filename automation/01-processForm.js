@@ -22,7 +22,7 @@ get(`${state.data.url}`, {}, state => {
   const multiSelectIds = [];
 
   const mapType = {
-    calculate: 'decimal',
+    calculate: 'varchar(100)',
     date: 'date',
     decimal: 'float4',
     end: 'date',
@@ -34,7 +34,6 @@ get(`${state.data.url}`, {}, state => {
     jsonb: 'jsonb',
     select_multiple: 'select_multiple',
     geopoint: 'text',
-    // identity: 'identity',
   };
 
   const discards = [
