@@ -77,7 +77,7 @@ each(
         var paths = [];
         for (var j = 0; j < columns.length; j++) {
           // Handling master parent table
-          if (name === `${state.prefixes}_KoboDataset`) {
+          if (name === `${state.prefix1}_KoboDataset`) {
             const values = {
               FormName: "dataValue('formName')",
               DatasetId: "dataValue('_xform_id_string')",
@@ -167,7 +167,7 @@ each(
             mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           else if (columns[k].rule !== 'DO_NOT_MAP') {
             mapKoboToPostgres[columns[k].name] =
-              name !== `${state.prefixes}_KoboDataset`
+              name !== `${state.prefix1}_KoboDataset`
                 ? columns[k].type === 'select_one' ||
                   columns[k].type === 'select_multiple'
                   ? generateFindValue(
@@ -208,7 +208,7 @@ each(
         mapKoboToPostgres.Payload = `state.data.body`;
         // =====================================================================
 
-        if (name !== `${state.prefixes}_KoboDataset`) {
+        if (name !== `${state.prefix1}_KoboDataset`) {
           // We check if that table has a defined ReferenceUuid that we should use ====
           // instead of the default generated_uuid.
           if (!ReferenceUuid)
@@ -262,7 +262,7 @@ each(
             : `return upsert`;
 
         var uuid =
-          name === `${state.prefixes}_KoboDataset`
+          name === `${state.prefix1}_KoboDataset`
             ? 'DatasetId'
             : ReferenceUuid || toCamelCase(state.uuid);
 
