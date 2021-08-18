@@ -48,23 +48,7 @@ fn(state => {
       tns: 'ndoki',
       'ltlt': 'lac_tele',
       mamabay: 'makira',
-      Ndoki: 'ndoki',
-      'Lac Télé': 'lac_tele',
-      'lac télé': 'lac_tele',
-      Ituri: 'ituri',
-      Kahuzi: 'kahuzi',
-      MTKB: 'kahuzi',
-      mtkb: 'kahuzi',
-      'Cross River': 'crossriver',
-      'cross river': 'crossriver',
-      crossriver: 'crossriver',
-      Soariake: 'soariake',
-      Ankarea: 'ankarea',
-      ABS: 'baie_antongil',
-      abs: 'baie_antongil',
-      'Nosy Be': 'tandavandriva',
-      'nosy Be': 'tandavandriva',
-      Makira: 'makira',
+      mtkb: 'kahuzi'
     };
 
     // ===========================================================================
