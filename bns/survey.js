@@ -47,7 +47,7 @@ fn(state => {
     state.landscapeMap = {
       tns: 'ndoki',
       'ltlt': 'lac_tele',
-      mamabay: 'makira'
+      mamabay: 'makira',
       Ndoki: 'ndoki',
       ndoki: 'ndoki',
       'Lac Télé': 'lac_tele',
