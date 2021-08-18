@@ -11,7 +11,7 @@ alterState(state => {
       {
         uid: 'aukhdejQU76K33caCkF4rP',
         formName: 'WCS Socio-Economic Projects Database',
-        tableId: 'WCSPROGRAMS__SocioEcoDB',
+        tableId: 'WCSPROGRAMS_SocioEcoDB',
       },
       //{
       //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
