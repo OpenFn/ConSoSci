@@ -138,7 +138,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   SurveyDate: state =>
     state.data.today ? state.data.today : state.data._submission_time,
   Landscape: state => {
-    return state.landscapeMap[state.data.formName] || '';
+    var landscape = dataValue('landscape')(state);
+    return state.landscapeMap[landscape] || landscape;
   },
   Surveyor: dataValue('surveyor'),
   Participant: dataValue('participant'),
