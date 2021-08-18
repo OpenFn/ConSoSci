@@ -53,7 +53,6 @@ fn(state => {
       'Lac Télé': 'lac_tele',
       'lac télé': 'lac_tele',
       Ituri: 'ituri',
-      ituri: 'ituri',
       Kahuzi: 'kahuzi',
       MTKB: 'kahuzi',
       mtkb: 'kahuzi',
