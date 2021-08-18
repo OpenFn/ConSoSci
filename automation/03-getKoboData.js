@@ -41,11 +41,11 @@ alterState(state => {
       //  tableId: 'WCS_SR_SharkAndRaysTraining'
       //},
       
-      {
-      uid: 'apZrpKcK78xzrPcAfRrfac',
-      formName: 'Sharks & Rays TEST FORM 11 june',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    }
+    //   {
+    //   uid: 'apZrpKcK78xzrPcAfRrfac',
+    //   formName: 'Sharks & Rays TEST FORM 11 june',
+    //   tableId: 'WCSPROGRAMS_SharksRays',
+    // }
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
