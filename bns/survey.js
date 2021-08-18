@@ -45,19 +45,23 @@ fn(state => {
     state.data = cleanedSubmission;
 
     state.landscapeMap = {
-      Ndoki: 'ndoki',
-      'Lac Télé': 'lac_tele',
-      Ituri: 'ituri',
-      Kahuzi: 'kahuzi',
-      MTKB: 'kahuzi',
-      'Cross River': 'crossriver',
-      Soariake: 'soariake',
-      Ankarea: 'ankarea',
-      ABS: 'baie_antongil',
-      'Nosy Be': 'tandavandriva',
-      Makira: 'makira',
-      //formName: landscapeValue,
-      //other values
+      tns: 'ndoki',
+      'ltlt': 'lac_tele',
+      mtkb: 'kahuzi',
+      crossriver: 'crossriver',
+      mamabay: 'makira'
+      //OLD FORM NAME MAPPINGS
+      // Ndoki: 'ndoki',
+      // 'Lac Télé': 'lac_tele',
+      // Ituri: 'ituri',
+      // Kahuzi: 'kahuzi',
+      // MTKB: 'kahuzi',
+      // 'Cross River': 'crossriver',
+      // Soariake: 'soariake',
+      // Ankarea: 'ankarea',
+      // ABS: 'baie_antongil',
+      // 'Nosy Be': 'tandavandriva',
+      // Makira: 'makira',
     };
 
     // ===========================================================================
