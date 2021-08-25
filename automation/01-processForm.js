@@ -62,7 +62,7 @@ get(`${state.data.url}`, {}, state => {
     return `${underscores.join('')}${words}${underscores.join('')}`;
   }
 
-  function questionsToColumns(questions) {
+  function questionsToColumns(questions, main) {
     var form = questions.filter(elt => !discards.includes(elt.type));
 
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -337,7 +337,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: tName,
-        columns: questionsToColumns(questions),
+        columns: questionsToColumns(questions, 'main'),
         defaultColumns: [
           ...customColumns(tableId),
           ...standardColumns(tableId),
