@@ -52,9 +52,9 @@ each('$.forms[*]', state => {
                 if (state.data.foreignTables) {
                   const { foreignTables } = state.data;
                   for (let ft of foreignTables) {
-                    const { table, id } = ft;
+                    const { table, id, reference } = ft;
                     foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${id} FOREIGN KEY (${id})
-                      REFERENCES ${table} (${id});
+                      REFERENCES ${table} (${reference ? reference : id});
                       ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${id};`);
                   }
                 }
