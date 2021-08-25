@@ -84,6 +84,11 @@ get(`${state.data.url}`, {}, state => {
       if (obj.name == 'date') {
         obj.name = 'date_value';
       }
+      if (main && obj.type === 'select_one') {
+        obj.type = 'int4';
+        obj.select_one = true;
+        delete obj.default;
+      }
     });
 
     form.forEach(q => {
