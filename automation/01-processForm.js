@@ -204,7 +204,7 @@ get(`${state.data.url}`, {}, state => {
   function buildForeignTables(questions) {
     const foreignTables = [];
     questions.forEach(q => {
-      if (q.type === 'select_one') {
+      if (q.select_one) {
         foreignTables.push({
           table: `${prefixes}_${toCamelCase(q.name)}`,
           id: `${toCamelCase(q.name)}`,
@@ -339,6 +339,7 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
+    // This is the main table.
     tables.push(
       {
         name: tName,
@@ -347,6 +348,7 @@ get(`${state.data.url}`, {}, state => {
           ...customColumns(tableId),
           ...standardColumns(tableId),
         ],
+        foreignTables: buildForeignTables(questions),
         formName,
         depth: 0,
       },
@@ -440,11 +442,8 @@ get(`${state.data.url}`, {}, state => {
   });
 
   const tempTables = buildTablesFromSelect(survey, state.data.name, []);
-  const tables = tablesFromQuestions(
-    survey,
-    state.data.name,
-    tempTables
-  ).reverse();
+  let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
+  tables = tempTables.concat(tables);
 
   return {
     ...state,
