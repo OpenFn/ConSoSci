@@ -196,6 +196,20 @@ get(`${state.data.url}`, {}, state => {
     });
   }
 
+  function buildForeignTables(questions) {
+    const foreignTables = [];
+    questions.forEach(q => {
+      if (q.type === 'select_one') {
+        foreignTables.push({
+          table: `${prefixes}_${toCamelCase(q.name)}`,
+          id: `${toCamelCase(q.name)}`,
+          reference: `${prefixes}_${toCamelCase(q.name)}ID`,
+        });
+      }
+    });
+    return foreignTables;
+  }
+
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
