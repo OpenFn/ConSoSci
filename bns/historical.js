@@ -22,12 +22,11 @@ alterState(state => {
      
      //******* WCS HISTORICAL FORMS ******///
 
-  //Updating datasetUuidId
-   { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
+   { id: 'aApqbThMPaMJhczK2QKVLD', tag: 'bns_price', name: 'BNS Prix Kahuzi 2019', owner: 'wcs_mtkb' }, // synced August 27, 2021
 
      //BNS
       // HH 2021 
-    // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced May 4,2021
+    // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
       
       //  HH 2020
     //  { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
