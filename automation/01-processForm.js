@@ -462,8 +462,11 @@ get(`${state.data.url}`, {}, state => {
 
 fn(state => ({
   ...state,
-  tables: state.tables.sort((a, b) => {
-    // implement sort logic
-    return a.dependencies > b.dependencies;
-  }),
+  tables: state.tables.sort((a, b) =>
+    !b.hasOwnProperty('dependencies')
+      ? 1
+      : a.dependencies > b.dependencies
+      ? 1
+      : -1
+  ),
 }));
