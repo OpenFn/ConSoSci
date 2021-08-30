@@ -1,5 +1,5 @@
 each(
-  '$.data[*]',
+  '$.tables[*]',
   alterState(state => {
     const { name, defaultColumns } = state.data;
 
