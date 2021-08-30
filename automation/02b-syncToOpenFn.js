@@ -68,8 +68,8 @@ alterState(state => {
       })
       .join('');
   }
-  for (var i = 0; i < state.data.length; i++) {
-    const { columns, name, depth, ReferenceUuid } = state.data[i];
+  for (var i = 0; i < state.tables.length; i++) {
+    const { columns, name, depth, ReferenceUuid } = state.tables[i];
 
     if (columns.length > 0 && name !== `${state.prefixes}_Untitled`) {
       var paths = [];
