@@ -231,6 +231,7 @@ get(`${state.data.url}`, {}, state => {
 
         tables.push({
           name: junctionTableName,
+          dependencies: 1,
           columns: [
             {
               name: `${prefixes}_${toCamelCase(q.name)}ID`,
@@ -447,7 +448,7 @@ get(`${state.data.url}`, {}, state => {
 
   return {
     ...state,
-    forms: [tables],
+    tables,
     prefixes,
     prefix1,
     prefix2,
@@ -458,3 +459,11 @@ get(`${state.data.url}`, {}, state => {
     multiSelectIds,
   };
 });
+
+fn(state => ({
+  ...state,
+  tables: state.tables.sort((a, b) => {
+    // implement sort logic
+    return a.dependencies > b.dependencies;
+  }),
+}));
