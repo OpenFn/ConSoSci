@@ -155,15 +155,27 @@ alterState(state => {
       let logical = undefined;
       // FROM HERE WE ARE BUILDING MAPPINGS
       for (var k = 0; k < columns.length; k++) {
-        if (columns[k].referent) {
+        if (columns[k].name === 'Latitude') {
+          mapKoboToPostgres[
+            columns[k].name
+          ] = `state => state.data.gps.split(' ')[0]`;
+        } else if (columns[k].name === 'Longitude') {
+          mapKoboToPostgres[
+            columns[k].name
+          ] = `state => state.data.gps.split(' ')[1]`;
+        } else if (columns[k].name === 'Payload') {
+          // Here we use an expression, rather than a function, to take the ======
+          // original, unaltered body of the Kobo submission as JSON.
+          mapKoboToPostgres.Payload = `state.data.body`;
+        } else if (columns[k].referent) {
           if (!columns[k].parent)
             mapKoboToPostgres[columns[k].name] = `x['name']`;
           else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
         } else if (columns[k].select_multiple === true) {
           mapKoboToPostgres[columns[k].name] = `x['name']`;
-        } else if (columns[k].depth > 0)
+        } else if (columns[k].depth > 0) {
           mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
-        else if (columns[k].rule !== 'DO_NOT_MAP') {
+        } else if (columns[k].rule !== 'DO_NOT_MAP') {
           mapKoboToPostgres[columns[k].name] =
             name !== `${state.prefix1}_KoboDataset`
               ? columns[k].type === 'select_one' ||
@@ -188,22 +200,8 @@ alterState(state => {
         if (columns[k].name === 'AnswerId') {
           mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
         }
-
-        if (columns[k].name === 'latitude') {
-          mapKoboToPostgres[
-            columns[k].name
-          ] = `state => state.data.gps.split(' ')[0]`;
-        }
-        if (columns[k].name === 'longitude') {
-          mapKoboToPostgres[
-            columns[k].name
-          ] = `state => state.data.gps.split(' ')[1]`;
-        }
       }
 
-      // Here we use an expression, rather than a function, to take the ======
-      // original, unaltered body of the Kobo submission as JSON.
-      mapKoboToPostgres.Payload = `state.data.body`;
       // =====================================================================
 
       if (name !== `${state.prefix1}_KoboDataset`) {
