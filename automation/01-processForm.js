@@ -117,8 +117,6 @@ get(`${state.data.url}`, {}, state => {
       form.push({ name: toCamelCase(parentColumn), type: 'text' });
 
     form.push(
-      // Adding a column as jsonb to take the whole payload
-      { name: 'Payload', type: 'jsonb' },
       { name: 'AnswerId', type: 'text' },
       { name: toCamelCase(uuid), type: 'varchar(100)', unique: true }
     );
@@ -185,7 +183,6 @@ get(`${state.data.url}`, {}, state => {
         path: i === 0 ? [] : [...arr[i - 1].path, q.name],
         parentColumn: q.name,
       },
-      { name: 'Payload', type: 'jsonb' },
     ];
   }
 
@@ -242,7 +239,7 @@ get(`${state.data.url}`, {}, state => {
               path: i === 0 ? [] : [...arr[i - 1].path, q.name],
             },
             {
-              name: parentTableReferenceColumn, // WCSPROGRAMS__SharksRays_CatchDetails
+              name: parentTableReferenceColumn,
               type: 'select_multiple',
               referent: parentTableName,
               parent: true,
@@ -344,7 +341,17 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: tName,
-        columns: questionsToColumns(questions, 'main'),
+        columns: [
+          ...questionsToColumns(questions, 'main'),
+          ...[
+            {
+              name: 'Payload',
+              type: 'jsonb',
+              depth: 0,
+              path: [],
+            },
+          ],
+        ],
         defaultColumns: [
           ...customColumns(tableId),
           ...standardColumns(tableId),
@@ -372,12 +379,6 @@ get(`${state.data.url}`, {}, state => {
           {
             name: 'LastUpdated',
             type: 'timestamp',
-            depth: 0,
-            path: [],
-          },
-          {
-            name: 'Payload',
-            type: 'jsonb',
             depth: 0,
             path: [],
           },
