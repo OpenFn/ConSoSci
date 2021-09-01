@@ -54,11 +54,7 @@ alterState(state => {
       type: 'text',
     },
     {
-      name: 'label_EN',
-      type: 'text',
-    },
-    {
-      name: 'label_FR',
+      name: 'label',
       type: 'text',
     },
     {
@@ -202,8 +198,7 @@ upsertMany('kobo_questions', 'question_id', state => {
     form_id: formId,
     analytics_label: '',
     question_name: x.name,
-    label_EN: x.label ? x.label.join(',') : '',
-    label_FR: '',
+    label: x.label ? x.label.join(',') : '',
     question_type: x.type,
     select_from_list_name: x.select_from_list_name,
     question_constraint: x.constraint,
