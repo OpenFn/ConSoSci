@@ -46,9 +46,9 @@ fn(state => {
 
     state.landscapeMap = {
       tns: 'ndoki',
-      'ltlt': 'lac_tele',
+      ltlt: 'lac_tele',
       mamabay: 'makira',
-      mtkb: 'kahuzi'
+      mtkb: 'kahuzi',
     };
 
     // ===========================================================================
@@ -239,8 +239,16 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   AnswerId: dataValue('_id'),
   Id: dataValue('_id'),
   Geom: dataValue('_geolocation'),
-  Lat: dataValue('gps/lat'),
-  Long: dataValue('gps/long'),
+  Lat: state => {
+    return dataValue('gps/lat')(state)
+      ? dataValue('gps/lat')(state)
+      : state.data._geolocation[0];
+  },
+  Long: state => {
+    return dataValue('gps/long')(state)
+      ? dataValue('gps/long')(state)
+      : state.data._geolocation[1];
+  },
   LastUpdate: new Date().toISOString(),
 });
 
