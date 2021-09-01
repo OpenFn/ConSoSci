@@ -22,11 +22,11 @@ alterState(state => {
      
      //******* WCS HISTORICAL FORMS ******///
 
-   { id: 'aApqbThMPaMJhczK2QKVLD', tag: 'bns_price', name: 'BNS Prix Kahuzi 2019', owner: 'wcs_mtkb' }, // synced August 27, 2021
+   
 
      //BNS
       // HH 2021 
-    // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
+     { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
       
       //  HH 2020
     //  { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
@@ -48,6 +48,7 @@ alterState(state => {
     //  { id: 'aFQWAYHXXfh8i2cmXw9BFi', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2019', owner: 'wcs_ituri' }, // fetched Oct25 ✓
 
        // Prices 2019
+    //   { id: 'aApqbThMPaMJhczK2QKVLD', tag: 'bns_price', name: 'BNS Prix Kahuzi 2019', owner: 'wcs_mtkb' }, // synced August 27, 2021
     //   { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_survey', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil' }, // fetched Oct25 ✓  
     //   { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_price', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake' }, // resynced April13,2021
     //   { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price', name: 'Price Makira 2019', owner: 'wcs_mamabaie' }, // fetched Oct25 ✓ 
