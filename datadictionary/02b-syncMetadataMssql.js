@@ -90,7 +90,7 @@ alterState(state => {
         type: 'nvarchar(max)',
       },
       {
-        name: 'formUid',
+        name: 'form_uid',
         type: 'nvarchar(100)',
       },
     ];
@@ -122,10 +122,10 @@ alterState(state => {
       return describeTable(name.toLowerCase(), {
         writeSql: true,
         execute: true,
-      })(state).then(postgresColumn => {
-        const { rows } = postgresColumn.response.body;
-        if (postgresColumn.response.body.rowCount === 0) {
-          console.log('No matching table found in postgres --- Inserting.');
+      })(state).then(mssqlColumn => {
+        const { rows } = mssqlColumn.response.body;
+        if (mssqlColumn.response.body.rowCount === 0) {
+          console.log('No matching table found in mssql --- Inserting.');
   
           const cols = columns.filter(x => x.name !== undefined);
           cols.forEach(col =>
@@ -153,7 +153,7 @@ alterState(state => {
           );
           console.log(newColumns);
           if (newColumns && newColumns.length > 0) {
-            console.log('Existing table found in postgres --- Updating.');
+            console.log('Existing table found in mssql --- Updating.');
             return modifyTable(name, state => newColumns, {
               writeSql: true,
               execute: true,
@@ -186,7 +186,7 @@ alterState(state => {
       list_name: x.list_name,
       choice_name: x.name,
       choice_label: x.label ? x.label.join(',') : '',
-      formUid: formId,
+      form_uid: formId,
     }));
   });
   
