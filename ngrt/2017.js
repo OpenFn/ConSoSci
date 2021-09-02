@@ -21,6 +21,12 @@ alterState(state => {
       }
     }
 
+    state.landscapeMap = {
+      tns: 'ndoki',
+      mamabay: 'makira',
+      mtkb: 'kahuzi',
+    };
+
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     state.data = cleanedSubmission;
@@ -29,12 +35,7 @@ alterState(state => {
     state.connection.close();
     throw error;
   }
-})
-state.landscapeMap = {
-      tns: 'ndoki',
-      mamabay: 'makira',
-      mtkb: 'kahuzi',
-};
+});
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
@@ -48,11 +49,11 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   Objective: dataValue('objective'),
   Members: dataValue('members'),
   Women: dataValue('women'),
-  LastUpdate: new Date().toISOString(), 
+  LastUpdate: new Date().toISOString(),
 });
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-  DatasetUuidId: dataValue('datasetId'), 
+  DatasetUuidId: dataValue('datasetId'),
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('today'),
@@ -71,7 +72,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   EnactDecision: dataValue('enact_decision'),
   HeldAccountable: dataValue('held_accountable'),
   Diversity: dataValue('diversity'),
-  LastUpdate: new Date().toISOString(), 
+  LastUpdate: new Date().toISOString(),
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {

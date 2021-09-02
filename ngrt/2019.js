@@ -21,6 +21,12 @@ alterState(state => {
       }
     }
 
+    state.landscapeMap = {
+      tns: 'ndoki',
+      mamabay: 'makira',
+      mtkb: 'kahuzi',
+    };
+
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     state.data = cleanedSubmission;
@@ -29,12 +35,7 @@ alterState(state => {
     state.connection.close();
     throw error;
   }
-})
-state.landscapeMap = {
-      tns: 'ndoki',
-      mamabay: 'makira',
-      mtkb: 'kahuzi',
-};
+});
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
@@ -45,11 +46,11 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   },
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
-  LastUpdate: new Date().toISOString(), 
+  LastUpdate: new Date().toISOString(),
 });
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-  DatasetUuidId: dataValue('datasetId'), 
+  DatasetUuidId: dataValue('datasetId'),
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
   SurveyDate: dataValue('today'),
@@ -67,7 +68,7 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   InstutionalFramework: dataValue('framework'),
   Motivation: dataValue('motivation'),
   Power: dataValue('power'),
-  LastUpdate: new Date().toISOString(), 
+  LastUpdate: new Date().toISOString(),
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
@@ -82,4 +83,3 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   KoboManaged: true,
   Tags: dataValue('_tags'),
 });
- 
