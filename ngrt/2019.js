@@ -29,12 +29,21 @@ alterState(state => {
     state.connection.close();
     throw error;
   }
-});
+})
+state.landscapeMap = {
+      tns: 'ndoki',
+      ltlt: 'lac_tele',
+      mamabay: 'makira',
+      mtkb: 'kahuzi',
+};
 
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
   AnswerId: dataValue('_id'),
-  Landscape: dataValue('landscape'),
+  Landscape: state => {
+    var landscape = dataValue('landscape')(state);
+    return state.landscapeMap[landscape] || landscape;
+  },
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
   LastUpdate: new Date().toISOString(), 
