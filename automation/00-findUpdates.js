@@ -7,11 +7,17 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
     {
-      uid: 'apZrpKcK78xzrPcAfRrfac',
+      uid: 'aV5DSSQjLk9xqRsGDmC8NP',
       p1: 'WCSPROGRAMS',
       p2: '',
-      tableId: 'SharksRays',
+      tableId: 'BNS',
     },
+    // {
+    //   uid: 'apZrpKcK78xzrPcAfRrfac',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
     //=== WCS Socio Economic Database =====
     // {
     //     uid: 'aukhdejQU76K33caCkF4rP',
