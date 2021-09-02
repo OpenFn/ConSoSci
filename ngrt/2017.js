@@ -32,7 +32,6 @@ alterState(state => {
 })
 state.landscapeMap = {
       tns: 'ndoki',
-      ltlt: 'lac_tele',
       mamabay: 'makira',
       mtkb: 'kahuzi',
 };
