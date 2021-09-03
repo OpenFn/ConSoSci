@@ -25,6 +25,7 @@ alterState(state => {
       tns: 'ndoki',
       mamabay: 'makira',
       mtkb: 'kahuzi',
+      lactele: 'lac_tele',
     };
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
