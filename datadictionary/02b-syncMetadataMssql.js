@@ -1,5 +1,5 @@
-alterState(state => {
-    const koboForm = [
+fn(state => {
+    const KoboToolBox_Forms = [
       {
         name: 'form_name',
         type: 'nvarchar(100)',
@@ -35,7 +35,7 @@ alterState(state => {
       },
     ];
   
-    const koboQuestions = [
+    const KoboToolBox_Questions = [
       {
         name: 'question_id',
         type: 'nvarchar(100)',
@@ -71,7 +71,7 @@ alterState(state => {
       },
     ];
   
-    const koboChoices = [
+    const KoboToolBox_Choices = [
       {
         name: 'list_id',
         type: 'nvarchar(100)',
@@ -97,16 +97,16 @@ alterState(state => {
   
     const MetadataForms = [
       {
-        name: 'kobo_forms',
-        columns: koboForm,
+        name: 'KoboToolBox_Forms',
+        columns: KoboToolBox_Forms,
       },
       {
-        name: 'kobo_questions',
-        columns: koboQuestions,
+        name: 'KoboToolBox_Questions',
+        columns: KoboToolBox_Questions,
       },
       {
-        name: 'kobo_choices',
-        columns: koboChoices,
+        name: 'KoboToolBox_Choices',
+        columns: KoboToolBox_Choices,
       },
     ];
   
@@ -116,7 +116,7 @@ alterState(state => {
   
   each(
     '$.MetadataForms[*]',
-    alterState(state => {
+    fn(state => {
       const { name, columns } = state.data;
   
       return describeTable(name.toLowerCase(), {
@@ -167,7 +167,7 @@ alterState(state => {
     })
   );
   
-  upsert('kobo_forms', 'form_id', {
+  upsert('KoboToolBox_Forms', 'form_id', {
     form_name: state.formDefinition.name,
     date_created: state.formDefinition.date_created,
     date_modified: state.formDefinition.date_modified,
@@ -178,7 +178,7 @@ alterState(state => {
     table_id: state => `${state.prefix1}_${state.prefix2}_${state.tableId}`,
   });
   
-  upsertMany('kobo_choices', 'list_id', state => {
+  upsertMany('KoboToolBox_Choices', 'list_id', state => {
     const { choices } = state.formDefinition.content;
     const formId = state.formDefinition.uid;
     return choices.map(x => ({
@@ -190,7 +190,7 @@ alterState(state => {
     }));
   });
   
-  upsertMany('kobo_questions', 'question_id', state => {
+  upsertMany('KoboToolBox_Questions', 'question_id', state => {
     const { survey } = state.formDefinition.content;
     const formId = state.formDefinition.uid;
     return survey.map(x => ({
@@ -205,7 +205,7 @@ alterState(state => {
     }));
   });
   
-  alterState(state => {
+  fn(state => {
     console.log('----------------------');
     console.log('Logging queries.');
     for (query of state.queries) console.log(query);
