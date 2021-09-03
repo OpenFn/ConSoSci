@@ -84,7 +84,7 @@ get(`${state.data.url}`, {}, state => {
       if (obj.name == 'date') {
         obj.name = 'date_value';
       }
-      if (main && obj.type === 'select_one') {
+      if (obj.type === 'select_one') {
         obj.type = 'int4';
         obj.select_one = true;
         delete obj.default;
@@ -326,10 +326,13 @@ get(`${state.data.url}`, {}, state => {
           ...standardColumns(tableName),
         ],
         foreignTables: [
-          {
-            table: tName,
-            id: `${tName}ID`,
-          },
+          ...[
+            {
+              table: tName,
+              id: `${tName}ID`,
+            },
+          ],
+          ...buildForeignTables(group),
         ],
         formName,
         depth: group[0].depth,
