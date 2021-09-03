@@ -317,6 +317,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name,
+        dependencies: 3,
         columns: questionsToColumns(group),
         defaultColumns: [
           // prettier-ignore
@@ -341,6 +342,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: tName,
+        dependencies: 2,
         columns: [
           ...questionsToColumns(questions, 'main'),
           ...[
