@@ -6,12 +6,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    {
-      uid: 'aqUAubcMuRi8KsYtJ2ncJd',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNS',
-    },
+  //  {
+  //    uid: 'aqUAubcMuRi8KsYtJ2ncJd',
+  //    p1: 'WCSPROGRAMS',
+  //    p2: '',
+  //    tableId: 'BNS',
+  //  },
     // {
     //   uid: 'apZrpKcK78xzrPcAfRrfac',
     //   p1: 'WCSPROGRAMS',
@@ -19,12 +19,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     //   tableId: 'SharksRays',
     // },
     //=== WCS Socio Economic Database =====
-    // {
-    //     uid: 'aukhdejQU76K33caCkF4rP',
-    //     p1: 'WCSPROGRAMS',
-    //     p2: '',
-    //     tableId: 'SocioEcoDB'
-    //   },
+     {
+         uid: 'aukhdejQU76K33caCkF4rP',
+         p1: 'WCSPROGRAMS',
+         p2: '',
+         tableId: 'SocioEcoDB'
+      },
     //=== Trillion Trees forms =====
     // { 
     //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
