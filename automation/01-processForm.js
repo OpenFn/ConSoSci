@@ -46,6 +46,7 @@ get(`${state.data.url}`, {}, state => {
 
   // Camelize columns and table name
   function toCamelCase(str) {
+    if (!str) return '';
     let underscores = [];
     let i = 0;
     while (str[i] === '_') {
