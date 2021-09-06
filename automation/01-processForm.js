@@ -476,3 +476,19 @@ fn(state => ({
       : -1
   ),
 }));
+
+fn(state => {
+  console.log('====================DROP STATEMENT====================');
+  console.log('Use this to clean database from created tables...');
+
+  const { tables } = state;
+
+  const tableNames = tables.map(t => t.name);
+
+  const query = `DROP TABLE ${tableNames.reverse()};`;
+
+  console.log(`query: ${query}`);
+  console.log('====================END DROP STATEMENT====================');
+
+  return state;
+});
