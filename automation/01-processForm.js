@@ -219,13 +219,13 @@ get(`${state.data.url}`, {}, state => {
         multiSelectIds.push(q.name);
         const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
         const junctionTableName = `${prefixes}_${toCamelCase(
-          q.path[q.path.length - 1]
+          q.path.pop()
         )}${toCamelCase(q.name)}`;
 
         // prettier-ignore
-        const parentTableName = `${prefixes}_${tableId}${toCamelCase(q.path[q.path.length - 1])}`;
+        const parentTableName = `${prefixes}_${tableId}${toCamelCase(q.path.pop())}`;
         // prettier-ignore
-        const parentTableReferenceColumn = `${prefixes}_${toCamelCase(q.path[q.path.length - 1])}ID`;
+        const parentTableReferenceColumn = `${prefixes}_${toCamelCase(q.path.pop())}ID`;
 
         tables.push({
           name: junctionTableName,
@@ -263,7 +263,7 @@ get(`${state.data.url}`, {}, state => {
             },
             {
               table: parentTableName,
-              id: `${prefixes}_${toCamelCase(q.path[q.path.length - 1])}ID`,
+              id: `${prefixes}_${toCamelCase(q.path.pop())}ID`,
             },
           ],
           formName,
