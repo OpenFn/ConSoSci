@@ -228,7 +228,7 @@ get(`${state.data.url}`, {}, state => {
 
         tables.push({
           name: junctionTableName,
-          dependencies: 1,
+          dependencies: 3,
           columns: [
             {
               name: `${prefixes}_${toCamelCase(q.name)}ID`,
@@ -317,7 +317,7 @@ get(`${state.data.url}`, {}, state => {
 
       tables.push({
         name,
-        dependencies: 3,
+        dependencies: 2,
         columns: questionsToColumns(group),
         defaultColumns: [
           // prettier-ignore
@@ -345,7 +345,7 @@ get(`${state.data.url}`, {}, state => {
     tables.push(
       {
         name: tName,
-        dependencies: 2,
+        dependencies: 1,
         columns: [
           ...questionsToColumns(questions, 'main'),
           ...[
