@@ -258,7 +258,13 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
-  DatasetYear: new Date().getFullYear(),
+  DatasetYear: state => {
+    const formName = dataValue('formName')(state);
+    if (formName === 'BNS Cross River 2017-2020') {
+      return state.data.body.today.split('-')[0];
+    }
+    return new Date().getFullYear();
+  },
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
   LastUpdateTime: new Date().toISOString(),
