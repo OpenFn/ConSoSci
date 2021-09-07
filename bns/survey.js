@@ -242,12 +242,12 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   Lat: state => {
     return dataValue('gps/lat')(state)
       ? dataValue('gps/lat')(state)
-      : state.data._geolocation[0];
+      : state.data._geolocation[0] || undefined;
   },
   Long: state => {
     return dataValue('gps/long')(state)
       ? dataValue('gps/long')(state)
-      : state.data._geolocation[1];
+      : state.data._geolocation[1] || undefined;
   },
   LastUpdate: new Date().toISOString(),
 });
