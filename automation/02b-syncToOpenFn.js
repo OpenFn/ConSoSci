@@ -132,6 +132,7 @@ alterState(state => {
               : relation;
 
           let generatedLeftOp = leftOperand.replace('ID', '');
+
           generatedLeftOp = question.parent
             ? 'GeneratedUuid'
             : !generatedLeftOp.includes(state.prefixes)
@@ -174,6 +175,13 @@ alterState(state => {
         } else if (columns[k].select_multiple === true) {
           mapKoboToPostgres[columns[k].name] = `x['name']`;
         } else if (columns[k].depth > 0) {
+          mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+        } else if (
+          // If the depth is null but it's a select_multiple
+          // We should not generate findValue but considering as a classical path
+          (columns[k].depth > 0 && columns[k].type === 'select_one') ||
+          columns[k].type === 'select_multiple'
+        ) {
           mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
         } else if (columns[k].rule !== 'DO_NOT_MAP') {
           mapKoboToPostgres[columns[k].name] =
