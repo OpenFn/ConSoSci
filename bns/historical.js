@@ -79,7 +79,7 @@ alterState(state => {
 
      //NRGT
       //2020
-       { id: 'axSXT4r6TkLxnr3CBggmzg/settings', tag: 'nrgt_current', name: 'NRGT Ndoki 2020', owner: 'wcs_ndoki' }, // synced Sept 07, 2021
+       { id: 'axSXT4r6TkLxnr3CBggmzg', tag: 'nrgt_current', name: 'NRGT Ndoki 2020', owner: 'wcs_ndoki' }, // synced Sept 07, 2021
        //2019
     //   { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'wcs_ituri' }, // resynced May 10, 2021
     //   { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb' }, // resynced May 18, 2021
