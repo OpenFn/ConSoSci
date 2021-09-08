@@ -217,6 +217,12 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
         multiSelectIds.push(q.name);
+
+        const getType = name => survey.find(s => s.name === name).type; // return the type of a question
+
+        let suffix = q.path.slice(-1)[0];
+        if (getType(suffix) === 'begin_group') suffix = undefined;
+
         const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
         const junctionTableName = `${prefixes}_${toCamelCase(
           suffix || tableId
