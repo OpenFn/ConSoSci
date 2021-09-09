@@ -1,4 +1,8 @@
-fn(state => ({ ...state, formDefinition: state.data, data: [] }));
+fn(state => ({
+  ...state,
+  formDefinition: state.data.formDefinition,
+  data: [],
+}));
 
 upsert('KoboToolBox_Forms', 'form_id', state => ({
   form_name: state.formDefinition.name,
