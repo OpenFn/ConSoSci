@@ -110,7 +110,6 @@ fn(state => {
     },
   ];
 
-  state.data = state.formDefinition;
   return { ...state, MetadataForms };
 });
 
@@ -171,7 +170,7 @@ fn(state => {
   const { openfnInboxUrl } = state.configuration;
   const data = {
     type: 'Form Definition',
-    formDefinition: state.data,
+    formDefinition: state.formDefinition,
   };
   console.log('Sending form definition to OpenFN inbox.');
   http.post({

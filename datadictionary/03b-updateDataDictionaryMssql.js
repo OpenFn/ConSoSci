@@ -1,6 +1,6 @@
-fn(state => ({ ...state, formDefinition: state.data.formDefinition }));
+fn(state => ({ ...state, formDefinition: state.data, data: [] }));
 
-upsert('KoboToolBox_Forms', 'form_id', {
+upsert('KoboToolBox_Forms', 'form_id', state => ({
   form_name: state.formDefinition.name,
   date_created: state.formDefinition.date_created,
   date_modified: state.formDefinition.date_modified,
@@ -9,7 +9,7 @@ upsert('KoboToolBox_Forms', 'form_id', {
   form_id: state.formDefinition.uid,
   form_group: state => state.prefix2,
   table_id: state => `${state.prefix1}_${state.prefix2}_${state.tableId}`,
-});
+}));
 
 upsertMany('KoboToolBox_Choices', 'list_id', state => {
   const { choices } = state.formDefinition.content;
