@@ -266,6 +266,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
+  Citation: dataValue('instance_name'),
   DatasetYear: state => {
     const formName = dataValue('formName')(state);
     if (formName === 'BNS Cross River 2017-2020') {
