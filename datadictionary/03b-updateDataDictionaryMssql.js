@@ -1,10 +1,5 @@
 fn(state => ({ ...state, formDefinition: state.data.formDefinition }));
 
-fn(state => {
-  console.log(state.formDefinition);
-  return state;
-});
-
 upsert('KoboToolBox_Forms', 'form_id', {
   form_name: state.formDefinition.name,
   date_created: state.formDefinition.date_created,
