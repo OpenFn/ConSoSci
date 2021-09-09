@@ -51,6 +51,14 @@ fn(state => {
       mtkb: 'kahuzi',
     };
 
+    // Cleaning datasetId if formName is 'BNS Cross River 2017-2020'==============
+    if (formName === 'BNS Cross River 2017-2020') {
+      state.data.datasetId = `${state.data.datasetId}${
+        body.today.split('-')[0]
+      }`;
+    }
+    // ===========================================================================
+
     // ===========================================================================
     //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
     //  'NR' and 'BNS matrix' questions should follow the naming conventions below
