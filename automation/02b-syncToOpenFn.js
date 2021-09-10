@@ -156,7 +156,16 @@ alterState(state => {
       let logical = undefined;
       // FROM HERE WE ARE BUILDING MAPPINGS
       for (var k = 0; k < columns.length; k++) {
-        if (columns[k].name === 'Latitude') {
+        if (columns[k].findValue) {
+          mapKoboToPostgres[columns[k].name] = generateFindValue(
+            columns[k],
+            !columns[k].name.includes(state.prefixes)
+              ? `${state.prefixes}_${columns[k].name}`
+              : `${columns[k].name}`,
+            `${columns[k].name}`,
+            paths[k]
+          );
+        } else if (columns[k].name === 'Latitude') {
           mapKoboToPostgres[
             columns[k].name
           ] = `state => state.data.gps.split(' ')[0]`;
@@ -179,8 +188,9 @@ alterState(state => {
         } else if (
           // If the depth is null but it's a select_multiple
           // We should not generate findValue but considering as a classical path
-          (columns[k].depth > 0 && columns[k].type === 'select_one') ||
-          columns[k].type === 'select_multiple'
+          columns[k].depth === 0 &&
+          (columns[k].type === 'select_one' ||
+            columns[k].type === 'select_multiple')
         ) {
           mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
         } else if (columns[k].rule !== 'DO_NOT_MAP') {
