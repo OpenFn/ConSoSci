@@ -104,7 +104,7 @@ get(`${state.data.url}`, {}, state => {
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
-        required: false,
+        required: x.required,
       };
     });
 
@@ -161,6 +161,7 @@ get(`${state.data.url}`, {}, state => {
         name: `${prefixes}_${toCamelCase(q.name)}ID`,
         type: 'int4',
         identity: true,
+        required: q.required,
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
         path: i === 0 ? [] : [...arr[i - 1].path, q.name],
@@ -170,6 +171,7 @@ get(`${state.data.url}`, {}, state => {
       {
         name: `${prefixes}_${toCamelCase(q.name)}Name`,
         type: 'varchar(100)',
+        required: q.required,
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
         path: i === 0 ? [] : [...arr[i - 1].path, q.name],
@@ -178,6 +180,7 @@ get(`${state.data.url}`, {}, state => {
       {
         name: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         type: 'varchar(100)',
+        required: q.required,
         unique: true,
         depth: q.type === 'select_multiple' ? 3 : 0,
         select_multiple: q.type === 'select_multiple' ? true : false,
@@ -217,7 +220,6 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
         multiSelectIds.push(q.name);
-
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
         let suffix = q.path.slice(-1)[0];
@@ -240,6 +242,7 @@ get(`${state.data.url}`, {}, state => {
             {
               name: `${prefixes}_${toCamelCase(q.name)}ID`,
               type: 'select_multiple',
+              required: q.required,
               referent: lookupTableName,
               parent: false,
               depth: 3,
@@ -248,6 +251,7 @@ get(`${state.data.url}`, {}, state => {
             {
               name: parentTableReferenceColumn,
               type: 'select_multiple',
+              required: q.required,
               referent: parentTableName,
               parent: true,
               depth: 3,
