@@ -24,11 +24,11 @@ alterState(state => {
 
       //BNS
       // HH 2021 
-      // { id: 'aLe9gkcRNXbtNHF6m8tNn8', tag: 'bns_survey', name: 'Socio-economic survey-EU', owner: 'wcs_ug_eu', citation: "M. Nyago, H. Musabende & WCS Uganda team" }, // synced Sept 10, 2021
+       { id: 'aLe9gkcRNXbtNHF6m8tNn8', tag: 'bns_survey', name: 'Socio-economic survey-EU', owner: 'wcs_ug_eu', instance: 'M. Nyago, P. Hatanga, H. Musabende, S. Nampindo, S. Amoko, M. Busiinge, WCS Uganda unpublished data 2021'  }, // synced Sept 10, 2021
       // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
 
       // Prices 2021
-      { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie', instance: 'PLEASE UPDATE' }, // synced Sept 10, 2021
+     // { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie'}, // synced Sept 10, 2021
 
       //  HH 2020
       //  { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓  
