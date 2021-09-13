@@ -53,9 +53,8 @@ fn(state => {
 
     // Cleaning datasetId if formName is 'BNS Cross River 2017-2020'==============
     if (formName === 'BNS Cross River 2017-2020') {
-      state.data.datasetId = `${state.data.datasetId}${
-        body.today.split('-')[0]
-      }`;
+      state.data.datasetId = `${state.data.datasetId}${body.today.split('-')[0]
+        }`;
     }
     // ===========================================================================
 
@@ -95,15 +94,15 @@ fn(state => {
           gs: item.replace(/_/g, ' '),
           have:
             state.data[
-              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
+            `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
             ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
           necessary:
             state.data[
-              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
+            `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
             ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
           quantity:
             state.data[
-              `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
+            `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
             ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
         };
       });
@@ -266,7 +265,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: dataValue('formName'),
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
-  Citation: dataValue('citation'),
+  Citation: dataValue('instance'),
   DatasetYear: state => {
     const formName = dataValue('formName')(state);
     if (formName === 'BNS Cross River 2017-2020') {
