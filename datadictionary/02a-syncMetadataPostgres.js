@@ -67,7 +67,7 @@ alterState(state => {
     },
     {
       name: 'question_constraint',
-      type: 'varchar(100)',
+      type: 'text',
     },
   ];
 

@@ -67,7 +67,7 @@ fn(state => {
     },
     {
       name: 'question_constraint',
-      type: 'nvarchar(100)',
+      type: 'nvarchar(max)',
     },
   ];
 
