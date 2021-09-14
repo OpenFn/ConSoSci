@@ -259,6 +259,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
 });
 
+console.log(dataValue('instance')),
+
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //renamed from DatasetUuid
   //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
