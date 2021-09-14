@@ -53,7 +53,13 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
   Id: dataValue('_id'),
   AnswerId: dataValue('_id'),
-  SurveyDate: dataValue('today'),
+  SurveyDate: state => {
+    const date = state.data.today || state.data._submission_time
+    if (Number(date.split('-')[0]) >= 2014 ) {
+      return date
+    } 
+    return 2019
+  },
   Gender: dataValue('gender'),
   Member: dataValue('member'),
   Objective: dataValue('objective'),
