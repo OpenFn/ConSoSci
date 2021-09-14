@@ -259,7 +259,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
 });
 
-console.log(dataValue('instance')),
+console.log("Instance", dataValue('instance')),
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //renamed from DatasetUuid
