@@ -61,12 +61,20 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       p2: '',
       tableId: 'NRGT',
     },
-    { //NRGT Ndoki 2020?
+    { //NRGT Makira 2019
       uid: 'ajDeQVDrz2AZxvxLLWjiBE',
       p1: 'WCSPROGRAMS',
       p2: '',
       tableId: 'NRGT',
     },
+    { //NRGT Ndoki 2020
+      uid: 'axSXT4r6TkLxnr3CBggmzg',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'NRGT',
+    },
+    
+    
     //=================================
     // { //BNS TEST
     //   uid: 'ay3PPxnKjr54Uwrb9T5wL5',
