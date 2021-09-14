@@ -116,7 +116,7 @@ fn(state => {
       JSON.stringify(state.matrix, null, 2),
       `contains ${state.matrix.length} items.`
     );
-    console.log(dataValue('instance'));
+    console.log(state.data.instance);
     return state;
   } catch (error) {
     state.connection.close();
