@@ -130,8 +130,9 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
   SurveyDate: state => {
-    if (state.data.today.split('-')[0] >= 2014 ) {
-      return state.data.today ? state.data.today : state.data._submission_time
+    const date = state.data.today || state.data._submission_time
+    if (Number(date.split('-')[0]) >= 2014 ) {
+      return date
     } 
     return 2020
 },
