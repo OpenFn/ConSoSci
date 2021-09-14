@@ -116,6 +116,7 @@ fn(state => {
       JSON.stringify(state.matrix, null, 2),
       `contains ${state.matrix.length} items.`
     );
+    console.log(dataValue('instance'));
     return state;
   } catch (error) {
     state.connection.close();
@@ -259,7 +260,6 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
 });
 
-console.log("Instance", dataValue('instance')),
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //renamed from DatasetUuid
