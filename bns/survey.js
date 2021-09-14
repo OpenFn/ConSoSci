@@ -130,8 +130,13 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   SubmissionUuid: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
-  SurveyDate: state =>
-    state.data.today ? state.data.today : state.data._submission_time,
+  SurveyDate: state => {
+    const date = state.data.today || state.data._submission_time
+    if (Number(date.split('-')[0]) >= 2014 ) {
+      return date
+    } 
+    return 2020
+},
   Landscape: state => {
     var landscape = dataValue('landscape')(state);
     return state.landscapeMap[landscape] || landscape;
