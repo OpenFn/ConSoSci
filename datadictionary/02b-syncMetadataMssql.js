@@ -171,6 +171,9 @@ fn(state => {
   const data = {
     type: 'Form Definition',
     formDefinition: state.formDefinition,
+    prefix1: state.prefix1,
+    prefix2: state.prefix2,
+    tableId: state.tableId,
   };
   console.log('Sending form definition to OpenFN inbox.');
   http.post({
