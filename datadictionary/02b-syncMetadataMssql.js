@@ -62,7 +62,7 @@ fn(state => {
       type: 'nvarchar(100)',
     },
     {
-      name: 'select_from_list_name',
+      name: 'list_id',
       type: 'nvarchar(100)',
     },
     {
@@ -72,6 +72,11 @@ fn(state => {
   ];
 
   const KoboToolBox_Choices = [
+    {
+      name: 'choice_id',
+      type: 'nvarchar(100)',
+      unique: true,
+    },
     {
       name: 'list_id',
       type: 'nvarchar(100)',

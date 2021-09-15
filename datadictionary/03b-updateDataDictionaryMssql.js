@@ -15,11 +15,12 @@ upsert('KoboToolBox_Forms', 'form_id', state => ({
   table_id: `${state.data.prefixes}_${state.data.tableId}`,
 }));
 
-upsertMany('KoboToolBox_Choices', 'list_id', state => {
+upsertMany('KoboToolBox_Choices', 'choice_id', state => {
   const { choices } = state.formDefinition.content;
   const formId = state.formDefinition.uid;
   return choices.map(x => ({
-    list_id: `${x.list_name}${formId}${x['$kuid']}`,
+    choice_id: `${x.list_name}${formId}${x['$kuid']}`,
+    list_id: `${x.list_name}${formId}`,
     list_name: x.list_name,
     choice_name: x.name,
     choice_label: x.label ? x.label.join(',') : '',
@@ -37,7 +38,7 @@ upsertMany('KoboToolBox_Questions', 'question_id', state => {
     question_name: x.name,
     label: x.label ? x.label.join(',') : '',
     question_type: x.type,
-    select_from_list_name: x.select_from_list_name,
+    list_id: `${x.select_from_list_name}${formId}`,
     question_constraint: x.constraint,
   }));
 });
