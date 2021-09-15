@@ -1,7 +1,7 @@
 fn(state => ({
   ...state,
   formDefinition: state.data.formDefinition,
-  data: [],
+  data: { formDefinition: {} },
 }));
 
 upsert('KoboToolBox_Forms', 'form_id', state => ({
