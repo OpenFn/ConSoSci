@@ -171,7 +171,7 @@ fn(state => {
   const data = {
     type: 'Form Definition',
     formDefinition: state.formDefinition,
-    prefix1: state.prefix1,
+    prefixes: state.prefixes,
     prefix2: state.prefix2,
     tableId: state.tableId,
   };

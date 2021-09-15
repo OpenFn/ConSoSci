@@ -12,7 +12,7 @@ upsert('KoboToolBox_Forms', 'form_id', state => ({
   languages: state.formDefinition.summary.languages.join(','),
   form_id: state.formDefinition.uid,
   form_group: state.data.prefix2,
-  table_id: `${state.data.prefix1}_${state.data.prefix2}_${state.data.tableId}`,
+  table_id: `${state.data.prefixes}_${state.data.tableId}`,
 }));
 
 upsertMany('KoboToolBox_Choices', 'list_id', state => {
