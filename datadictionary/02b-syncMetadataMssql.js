@@ -80,7 +80,6 @@ fn(state => {
     {
       name: 'list_id',
       type: 'nvarchar(100)',
-      unique: true,
     },
     {
       name: 'list_name',
