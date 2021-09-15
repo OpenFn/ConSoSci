@@ -9,7 +9,7 @@ upsert('KoboToolBox_Forms', 'form_id', state => ({
   date_created: state.formDefinition.date_created,
   date_modified: state.formDefinition.date_modified,
   form_owner: state.formDefinition.owner__username,
-  languages: state.formDefinition.summary.languages.join(','),
+  languages: state.formDefinition.summary.languages.join(',') || 'English',
   form_id: state.formDefinition.uid,
   form_group: state.data.prefix2,
   table_id: `${state.data.prefixes}_${state.data.tableId}`,
