@@ -8,80 +8,74 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualFormList = [
     //==== BNS/NRGT forms to sync DD =========//
     { 
-      uid: 'atyo55YdBdfxzXiaBdrbvr',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNS',
-    },
-    { 
-      uid: 'ad7S4hPBN7qM4Ac3mpEdwZ',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNS',
-    },
-    { 
-      uid: 'aFQWAYHXXfh8i2cmXw9BFi',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNS',
-    },
-    { 
       uid: 'aTRKQW2b8TJGxF7DVPfjFv',
       p1: 'WCSPROGRAMS',
       p2: '',
       tableId: 'BNSPrice',
     },
     { 
-      uid: 'awQmCEf63g5KN2G4kcBWrc',
+      uid: 'atyo55YdBdfxzXiaBdrbvr',
       p1: 'WCSPROGRAMS',
       p2: '',
-      tableId: 'BNSPrice',
+      tableId: 'BNS',
     },
-    { 
-      uid: 'aj67aaDZa52oLBFPVGWWwu',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNSPrice',
-    },
-    { 
-      uid: 'apnzrb2RuoKu8Uxy2svwF6',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'NRGT',
-    },
-    { 
-      uid: 'aZZV4KikgRKz79LqqQR5Ma',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'NRGT',
-    },
-    { 
-      uid: 'ajDeQVDrz2AZxvxLLWjiBE',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'NRGT',
-    },
-    { //NRGT Makira 2019
-      uid: 'ajDeQVDrz2AZxvxLLWjiBE',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'NRGT',
-    },
-    { //NRGT Ndoki 2020
-      uid: 'axSXT4r6TkLxnr3CBggmzg',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'NRGT',
-    },
-    
-    
-    //=================================
-    // { //BNS TEST
-    //   uid: 'ay3PPxnKjr54Uwrb9T5wL5',
+    // { 
+    //   uid: 'ad7S4hPBN7qM4Ac3mpEdwZ',
     //   p1: 'WCSPROGRAMS',
     //   p2: '',
     //   tableId: 'BNS',
     // },
+    // { 
+    //   uid: 'aFQWAYHXXfh8i2cmXw9BFi',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'BNS',
+    // },
+    // { 
+    //   uid: 'awQmCEf63g5KN2G4kcBWrc',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'BNSPrice',
+    // },
+    // { 
+    //   uid: 'aj67aaDZa52oLBFPVGWWwu',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'BNSPrice',
+    // },
+    // { 
+    //   uid: 'apnzrb2RuoKu8Uxy2svwF6',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'NRGT',
+    // },
+    // { 
+    //   uid: 'aZZV4KikgRKz79LqqQR5Ma',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'NRGT',
+    // },
+    // { 
+    //   uid: 'ajDeQVDrz2AZxvxLLWjiBE',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'NRGT',
+    // },
+    // { //NRGT Makira 2019
+    //   uid: 'ajDeQVDrz2AZxvxLLWjiBE',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'NRGT',
+    // },
+    // { //NRGT Ndoki 2020
+    //   uid: 'axSXT4r6TkLxnr3CBggmzg',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'NRGT',
+    // },
+    
+    //=================================
+    //==== SharksRays ===============//
     // {
     //   uid: 'apZrpKcK78xzrPcAfRrfac',
     //   p1: 'WCSPROGRAMS',
