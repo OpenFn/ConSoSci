@@ -62,7 +62,7 @@ alterState(state => {
       type: 'varchar(100)',
     },
     {
-      name: 'select_from_list_name',
+      name: 'list_id',
       type: 'varchar(100)',
     },
     {
@@ -73,9 +73,13 @@ alterState(state => {
 
   const KoboToolBox_Choices = [
     {
-      name: 'list_id',
+      name: 'choice_id',
       type: 'varchar(100)',
       unique: true,
+    },
+    {
+      name: 'list_id',
+      type: 'varchar(100)',
     },
     {
       name: 'list_name',
@@ -110,7 +114,6 @@ alterState(state => {
     },
   ];
 
-  state.data = state.formDefinition;
   return { ...state, MetadataForms };
 });
 
@@ -167,42 +170,24 @@ each(
   })
 );
 
-upsert('KoboToolBox_Forms', 'form_id', {
-  form_name: state.formDefinition.name,
-  date_created: state.formDefinition.date_created,
-  date_modified: state.formDefinition.date_modified,
-  form_owner: state.formDefinition.owner__username,
-  languages: state.formDefinition.summary.languages.join(','),
-  form_id: state.formDefinition.uid,
-  form_group: state => state.prefix2,
-  table_id: state => `${state.prefix1}_${state.prefix2}_${state.tableId}`,
-});
+fn(state => {
+  const { openfnInboxUrl } = state.configuration;
+  const data = {
+    type: 'Form Definition',
+    formDefinition: state.formDefinition,
+    prefixes: state.prefixes,
+    prefix2: state.prefix2,
+    tableId: state.tableId,
+  };
+  console.log('Sending form definition to OpenFN inbox.');
+  http.post({
+    url: openfnInboxUrl,
+    data,
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
+  })(state);
 
-upsertMany('KoboToolBox_Choices', 'list_id', state => {
-  const { choices } = state.formDefinition.content;
-  const formId = state.formDefinition.uid;
-  return choices.map(x => ({
-    list_id: `${x.list_name}${formId}${x['$kuid']}`,
-    list_name: x.list_name,
-    choice_name: x.name,
-    choice_label: x.label ? x.label.join(',') : '',
-    formUid: formId,
-  }));
-});
-
-upsertMany('KoboToolBox_Questions', 'question_id', state => {
-  const { survey } = state.formDefinition.content;
-  const formId = state.formDefinition.uid;
-  return survey.map(x => ({
-    question_id: `${x['$kuid']}-${formId}`,
-    form_id: formId,
-    analytics_label: '',
-    question_name: x.name,
-    label: x.label ? x.label.join(',') : '',
-    question_type: x.type,
-    select_from_list_name: x.select_from_list_name,
-    question_constraint: x.constraint,
-  }));
+  return state;
 });
 
 alterState(state => {
@@ -210,6 +195,5 @@ alterState(state => {
   console.log('Logging queries.');
   for (query of state.queries) console.log(query);
   console.log('----------------------');
-
   return state;
 });
