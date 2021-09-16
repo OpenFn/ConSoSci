@@ -117,10 +117,11 @@ alterState(state => {
       // We generate findValue function (fn) for those that needs it.
       // prettier-ignore
       function generateFindValue(question, relation, leftOperand, rightOperand) {
-          const uuid =
-            question.type === 'select_multiple'
-              ? question.name.replace(`${state.tableId}_`, '')
-              : question.name;
+          const uuid = !question.referent 
+            ? question.type === 'select_multiple' || 'select_one'
+              ? question.select_from_list_name.replace(`${state.tableId}_`, '')
+              : question.name
+            : question.name;
 
           let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
           generateUUid = !uuid.includes(state.prefixes)
@@ -136,16 +137,20 @@ alterState(state => {
 
           generatedLeftOp = question.parent
             ? 'GeneratedUuid'
-            : !generatedLeftOp.includes(state.prefixes)
-            ? `${state.prefixes}_${generatedLeftOp}Name`
-            : `${generatedLeftOp}Name`;
+            : question.type === 'select_multiple'
+              ? `${question.referent}ExtCode`
+              : !generatedLeftOp.includes(state.prefixes)
+                ? `${state.prefixes}_${generatedLeftOp}ExtCode`
+                : `${generatedLeftOp}ExtCode`;
 
           let generatedRightOP =
             question.variant === 'submissionId'
               ? `dataValue('._id')`
               : question.variant === 'lookupTableId'
-              ? `dataValue('gear')`
-              : `dataValue('${rightOperand}')`;
+                ? `dataValue('gear')`
+                : question.type === 'select_multiple'
+                  ? `x`
+                  : `dataValue('${rightOperand}')`;
 
           var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
             'ID',
