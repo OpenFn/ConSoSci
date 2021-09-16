@@ -363,6 +363,7 @@ get(`${state.data.url}`, {}, state => {
         formName,
         depth: group[0].depth,
       });
+      tablesToBeCreated.push(name);
 
       return tablesFromQuestions(questions, formName, tables);
     }
@@ -422,6 +423,7 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       }
     );
+    tablesToBeCreated.push(tName);
 
     return tables;
   }
