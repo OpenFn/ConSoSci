@@ -295,6 +295,7 @@ get(`${state.data.url}`, {}, state => {
         if (!tablesToBeCreated.includes(lookupTableName)) {
           //prettier-ignore
           addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
+        }
       }
     });
     return tables;
@@ -422,6 +423,20 @@ get(`${state.data.url}`, {}, state => {
     return tables;
   }
 
+  // We build a dictionary of different select_one/select_multiple questions
+  // and the diffferent values they hold ===================================
+  function buildChoicesDictionary(choices) {
+    const choicesDictionary = {};
+    choices.forEach(choice => {
+      if (!choicesDictionary[choice.list_name]) {
+        choicesDictionary[choice.list_name] = [];
+      }
+
+      choicesDictionary[choice.list_name].push(choice.name);
+    });
+    return choicesDictionary;
+  }
+
   let depth = 0;
 
   survey.forEach((q, i, arr) => {
@@ -470,6 +485,7 @@ get(`${state.data.url}`, {}, state => {
     }
   });
 
+  const choiceDictionary = buildChoicesDictionary(choices);
   const tempTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
   tables = tempTables.concat(tables);
@@ -477,6 +493,7 @@ get(`${state.data.url}`, {}, state => {
   return {
     ...state,
     tables,
+    choiceDictionary,
     prefixes,
     prefix1,
     prefix2,
