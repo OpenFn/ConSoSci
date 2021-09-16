@@ -197,10 +197,10 @@ get(`${state.data.url}`, {}, state => {
     tables.push({
       name: lookupTableName,
       columns: buildLookupTableColumns(prefixes, q, i, arr),
-      defaultColumns: standardColumns(toCamelCase(q.name)),
+      defaultColumns: standardColumns(toCamelCase(q.select_from_list_name)),
       formName,
-      depth: q.type === 'select_multiple' ? 1 : 0,
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.name)}ExtCode`,
+      depth: q.type === 'select_multiple' ? 1 : q.depth,
+      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
   }
 
@@ -209,8 +209,8 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach(q => {
       if (q.select_one) {
         foreignTables.push({
-          table: `${prefixes}_${toCamelCase(q.name)}`,
-          id: `${prefixes}_${toCamelCase(q.name)}ID`,
+          table: `${prefixes}_${toCamelCase(q.select_from_list_name)}`,
+          id: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
           reference: `${prefixes}_${toCamelCase(q.name)}ID`,
         });
       }
@@ -227,10 +227,11 @@ get(`${state.data.url}`, {}, state => {
         let suffix = q.path.slice(-1)[0];
         if (getType(suffix) === 'begin_group') suffix = undefined;
 
-        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`; // MC: TO CHANGE??
+        const lookupTableName = `${prefixes}_${toCamelCase(q.select_from_list_name)}`; 
         const junctionTableName = `${prefixes}_${toCamelCase(
           suffix || tableId
-        )}${toCamelCase(q.name)}`;
+        )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
 
         // prettier-ignore
         const parentTableName = `${prefixes}_${tableId}${toCamelCase(suffix)}`;
@@ -242,7 +243,7 @@ get(`${state.data.url}`, {}, state => {
           dependencies: 3,
           columns: [
             {
-              name: `${prefixes}_${toCamelCase(q.name)}ID`,
+              name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
               type: 'select_multiple',
               required: q.required,
               referent: lookupTableName,
@@ -284,8 +285,16 @@ get(`${state.data.url}`, {}, state => {
         });
       }
       if (['select_one', 'select_multiple'].includes(q.type)) {
-        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
-        addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
+        // console.log('q', q);
+        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        // Use list_name to name select_table
+        const lookupTableName = `${prefixes}_${toCamelCase(
+          q.select_from_list_name
+        )}`;
+
+        if (!tablesToBeCreated.includes(lookupTableName)) {
+          //prettier-ignore
+          addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
       }
     });
     return tables;
