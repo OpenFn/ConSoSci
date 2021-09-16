@@ -1,4 +1,26 @@
 alterState(state => {
+  const multiSelectIds = ["gear_type", "s_gear_type"];
+
+  function convertMultiSelectsIntoArrays(body, multiSelectIds) {
+    for (const property in body) {
+      if (Array.isArray(body[property])) {
+        convertMultiSelectsIntoArrays(body[property], multiSelectIds);
+      } else {
+        for (const thing in body[property]) {
+          if (Array.isArray(body[property][thing])) {
+            convertMultiSelectsIntoArrays(
+              body[property][thing],
+              multiSelectIds
+            );
+          } else if (thing.includes(multiSelectIds)) {
+            const multiVals = body[property][thing].split(' ');
+            body[property][thing] = multiVals.map(val => ({ name: val }));
+          }
+        }
+      }
+    }
+  }
+
   function generateUuid(body, uuid) {
     for (const property in body) {
       if (Array.isArray(body[property]) && body !== null) {
@@ -19,6 +41,10 @@ alterState(state => {
     }
   }
 
+  multiSelectIds.forEach(msIds => {
+    convertMultiSelectsIntoArrays(state.data.body, msIds);
+  });
+
   generateUuid(
     state.data.body,
     state.data.body._id+'-'+state.data.body._xform_id_string
@@ -29,59 +55,321 @@ alterState(state => {
 }); 
 alterState(async state => {
  const mapping = {
-  SurveyTypeName: dataValue('survey_type'),
-  SurveyTypeExtCode: dataValue('survey_type'),
-  Payload: state.data.body
+  WCSPROGRAMS_SurveyTypeName: dataValue('survey_type'),
+  WCSPROGRAMS_SurveyTypeExtCode: dataValue('survey_type'),
+  //Payload: state.data.body
 } 
- return upsertIf(dataValue('survey_type'),'WCSPROGRAMS__SurveyType', 'SurveyTypeExtCode', mapping)(state); 
+ return upsertIf(dataValue('survey_type'),'WCSPROGRAMS_SurveyType', 'WCSPROGRAMS_SurveyTypeExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  CountryName: dataValue('country'),
-  CountryExtCode: dataValue('country'),
+  WCSPROGRAMS_CountryName: dataValue('country'),
+  WCSPROGRAMS_CountryExtCode: dataValue('country'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('country'),'WCSPROGRAMS__Country', 'CountryExtCode', mapping)(state); 
+ return upsertIf(dataValue('country'),'WCSPROGRAMS_Country', 'WCSPROGRAMS_CountryExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  DistrictName: dataValue('district'),
-  DistrictExtCode: dataValue('district'),
+  WCSPROGRAMS_DistrictName: dataValue('district'),
+  WCSPROGRAMS_DistrictExtCode: dataValue('district'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('district'),'WCSPROGRAMS__District', 'DistrictExtCode', mapping)(state); 
+ return upsertIf(dataValue('district'),'WCSPROGRAMS_District', 'WCSPROGRAMS_DistrictExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  SurveyName: dataValue('survey'),
-  SurveyExtCode: dataValue('survey'),
+  WCSPROGRAMS_SurveyName: dataValue('survey'),
+  WCSPROGRAMS_SurveyExtCode: dataValue('survey'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('survey'),'WCSPROGRAMS__Survey', 'SurveyExtCode', mapping)(state); 
+ return upsertIf(dataValue('survey'),'WCSPROGRAMS_Survey', 'WCSPROGRAMS_SurveyExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  LandingSiteName: dataValue('landing_site'),
-  LandingSiteExtCode: dataValue('landing_site'),
+  WCSPROGRAMS_LandingSiteName: dataValue('landing_site'),
+  WCSPROGRAMS_LandingSiteExtCode: dataValue('landing_site'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('landing_site'),'WCSPROGRAMS__LandingSite', 'LandingSiteExtCode', mapping)(state); 
+ return upsertIf(dataValue('landing_site'),'WCSPROGRAMS_LandingSite', 'WCSPROGRAMS_LandingSiteExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  MarketName: dataValue('market'),
-  MarketExtCode: dataValue('market'),
+  WCSPROGRAMS_MarketName: dataValue('market'),
+  WCSPROGRAMS_MarketExtCode: dataValue('market'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('market'),'WCSPROGRAMS__Market', 'MarketExtCode', mapping)(state); 
+ return upsertIf(dataValue('market'),'WCSPROGRAMS_Market', 'WCSPROGRAMS_MarketExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
-  SurveyorName: dataValue('surveyor'),
-  SurveyorExtCode: dataValue('surveyor'),
+  WCSPROGRAMS_SurveyorName: dataValue('surveyor'),
+  WCSPROGRAMS_SurveyorExtCode: dataValue('surveyor'),
   Payload: state.data.body
 } 
- return upsertIf(dataValue('surveyor'),'WCSPROGRAMS__Surveyor', 'SurveyorExtCode', mapping)(state); 
+ return upsertIf(dataValue('surveyor'),'WCSPROGRAMS_Surveyor', 'WCSPROGRAMS_SurveyorExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_BoatInfoName: dataValue('boat/boat_info'),
+  WCSPROGRAMS_BoatInfoExtCode: dataValue('boat/boat_info'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/boat_info'),'WCSPROGRAMS_BoatInfo', 'WCSPROGRAMS_BoatInfoExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_BoatTypeName: dataValue('boat/boat_type'),
+  WCSPROGRAMS_BoatTypeExtCode: dataValue('boat/boat_type'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/boat_type'),'WCSPROGRAMS_BoatType', 'WCSPROGRAMS_BoatTypeExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_PrimaryGearName: dataValue('boat/primary_gear'),
+  WCSPROGRAMS_PrimaryGearExtCode: dataValue('boat/primary_gear'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/primary_gear'),'WCSPROGRAMS_PrimaryGear', 'WCSPROGRAMS_PrimaryGearExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_PrimaryMeshSizeUnitName: dataValue('boat/primary_mesh_size_unit'),
+  WCSPROGRAMS_PrimaryMeshSizeUnitExtCode: dataValue('boat/primary_mesh_size_unit'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/primary_mesh_size_unit'),'WCSPROGRAMS_PrimaryMeshSizeUnit', 'WCSPROGRAMS_PrimaryMeshSizeUnitExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SecondaryGearName: dataValue('boat/secondary_gear'),
+  WCSPROGRAMS_SecondaryGearExtCode: dataValue('boat/secondary_gear'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/secondary_gear'),'WCSPROGRAMS_SecondaryGear', 'WCSPROGRAMS_SecondaryGearExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SecondaryMeshSizeUnitName: dataValue('boat/secondary_mesh_size_unit'),
+  WCSPROGRAMS_SecondaryMeshSizeUnitExtCode: dataValue('boat/secondary_mesh_size_unit'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/secondary_mesh_size_unit'),'WCSPROGRAMS_SecondaryMeshSizeUnit', 'WCSPROGRAMS_SecondaryMeshSizeUnitExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_FishingHabitatName: dataValue('boat/fishing_habitat'),
+  WCSPROGRAMS_FishingHabitatExtCode: dataValue('boat/fishing_habitat'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/fishing_habitat'),'WCSPROGRAMS_FishingHabitat', 'WCSPROGRAMS_FishingHabitatExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_TargetedName: dataValue('boat/targeted'),
+  WCSPROGRAMS_TargetedExtCode: dataValue('boat/targeted'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/targeted'),'WCSPROGRAMS_Targeted', 'WCSPROGRAMS_TargetedExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_ReleaseSharkRayName: dataValue('boat/release_shark_ray'),
+  WCSPROGRAMS_ReleaseSharkRayExtCode: dataValue('boat/release_shark_ray'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/release_shark_ray'),'WCSPROGRAMS_ReleaseSharkRay', 'WCSPROGRAMS_ReleaseSharkRayExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_TypeName: dataValue('boat/catch_details/type'),
+  WCSPROGRAMS_TypeExtCode: dataValue('boat/catch_details/type'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/catch_details/type'),'WCSPROGRAMS_Type', 'WCSPROGRAMS_TypeExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_GenusName: dataValue('boat/catch_details/genus'),
+  WCSPROGRAMS_GenusExtCode: dataValue('boat/catch_details/genus'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/catch_details/genus'),'WCSPROGRAMS_Genus', 'WCSPROGRAMS_GenusExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SpeciesName: dataValue('boat/catch_details/species'),
+  WCSPROGRAMS_SpeciesExtCode: dataValue('boat/catch_details/species'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/catch_details/species'),'WCSPROGRAMS_Species', 'WCSPROGRAMS_SpeciesExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SexName: dataValue('boat/catch_details/sex'),
+  WCSPROGRAMS_SexExtCode: dataValue('boat/catch_details/sex'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/catch_details/sex'),'WCSPROGRAMS_Sex', 'WCSPROGRAMS_SexExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+each(dataPath('boat[*]'), each(dataPath('catch_details[*]'), alterState(async state => {
+ const dataArray = state.data['boat/catch_details/gear_type'] || [] 
+
+        const mapping = []; 
+ 
+        for (let x of dataArray) { 
+
+          mapping.push({
+  WCSPROGRAMS_GearTypeID: x['name'],
+  WCSPROGRAMS_CatchDetailsID: x['__parentUuid'],
+  Payload: state.data.body,
+  GeneratedUuid: x['__generatedUuid'],
+  CatchDetailsUuid: x['__parentUuid']
+}) 
+
+          } 
+ return upsertMany('WCSPROGRAMS_CatchDetailsGearType', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+))
+each(dataPath('boat[*]'), each(dataPath('catch_details[*]'), alterState(async state => {
+ const dataArray = state.data['boat/catch_details/gear_type'] || [] 
+
+        const mapping = []; 
+ 
+        for (let x of dataArray) { 
+
+          mapping.push({
+  WCSPROGRAMS_GearTypeID: x['name'],
+  WCSPROGRAMS_GearTypeName: x['name'],
+  WCSPROGRAMS_GearTypeExtCode: x['name'],
+  Payload: state.data.body,
+  GeneratedUuid: x['__generatedUuid'],
+  CatchDetailsUuid: x['__parentUuid']
+}) 
+
+          } 
+ return upsertMany('WCSPROGRAMS_GearType', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+))
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_DnaSampleCollectedName: dataValue('boat/catch_details/dna_sample_collected'),
+  WCSPROGRAMS_DnaSampleCollectedExtCode: dataValue('boat/catch_details/dna_sample_collected'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/catch_details/dna_sample_collected'),'WCSPROGRAMS_DnaSampleCollected', 'WCSPROGRAMS_DnaSampleCollectedExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_FishSpecieName: dataValue('boat/fish_catch/fish_specie'),
+  WCSPROGRAMS_FishSpecieExtCode: dataValue('boat/fish_catch/fish_specie'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('boat/fish_catch/fish_specie'),'WCSPROGRAMS_FishSpecie', 'WCSPROGRAMS_FishSpecieExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_VendorSexName: dataValue('market_details/vendor/vendor_sex'),
+  WCSPROGRAMS_VendorSexExtCode: dataValue('market_details/vendor/vendor_sex'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/vendor_sex'),'WCSPROGRAMS_VendorSex', 'WCSPROGRAMS_VendorSexExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_WhereBoughtName: dataValue('market_details/vendor/where_bought'),
+  WCSPROGRAMS_WhereBoughtExtCode: dataValue('market_details/vendor/where_bought'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/where_bought'),'WCSPROGRAMS_WhereBought', 'WCSPROGRAMS_WhereBoughtExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_WhoSoldToName: dataValue('market_details/vendor/who_sold_to'),
+  WCSPROGRAMS_WhoSoldToExtCode: dataValue('market_details/vendor/who_sold_to'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/who_sold_to'),'WCSPROGRAMS_WhoSoldTo', 'WCSPROGRAMS_WhoSoldToExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_STypeName: dataValue('market_details/vendor/sales/s_type'),
+  WCSPROGRAMS_STypeExtCode: dataValue('market_details/vendor/sales/s_type'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/sales/s_type'),'WCSPROGRAMS_SType', 'WCSPROGRAMS_STypeExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SGenusName: dataValue('market_details/vendor/sales/s_genus'),
+  WCSPROGRAMS_SGenusExtCode: dataValue('market_details/vendor/sales/s_genus'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/sales/s_genus'),'WCSPROGRAMS_SGenus', 'WCSPROGRAMS_SGenusExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SSpeciesName: dataValue('market_details/vendor/sales/s_species'),
+  WCSPROGRAMS_SSpeciesExtCode: dataValue('market_details/vendor/sales/s_species'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/sales/s_species'),'WCSPROGRAMS_SSpecies', 'WCSPROGRAMS_SSpeciesExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SSexName: dataValue('market_details/vendor/sales/s_sex'),
+  WCSPROGRAMS_SSexExtCode: dataValue('market_details/vendor/sales/s_sex'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/sales/s_sex'),'WCSPROGRAMS_SSex', 'WCSPROGRAMS_SSexExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+each(dataPath('market_details[*]'), each(dataPath('vendor[*]'), alterState(async state => {
+ const dataArray = state.data['market_details/vendor/sales/s_gear_type'] || [] 
+
+        const mapping = []; 
+ 
+        for (let x of dataArray) { 
+
+          mapping.push({
+  WCSPROGRAMS_SGearTypeID: x['name'],
+  WCSPROGRAMS_SalesID: x['__parentUuid'],
+  Payload: state.data.body,
+  GeneratedUuid: x['__generatedUuid'],
+  SalesUuid: x['__parentUuid']
+}) 
+
+          } 
+ return upsertMany('WCSPROGRAMS_SalesSGearType', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+))
+each(dataPath('market_details[*]'), each(dataPath('vendor[*]'), alterState(async state => {
+ const dataArray = state.data['market_details/vendor/sales/s_gear_type'] || [] 
+
+        const mapping = []; 
+ 
+        for (let x of dataArray) { 
+
+          mapping.push({
+  WCSPROGRAMS_SGearTypeID: x['name'],
+  WCSPROGRAMS_SGearTypeName: x['name'],
+  WCSPROGRAMS_SGearTypeExtCode: x['name'],
+  Payload: state.data.body,
+  GeneratedUuid: x['__generatedUuid'],
+  SalesUuid: x['__parentUuid']
+}) 
+
+          } 
+ return upsertMany('WCSPROGRAMS_SGearType', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
+}) 
+))
+alterState(async state => {
+ const mapping = {
+  WCSPROGRAMS_SDnaSampleCollectedName: dataValue('market_details/vendor/sales/s_dna_sample_collected'),
+  WCSPROGRAMS_SDnaSampleCollectedExtCode: dataValue('market_details/vendor/sales/s_dna_sample_collected'),
+  Payload: state.data.body
+} 
+ return upsertIf(dataValue('market_details/vendor/sales/s_dna_sample_collected'),'WCSPROGRAMS_SDnaSampleCollected', 'WCSPROGRAMS_SDnaSampleCollectedExtCode', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
@@ -90,7 +378,7 @@ alterState(async state => {
   LastUpdated: new Date().toISOString(),
   Payload: state.data.body
 } 
- return upsert('WCSPROGRAMS__KoboDataset', 'DatasetId', mapping)(state); 
+ return upsert('WCSPROGRAMS_KoboDataset', 'DatasetId', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const mapping = {
@@ -100,16 +388,16 @@ alterState(async state => {
   Pic3: dataValue('pic3'),
   Pic2: dataValue('pic2'),
   Pic1: dataValue('pic1'),
-  Surveyor: await findValue({uuid: 'surveyorid', relation: 'WCSPROGRAMS__Surveyor', where: { SurveyorName: dataValue('surveyor') }})(state),
-  Market: await findValue({uuid: 'marketid', relation: 'WCSPROGRAMS__Market', where: { MarketName: dataValue('market') }})(state),
-  LandingSite: await findValue({uuid: 'landingsiteid', relation: 'WCSPROGRAMS__LandingSite', where: { LandingSiteName: dataValue('landing_site') }})(state),
-  Survey: await findValue({uuid: 'surveyid', relation: 'WCSPROGRAMS__Survey', where: { SurveyName: dataValue('survey') }})(state),
-  District: await findValue({uuid: 'districtid', relation: 'WCSPROGRAMS__District', where: { DistrictName: dataValue('district') }})(state),
-  Country: await findValue({uuid: 'countryid', relation: 'WCSPROGRAMS__Country', where: { CountryName: dataValue('country') }})(state),
+  Surveyor: dataValue('surveyor'),
+  Market: dataValue('market'),
+  LandingSite: dataValue('landing_site'),
+  Survey: dataValue('survey'),
+  District: dataValue('district'),
+  Country: dataValue('country'),
   Gps: dataValue('gps'),
-  SurveyType: await findValue({uuid: 'surveytypeid', relation: 'WCSPROGRAMS__SurveyType', where: { SurveyTypeName: dataValue('survey_type') }})(state),
+  SurveyType: dataValue('survey_type'),
   Deviceid: dataValue('deviceid'),
-  EndDate: dataValue('end'),
+  FormDateEnd: dataValue('end'),
   Start: dataValue('start'),
   Today: dataValue('today'),
   Latitude: dataValue('undefined'),
@@ -118,7 +406,7 @@ alterState(async state => {
   AnswerId: dataValue('_id'),
   GeneratedUuid: dataValue('__generatedUuid')
 } 
- return upsert('WCSPROGRAMS__SharksRays', 'GeneratedUuid', mapping)(state); 
+ return upsert('WCSPROGRAMS_SharksRays', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 alterState(async state => {
  const dataArray = state.data['boat'] || [] 
@@ -193,7 +481,7 @@ alterState(async state => {
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_Boat', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysBoat', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 each(dataPath('boat[*]'), alterState(async state => {
  const dataArray = state.data['boat/catch_details'] || [] 
@@ -237,7 +525,7 @@ each(dataPath('boat[*]'), alterState(async state => {
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_CatchDetails', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysCatchDetails', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 )
 each(dataPath('boat[*]'), alterState(async state => {
@@ -261,7 +549,7 @@ each(dataPath('boat[*]'), alterState(async state => {
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_FishCatch', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysFishCatch', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 )
 each(dataPath('boat[*]'), each(dataPath('fish_catch[*]'), alterState(async state => {
@@ -281,7 +569,7 @@ each(dataPath('boat[*]'), each(dataPath('fish_catch[*]'), alterState(async state
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_Sample', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysSample', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 ))
 alterState(async state => {
@@ -304,7 +592,7 @@ alterState(async state => {
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_Vendor', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysVendor', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 each(dataPath('market_details[*]'), alterState(async state => {
  const dataArray = state.data['market_details/vendor/sales'] || [] 
@@ -350,6 +638,6 @@ each(dataPath('market_details[*]'), alterState(async state => {
 }) 
 
           } 
- return upsertMany('WCSPROGRAMS__SharksRays_Sales', 'GeneratedUuid', () => mapping)(state); 
+ return upsertMany('WCSPROGRAMS_SharksRaysSales', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 )
