@@ -162,67 +162,73 @@ alterState(state => {
       let logical = undefined;
       // FROM HERE WE ARE BUILDING MAPPINGS
       for (var k = 0; k < columns.length; k++) {
-        if (columns[k].findValue) {
-          mapKoboToPostgres[columns[k].name] = generateFindValue(
-            columns[k],
-            !columns[k].name.includes(state.prefixes)
-              ? `${state.prefixes}_${columns[k].name}`
-              : `${columns[k].name}`,
-            `${columns[k].name}`,
-            paths[k]
-          );
-        } else if (columns[k].name === 'Latitude') {
-          mapKoboToPostgres[
-            columns[k].name
-          ] = `state => state.data.gps.split(' ')[0]`;
-        } else if (columns[k].name === 'Longitude') {
-          mapKoboToPostgres[
-            columns[k].name
-          ] = `state => state.data.gps.split(' ')[1]`;
-        } else if (columns[k].name === 'Payload') {
-          // Here we use an expression, rather than a function, to take the ======
-          // original, unaltered body of the Kobo submission as JSON.
-          mapKoboToPostgres.Payload = `state.data.body`;
-        } else if (columns[k].referent) {
-          if (!columns[k].parent)
+        if (columns[k].rule !== 'DO_NOT_MAP') {
+          if (ReferenceUuid) {
+            mapKoboToPostgres[columns[k].name] = `x`;
+          } else if (columns[k].findValue) {
+            mapKoboToPostgres[columns[k].name] = generateFindValue(
+              columns[k],
+              `${state.prefixes}_${columns[k].select_from_list_name}`,
+              `${columns[k].select_from_list_name}`,
+              paths[k]
+            );
+          } else if (columns[k].name === 'Latitude') {
+            mapKoboToPostgres[
+              columns[k].name
+            ] = `state => state.data.gps.split(' ')[0]`;
+          } else if (columns[k].name === 'Longitude') {
+            mapKoboToPostgres[
+              columns[k].name
+            ] = `state => state.data.gps.split(' ')[1]`;
+          } else if (columns[k].name === 'Payload') {
+            // Here we use an expression, rather than a function, to take the ======
+            // original, unaltered body of the Kobo submission as JSON.
+            mapKoboToPostgres.Payload = `state.data.body`;
+          } else if (columns[k].referent) {
+            if (!columns[k].parent) {
+              // mapKoboToPostgres[columns[k].name] = `x['name']`;
+              mapKoboToPostgres[columns[k].name] = generateFindValue(
+                columns[k],
+                `${state.prefixes}_${columns[k].select_from_list_name}`,
+                `${columns[k].select_from_list_name}`,
+                'x'
+              );
+            } else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
+          } else if (columns[k].select_multiple === true) {
             mapKoboToPostgres[columns[k].name] = `x['name']`;
-          else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
-        } else if (columns[k].select_multiple === true) {
-          mapKoboToPostgres[columns[k].name] = `x['name']`;
-        } else if (columns[k].depth > 0) {
-          mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
-        } else if (
-          // If the depth is null but it's a select_multiple
-          // We should not generate findValue but considering as a classical path
-          columns[k].depth === 0 &&
-          (columns[k].type === 'select_one' ||
-            columns[k].type === 'select_multiple')
-        ) {
-          mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
-        } else if (columns[k].rule !== 'DO_NOT_MAP') {
-          mapKoboToPostgres[columns[k].name] =
-            name !== `${state.prefix1}_KoboDataset`
-              ? columns[k].type === 'select_one' ||
-                columns[k].type === 'select_multiple'
-                ? generateFindValue(
-                    columns[k],
-                    !columns[k].name.includes(state.prefixes)
-                      ? `${state.prefixes}_${columns[k].name}`
-                      : `${columns[k].name}`,
-                    `${columns[k].name}`,
-                    paths[k]
-                  )
-                : columns[k].parentColumn
-                ? `dataValue('${columns[k].path.join('/')}')`
-                : `dataValue('${paths[k]}')`
-              : `${paths[k]}`;
-          //generating logical
-          if (columns[k].parentColumn)
-            logical = `dataValue('${columns[k].path.join('/')}')`;
-        }
+          } else if (columns[k].depth > 0) {
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+          } else if (
+            // If the depth is null but it's a select_multiple
+            // We should not generate findValue but considering as a classical path
+            columns[k].depth === 0 &&
+            (columns[k].type === 'select_one' ||
+              columns[k].type === 'select_multiple')
+          ) {
+            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+          } else if (columns[k].rule !== 'DO_NOT_MAP') {
+            mapKoboToPostgres[columns[k].name] =
+              name !== `${state.prefix1}_KoboDataset`
+                ? columns[k].type === 'select_one' ||
+                  columns[k].type === 'select_multiple'
+                  ? generateFindValue(
+                      columns[k],
+                      `${state.prefixes}_${columns[k].select_from_list_name}`,
+                      `${columns[k].select_from_list_name}`,
+                      paths[k]
+                    )
+                  : columns[k].parentColumn
+                  ? `dataValue('${columns[k].path.join('/')}')`
+                  : `dataValue('${paths[k]}')`
+                : `${paths[k]}`;
+            //generating logical
+            if (columns[k].parentColumn)
+              logical = `dataValue('${columns[k].path.join('/')}')`;
+          }
 
-        if (columns[k].name === 'AnswerId') {
-          mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
+          if (columns[k].name === 'AnswerId') {
+            mapKoboToPostgres[columns[k].name] = `dataValue('_id')`;
+          }
         }
       }
 
@@ -343,8 +349,8 @@ alterState(state => {
         (columns[0].depth > 1 ? '\n' : `)(state); \n${alterSClosing} \n`);
     }
   }
-  state.data.expression = expression;
-  state.data.triggerCriteria = {
+  state.expression = expression;
+  state.triggerCriteria = {
     tableId: `${state.prefixes}_${state.tableId}`,
   };
   return state;
@@ -380,7 +386,7 @@ alterState(state => {
   const triggerNames = state.triggers.map(t => t.name);
 
   const name = `auto/${state.prefixes}_${state.tableId}`;
-  const criteria = state.data.triggerCriteria;
+  const criteria = state.triggerCriteria;
   const triggerIndex = triggerNames.indexOf(name);
 
   const trigger = {
@@ -410,7 +416,7 @@ alterState(state => {
 });
 
 alterState(state => {
-  const expression = state.data.expression;
+  const expression = state.expression;
   console.log(
     'Inserting / Updating job: ',
     `auto/${state.prefixes}_${state.tableId}`
