@@ -1,6 +1,7 @@
 get(`${state.data.url}`, {}, state => {
   state.formDefinition = state.data; // keeping form definition for data dictionary
-  const { survey } = state.data.content;
+  const tablesToBeCreated = [];
+  const { survey, choices } = state.data.content;
   if (survey.length === 0) {
     console.log(
       'No survey available or defined to analyze. Please check the Kobo form deployment status'
@@ -160,7 +161,7 @@ get(`${state.data.url}`, {}, state => {
   function buildLookupTableColumns(prefixes, q, i, arr) {
     return [
       {
-        name: `${prefixes}_${toCamelCase(q.name)}ID`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
         type: 'int4',
         identity: true,
         required: q.required,
@@ -171,7 +172,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.name)}Name`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}Name`,
         type: 'varchar(100)',
         required: q.required,
         depth: q.type === 'select_multiple' ? 3 : 0,
@@ -180,7 +181,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
         type: 'varchar(100)',
         required: q.required,
         unique: true,
@@ -202,6 +203,7 @@ get(`${state.data.url}`, {}, state => {
       depth: q.type === 'select_multiple' ? 1 : q.depth,
       ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
+    tablesToBeCreated.push(lookupTableName)
   }
 
   function buildForeignTables(questions) {
@@ -283,6 +285,7 @@ get(`${state.data.url}`, {}, state => {
           depth: 1,
           // ReferenceUuid: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         });
+        tablesToBeCreated.push(junctionTableName);
       }
       if (['select_one', 'select_multiple'].includes(q.type)) {
         // console.log('q', q);
