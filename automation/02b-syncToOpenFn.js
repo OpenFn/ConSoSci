@@ -68,8 +68,9 @@ alterState(state => {
       })
       .join('');
   }
-  for (var i = 0; i < state.tables.length; i++) {
-    const { columns, name, depth, ReferenceUuid } = state.tables[i];
+  const { tables, choiceDictionary } = state;
+  for (var i = 0; i < tables.length; i++) {
+    const { columns, name, depth, ReferenceUuid } = tables[i];
 
     if (columns.length > 0 && name !== `${state.prefixes}_Untitled`) {
       var paths = [];
@@ -251,7 +252,7 @@ alterState(state => {
       ).replace(/"/g, '')}`;
       // =======================================================
 
-      // We build a set of statements for when depth > 0=============
+      // We build a set of statements for when depth > 0========
       const path = columns[0].path.join('/');
 
       const statements = `const dataArray = state.data['${path}'] || [] \n
@@ -264,15 +265,33 @@ alterState(state => {
           }`;
       // =======================================================
 
+      // In  case of select_one, it's another story ============
+      let selectStatement = '';
+      if (ReferenceUuid) {
+        selectStatement = `const dataArray = ["${choiceDictionary[
+          name.split('_')[1].toLowerCase()
+        ].join('","')}"] || [] \n
+        const mapping = []; \n 
+        for (let x of dataArray) { \n
+          mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}) \n
+          }`;
+        // console.log('select', selectStatement);
+      }
+      // =======================================================
+
       const alterSOpeningNoDepth = `alterState(async state => {\n ${mapObject} \n`;
       const alterSOpeningDepth = `alterState(async state => {\n ${statements} \n`;
+      const alterSOpeningSelect = `alterState(async state => {\n ${selectStatement} \n`;
       const alterSClosing = `})`;
 
       const operation =
         depth > 0
           ? `return upsertMany`
           : ReferenceUuid
-          ? `return upsertIf`
+          ? `return upsertMany` // Use to be "return upsertIf"
           : `return upsert`;
 
       var uuid =
@@ -284,8 +303,12 @@ alterState(state => {
       // We use our alterState opening and close later and the 'logical'.
       // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
       // Otherwise it's a flat table and we still use the opening.
+      // let mapping = ReferenceUuid
+      //   ? `${alterSOpeningNoDepth} ${operation}(${logical},'${name}', '${uuid}', `
+      //   : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
+
       let mapping = ReferenceUuid
-        ? `${alterSOpeningNoDepth} ${operation}(${logical},'${name}', '${uuid}', `
+        ? `${alterSOpeningSelect} ${operation}('${name}', '${uuid}', `
         : depth > 0
         ? `${alterSOpeningDepth} ${operation}('${name}', '${uuid}', `
         : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
