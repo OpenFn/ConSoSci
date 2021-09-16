@@ -315,8 +315,8 @@ alterState(state => {
         (columns[0].depth > 1 ? '\n' : `)(state); \n${alterSClosing} \n`);
     }
   }
-  state.data.expression = expression;
-  state.data.triggerCriteria = {
+  state.expression = expression;
+  state.triggerCriteria = {
     tableId: `${state.prefixes}_${state.tableId}`,
   };
   return state;
@@ -352,7 +352,7 @@ alterState(state => {
   const triggerNames = state.triggers.map(t => t.name);
 
   const name = `auto/${state.prefixes}_${state.tableId}`;
-  const criteria = state.data.triggerCriteria;
+  const criteria = state.triggerCriteria;
   const triggerIndex = triggerNames.indexOf(name);
 
   const trigger = {
@@ -382,7 +382,7 @@ alterState(state => {
 });
 
 alterState(state => {
-  const expression = state.data.expression;
+  const expression = state.expression;
   console.log(
     'Inserting / Updating job: ',
     `auto/${state.prefixes}_${state.tableId}`
