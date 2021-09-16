@@ -7,18 +7,18 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
     //==== BNS/NRGT forms to sync DD =========//
-    { 
-      uid: 'aTRKQW2b8TJGxF7DVPfjFv',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNSPrice',
-    },
-    { 
-      uid: 'atyo55YdBdfxzXiaBdrbvr',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'BNS',
-    },
+    // { 
+    //   uid: 'aTRKQW2b8TJGxF7DVPfjFv',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'BNSPrice',
+    // },
+    // { 
+    //   uid: 'atyo55YdBdfxzXiaBdrbvr',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'BNS',
+    // },
     // { 
     //   uid: 'ad7S4hPBN7qM4Ac3mpEdwZ',
     //   p1: 'WCSPROGRAMS',
@@ -76,12 +76,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     
     //=================================
     //==== SharksRays ===============//
-    // {
-    //   uid: 'apZrpKcK78xzrPcAfRrfac',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'SharksRays',
-    // },
+    {
+      uid: 'apZrpKcK78xzrPcAfRrfac',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
     //=== WCS Socio Economic Database =====
     // {
     //     uid: 'aukhdejQU76K33caCkF4rP',
