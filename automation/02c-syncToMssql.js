@@ -1,5 +1,11 @@
+fn(state => {
+  const { tables, lookupTables } = state;
+
+  return { ...state, tablesToBeCreated: [...lookupTables, ...tables] };
+});
+
 each(
-  '$.tables[*]',
+  '$.tablesToBeCreated[*]',
   alterState(state => {
     const { name, defaultColumns } = state.data;
 
