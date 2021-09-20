@@ -1,6 +1,7 @@
 get(`${state.data.url}`, {}, state => {
   state.formDefinition = state.data; // keeping form definition for data dictionary
-  const { survey } = state.data.content;
+  const tablesToBeCreated = [];
+  const { survey, choices } = state.data.content;
   if (survey.length === 0) {
     console.log(
       'No survey available or defined to analyze. Please check the Kobo form deployment status'
@@ -101,7 +102,9 @@ get(`${state.data.url}`, {}, state => {
 
     form = form.map(x => {
       let name = toCamelCase(x.name) || toCamelCase(x.$autoname);
-      name = x.select_one ? `${prefixes}_${name}ID` : name;
+      name = x.select_one
+        ? `${prefixes}_${toCamelCase(x.select_from_list_name)}_${name}ID`
+        : name;
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
@@ -160,7 +163,7 @@ get(`${state.data.url}`, {}, state => {
   function buildLookupTableColumns(prefixes, q, i, arr) {
     return [
       {
-        name: `${prefixes}_${toCamelCase(q.name)}ID`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
         type: 'int4',
         identity: true,
         required: q.required,
@@ -171,7 +174,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.name)}Name`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}Name`,
         type: 'varchar(100)',
         required: q.required,
         depth: q.type === 'select_multiple' ? 3 : 0,
@@ -180,7 +183,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
+        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
         type: 'varchar(100)',
         required: q.required,
         unique: true,
@@ -197,11 +200,12 @@ get(`${state.data.url}`, {}, state => {
     tables.push({
       name: lookupTableName,
       columns: buildLookupTableColumns(prefixes, q, i, arr),
-      defaultColumns: standardColumns(toCamelCase(q.name)),
+      defaultColumns: standardColumns(toCamelCase(q.select_from_list_name)),
       formName,
-      depth: q.type === 'select_multiple' ? 1 : 0,
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.name)}ExtCode`,
+      depth: q.type === 'select_multiple' ? 1 : q.depth,
+      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
+    tablesToBeCreated.push(lookupTableName)
   }
 
   function buildForeignTables(questions) {
@@ -209,9 +213,11 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach(q => {
       if (q.select_one) {
         foreignTables.push({
-          table: `${prefixes}_${toCamelCase(q.name)}`,
-          id: `${prefixes}_${toCamelCase(q.name)}ID`,
-          reference: `${prefixes}_${toCamelCase(q.name)}ID`,
+          table: `${prefixes}_${toCamelCase(q.select_from_list_name)}`,
+          id: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
+          reference: `${prefixes}_${toCamelCase(
+            q.select_from_list_name
+          )}_${toCamelCase(q.name)}ID`,
         });
       }
     });
@@ -227,10 +233,13 @@ get(`${state.data.url}`, {}, state => {
         let suffix = q.path.slice(-1)[0];
         if (getType(suffix) === 'begin_group') suffix = undefined;
 
-        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`; // MC: TO CHANGE??
+        const lookupTableName = `${prefixes}_${toCamelCase(
+          q.select_from_list_name
+        )}`;
         const junctionTableName = `${prefixes}_${toCamelCase(
           suffix || tableId
-        )}${toCamelCase(q.name)}`;
+        )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
 
         // prettier-ignore
         const parentTableName = `${prefixes}_${tableId}${toCamelCase(suffix)}`;
@@ -242,7 +251,7 @@ get(`${state.data.url}`, {}, state => {
           dependencies: 3,
           columns: [
             {
-              name: `${prefixes}_${toCamelCase(q.name)}ID`,
+              name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
               type: 'select_multiple',
               required: q.required,
               referent: lookupTableName,
@@ -282,10 +291,20 @@ get(`${state.data.url}`, {}, state => {
           depth: 1,
           // ReferenceUuid: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
         });
+        tablesToBeCreated.push(junctionTableName);
       }
       if (['select_one', 'select_multiple'].includes(q.type)) {
-        const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
-        addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
+        // console.log('q', q);
+        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
+        // Use list_name to name select_table
+        const lookupTableName = `${prefixes}_${toCamelCase(
+          q.select_from_list_name
+        )}`;
+
+        if (!tablesToBeCreated.includes(lookupTableName)) {
+          //prettier-ignore
+          addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
+        }
       }
     });
     return tables;
@@ -350,6 +369,7 @@ get(`${state.data.url}`, {}, state => {
         formName,
         depth: group[0].depth,
       });
+      tablesToBeCreated.push(name);
 
       return tablesFromQuestions(questions, formName, tables);
     }
@@ -409,8 +429,24 @@ get(`${state.data.url}`, {}, state => {
         depth: 0,
       }
     );
+    tablesToBeCreated.push(tName);
 
     return tables;
+  }
+
+  // We build a dictionary of different select_one/select_multiple questions
+  // and the diffferent values they hold ===================================
+  function buildChoicesDictionary(choices) {
+    const choicesDictionary = {};
+    choices.forEach(choice => {
+      if (!choicesDictionary[choice.list_name]) {
+        choicesDictionary[choice.list_name] = [];
+      }
+
+      if (!choicesDictionary[choice.list_name].includes(choice.name))
+        choicesDictionary[choice.list_name].push(choice.name);
+    });
+    return choicesDictionary;
   }
 
   let depth = 0;
@@ -461,13 +497,16 @@ get(`${state.data.url}`, {}, state => {
     }
   });
 
-  const tempTables = buildTablesFromSelect(survey, state.data.name, []);
+  const choiceDictionary = buildChoicesDictionary(choices);
+  const lookupTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
-  tables = tempTables.concat(tables);
+  tables = lookupTables.concat(tables);
 
   return {
     ...state,
     tables,
+    lookupTables,
+    choiceDictionary,
     prefixes,
     prefix1,
     prefix2,
@@ -496,9 +535,7 @@ fn(state => {
 
   const { tables } = state;
 
-  const tableNames = tables.map(t => t.name);
-
-  const query = `DROP TABLE ${tableNames.reverse()};`;
+  const query = `DROP TABLE ${tables.map(t => t.name).reverse()};`;
 
   console.log(`query: ${query}`);
   console.log('====================END DROP STATEMENT====================');

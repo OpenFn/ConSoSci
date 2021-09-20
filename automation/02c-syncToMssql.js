@@ -49,9 +49,13 @@ each(
                 const { foreignTables } = state.data;
                 for (let ft of foreignTables) {
                   const { table, id, reference } = ft;
-                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${id} FOREIGN KEY (${id})
-                      REFERENCES ${table} (${reference ? reference : id});
-                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${id};`);
+                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${
+                    reference ? reference : id
+                  } FOREIGN KEY (${reference ? reference : id})
+                      REFERENCES ${table} (${id});
+                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${
+                    reference ? reference : id
+                  };`);
                 }
               }
               // Creating foreign keys constraints to standard WCS DB and fields
@@ -105,6 +109,34 @@ each(
     return state;
   })
 );
+
+each('$.lookupTables[*]', state => {
+  console.log('---------------------------------------------------');
+  console.log('Pre-populating lookup tables-----------------------');
+
+  const { choiceDictionary } = state;
+  const name = state.data.name.split('_')[1];
+  const mapping = [];
+  for (choice in choiceDictionary) {
+    if (choice === name.toLowerCase()) {
+      for (value of choiceDictionary[choice]) {
+        let obj = {};
+        obj[`${state.data.name}ExtCode`] = value;
+        obj[`${state.data.name}Name`] = value;
+        mapping.push(obj);
+      }
+      console.log('data array', mapping);
+
+      return upsertMany(
+        state.data.name,
+        `${state.data.name}ExtCode`,
+        mapping
+      )(state);
+    }
+  }
+  console.log('---------------------------------------------------');
+  return state;
+});
 
 alterState(state => {
   console.log('----------------------');
