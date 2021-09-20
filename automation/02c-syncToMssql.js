@@ -1,11 +1,5 @@
-fn(state => {
-  const { tables, lookupTables } = state;
-
-  return { ...state, tablesToBeCreated: [...lookupTables, ...tables] };
-});
-
 each(
-  '$.tablesToBeCreated[*]',
+  '$.tables[*]',
   alterState(state => {
     const { name, defaultColumns } = state.data;
 
@@ -55,9 +49,9 @@ each(
                 const { foreignTables } = state.data;
                 for (let ft of foreignTables) {
                   const { table, id, reference } = ft;
-                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${id} FOREIGN KEY (${id})
-                      REFERENCES ${table} (${reference ? reference : id});
-                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${id};`);
+                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${reference ? reference : id} FOREIGN KEY (${reference ? reference : id})
+                      REFERENCES ${table} (${id});
+                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${reference ? reference : id};`);
                 }
               }
               // Creating foreign keys constraints to standard WCS DB and fields
@@ -113,6 +107,9 @@ each(
 );
 
 each('$.lookupTables[*]', state => {
+  console.log('---------------------------------------------------');
+  console.log('Pre-populating lookup tables-----------------------');
+
   const { choiceDictionary } = state;
   const name = state.data.name.split('_')[1];
   const mapping = [];
@@ -133,6 +130,7 @@ each('$.lookupTables[*]', state => {
       )(state);
     }
   }
+  console.log('---------------------------------------------------');
   return state;
 });
 
