@@ -102,7 +102,9 @@ get(`${state.data.url}`, {}, state => {
 
     form = form.map(x => {
       let name = toCamelCase(x.name) || toCamelCase(x.$autoname);
-      name = x.select_one ? `${prefixes}_${name}ID` : name;
+      name = x.select_one
+        ? `${prefixes}_${toCamelCase(x.select_from_list_name)}_${name}ID`
+        : name;
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
@@ -213,7 +215,9 @@ get(`${state.data.url}`, {}, state => {
         foreignTables.push({
           table: `${prefixes}_${toCamelCase(q.select_from_list_name)}`,
           id: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
-          reference: `${prefixes}_${toCamelCase(q.name)}ID`,
+          reference: `${prefixes}_${toCamelCase(
+            q.select_from_list_name
+          )}_${toCamelCase(q.name)}ID`,
         });
       }
     });
