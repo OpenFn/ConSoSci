@@ -72,7 +72,11 @@ alterState(state => {
   for (var i = 0; i < tables.length; i++) {
     const { columns, name, depth, ReferenceUuid } = tables[i];
 
-    if (columns.length > 0 && name !== `${state.prefixes}_Untitled`) {
+    if (
+      !ReferenceUuid &&
+      columns.length > 0 &&
+      name !== `${state.prefixes}_Untitled`
+    ) {
       var paths = [];
       for (var j = 0; j < columns.length; j++) {
         // Handling master parent table

@@ -49,9 +49,13 @@ each(
                 const { foreignTables } = state.data;
                 for (let ft of foreignTables) {
                   const { table, id, reference } = ft;
-                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${reference ? reference : id} FOREIGN KEY (${reference ? reference : id})
+                  foreignKeyQueries.push(`ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_${
+                    reference ? reference : id
+                  } FOREIGN KEY (${reference ? reference : id})
                       REFERENCES ${table} (${id});
-                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${reference ? reference : id};`);
+                      ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_${
+                    reference ? reference : id
+                  };`);
                 }
               }
               // Creating foreign keys constraints to standard WCS DB and fields
