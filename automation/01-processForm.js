@@ -230,7 +230,9 @@ get(`${state.data.url}`, {}, state => {
         if (getType(suffix) === 'begin_group') suffix = undefined;
 
         // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`; // MC: TO CHANGE??
-        const lookupTableName = `${prefixes}_${toCamelCase(q.select_from_list_name)}`; 
+        const lookupTableName = `${prefixes}_${toCamelCase(
+          q.select_from_list_name
+        )}`;
         const junctionTableName = `${prefixes}_${toCamelCase(
           suffix || tableId
         )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
@@ -491,13 +493,13 @@ get(`${state.data.url}`, {}, state => {
   });
 
   const choiceDictionary = buildChoicesDictionary(choices);
-  const tempTables = buildTablesFromSelect(survey, state.data.name, []);
+  const lookupTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
-  tables = tempTables.concat(tables);
 
   return {
     ...state,
     tables,
+    lookupTables,
     choiceDictionary,
     prefixes,
     prefix1,
@@ -525,11 +527,12 @@ fn(state => {
   console.log('====================DROP STATEMENT====================');
   console.log('Use this to clean database from created tables...');
 
-  const { tables } = state;
+  const { tables, lookupTables } = state;
 
+  const lookupTableNames = lookupTables.map(t => t.name);
   const tableNames = tables.map(t => t.name);
 
-  const query = `DROP TABLE ${tableNames.reverse()};`;
+  const query = `DROP TABLE ${[tableNames, lookupTableNames].reverse()};`;
 
   console.log(`query: ${query}`);
   console.log('====================END DROP STATEMENT====================');
