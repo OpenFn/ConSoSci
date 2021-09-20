@@ -439,7 +439,8 @@ get(`${state.data.url}`, {}, state => {
         choicesDictionary[choice.list_name] = [];
       }
 
-      choicesDictionary[choice.list_name].push(choice.name);
+      if (!choicesDictionary[choice.list_name].includes(choice.name))
+        choicesDictionary[choice.list_name].push(choice.name);
     });
     return choicesDictionary;
   }
@@ -495,6 +496,7 @@ get(`${state.data.url}`, {}, state => {
   const choiceDictionary = buildChoicesDictionary(choices);
   const lookupTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
+  tables = lookupTables.concat(tables);
 
   return {
     ...state,
@@ -527,12 +529,9 @@ fn(state => {
   console.log('====================DROP STATEMENT====================');
   console.log('Use this to clean database from created tables...');
 
-  const { tables, lookupTables } = state;
+  const { tables } = state;
 
-  const lookupTableNames = lookupTables.map(t => t.name);
-  const tableNames = tables.map(t => t.name);
-
-  const query = `DROP TABLE ${[tableNames, lookupTableNames].reverse()};`;
+  const query = `DROP TABLE ${tables.map(t => t.name).reverse()};`;
 
   console.log(`query: ${query}`);
   console.log('====================END DROP STATEMENT====================');
