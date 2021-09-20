@@ -106,6 +106,30 @@ each(
   })
 );
 
+each('$.lookupTables[*]', state => {
+  const { choiceDictionary } = state;
+  const name = state.data.name.split('_')[1];
+  const mapping = [];
+  for (choice in choiceDictionary) {
+    if (choice === name.toLowerCase()) {
+      for (value of choiceDictionary[choice]) {
+        let obj = {};
+        obj[`${state.data.name}ExtCode`] = value;
+        obj[`${state.data.name}Name`] = value;
+        mapping.push(obj);
+      }
+      console.log('data array', mapping);
+
+      return upsertMany(
+        state.data.name,
+        `${state.data.name}ExtCode`,
+        mapping
+      )(state);
+    }
+  }
+  return state;
+});
+
 alterState(state => {
   console.log('----------------------');
   console.log('Logging queries.');
