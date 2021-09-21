@@ -70,9 +70,6 @@ get(`${state.data.url}`, {}, state => {
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
 
     form.forEach(obj => {
-      // At some point we might need a list of questions that should be renamed,
-      // and their new values.
-
       // List of reserved keys in postgresql and their transformations
       if (obj.name === 'group') {
         obj.name = 'kobogroup';
@@ -103,7 +100,7 @@ get(`${state.data.url}`, {}, state => {
     form = form.map(x => {
       let name = toCamelCase(x.name) || toCamelCase(x.$autoname);
       name = x.select_one
-        ? `${prefixes}_${toCamelCase(x.select_from_list_name)}_${name}ID`
+        ? `${prefixes}_${toCamelCase(x.select_from_list_name)}ID_${name}`
         : name;
       return {
         ...x,
@@ -217,7 +214,7 @@ get(`${state.data.url}`, {}, state => {
           id: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
           reference: `${prefixes}_${toCamelCase(
             q.select_from_list_name
-          )}_${toCamelCase(q.name)}ID`,
+          )}ID_${toCamelCase(q.name)}`,
         });
       }
     });
