@@ -1,6 +1,6 @@
 each(
   '$.tables[*]',
-  alterState(state => {
+  fn(state => {
     const { name, defaultColumns } = state.data;
 
     function convertToMssqlTypes(col) {
@@ -125,6 +125,7 @@ each('$.lookupTables[*]', state => {
 
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
         writeSql: true,
+        execute: true,
         logValues: true,
       })(state);
     }
