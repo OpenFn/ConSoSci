@@ -111,9 +111,6 @@ each(
 );
 
 each('$.lookupTables[*]', state => {
-  console.log('---------------------------------------------------');
-  console.log('Pre-populating lookup tables-----------------------');
-
   const { choiceDictionary } = state;
   const name = state.data.name.split('_')[1];
   const mapping = [];
@@ -125,14 +122,12 @@ each('$.lookupTables[*]', state => {
         obj[`${state.data.name}Name`] = value;
         mapping.push(obj);
       }
-      console.log('data array', mapping);
 
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
         logQuery: true,
       })(state);
     }
   }
-  console.log('---------------------------------------------------');
   return state;
 });
 
