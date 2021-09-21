@@ -127,11 +127,9 @@ each('$.lookupTables[*]', state => {
       }
       console.log('data array', mapping);
 
-      return upsertMany(
-        state.data.name,
-        `${state.data.name}ExtCode`,
-        mapping
-      )(state);
+      return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
+        logQuery: true,
+      })(state);
     }
   }
   console.log('---------------------------------------------------');
