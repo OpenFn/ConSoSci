@@ -124,14 +124,15 @@ each('$.lookupTables[*]', state => {
       }
 
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
-        logQuery: true,
+        writeSql: true,
+        logValues: true,
       })(state);
     }
   }
   return state;
 });
 
-alterState(state => {
+fn(state => {
   console.log('----------------------');
   console.log('Logging queries.');
   for (query of state.queries) console.log(query);
