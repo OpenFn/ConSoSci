@@ -76,7 +76,7 @@ alterState(async state => {
   WCSPROGRAMS_DistrictID_District: await findValue({uuid: 'wcsprograms_districtid', relation: 'WCSPROGRAMS_district', where: { WCSPROGRAMS_districtExtCode: dataValue('district') }})(state),
   WCSPROGRAMS_CountryID_Country: await findValue({uuid: 'wcsprograms_countryid', relation: 'WCSPROGRAMS_country', where: { WCSPROGRAMS_countryExtCode: dataValue('country') }})(state),
   Gps: dataValue('gps'),
-  WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({uuid: 'wcsprograms_surveytypeid', relation: 'WCSPROGRAMS_surveytype', where: { WCSPROGRAMS_surveytypeExtCode: dataValue('survey_type') || 'practice' }})(state),
+  WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({uuid: 'wcsprograms_surveytypeid', relation: 'WCSPROGRAMS_surveytype', where: { WCSPROGRAMS_surveytypeExtCode: 'practice' }})(state), //dataValue('survey_type') placeholder
   Deviceid: dataValue('deviceid'),
   FormDateEnd: dataValue('end'),
   Start: dataValue('start'),
