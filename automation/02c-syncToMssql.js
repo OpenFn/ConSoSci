@@ -125,7 +125,6 @@ each('$.lookupTables[*]', state => {
 
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
         writeSql: true,
-        execute: true,
         logValues: true,
       })(state);
     }
