@@ -35,7 +35,7 @@ alterState(state => {
       //  { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓
       // { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki Parc 2020', owner: 'wcs_ndoki', citation: "Y. Londza & Nouabalé-Ndoki National Park team" }, // resynced Sept 10,2021
       // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'Socio-Eco Uganda 2020', owner: 'wcs_uganda_carbon', citation: "M. Nyago, H. Musabende & WCS Uganda Carbon team"}, // resynced Sept 10, 2021
-      // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // resynced Sept 7,2021
+       { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // resynced Sept 7,2021
 
       // Prices 2020
       //  { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs_ndoki' }, // resynced May 4,2021
