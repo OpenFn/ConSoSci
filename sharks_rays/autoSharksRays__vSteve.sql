@@ -103,7 +103,7 @@ ALTER TABLE WCSPROGRAMS_Surveyor WITH CHECK ADD CONSTRAINT FK_WCSPROGRAMS_Survey
                   REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
                   ALTER TABLE WCSPROGRAMS_Surveyor CHECK CONSTRAINT FK_WCSPROGRAMS_Surveyor_SecuritySettingID_Row;
                   
-/* --Use BIT rather than separate table for yes/no
+--Steve to confirm is we keep, or rather use BIT for yes/no
 SELECT column_name
           FROM information_schema.columns 
           WHERE table_name = 'wcsprograms_yesno'
@@ -117,7 +117,7 @@ ALTER TABLE WCSPROGRAMS_Yesno WITH CHECK ADD CONSTRAINT FK_WCSPROGRAMS_Yesno_Org
                   ALTER TABLE WCSPROGRAMS_Yesno WITH CHECK ADD CONSTRAINT FK_WCSPROGRAMS_Yesno_SecuritySettingID_Row FOREIGN KEY (WCSPROGRAMS_SecuritySettingID_Row)
                   REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
                   ALTER TABLE WCSPROGRAMS_Yesno CHECK CONSTRAINT FK_WCSPROGRAMS_Yesno_SecuritySettingID_Row;
-*/                  
+--Yesno still referenced in several places below
                 
 SELECT column_name
           FROM information_schema.columns 
