@@ -574,13 +574,13 @@ MERGE WCSPROGRAMS_Surveytype AS [Target]
           UPDATE SET [Target].WCSPROGRAMS_SurveytypeExtCode=[Source].WCSPROGRAMS_SurveytypeExtCode, [Target].WCSPROGRAMS_SurveytypeName=[Source].WCSPROGRAMS_SurveytypeName
         WHEN NOT MATCHED THEN
           INSERT (WCSPROGRAMS_SurveytypeExtCode, WCSPROGRAMS_SurveytypeName) VALUES ([Source].WCSPROGRAMS_SurveytypeExtCode, [Source].WCSPROGRAMS_SurveytypeName);
-MERGE WCSPROGRAMS_Country AS [Target]
-        USING (VALUES ('kenya', 'kenya'), ('madagascar', 'madagascar'), ('mozambique', 'mozambique'), ('tanzania', 'tanzania')) AS [Source] (WCSPROGRAMS_CountryExtCode, WCSPROGRAMS_CountryName)
-        ON [Target].WCSPROGRAMS_CountryExtCode = [Source].WCSPROGRAMS_CountryExtCode
-        WHEN MATCHED THEN
-          UPDATE SET [Target].WCSPROGRAMS_CountryExtCode=[Source].WCSPROGRAMS_CountryExtCode, [Target].WCSPROGRAMS_CountryName=[Source].WCSPROGRAMS_CountryName
-        WHEN NOT MATCHED THEN
-          INSERT (WCSPROGRAMS_CountryExtCode, WCSPROGRAMS_CountryName) VALUES ([Source].WCSPROGRAMS_CountryExtCode, [Source].WCSPROGRAMS_CountryName);
+-- MERGE WCSPROGRAMS_Country AS [Target]
+--         USING (VALUES ('kenya', 'kenya'), ('madagascar', 'madagascar'), ('mozambique', 'mozambique'), ('tanzania', 'tanzania')) AS [Source] (WCSPROGRAMS_CountryExtCode, WCSPROGRAMS_CountryName)
+--         ON [Target].WCSPROGRAMS_CountryExtCode = [Source].WCSPROGRAMS_CountryExtCode
+--         WHEN MATCHED THEN
+--           UPDATE SET [Target].WCSPROGRAMS_CountryExtCode=[Source].WCSPROGRAMS_CountryExtCode, [Target].WCSPROGRAMS_CountryName=[Source].WCSPROGRAMS_CountryName
+--         WHEN NOT MATCHED THEN
+--           INSERT (WCSPROGRAMS_CountryExtCode, WCSPROGRAMS_CountryName) VALUES ([Source].WCSPROGRAMS_CountryExtCode, [Source].WCSPROGRAMS_CountryName);
 MERGE WCSPROGRAMS_District AS [Target]
         USING (VALUES ('kilifi', 'kilifi'), ('kwale', 'kwale'), ('lamu', 'lamu'), ('mombasa', 'mombasa'), ('tana_river', 'tana_river'), ('antongil_bay', 'antongil_bay'), ('nosy_be', 'nosy_be'), ('toliara', 'toliara'), ('cabo_delgado', 'cabo_delgado'), ('maputo', 'maputo'), ('nampula', 'nampula'), ('sofala', 'sofala'), ('zambezia', 'zambezia'), ('kilwa', 'kilwa'), ('mafia', 'mafia'), ('mtwara', 'mtwara'), ('pemba', 'pemba'), ('rufiji', 'rufiji'), ('tanga', 'tanga'), ('unguja', 'unguja')) AS [Source] (WCSPROGRAMS_DistrictExtCode, WCSPROGRAMS_DistrictName)
         ON [Target].WCSPROGRAMS_DistrictExtCode = [Source].WCSPROGRAMS_DistrictExtCode
