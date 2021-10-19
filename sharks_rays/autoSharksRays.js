@@ -153,6 +153,7 @@ each(
             ),
           },
         })(state),
+        //=================================================//
         // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
         //   uuid: 'wcsprograms_speciesid',
         //   relation: 'WCSPROGRAMS_species',
@@ -162,7 +163,17 @@ each(
         //     ),
         //   },
         // })(state),
-        WCSPROGRAMS_TaxaID: '', // TODO: SHOULD MAP TO WHICH PATH
+        //NOTE: Replaced above auto-mapping with below Taxa mapping
+        WCSPROGRAMS_TaxaID: await findValue({
+          uuid: 'wcsprograms_taxaid',
+          relation: 'WCSPROGRAMS_Taxa',
+          where: {
+            WCSPROGRAMS_TaxaExtCode: dataValue(
+              'market_details/vendor/sales/s_species'
+            ),
+          },
+        })(state),
+        //=================================================//
         SPic4: x['market_details/vendor/sales/s_img4/s_pic_4'],
         SPic5: x['market_details/vendor/sales/s_img5/s_pic_5'],
         SPic6: x['market_details/vendor/sales/s_img6/s_pic6'],
@@ -192,6 +203,8 @@ each(
         SCarapaceWidth: x['market_details/vendor/sales/s_carapace_width'],
         SGearType: x['market_details/vendor/sales/s_gear_type'],
         SGearTypeOther: x['market_details/vendor/sales/s_gear_type_other'],
+        //=================================================//
+        //== NOTE: Removed from sql, so mapping removed
         // WCSPROGRAMS_YesnoID_SDnaSampleCollected: await findValue({
         //   uuid: 'wcsprograms_yesnoid',
         //   relation: 'WCSPROGRAMS_yesno',
@@ -201,6 +214,10 @@ each(
         //     ),
         //   },
         // })(state),
+        //=================================================//
+        //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
+        SDnaSampleCollected: x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes' ? true : x['boat/catch_details/dna_sample_collected'] === 'no' ? false : undefined,
+        //=================================================//
         SDnaCode: x['market_details/vendor/sales/s_dna_code'],
         SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'],
         SPriceSoldUsd: x['market_details/vendor/sales/s_price_sold_usd'],
@@ -348,6 +365,7 @@ each(
             WCSPROGRAMS_genusExtCode: dataValue('boat/catch_details/genus'),
           },
         })(state),
+        //=================================================//
         // WCSPROGRAMS_SpeciesID_Species: await findValue({
         //   uuid: 'wcsprograms_speciesid',
         //   relation: 'WCSPROGRAMS_species',
@@ -355,7 +373,16 @@ each(
         //     WCSPROGRAMS_speciesExtCode: dataValue('boat/catch_details/species'),
         //   },
         // })(state),
-        WCSPROGRAMS_TaxaID_Species: '', // TODO: SHOULD MAP TO WHICH PATH
+        //
+        //NOTE: Replaced above auto-mapping with below Taxa mapping
+        WCSPROGRAMS_TaxaID_Species: await findValue({
+          uuid: 'wcsprograms_taxaid',
+          relation: 'WCSPROGRAMS_Taxa',
+          where: {
+            WCSPROGRAMS_TaxaExtCode: dataValue('boat/catch_details/species'),
+          },
+        })(state),
+        //=================================================//
         LocalName: x['boat/catch_details/local_name'],
         WCSPROGRAMS_SexID_Sex: await findValue({
           uuid: 'wcsprograms_sexid',
@@ -381,6 +408,7 @@ each(
         Pic12: x['boat/catch_details/img12/pic12'],
         GearType: x['boat/catch_details/gear_type'],
         GearTypeOther: x['boat/catch_details/gear_type_other'],
+        //=================================================//
         // WCSPROGRAMS_YesnoID_DnaSampleCollected: await findValue({
         //   uuid: 'wcsprograms_yesnoid',
         //   relation: 'WCSPROGRAMS_yesno',
@@ -390,7 +418,9 @@ each(
         //     ),
         //   },
         // })(state),
-        DnaSampleCollected: x['boat/catch_details/dna_sample_collected'], // TODO: SHOULD MAP TO WHICH PATH
+        //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
+        DnaSampleCollected: x['boat/catch_details/dna_sample_collected'] === 'yes' ? true : x['boat/catch_details/dna_sample_collected'] === 'no' ? false : undefined,
+        //=================================================//
         DnaCode: x['boat/catch_details/dna_code'],
         PriceSoldFor: x['boat/catch_details/price_sold_for'],
         PriceSoldUsd: x['boat/catch_details/price_sold_usd'],
