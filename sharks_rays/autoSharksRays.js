@@ -96,11 +96,12 @@ alterState(async state => {
       relation: 'WCSPROGRAMS_district',
       where: { WCSPROGRAMS_districtExtCode: dataValue('district') },
     })(state),
-    WCSPROGRAMS_CountryID_Country: await findValue({
-      uuid: 'wcsprograms_countryid',
-      relation: 'WCSPROGRAMS_country',
-      where: { WCSPROGRAMS_countryExtCode: dataValue('country') },
-    })(state),
+    // WCSPROGRAMS_CountryID_Country: await findValue({
+    //   uuid: 'wcsprograms_countryid',
+    //   relation: 'WCSPROGRAMS_country',
+    //   where: { WCSPROGRAMS_countryExtCode: dataValue('country') },
+    // })(state),
+    WCSPROGRAMS_RegionID_Country: '', // TODO: SHOULD MAP TO WHICH PATH
     Gps: dataValue('gps'),
     WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({
       uuid: 'wcsprograms_surveytypeid',
@@ -152,15 +153,16 @@ each(
             ),
           },
         })(state),
-        WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
-          uuid: 'wcsprograms_speciesid',
-          relation: 'WCSPROGRAMS_species',
-          where: {
-            WCSPROGRAMS_speciesExtCode: dataValue(
-              'market_details/vendor/sales/s_species'
-            ),
-          },
-        })(state),
+        // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
+        //   uuid: 'wcsprograms_speciesid',
+        //   relation: 'WCSPROGRAMS_species',
+        //   where: {
+        //     WCSPROGRAMS_speciesExtCode: dataValue(
+        //       'market_details/vendor/sales/s_species'
+        //     ),
+        //   },
+        // })(state),
+        WCSPROGRAMS_TaxaID: '', // TODO: SHOULD MAP TO WHICH PATH
         SPic4: x['market_details/vendor/sales/s_img4/s_pic_4'],
         SPic5: x['market_details/vendor/sales/s_img5/s_pic_5'],
         SPic6: x['market_details/vendor/sales/s_img6/s_pic6'],
@@ -190,15 +192,15 @@ each(
         SCarapaceWidth: x['market_details/vendor/sales/s_carapace_width'],
         SGearType: x['market_details/vendor/sales/s_gear_type'],
         SGearTypeOther: x['market_details/vendor/sales/s_gear_type_other'],
-        WCSPROGRAMS_YesnoID_SDnaSampleCollected: await findValue({
-          uuid: 'wcsprograms_yesnoid',
-          relation: 'WCSPROGRAMS_yesno',
-          where: {
-            WCSPROGRAMS_yesnoExtCode: dataValue(
-              'market_details/vendor/sales/s_dna_sample_collected'
-            ),
-          },
-        })(state),
+        // WCSPROGRAMS_YesnoID_SDnaSampleCollected: await findValue({
+        //   uuid: 'wcsprograms_yesnoid',
+        //   relation: 'WCSPROGRAMS_yesno',
+        //   where: {
+        //     WCSPROGRAMS_yesnoExtCode: dataValue(
+        //       'market_details/vendor/sales/s_dna_sample_collected'
+        //     ),
+        //   },
+        // })(state),
         SDnaCode: x['market_details/vendor/sales/s_dna_code'],
         SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'],
         SPriceSoldUsd: x['market_details/vendor/sales/s_price_sold_usd'],
@@ -346,13 +348,14 @@ each(
             WCSPROGRAMS_genusExtCode: dataValue('boat/catch_details/genus'),
           },
         })(state),
-        WCSPROGRAMS_SpeciesID_Species: await findValue({
-          uuid: 'wcsprograms_speciesid',
-          relation: 'WCSPROGRAMS_species',
-          where: {
-            WCSPROGRAMS_speciesExtCode: dataValue('boat/catch_details/species'),
-          },
-        })(state),
+        // WCSPROGRAMS_SpeciesID_Species: await findValue({
+        //   uuid: 'wcsprograms_speciesid',
+        //   relation: 'WCSPROGRAMS_species',
+        //   where: {
+        //     WCSPROGRAMS_speciesExtCode: dataValue('boat/catch_details/species'),
+        //   },
+        // })(state),
+        WCSPROGRAMS_TaxaID_Species: '', // TODO: SHOULD MAP TO WHICH PATH
         LocalName: x['boat/catch_details/local_name'],
         WCSPROGRAMS_SexID_Sex: await findValue({
           uuid: 'wcsprograms_sexid',
@@ -378,15 +381,16 @@ each(
         Pic12: x['boat/catch_details/img12/pic12'],
         GearType: x['boat/catch_details/gear_type'],
         GearTypeOther: x['boat/catch_details/gear_type_other'],
-        WCSPROGRAMS_YesnoID_DnaSampleCollected: await findValue({
-          uuid: 'wcsprograms_yesnoid',
-          relation: 'WCSPROGRAMS_yesno',
-          where: {
-            WCSPROGRAMS_yesnoExtCode: dataValue(
-              'boat/catch_details/dna_sample_collected'
-            ),
-          },
-        })(state),
+        // WCSPROGRAMS_YesnoID_DnaSampleCollected: await findValue({
+        //   uuid: 'wcsprograms_yesnoid',
+        //   relation: 'WCSPROGRAMS_yesno',
+        //   where: {
+        //     WCSPROGRAMS_yesnoExtCode: dataValue(
+        //       'boat/catch_details/dna_sample_collected'
+        //     ),
+        //   },
+        // })(state),
+        DnaSampleCollected: x['boat/catch_details/dna_sample_collected'], // TODO: SHOULD MAP TO WHICH PATH
         DnaCode: x['boat/catch_details/dna_code'],
         PriceSoldFor: x['boat/catch_details/price_sold_for'],
         PriceSoldUsd: x['boat/catch_details/price_sold_usd'],
