@@ -335,7 +335,7 @@ SELECT column_name
 CREATE TABLE WCSPROGRAMS_SharksRaysSales (
         WCSPROGRAMS_TypeID_SType int    NOT NULL, WCSPROGRAMS_GenusID_SGenus int    NOT NULL
 		--, WCSPROGRAMS_SpeciesID_SSpecies int    
-		,WCSPROGRAMS_TaxaID INT NOT NULL
+		,WCSPROGRAMS_TaxaID_SSpecies INT NOT NULL
 		, SPic4 nvarchar(max)    NOT NULL, SPic5 nvarchar(max)    NOT NULL, SPic6 nvarchar(max)    NOT NULL, SPic7 nvarchar(max)    NOT NULL, SPic8 nvarchar(max)    NOT NULL
 		, SPic9 nvarchar(max)    NOT NULL, SPic10 nvarchar(max)    NOT NULL, SPic11 nvarchar(max)    NOT NULL, SPic12 nvarchar(max)    , SLocalName nvarchar(max)    NOT NULL
 		, WCSPROGRAMS_SexID_SSex int    NOT NULL, SWeight float    NOT NULL, SDiscWidth float    NOT NULL, SDiscLength float    NOT NULL, STotalLength float    NOT NULL
