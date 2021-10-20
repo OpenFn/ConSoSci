@@ -164,7 +164,7 @@ each(
         //   },
         // })(state),
         //NOTE: Replaced above auto-mapping with below Taxa mapping
-        WCSPROGRAMS_TaxaID: await findValue({
+        WCSPROGRAMS_TaxaID_SSpecies: await findValue({
           uuid: 'wcsprograms_taxaid',
           relation: 'WCSPROGRAMS_Taxa',
           where: {
