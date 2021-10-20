@@ -66,7 +66,11 @@ alterState(async state => {
 alterState(async state => {
   const mapping = {
     Verification: dataValue('verification'),
-    SharkRayVendorsNb: dataValue('market_details/shark_ray_vendors_nb'),
+    SharkRayVendorsNb: state => {
+      return dataValue('market_details/shark_ray_vendors_nb')(state)
+        ? dataValue('market_details/shark_ray_vendors_nb')(state)
+        : 0;
+    },
     Consent: dataValue('consent'),
     Pic3: dataValue('pic3'),
     Pic2: dataValue('pic2'),
@@ -101,7 +105,11 @@ alterState(async state => {
     //   relation: 'WCSPROGRAMS_country',
     //   where: { WCSPROGRAMS_countryExtCode: dataValue('country') },
     // })(state),
-    WCSPROGRAMS_RegionID_Country: '', // TODO: SHOULD MAP TO WHICH PATH
+    WCSPROGRAMS_RegionID_Country: await findValue({
+      uuid: 'wcsprograms_regionid',
+      relation: 'WCSPROGRAMS_Region',
+      where: { WCSPROGRAMS_regionCode: dataValue('country') },
+    })(state),
     Gps: dataValue('gps'),
     WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({
       uuid: 'wcsprograms_surveytypeid',
@@ -216,7 +224,12 @@ each(
         // })(state),
         //=================================================//
         //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
-        SDnaSampleCollected: x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes' ? true : x['boat/catch_details/dna_sample_collected'] === 'no' ? false : undefined,
+        SDnaSampleCollected:
+          x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
+            ? true
+            : x['boat/catch_details/dna_sample_collected'] === 'no'
+            ? false
+            : undefined,
         //=================================================//
         SDnaCode: x['market_details/vendor/sales/s_dna_code'],
         SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'],
@@ -419,7 +432,12 @@ each(
         //   },
         // })(state),
         //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
-        DnaSampleCollected: x['boat/catch_details/dna_sample_collected'] === 'yes' ? true : x['boat/catch_details/dna_sample_collected'] === 'no' ? false : undefined,
+        DnaSampleCollected:
+          x['boat/catch_details/dna_sample_collected'] === 'yes'
+            ? true
+            : x['boat/catch_details/dna_sample_collected'] === 'no'
+            ? false
+            : undefined,
         //=================================================//
         DnaCode: x['boat/catch_details/dna_code'],
         PriceSoldFor: x['boat/catch_details/price_sold_for'],
