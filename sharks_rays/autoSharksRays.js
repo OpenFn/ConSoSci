@@ -211,25 +211,24 @@ each(
         SCarapaceWidth: x['market_details/vendor/sales/s_carapace_width'],
         SGearType: x['market_details/vendor/sales/s_gear_type'],
         SGearTypeOther: x['market_details/vendor/sales/s_gear_type_other'],
+        //=== Adjusted to match WCS table name
+        WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
+              'market_details/vendor/sales/s_dna_sample_collected'
+            ),
+          },
+        })(state),
         //=================================================//
-        //== NOTE: Removed from sql, so mapping removed
-        // WCSPROGRAMS_YesnoID_SDnaSampleCollected: await findValue({
-        //   uuid: 'wcsprograms_yesnoid',
-        //   relation: 'WCSPROGRAMS_yesno',
-        //   where: {
-        //     WCSPROGRAMS_yesnoExtCode: dataValue(
-        //       'market_details/vendor/sales/s_dna_sample_collected'
-        //     ),
-        //   },
-        // })(state),
-        //=================================================//
-        //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
-        SDnaSampleCollected:
-          x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
-            ? true
-            : x['boat/catch_details/dna_sample_collected'] === 'no'
-            ? false
-            : undefined,
+        //NOTE: abandoned; Replaced about auto-mapping to map yes/no values to BIT column
+        // SDnaSampleCollected:
+        //   x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
+        //     ? true
+        //     : x['boat/catch_details/dna_sample_collected'] === 'no'
+        //       ? false
+        //       : undefined,
         //=================================================//
         SDnaCode: x['market_details/vendor/sales/s_dna_code'],
         SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'],
@@ -422,22 +421,22 @@ each(
         GearType: x['boat/catch_details/gear_type'],
         GearTypeOther: x['boat/catch_details/gear_type_other'],
         //=================================================//
-        // WCSPROGRAMS_YesnoID_DnaSampleCollected: await findValue({
-        //   uuid: 'wcsprograms_yesnoid',
-        //   relation: 'WCSPROGRAMS_yesno',
-        //   where: {
-        //     WCSPROGRAMS_yesnoExtCode: dataValue(
-        //       'boat/catch_details/dna_sample_collected'
-        //     ),
-        //   },
-        // })(state),
-        //NOTE: Replaced about auto-mapping to map yes/no values to BIT column
-        DnaSampleCollected:
-          x['boat/catch_details/dna_sample_collected'] === 'yes'
-            ? true
-            : x['boat/catch_details/dna_sample_collected'] === 'no'
-            ? false
-            : undefined,
+        WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
+              'boat/catch_details/dna_sample_collected'
+            ),
+          },
+        })(state),
+        //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
+        // DnaSampleCollected:
+        //   x['boat/catch_details/dna_sample_collected'] === 'yes'
+        //     ? true
+        //     : x['boat/catch_details/dna_sample_collected'] === 'no'
+        //       ? false
+        //       : undefined,
         //=================================================//
         DnaCode: x['boat/catch_details/dna_code'],
         PriceSoldFor: x['boat/catch_details/price_sold_for'],
@@ -463,10 +462,10 @@ alterState(async state => {
 
   for (let x of dataArray) {
     mapping.push({
-      WCSPROGRAMS_YesnoID_BoatInfo: await findValue({
-        uuid: 'wcsprograms_yesnoid',
-        relation: 'WCSPROGRAMS_yesno',
-        where: { WCSPROGRAMS_yesnoExtCode: dataValue('boat/boat_info') },
+      WCSPROGRAMS_SharksRaysYesNoID_BoatInfo: await findValue({
+        uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+        relation: 'WCSPROGRAMS_SharksRaysYesNo',
+        where: { WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info') },
       })(state),
       WCSPROGRAMS_BoatID_BoatType: await findValue({
         uuid: 'wcsprograms_boatid',
@@ -537,17 +536,17 @@ alterState(async state => {
       FishingTime: x['boat/fishing_time'],
       TravelTime: x['boat/travel_time'],
       NbBoats: x['boat/nb_boats'],
-      WCSPROGRAMS_YesnoID_Targeted: await findValue({
-        uuid: 'wcsprograms_yesnoid',
-        relation: 'WCSPROGRAMS_yesno',
-        where: { WCSPROGRAMS_yesnoExtCode: dataValue('boat/targeted') },
+      WCSPROGRAMS_SharksRaysYesNoID_Targeted: await findValue({
+        uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+        relation: 'WCSPROGRAMS_SharksRaysYesNo',
+        where: { WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/targeted') },
       })(state),
       LastCatchSharkRay: x['boat/last_catch_shark_ray'],
-      WCSPROGRAMS_YesnoID_ReleaseSharkRay: await findValue({
-        uuid: 'wcsprograms_yesnoid',
-        relation: 'WCSPROGRAMS_yesno',
+      WCSPROGRAMS_SharksRaysYesNoID_ReleaseSharkRay: await findValue({
+        uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+        relation: 'WCSPROGRAMS_SharksRaysYesNo',
         where: {
-          WCSPROGRAMS_yesnoExtCode: dataValue('boat/release_shark_ray'),
+          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/release_shark_ray'),
         },
       })(state),
       PercentEat: x['boat/percent_eat'],
