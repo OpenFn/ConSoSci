@@ -1,6 +1,13 @@
 alterState(state => {
   const multiSelectIds = ['gear_type', 's_gear_type'];
 
+  const countryMap = {
+    kenya: 'Kenya',
+    madagascar: 'Madagascar',
+    tanzania: 'Tanzania',
+    mozambique: 'Mozambique'
+  }
+
   function convertMultiSelectsIntoArrays(body, multiSelectIds) {
     for (const property in body) {
       if (Array.isArray(body[property])) {
@@ -50,7 +57,7 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  state.data = { ...state.data, ...state.data.body };
+  state.data = { ...state.data, ...state.data.body, ...state.countryMap };
   return state;
 });
 alterState(async state => {
@@ -108,7 +115,7 @@ alterState(async state => {
     WCSPROGRAMS_RegionID_Country: await findValue({
       uuid: 'wcsprograms_regionid',
       relation: 'WCSPROGRAMS_Region',
-      where: { WCSPROGRAMS_regionCode: dataValue('country') },
+      where: { WCSPROGRAMS_regionCode: state.countryMap[dataValue('country')] },
     })(state),
     Gps: dataValue('gps'),
     WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({
