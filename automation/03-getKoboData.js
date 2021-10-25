@@ -9,10 +9,15 @@ alterState(state => {
   state.data = {
     surveys: [
       {
-        uid: 'aukhdejQU76K33caCkF4rP',
-        formName: 'WCS Socio-Economic Projects Database',
-        tableId: 'WCSPROGRAMS_SocioEcoDB',
+        uid: 'aaknL3DQQgkgZ8iay89X5P',
+        formName: 'SHARC',
+        tableId: 'WCSPROGRAMS_SharksRays',
       },
+      // {
+      //   uid: 'aukhdejQU76K33caCkF4rP',
+      //   formName: 'WCS Socio-Economic Projects Database',
+      //   tableId: 'WCSPROGRAMS_SocioEcoDB',
+      // },
       //{
       //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
       //  formName: 'Arcadia Data Collection Site Survey',
