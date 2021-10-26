@@ -1,13 +1,6 @@
 alterState(state => {
   const multiSelectIds = ['gear_type', 's_gear_type'];
 
-  const countryMap = {
-    kenya: 'Kenya',
-    madagascar: 'Madagascar',
-    tanzania: 'Tanzania,',
-    mozambique: 'Mozambique',
-  };
-
   function convertMultiSelectsIntoArrays(body, multiSelectIds) {
     for (const property in body) {
       if (Array.isArray(body[property])) {
@@ -116,7 +109,7 @@ alterState(async state => {
       uuid: 'wcsprograms_regionid',
       relation: 'WCSPROGRAMS_Region',
       where: {
-        WCSPROGRAMS_RegionExtCode: dataValue('country')(state)
+        WCSPROGRAMS_RegionExtCode: dataValue('country')
       },
     })(state),
     Gps: dataValue('gps'),
