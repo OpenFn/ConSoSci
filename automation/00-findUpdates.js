@@ -6,89 +6,33 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
-    //==== BNS/NRGT forms to sync DD =========//
-    // { 
-    //   uid: 'aTRKQW2b8TJGxF7DVPfjFv',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNSPrice',
-    // },
-    // { 
-    //   uid: 'atyo55YdBdfxzXiaBdrbvr',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNS',
-    // },
-    // { 
-    //   uid: 'ad7S4hPBN7qM4Ac3mpEdwZ',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNS',
-    // },
-    // { 
-    //   uid: 'aFQWAYHXXfh8i2cmXw9BFi',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNS',
-    // },
-    // { 
-    //   uid: 'awQmCEf63g5KN2G4kcBWrc',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNSPrice',
-    // },
-    // { 
-    //   uid: 'aj67aaDZa52oLBFPVGWWwu',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'BNSPrice',
-    // },
-    // { 
-    //   uid: 'apnzrb2RuoKu8Uxy2svwF6',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'NRGT',
-    // },
-    // { 
-    //   uid: 'aZZV4KikgRKz79LqqQR5Ma',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'NRGT',
-    // },
-    // { 
-    //   uid: 'ajDeQVDrz2AZxvxLLWjiBE',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'NRGT',
-    // },
-    // { //NRGT Makira 2019
-    //   uid: 'ajDeQVDrz2AZxvxLLWjiBE',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'NRGT',
-    // },
-    // { //NRGT Ndoki 2020
-    //   uid: 'axSXT4r6TkLxnr3CBggmzg',
-    //   p1: 'WCSPROGRAMS',
-    //   p2: '',
-    //   tableId: 'NRGT',
-    // },
-    
     //=================================
     //==== SharksRays ===============//
     {
-      uid: 'apZrpKcK78xzrPcAfRrfac',
+      uid: 'aaknL3DQQgkgZ8iay89X5P',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
+     {
+      uid: 'aStMvYShWXZsKYa7AyN6sr',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
+     {
+      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
       p1: 'WCSPROGRAMS',
       p2: '',
       tableId: 'SharksRays',
     },
     //=== WCS Socio Economic Database =====
-    // {
-    //     uid: 'aukhdejQU76K33caCkF4rP',
-    //     p1: 'WCSPROGRAMS',
-    //     p2: '',
-    //     tableId: 'SocioEcoDB'
-    //   },
+    {
+         uid: 'aukhdejQU76K33caCkF4rP',
+         p1: 'WCSPROGRAMS',
+         p2: '',
+         tableId: 'SocioEcoDB'
+       },
     //=== Trillion Trees forms =====
     // {
     //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
