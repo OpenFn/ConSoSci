@@ -13,6 +13,21 @@ alterState(state => {
         formName: 'SHARC',
         tableId: 'WCSPROGRAMS_SharksRays',
       },
+      {
+        uid: 'aStMvYShWXZsKYa7AyN6sr',
+        formName: 'Sharks_Rays_20210521_Kenya',
+        tableId: 'WCSPROGRAMS_SharksRays',
+      },
+      {
+        uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+        formName: 'Sharks_Rays_20210627_Kenya',
+        tableId: 'WCSPROGRAMS_SharksRays',
+      },
+      {
+        uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
+        formName: 'Sharks_Rays_20210701_Kenya',
+        tableId: 'WCSPROGRAMS_SharksRays',
+      },
       // {
       //   uid: 'aukhdejQU76K33caCkF4rP',
       //   formName: 'WCS Socio-Economic Projects Database',
