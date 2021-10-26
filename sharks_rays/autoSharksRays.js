@@ -51,7 +51,7 @@ alterState(state => {
   );
 
   state.data = { ...state.data, ...state.data.body };
-  return { ...state, countryMap };
+  return { ...state };
 });
 alterState(async state => {
   const mapping = {
