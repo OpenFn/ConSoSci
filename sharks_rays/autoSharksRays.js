@@ -116,8 +116,7 @@ alterState(async state => {
       uuid: 'wcsprograms_regionid',
       relation: 'WCSPROGRAMS_Region',
       where: {
-        WCSPROGRAMS_regionCode: state =>
-          state.countryMap[dataValue('country')(state)],
+        WCSPROGRAMS_RegionExtCode: dataValue('country')(state)
       },
     })(state),
     Gps: dataValue('gps'),
