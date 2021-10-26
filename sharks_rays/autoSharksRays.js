@@ -115,7 +115,12 @@ alterState(async state => {
     WCSPROGRAMS_RegionID_Country: await findValue({
       uuid: 'wcsprograms_regionid',
       relation: 'WCSPROGRAMS_Region',
-      where: { WCSPROGRAMS_regionCode: state.countryMap[dataValue('country')] },
+      where: {
+        WCSPROGRAMS_regionCode: state => {
+          var region = state.countryMap[dataValue('country')(state)];
+          return region;
+        }
+      },
     })(state),
     Gps: dataValue('gps'),
     WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({
