@@ -28,11 +28,11 @@ alterState(state => {
         formName: 'Sharks_Rays_20210701_Kenya',
         tableId: 'WCSPROGRAMS_SharksRays',
       },
-      // {
-      //   uid: 'aukhdejQU76K33caCkF4rP',
-      //   formName: 'WCS Socio-Economic Projects Database',
-      //   tableId: 'WCSPROGRAMS_SocioEcoDB',
-      // },
+       {
+         uid: 'aukhdejQU76K33caCkF4rP',
+         formName: 'WCS Socio-Economic Projects Database',
+         tableId: 'WCSPROGRAMS_SocioEcoDB',
+       },
       //{
       //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
       //  formName: 'Arcadia Data Collection Site Survey',
