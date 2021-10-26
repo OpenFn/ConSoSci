@@ -12,60 +12,7 @@ alterState(state => {
         uid: 'aaknL3DQQgkgZ8iay89X5P',
         formName: 'SHARC',
         tableId: 'WCSPROGRAMS_SharksRays',
-      },
-      {
-        uid: 'aStMvYShWXZsKYa7AyN6sr',
-        formName: 'Sharks_Rays_20210521_Kenya',
-        tableId: 'WCSPROGRAMS_SharksRays',
-      },
-      {
-        uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-        formName: 'Sharks_Rays_20210627_Kenya',
-        tableId: 'WCSPROGRAMS_SharksRays',
-      },
-      {
-        uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
-        formName: 'Sharks_Rays_20210701_Kenya',
-        tableId: 'WCSPROGRAMS_SharksRays',
-      },
-       {
-         uid: 'aukhdejQU76K33caCkF4rP',
-         formName: 'WCS Socio-Economic Projects Database',
-         tableId: 'WCSPROGRAMS_SocioEcoDB',
-       },
-      //{
-      //  uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-      //  formName: 'Arcadia Data Collection Site Survey',
-      //  tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-      //},
-      //{
-      //  uid: 'avLpvrukkvuFzCHacjHdRs',
-      //  p1: 'WCS',
-      //  p2: 'Vegetation',
-      //  tableId: 'VegetationClassficationAndTreeMeasurementForm',
-      //  formType: 'vegetation',
-      //},
-      //{
-      //  uid: 'aQ8cyLSn8TyJWJQnSg7p63',
-      //  formName: 'SWM Etude Marché 9Feb',
-      //  tableId: 'WCS_marche_SWMEtudeMarché9Feb'
-      //},
-      // {
-      //   uid: 'azg4rJb2Kk8DT2upSPyYjB',
-      //  formName: 'Livestock production demo',
-      //    tableId: 'WCS_Livestock_LivestockProduction'
-      //},
-      //{
-      //  uid: 'apZrpKcK78xzrPcAfRrfac',
-      //  formName: 'Sharks & Rays 24 March',
-      //  tableId: 'WCS_SR_SharkAndRaysTraining'
-      //},
-      
-    //   {
-    //   uid: 'apZrpKcK78xzrPcAfRrfac',
-    //   formName: 'Sharks & Rays TEST FORM 11 june',
-    //   tableId: 'WCSPROGRAMS_SharksRays',
-    // }
+      }
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
