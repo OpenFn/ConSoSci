@@ -8,11 +8,11 @@ alterState(state => {
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
-      // {
-      //   uid: 'aaknL3DQQgkgZ8iay89X5P',
-      //   formName: 'SHARC',
-      //   tableId: 'WCSPROGRAMS_SharksRays',
-      // },
+      {
+        uid: 'aaknL3DQQgkgZ8iay89X5P',
+        formName: 'SHARC',
+        tableId: 'WCSPROGRAMS_SharksRays',
+      },
       {
         uid: 'aStMvYShWXZsKYa7AyN6sr',
         formName: 'Sharks_Rays_20210521_Kenya',
