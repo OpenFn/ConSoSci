@@ -5,8 +5,8 @@ alterState(state => {
     kenya: 'Kenya',
     madagascar: 'Madagascar',
     tanzania: 'Tanzania',
-    mozambique: 'Mozambique'
-  }
+    mozambique: 'Mozambique',
+  };
 
   function convertMultiSelectsIntoArrays(body, multiSelectIds) {
     for (const property in body) {
@@ -58,7 +58,7 @@ alterState(state => {
   );
 
   state.data = { ...state.data, ...state.data.body };
-  return { ...state, ...countryMap };
+  return { ...state, countryMap };
 });
 alterState(async state => {
   const mapping = {
@@ -116,7 +116,8 @@ alterState(async state => {
       uuid: 'wcsprograms_regionid',
       relation: 'WCSPROGRAMS_Region',
       where: {
-        WCSPROGRAMS_regionCode: dataValue('country')
+        WCSPROGRAMS_regionCode: state =>
+          state.countryMap[dataValue('country')(state)],
       },
     })(state),
     Gps: dataValue('gps'),
@@ -474,7 +475,9 @@ alterState(async state => {
       WCSPROGRAMS_SharksRaysYesNoID_BoatInfo: await findValue({
         uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
         relation: 'WCSPROGRAMS_SharksRaysYesNo',
-        where: { WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info') },
+        where: {
+          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info'),
+        },
       })(state),
       WCSPROGRAMS_BoatID_BoatType: await findValue({
         uuid: 'wcsprograms_boatid',
@@ -548,14 +551,18 @@ alterState(async state => {
       WCSPROGRAMS_SharksRaysYesNoID_Targeted: await findValue({
         uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
         relation: 'WCSPROGRAMS_SharksRaysYesNo',
-        where: { WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/targeted') },
+        where: {
+          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/targeted'),
+        },
       })(state),
       LastCatchSharkRay: x['boat/last_catch_shark_ray'],
       WCSPROGRAMS_SharksRaysYesNoID_ReleaseSharkRay: await findValue({
         uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
         relation: 'WCSPROGRAMS_SharksRaysYesNo',
         where: {
-          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/release_shark_ray'),
+          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
+            'boat/release_shark_ray'
+          ),
         },
       })(state),
       PercentEat: x['boat/percent_eat'],
