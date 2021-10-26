@@ -4,7 +4,7 @@ alterState(state => {
   const countryMap = {
     kenya: 'Kenya',
     madagascar: 'Madagascar',
-    tanzania: 'Tanzania',
+    tanzania: 'Tanzania,',
     mozambique: 'Mozambique',
   };
 
