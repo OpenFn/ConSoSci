@@ -57,8 +57,8 @@ alterState(state => {
     state.data.body._id + '-' + state.data.body._xform_id_string
   );
 
-  state.data = { ...state.data, ...state.data.body, ...state.countryMap };
-  return state;
+  state.data = { ...state.data, ...state.data.body };
+  return { ...state, ...countryMap };
 });
 alterState(async state => {
   const mapping = {
