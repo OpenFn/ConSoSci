@@ -23,6 +23,11 @@ alterState(state => {
       uid: 'aQeXAtEkgg8PGwxDiCUnPW',
       formName: 'Sharks_Rays_20210627_Kenya',
       tableId: 'WCSPROGRAMS_SharksRays',
+    },
+    {
+      uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
+      formName: 'Sharks_Rays_20210701_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
     }
     //=========================//
     ].map(survey => ({
