@@ -8,24 +8,24 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualFormList = [
     //=================================
     //==== SharksRays ===============//
-    {
-      uid: 'aaknL3DQQgkgZ8iay89X5P',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
-    },
-     {
-      uid: 'aStMvYShWXZsKYa7AyN6sr',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
-    },
-     {
-      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
-    },
+    // {
+    //   uid: 'aaknL3DQQgkgZ8iay89X5P',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
+    // {
+    //   uid: 'aStMvYShWXZsKYa7AyN6sr',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
+    // {
+    //   uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
     //=== WCS Socio Economic Database =====
     {
          uid: 'aukhdejQU76K33caCkF4rP',
