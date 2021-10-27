@@ -56,11 +56,11 @@ each(dataPath('surveys[*]'), state => {
       };
     });
     const count = state.data.submissions.length;
-    console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+    console.log(`Fetched ${count} submissions from ${formName} (${tableId}).`);
     //Once we fetch the data, we want to post each individual Kobo survey
     //back to the OpenFn inbox to run through the jobs =========================
     return each(dataPath('submissions[*]'), state => {
-      console.log(`Posting ${state.data.i + 1} of ${count}...`);
+      console.log(`Posting 1 of ${count}...`);
       return post(state.configuration.openfnInboxUrl, {
         body: state => state.data,
       })(state);
