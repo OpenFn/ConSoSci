@@ -15,22 +15,14 @@ alterState(state => {
       // },
       //==== Addtl SharksRays to sync data ===============//
     {
-      uid: 'aaknL3DQQgkgZ8iay89X5P',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
-    },
-    {
       uid: 'aStMvYShWXZsKYa7AyN6sr',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
+      formName: 'Sharks_Rays_20210521_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
     },
     {
       uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksRays',
+      formName: 'Sharks_Rays_20210627_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
     }
     //=========================//
     ].map(survey => ({
