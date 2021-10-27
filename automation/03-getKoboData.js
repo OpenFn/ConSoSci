@@ -8,11 +8,30 @@ alterState(state => {
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
-      {
-        uid: 'aaknL3DQQgkgZ8iay89X5P',
-        formName: 'SHARC',
-        tableId: 'WCSPROGRAMS_SharksRays',
-      }
+      // {
+      //   uid: 'aaknL3DQQgkgZ8iay89X5P',
+      //   formName: 'SHARC',
+      //   tableId: 'WCSPROGRAMS_SharksRays',
+      // },
+      //==== Addtl SharksRays ===============//
+    {
+      uid: 'aaknL3DQQgkgZ8iay89X5P',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
+    {
+      uid: 'aStMvYShWXZsKYa7AyN6sr',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    },
+    {
+      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+      p1: 'WCSPROGRAMS',
+      p2: '',
+      tableId: 'SharksRays',
+    }
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
