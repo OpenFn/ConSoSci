@@ -13,7 +13,7 @@ alterState(state => {
       //   formName: 'SHARC',
       //   tableId: 'WCSPROGRAMS_SharksRays',
       // },
-      //==== Addtl SharksRays ===============//
+      //==== Addtl SharksRays to sync data ===============//
     {
       uid: 'aaknL3DQQgkgZ8iay89X5P',
       p1: 'WCSPROGRAMS',
@@ -32,6 +32,7 @@ alterState(state => {
       p2: '',
       tableId: 'SharksRays',
     }
+    //=========================//
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
