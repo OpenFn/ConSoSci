@@ -6,14 +6,58 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
- 
-    //.  {
-    //   uid: 'a587nJHzyBYATXi3Nb2yc7',
-    //    formName: 'Site Registration TZ 7 Sept 21',
-    //   tableId: '??'
-    //   },
+    //=================================
+    //=== WCS Socio Economic Database =====
+    {
+         uid: 'aukhdejQU76K33caCkF4rP',
+         p1: 'WCSPROGRAMS',
+         p2: '',
+         tableId: 'SocioEcoDB'
+    },
+    //==== SharksRays ===============//
+    // {
+    //   uid: 'aaknL3DQQgkgZ8iay89X5P',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
+    // {
+    //   uid: 'aStMvYShWXZsKYa7AyN6sr',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
+    // {
+    //   uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'SharksRays',
+    // },
+    //=== Trillion Trees forms =====
+    // {
+    //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'Site',
+    // },
+    // {
+    //   uid: 'a8ffyF7HgbFUEnYBppEL79',
+    //   p1: 'WCSPROGRAMS',
+    //   p2: '',
+    //   tableId: 'Land',
+    // },
+    //=================================
+    // {
+    //   uid: 'avLpvrukkvuFzCHacjHdRs',
+    //   p1: 'WCS',
+    //   p2: 'Vegetation',
+    //   tableId: 'VegetationClassficationAndTreeMeasurementForm'},
 
-
+    //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'OpenFn', p2: 'Sharks', tableId: 'SharkRaysMay4Test'},
+    //{ uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'},
+    //{ uid: 'aDgPJqN4SAYohZ4ZueEeYU', p1: 'WCS', p2: 'Arcadia', tableId: 'ArcadiaDataCollection'},
+    //{ uid: 'a7Dx4vpFcj7ziwaKE4682U', p1: 'WCS', p2: 'Vegetation', tableId: 'VegetationClassficationAndTreeMeasurementForm'},
+    //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'WCS', p2: 'SR', tableId: 'SharkAndRaysTraining'}
   ];
 
   state.data.forms = state.data.results
