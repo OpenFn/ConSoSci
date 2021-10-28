@@ -4,16 +4,32 @@
 alterState(state => {
   console.log('Current cursor value:', state.lastEnd);
 
-  // Set a manual cursor if you'd like to only fetch data after this date.
+  // IF YOU CLEAR STATE...
+  // Set this manual cursor to the earliest submission date you want fetch.
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
-     // {
-    //    uid: 'a587nJHzyBYATXi3Nb2yc7',
-    //    formName: 'Site Registration TZ 7 Sept 21',
-    //    tableId: '??',
-    //  },
- 
+      {
+        uid: 'aaknL3DQQgkgZ8iay89X5P',
+        formName: 'SHARC',
+        tableId: 'WCSPROGRAMS_SharksRays',
+      },
+      //==== Addtl SharksRays to sync data ===============//
+    {
+      uid: 'aStMvYShWXZsKYa7AyN6sr',
+      formName: 'Sharks_Rays_20210521_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    },
+    {
+      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+      formName: 'Sharks_Rays_20210627_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    },
+    {
+      uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
+      formName: 'Sharks_Rays_20210701_Kenya',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    }
     //=========================//
     ].map(survey => ({
       ...survey,
