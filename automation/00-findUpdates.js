@@ -20,7 +20,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
     //     p1: 'WCSPROGRAMS',
     //     p2: '',
     //     tableId: 'SocioEcoDB'
-    },
+    //},
     //==== SharksRays ===============//
     // {
     //   uid: 'aaknL3DQQgkgZ8iay89X5P',
