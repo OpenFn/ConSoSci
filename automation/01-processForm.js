@@ -228,8 +228,7 @@ get(`${state.data.url}`, {}, state => {
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
         let suffix = q.path.slice(-1)[0];
-        if (getType(suffix) === 'begin_group') suffix = undefined;
-
+        if (suffix && getType(suffix) === 'begin_group') suffix = undefined;
         // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`; // MC: TO CHANGE??
         const lookupTableName = `${prefixes}_${toCamelCase(
           q.select_from_list_name
