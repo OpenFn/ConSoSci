@@ -1,4 +1,24 @@
-);
+alterState(state => {
+  return { ...state, projectId: 'p5qvqx' };
+});
+
+alterState(state => {
+  var expression = `alterState(state => {
+  const multiSelectIds = ["${state.multiSelectIds.join('", "')}"];
+
+  function convertMultiSelectsIntoArrays(body, multiSelectIds) {
+    for (const property in body) {
+      if (Array.isArray(body[property])) {
+        convertMultiSelectsIntoArrays(body[property], multiSelectIds);
+      } else {
+        for (const thing in body[property]) {
+          if (Array.isArray(body[property][thing])) {
+            convertMultiSelectsIntoArrays(
+              body[property][thing],
+              multiSelectIds
+            );
+          } else if (thing.includes(multiSelectIds)) {
+            const multiVals = body[property][thing].split(' ');
             body[property][thing] = multiVals.map(val => ({ name: val }));
           }
         }
