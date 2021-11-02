@@ -7,7 +7,7 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
     //=================================
-    // Trillion Trees Testing
+    // Trillion Trees Testing //NOTE: openfn_kobo does not have access to this form
       //     {
       // uid: 'a587nJHzyBYATXi3Nb2yc7',
       // p1: 'TT',
