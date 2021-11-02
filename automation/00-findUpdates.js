@@ -8,19 +8,19 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualFormList = [
     //=================================
     // Trillion Trees Testing
-          {
-       uid: 'a587nJHzyBYATXi3Nb2yc7',
-       p1: 'TT',
-       p2: '',
-       tableId: 'SiteRegistration'
-       },
+      //     {
+      // uid: 'a587nJHzyBYATXi3Nb2yc7',
+      // p1: 'TT',
+      // p2: '',
+      // tableId: 'SiteRegistration'
+      // },
     //=== WCS Socio Economic Database =====
-    //{
-    //     uid: 'aukhdejQU76K33caCkF4rP',
-    //     p1: 'WCSPROGRAMS',
-    //     p2: '',
-    //     tableId: 'SocioEcoDB'
-    //},
+    {
+        uid: 'aukhdejQU76K33caCkF4rP',
+        p1: 'WCSPROGRAMS',
+        p2: '',
+        tableId: 'SocioEcoDB'
+    },
     //==== SharksRays ===============//
     // {
     //   uid: 'aaknL3DQQgkgZ8iay89X5P',
