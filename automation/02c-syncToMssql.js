@@ -26,7 +26,7 @@ each(
       // Note: Specify options here (e.g {writeSql: false, execute: true})
       return describeTable(name.toLowerCase(), {
         writeSql: true, // Keep to true to log query.
-        execute: false, // This always needs to be true if we need to know whether to insert or update
+        execute: true, // This always needs to be true if we need to know whether to insert or update
       })(state).then(mssqlColumn => {
         const { rows } = mssqlColumn.response.body;
         let mergedColumns = state.data.columns;
