@@ -8,10 +8,9 @@ permalink: /kobo-automation/
 # Project 2: Automated Database Configuration & Kobo Form Integration
 
 ## Summary 
-1. [See User Guide](https://docs.google.com/document/d/1_gre0rHE4WIReCHNbhgrjrCl7MdNi1fTWjgHH4Rgvug/edit?usp=sharing) for step-by-step guidance. 
-2. [See Presentation](https://docs.google.com/presentation/d/1e9UPLnEIgtDPH6_dGqgQhUyZnc3TVl8ECSwJz5JgpNQ/edit?usp=sharing) for screenshots of the solution overview)
-3. Video - [Solution Overview](https://www.google.com/url?q=https://www.youtube.com/watch?v%3D98h1JaGtUdY%26feature%3Dyoutu.be&sa=D&ust=1608118810078000&usg=AOvVaw2Mjp-KlgfxjSHLGsuQVnSi)
-4. Video - [Automation Testing Guidance](https://www.google.com/url?q=https://www.youtube.com/watch?v%3DD3bM4VEeQV8%26feature%3Dyoutu.be%26hd%3D1&sa=D&ust=1608118810078000&usg=AOvVaw0jtqPq-gvjZLgehRzgvLmA)
+1. [See Presentation](https://docs.google.com/presentation/d/1e9UPLnEIgtDPH6_dGqgQhUyZnc3TVl8ECSwJz5JgpNQ/edit?usp=sharing) for screenshots of the solution overview)
+2. Video - [Solution Overview](https://www.google.com/url?q=https://www.youtube.com/watch?v%3D98h1JaGtUdY%26feature%3Dyoutu.be&sa=D&ust=1608118810078000&usg=AOvVaw2Mjp-KlgfxjSHLGsuQVnSi)
+3. Video - [Automation Testing Guidance](https://www.google.com/url?q=https://www.youtube.com/watch?v%3DD3bM4VEeQV8%26feature%3Dyoutu.be%26hd%3D1&sa=D&ust=1608118810078000&usg=AOvVaw0jtqPq-gvjZLgehRzgvLmA)
 
 ## Solution overview
 The aim of the solution is to automatically integrate data from Kobo surveys collected across different partners and sites so that WCS administrators can regularly monitor and report across these data sources. 
@@ -19,17 +18,16 @@ The aim of the solution is to automatically integrate data from Kobo surveys col
 Specifically, this solution automates integration of Kobo survey data into a Postgres database, syncing both Kobo metadata (form design changes such as question IDs and question types) and data (actual records or form submissions) between the two systems, via OpenFn. The diagram below demonstrates this flow where OpenFn... 
 
 1. Regularly checks for new and updated forms on Kobo from a specified list of form IDs [Requires initial manual configuration] 
-2. Analyses fetched forms and creates SQL script for creating tables and columns
-3. Updates Postgres table with new tables and columns [Optionally automated or manual step] 
-4. Creates OpenFn job for writing submission data into the tables
-5. Regularly fetches submission data from specified Kobo forms [Requires initial manual configuration] 
-6. Writes submission data to Postgres tables
+2. Analyses fetched forms and generates a SQL script for creating target datavase tables and columns (MSSQL and PostgreSQL compatible)
+3. Creates OpenFn job for writing submission data into the tables
+4. Syncs submission data from specified Kobo forms to the target DB [Requires initial manual configuration] 
+5. Exports the Kobo form definition to load into "Data Dictionary" tables in the target DB to record the questions, choice values, and translations implemented in selected Kobo forms
 
 ## Specifications
 ### Automation Specs
 This solution delivers a semi-automatic process for integration Kobo metadata and data with a connected Postgres database. 
 
-Job `00 - KOBO-AUTO 0. Find Updated Forms` that triggers the automation flow has been configured to run every 3 hours (and can be executed on demand). When run, this job will fetch specified Kobo forms from the connected Kobo account and analyze these forms to automatically (1) sync the Kobo form definition with the metadata of a destination database, and (2) create OpenFn jobs to sync the Kobo data.
+Job `A1. Generate Jobs, DB Tables & Dictionary` that triggers the automation flow has been configured to run every 3 hours (and can be executed on demand). When run, this job will fetch specified Kobo forms from the connected Kobo account and analyze these forms to automatically (1) sync the Kobo form definition with the metadata of a destination database, and (2) create OpenFn jobs to sync the Kobo data.
 
 See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/accept/ac04f174-d0b0-4d4c-aa4b-7e23ef4501d1)) for the envisioned data flow. 
 [![automation-flow](./automation-flow.png)
@@ -39,28 +37,32 @@ See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/a
 2. OpenFn will not delete columns from tables in Postgres, ever.
 3. OpenFn will not modify columns in Postgres, ever.
 4. When a form is modified in Kobo, if fields have been added (or if a question name has been changed), OpenFn will add those columns to the existing table in Postgres.
-5. When a new form is added to Kobo, OpenFn will create a corresponding table in Postgres, tables are labeled based on the ${tableId} specified in `Job 00 - KOBO-AUTO 0. Find Updated Forms`. This allows WCS admins to map 1 form to 1 table (1-to-1), or to map multiple forms to the same 1 table (many-to-1). 
+5. When a new form is added to Kobo, OpenFn will create a corresponding table in Postgres, tables are labeled based on the ${tableId} specified in `A1. Generate Jobs, DB Tables & Dictionary`. This allows WCS admins to map 1 form to 1 table (1-to-1), or to map multiple forms to the same 1 table (many-to-1). 
 6. Table columns will be created with the following data types based on Kobo question data types. This will ensure all data rows will be upserted if Kobo form data is re-processed. 
 
-| Question Type in Kobotoolbox | Data Type in Postgres |
-|------------------------------|-----------------------|
-| calculate                    | varchar               |
-| date                         | date                  |
-| decimal                      | float4                |
-| integer                      | int4                  |
-| select_one                   | varchar               |
-| select_multiple              | text                  |
-| text                         | text                  |
-| jsonb                        | jsonb                 |
-| geopoint                     | text                  |
+| Question Type in Kobotoolbox | Data Type in Postgres        | Data Type in MSSQL            |
+|------------------------------|------------------------------|-------------------------------|
+| calculate                    | varchar                      | nvarchar                      |
+| date                         | date                         | date                          |
+| decimal                      | float4                       | float                         |
+| integer                      | int4                         | int                           |
+| select_one                   | varchar (FK to lookup table) | nvarchar (FK to lookup table) |
+| select_multiple              | creates Many:Many tables     | creates Many:Many tables      |
+| text                         | text                         | nvarchar(max)                 |
+| jsonb                        | jsonb                        | nvarchar(max)                 |
+| geopoint                     | text                         | nvarchar(max)                 |
 
-7. The `end` and `start` meta columns that Kobo sends with each form submission will be saved as `date` type columns in Postgres.
-8. We have created a column on each table called `generated_uuid`. When OpenFn maps data to this column, we will set its value using the following calculation:
+7. For every Kobo `select_one` question, will trigger a "lookup" reference table to be created and loaded with values from the questions's `choice list`. For example, if there is a `region select_one` question, the a foreign key column will be configured called `Region` that has a foreign key relationship with the parent lookup table `Region` that has values like `North`, `South`, `East`, etc. 
+8. For every Kobo `select_multiple` question, will trigger a "lookup" reference table to be created and loaded with values from the questions's `choice list`, _as well as_ a "many:many" table that will relate this lookup table to the main survey table. For example, if there is a `landscale select_one` question, a lookup table `Landscape` will be generated with values like `Forest`, `Ocean`, `Desert`, etc. Then, 1 record will be inserted into a many:many table called `SurveyLandscape` for each Landscape selected for that Survey. 
+![select_tables](./select_questions.png)
+9. The `end` and `start` meta columns that Kobo sends with each form submission will be saved as `date` type columns in Postgres.
+10. We have created a column on each table called `generated_uuid`. When OpenFn maps data to this column, we will set its value using the following calculation:
 `state.data._id + state.data._xform_id_string`
-9. Forms may have multiple repeat groups. We have decided to name each child table with the following syntax: `${p1}_${p2}_${tableId}_${groupName}`.
-10. When a new form is added to Kobo, OpenFn will create a new job to map that Kobo form to the table created in 5. This job will not be turned "on" by default.
-11. When a form is updated, records in "child" repeat group tables, on Postgres, will be purged and then the current set of repeat group entries will be added as repeat group records in Postgres.
-12. When forms have nested repeat groups (i.e., a repeat group inside a repeat group), OpenFn will create a table for each nested group. The records inside the deep group will be related to the shallow group. The records inside the shallow group will be related to the parent. Note also that OpenFn creates a column, in Postgres, for each nested repeat group table showing which record is the parent repeat group.
+11. Forms may have multiple repeat groups. We have decided to name each child table with the following syntax: `${p1}_${p2}_${tableId}_${groupName}`.
+12. When a new form is added to Kobo, OpenFn will create a new job to map that Kobo form to the table created in 5. This job will not be turned "on" by default.
+13. When a form is updated, records in "child" repeat group tables, on Postgres, will be purged and then the current set of repeat group entries will be added as repeat group records in Postgres.
+14. When forms have nested repeat groups (i.e., a repeat group inside a repeat group), OpenFn will create a table for each nested group. The records inside the deep group will be related to the shallow group. The records inside the shallow group will be related to the parent. Note also that OpenFn creates a column, in Postgres, for each nested repeat group table showing which record is the parent repeat group.
+15. If a question is `required` in Kobo, then the corresponding DB column will have the `NOT NULL` constraint added. 
 
 
 ### Database Auto-Configuration Specs 
@@ -69,10 +71,10 @@ See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/a
 Kobo form definitions will be used to auto-generate SQL scripts for configuration of tables and columns in a connected Postgres database. These SQL scripts can be configured to auto-execute, or by copied/pasted and modified by database admins before execution. 
 
 See below for how a Kobo form might be transformed to Postgres tables. Prefixes can be defined by administrators when a new Kobo form is set up in job `00-KOBO-AUTO 0. Find Updated Forms`:
-- prefix1(`p1`)= organization name’s abbreviation (e.g., WCS)
-- prefix2(`p2`) = FormGroup name (e.g., RPT) 
-- `tableId` = The desired database table name, which may be the form or survey type name (e.g., MonthlyTrainingReport). This cannot contain special characters. Example table name: `WCS_RPT_MonthlyTrainingReport`
-- OpenFn will create tables for each repeat group and named after their corresponding parent table ids (e.g. `WCS_RPT_MonthlyTrainingReport_TrainingEvents`, where `TrainingEvents` is the column name of the repeat group and `MonthlyTrainingReport` is the `tableId` of the Kobo form).
+- prefix1(`p1`)= organization name’s abbreviation (NOTE: `WCSPROGRAMS` is the current default)
+- prefix2(`p2`) = FormGroup name (e.g., `RPT` or you can leave blank) 
+- `tableId` = The desired database table name, which may be the form or survey type name (e.g., MonthlyTrainingReport). This cannot contain special characters. Example table name: `WCSPROGRAMS_RPT_MonthlyTrainingReport`
+- OpenFn will create tables for each repeat group and named after their corresponding parent table ids (e.g. `WCSPROGRAMS_RPT_MonthlyTrainingReport_Events`, where `Events` is the column name of the repeat group and `MonthlyTrainingReport` is the `tableId` of the Kobo form).
 
 See [this 'Form/Table' diagram](https://lucid.app/lucidchart/invitations/accept/ac04f174-d0b0-4d4c-aa4b-7e23ef4501d1) below for the envisioned Kobo/Postgres Schema Mapping flow.
 [![form-db-mapping](./form-db-mapping.png)
@@ -84,24 +86,31 @@ To keep track of the different data tables created, WCS may create a master “D
 ## Administrator Guidance
 While a largely automated process, there are multiple manual steps required for administrators to specify how to execute the solution and for which Kobo forms. 
 
-### 1. Solution Setup
-_Creating forms, database tables and columns ([see video walkthrough](https://drive.google.com/file/d/1hd8u3I6SQuXN62qVIzmq-raHxVpE9W0U/view?usp=sharing) for step by step guide and [test scenarios](https://docs.google.com/spreadsheets/d/1JwXM6A-VmSfoiLxkPl6kQCuqi0cJ_w7gJfch_E6Rul0/edit#gid=349169026))._
+### 1. Plan Your Approach: Automation vs. User Actions
+See below diagram for an overview of which steps are handled by the automation solution and which steps require administrator action and manual intervention. 
+[![process-decisiontree](./admin_process.png)
+
+
+### 2. Solution Setup
+_Creating forms, database tables and columns ([see video walkthrough](https://drive.google.com/file/d/1hd8u3I6SQuXN62qVIzmq-raHxVpE9W0U/view?usp=sharing) for step by step guide._
+
+[![auto-jobs](./automation_jobs.png)
 
 #### A. Preparing for setup (pre-requisites)
 1. Check the credentials associated with your OpenFn jobs to ensure they’re connecting with the correct Kobo account and destination database. 
 2. Kobo form names cannot begin with an integer, nor contain special characters (e.g., `21Nov Form`, `CT.1 - Form`). This is because Postgres does not allow table or column names to begin with integers or contain special characters, so consider updating your Kobo form names. Consider re-naming your Kobo forms to ensure no errors. 
 
 #### B. Configuring the automation flow
-1. In job `00 - KOBO-AUTO 0. Find Updated Forms`, find the `manualFormList` section of the job and add entry for the new form, specifying `uuid`=form id from Kobo, `p1`=’WCS’, `p2`=<the form group name>, and `tableid` * =<the name of the form> as in the example below:
-```
+1. In job `A1. Generate Jobs, DB Tables & Dictionary`, find the `manualFormList` section of the job and add entry for the new form, specifying `uuid`=<form id> from Kobo, `p1`=<WCSPROGRAMS>, `p2`=<the form group name>, and `tableid` =<the name of the form> as in the example below:
+```js
 { 
 uid: 'a9eJJ2hrRSMCJZ95WMc93j', 
-p1: 'WCS', 
-p2: 'swm', 
+p1: 'WCSPROGRAMS', 
+p2: 'swm', //or leave blank 
 tableId: 'ConsommationUrbaineSwm'
 }
 ```
-2. Run job `00 - KOBO-AUTO 0. Find Updated Forms`. The job can be run on demand(manually) or turn it on to allow it run automatically, as scheduled.
+2. Run job `A1. Generate Jobs, DB Tables & Dictionary`. The job can be run on demand (manually) or turn it on to allow it run automatically, as scheduled.
 
 * The following recommendations should be observed when setting the `tableId`: 
 - You must specify prefixes(`p1` and `p2`) and a `tableId` for each form, as shown above.
@@ -115,16 +124,25 @@ _Examples_
 **`Note:`** Postgres does **not** allow table or column names to begin with integers or contain special characters (e.g., `11Form`, `1-CT. Form`), so consider this when you create your desired tableId.
 
 #### C. Executing SQL Scripts
-`{writeSql: true, execute: true}`
-Administrators can manually update options in job `2a - KOBO-AUTO - Sync to Postgres` to decide whether the SQL script should be auto-executed 
+Running the `A1` job will trigger the job `A3. Set up DB with SQL` to run and auto-generate a SQL script for creating metadata (DB tables and columns) for capturing survey data. 
+
+This SQL script can be auto-executed in a connected database, OR have auto-exucution turned _off_ so that DB administrators can manually edit the SQL script before running in a connected database. 
+
+Recommended default: 
+`{writeSql: true, execute: false}`
+
+Administrators can manually update these  options in job `A3. Set up DB with SQL` to decide whether the SQL script should be auto-executed 
 1. Choose to set `execute` as `true` or `false`
 2. Choose whether it should output SQL scripts by setting `writeSql` to `true` or `false`
 
-To configure this, click on the edit icon of the job and edit the entries on [line number 8](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L8), [L19](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L19), and [L35](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L35) of the `2a - KOBO-AUTO - Sync to Postgres`  job, setting the values to true or false as per your preference. By default this entry has the following values: `{writeSql: true, execute: true}`
+To configure this, click on the edit icon of the job and edit the entries on [line number 8](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L8), [L19](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L19), and [L35](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L35) of the `A3. Set up DB with SQL`  job, setting the values to true or false as per your preference. By default this entry has the following values: `{writeSql: true, execute: true}`
 
-#### D. Turning "on" the integration
+#### D. Auto-Generating OpenFn Jobs
+Running the `A1` job will also trigger the job `A4. Generate OpenFn Job script` to auto-create an OpenFn job script (which can be later used to integrate Kobo data with the specified target DB). 
+
+#### E. Turning "on" the integration
 _Choose whether to write submission data to database..._
-1. In job `auto/…{tableId}` related to form (e.g. a`uto/swm_etude_de_marché_2020` for form `SWM Etude Marché 2020`), add database credentials (select `WCS Automation` credential to connect to test database) and toggle or turn the job “on”
+1. In job `auto/…{tableId}` related to form (e.g. `auto/swm_etude_de_marché_2020` for form `SWM Etude Marché 2020`), add database credentials (select `WCS Automation` credential to connect to test database) and toggle or turn the job “on”
 2. In job `03-KOBO-AUTO-Get Kobo Data`, add `id` (form id from Kobo), `formName`, and `destination` (`tableId` as it appears in `auto/…{tableId}` job) for a given form as shown below:
 - Assuming the form id from Kobo is `an92wDyVMw4yUtCo4d7EWi`, and the name of the form in Kobo is `SWM Etude Marché 2020`, and the tableId or name of related auto job in OpenFn is `swm_etude_de_marché_2020`. In order for this job’s data to be fetched and synced with the postgres database, you would need to find and edit a section named surveys in `03-KOBO-AUTO-Get Kobo Data`, and add the following entry:
 ```

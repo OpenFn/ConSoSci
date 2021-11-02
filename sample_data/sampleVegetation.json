@@ -1,0 +1,282 @@
+{
+    "configuration": {},
+    "data": {
+        "__query_params": {},
+        "body": {
+            "plot_description/plot_gps": "1.2963633 31.16341 1093.3563429575413 5.0",
+            "plot_description/radius": "2",
+            "groundtruthing/description": "loam",
+            "groundtruthing/moisture": "moist",
+            "_attachments": [],
+            "_validation_status": {},
+            "groundtruthing/colour": "brown",
+            "plot_description/transect_name": "Muntame",
+            "meta/instanceName": "kirunda kibeedi-2021-02-11",
+            "plot_forest_area/vegclass": "tropical_high_forest",
+            "_submitted_by": "wcs_uganda_carbon",
+            "end": "2021-02-11T16:13:16.179+03:00",
+            "plot_forest_area/Ownership": "religious institution",
+            "Srubs_saplings/tree_repeat_10mRing": [
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "7.1",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "7.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Celtis_zenkeri"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "9.2",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "9.8",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Lovoa_trichilioides"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "9.6",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "7.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Markhamia_lutea"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "5.7",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "7.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Celtis_zenkeri"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "3.0",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "4.5",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Coffea_canephora"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "5.0",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "4.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Funtumia_africana"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "8.0",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "6.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Oxyanthus_formosus"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "6.8",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "6.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Funtumia_africana"
+                },
+                {
+                    "Srubs_saplings/tree_repeat_10mRing/dbh": "7.5",
+                    "Srubs_saplings/tree_repeat_10mRing/height": "8.0",
+                    "Srubs_saplings/tree_repeat_10mRing/shrub_species": "Celtis_zenkeri"
+                }
+            ],
+            "plot_forest_area/grassyes": "yes",
+            "outer_plot_description/tree_10cm": "yes",
+            "plot_description/plot_number": "P1",
+            "general_observations/physiography": "plain",
+            "outer_plot_description/sght": "59.3",
+            "general_observations/obsevername": "kirunda kibeedi",
+            "_geolocation": [
+                1.2963633,
+                31.16341
+            ],
+            "plot_description/transect_no": "MT2",
+            "plot_forest_area/district": "kikuube",
+            "Srubs_saplings/brush_repeat": [
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Coffea_canephora",
+                    "Srubs_saplings/brush_repeat/brush_perc": "1"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Celtis_zenkeri",
+                    "Srubs_saplings/brush_repeat/brush_perc": "5"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Funtumia_africana",
+                    "Srubs_saplings/brush_repeat/brush_perc": "1"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Oxyanthus_speciosus",
+                    "Srubs_saplings/brush_repeat/brush_perc": "2"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Celtis_zenkeri",
+                    "Srubs_saplings/brush_repeat/brush_perc": "1"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Lovoa_trichilioides",
+                    "Srubs_saplings/brush_repeat/brush_perc": "1"
+                },
+                {
+                    "Srubs_saplings/brush_repeat/brus_species": "Celtis_zenkeri",
+                    "Srubs_saplings/brush_repeat/brush_perc": "1"
+                }
+            ],
+            "_id": 85306831,
+            "Srubs_saplings/sbrush_per": "12",
+            "plot_description/start_time": "14:19:00.000+03:00",
+            "meta/instanceID": "uuid:cbccc6a3-48cb-4169-b0f2-076586bec280",
+            "today": "2021-02-11",
+            "_xform_id_string": "aGWTfpASm4VgYPW9miSJ8H",
+            "grass_circle/st_grass_repeat": [
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "15",
+                    "grass_circle/st_grass_repeat/grass_species": "Culcasia_falcifolia"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "5",
+                    "grass_circle/st_grass_repeat/grass_species": "Illigera_pentaphylla"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "1",
+                    "grass_circle/st_grass_repeat/grass_species": "Jasminum_eminii"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "1",
+                    "grass_circle/st_grass_repeat/grass_species": "Motandra_guineensis"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "1",
+                    "grass_circle/st_grass_repeat/grass_species": "Allophylus_macrobotrys"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "1",
+                    "grass_circle/st_grass_repeat/grass_species": "Mikania_cordata"
+                },
+                {
+                    "grass_circle/st_grass_repeat/grass_perc": "1",
+                    "grass_circle/st_grass_repeat/grass_species": "Abildgaardia_abortiva"
+                }
+            ],
+            "_status": "submitted_via_web",
+            "plot_forest_area/vegClass_same": "yes",
+            "outer_plot_description/sdbh": "61.89999999999999",
+            "outer_plot_description/lifeform": "Trees",
+            "_notes": [],
+            "start": "2021-02-11T14:18:02.529+03:00",
+            "deviceid": "collect:juS6H0UCckW8VmdI",
+            "Srubs_saplings/tree_3cm": "yes",
+            "groundtruthing/seasonality": "dry",
+            "general_observations/surveydate": "2021-02-11",
+            "groundtruthing/bareground": "60",
+            "plot_description/plot_id": "2021-02-11-MT2",
+            "plot_forest_area/subclass": "tropicalhigh_low",
+            "general_observations/drainage": "welldrained",
+            "outer_plot_description/tree_repeat_out_10mRing": [
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "81.5",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "41.5",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Morus_mesozygia"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "42.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "45.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Morus_mesozygia"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "19.8",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "10.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Blighia_unijugata"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "15.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "14.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Phoenix_reclinata"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "46.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "20.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Margaritaria_discoidea"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "42.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "30.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Fagaropsis_angolensis"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "19.2",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "15.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Alangium_chinense"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "37.5",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "7.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Alangium_chinense"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "48.5",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "25.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Trichilia_dregeana"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "55.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "35.0"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "180.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "50.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Antiaris_toxicaria"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "48.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "40.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Cola_gigantea"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "40.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "25.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Cola_congolana"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "37.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "21.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Ficus_exasperata"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "12.2",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "11.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Funtumia_africana"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "12.8",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "11.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Funtumia_elastica"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "18.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "15.5",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Funtumia_africana"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "12.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "8.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Celtis_zenkeri"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "63.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "29.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Trichilia_dregeana"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "25.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "20.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Phoenix_reclinata"
+                },
+                {
+                    "outer_plot_description/tree_repeat_out_10mRing/bdbh": "28.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/bheight": "18.0",
+                    "outer_plot_description/tree_repeat_out_10mRing/btspecies": "Pseudospondias_microcarpa"
+                }
+            ],
+            "formhub/uuid": "f69099627c69458da857ab9d4486cccb",
+            "_uuid": "cbccc6a3-48cb-4169-b0f2-076586bec280",
+            "general_observations/topography": "rolling",
+            "groundtruthing/fire": "no",
+            "_submission_time": "2021-02-12T15:13:52",
+            "plot_forest_area/center_plot_radius": "2",
+            "Srubs_saplings/shrubyes": "yes",
+            "__version__": "voBCxVvnX653z2VsbDhzdF",
+            "groundtruthing/erodability": "hardpan",
+            "plot_forest_area/vegCondition": "degraded",
+            "_tags": []
+        },
+        "formId": "aGWTfpASm4VgYPW9miSJ8H",
+        "formName": "Vegetation Classification & Tree Measurement",
+        "formOwner": "wcs_uganda_carbon",
+        "formType": "vegetation",
+        "i": 4
+    }
+}

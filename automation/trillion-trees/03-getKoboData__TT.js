@@ -1,26 +1,28 @@
-//== Job to be used for fetching historical data from Kobo in one-time migrations ==//
+//== Job to be used for fetching data from Kobo on repeated, timer basis  ==//
 // This can be run on-demand at any time by clicking "run" //
 
 alterState(state => {
-  // BEFORE RUNNING THIS JOB...
-  // Set this manual cursor to the earliest submission date you want fetch. 
-  // Set this to a very early date if you want to fetch ALL data. 
+  console.log('Current cursor value:', state.lastEnd);
+  // IF YOU CLEAR STATE BEFORE RUNNING THIS JOB FOR A FORM FOR THE FIRST TIME...
+  // Set this manual cursor to the earliest submission date you want start export at.
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
-  console.log('Fetching Kobo submissions starting at: ', manualCursor); 
   state.data = {
     surveys: [
-      //LIST FORMS HERE THAT YOU WANT TO SYNC HIST DATA
-      // {
-      //   uid: 'aaknL3DQQgkgZ8iay89X5P',
-      //   formName: 'SHARC',
-      //   tableId: 'WCSPROGRAMS_SharksRays',
-      // },
+    //== LIST FORMS HERE
+    // {
+    //    uid: 'a587nJHzyBYATXi3Nb2yc7',
+    //    formName: 'Site Registration TZ 7 Sept 21',
+    //    tableId: '??',
+    //  },
+ 
     //=========================//
     ].map(survey => ({
       ...survey,
       formId: survey.uid,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      query: `&query={"_submission_time":{"$gte":"${manualCursor}"}}`,
+      query: `&query={"_submission_time":{"$gte":"${
+        state.lastEnd || manualCursor
+      }"}}`,
     })),
   };
   return state;
@@ -60,5 +62,7 @@ alterState(state => {
     .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
   lastEnd = new Date(lastEnd) > new Date() ? lastEnd : new Date().toISOString();
+
+  console.log('Next job run will fetch data submited after - new cursor value:', lastEnd);
   return { ...state, data: {}, references: [], lastEnd };
 });
