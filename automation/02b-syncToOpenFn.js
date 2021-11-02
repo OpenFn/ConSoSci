@@ -1,5 +1,6 @@
 alterState(state => {
-  return { ...state, projectId: 'p5x4g4' };
+  const { projectId } = state.configuration;
+  return { ...state, projectId };
 });
 
 alterState(state => {
