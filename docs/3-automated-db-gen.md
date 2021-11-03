@@ -8,9 +8,9 @@ permalink: /kobo-automation/
 # Project 2: Automated Database Configuration & Kobo Form Integration
 
 ## Summary 
-1. [See Presentation](https://docs.google.com/presentation/d/1e9UPLnEIgtDPH6_dGqgQhUyZnc3TVl8ECSwJz5JgpNQ/edit?usp=sharing) for screenshots of the solution overview)
-2. Video - [Solution Overview](https://www.google.com/url?q=https://www.youtube.com/watch?v%3D98h1JaGtUdY%26feature%3Dyoutu.be&sa=D&ust=1608118810078000&usg=AOvVaw2Mjp-KlgfxjSHLGsuQVnSi)
-3. Video - [Automation Testing Guidance](https://www.google.com/url?q=https://www.youtube.com/watch?v%3DD3bM4VEeQV8%26feature%3Dyoutu.be%26hd%3D1&sa=D&ust=1608118810078000&usg=AOvVaw0jtqPq-gvjZLgehRzgvLmA)
+:::Quickstart
+[See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution. :::
+
 
 ## Solution overview
 The aim of the solution is to automatically integrate data from Kobo surveys collected across different partners and sites so that WCS administrators can regularly monitor and report across these data sources. 
@@ -29,8 +29,8 @@ This solution delivers a semi-automatic process for integration Kobo metadata an
 
 Job `A1. Generate Jobs, DB Tables & Dictionary` that triggers the automation flow has been configured to run every 3 hours (and can be executed on demand). When run, this job will fetch specified Kobo forms from the connected Kobo account and analyze these forms to automatically (1) sync the Kobo form definition with the metadata of a destination database, and (2) create OpenFn jobs to sync the Kobo data.
 
-See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/accept/ac04f174-d0b0-4d4c-aa4b-7e23ef4501d1)) for the envisioned data flow. 
-[![automation-flow](./automation-flow.png)
+See the below diagram (or [this slide](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit#slide=id.gf855f49396_0_14)) for the envisioned data flow. 
+[![automation-flow](./kobo_flow.png)
 
 ### Automation Assumptions
 1. OpenFn will check for new or changed forms in Kobo on a scheduled basis (i.e., every 3 hours). (This automation can also be run on-demand.)
@@ -70,17 +70,17 @@ See the below diagram (or [this link](https://lucid.app/lucidchart/invitations/a
 
 Kobo form definitions will be used to auto-generate SQL scripts for configuration of tables and columns in a connected Postgres database. These SQL scripts can be configured to auto-execute, or by copied/pasted and modified by database admins before execution. 
 
-See below for how a Kobo form might be transformed to Postgres tables. Prefixes can be defined by administrators when a new Kobo form is set up in job `00-KOBO-AUTO 0. Find Updated Forms`:
+See below for how a Kobo form might be transformed to Postgres tables. Prefixes can be defined by administrators when a new Kobo form is set up in job `A1. Generate Jobs, DB Tables & Dictionary`:
 - prefix1(`p1`)= organization name’s abbreviation (NOTE: `WCSPROGRAMS` is the current default)
 - prefix2(`p2`) = FormGroup name (e.g., `RPT` or you can leave blank) 
 - `tableId` = The desired database table name, which may be the form or survey type name (e.g., MonthlyTrainingReport). This cannot contain special characters. Example table name: `WCSPROGRAMS_RPT_MonthlyTrainingReport`
 - OpenFn will create tables for each repeat group and named after their corresponding parent table ids (e.g. `WCSPROGRAMS_RPT_MonthlyTrainingReport_Events`, where `Events` is the column name of the repeat group and `MonthlyTrainingReport` is the `tableId` of the Kobo form).
 
-See [this 'Form/Table' diagram](https://lucid.app/lucidchart/invitations/accept/ac04f174-d0b0-4d4c-aa4b-7e23ef4501d1) below for the envisioned Kobo/Postgres Schema Mapping flow.
-[![form-db-mapping](./form-db-mapping.png)
+See below diagram for the envisioned Kobo/Postgres Schema Mapping flow.
+![form-db-mapping](./form-db-mapping.png)
 
 ### Data Dictionary
-To keep track of the different data tables created, WCS may create a master “Data Dictionary” table to track the metadata generated for different forms and form groups. In this initial phase, OFG recommends that WCS update such a table manually–but automatic updates to such a table may be discussed in a future phase. 
+To keep track of the different data tables created, WCS may create a master “Data Dictionary” table to track the metadata generated for different forms and form groups. In this initial phase, the automation solution will export Kobo form definitions for DB admins to sync when ready. 
 
 
 ## Administrator Guidance
@@ -88,13 +88,13 @@ While a largely automated process, there are multiple manual steps required for 
 
 ### 1. Plan Your Approach: Automation vs. User Actions
 See below diagram for an overview of which steps are handled by the automation solution and which steps require administrator action and manual intervention. 
-[![process-decisiontree](./admin_process.png)
+![process-decisiontree](./kobo_flow.png)
 
 
 ### 2. Solution Setup
 _Creating forms, database tables and columns ([see video walkthrough](https://drive.google.com/file/d/1hd8u3I6SQuXN62qVIzmq-raHxVpE9W0U/view?usp=sharing) for step by step guide._
 
-[![auto-jobs](./automation_jobs.png)
+![auto-jobs](./automation_jobs.png)
 
 #### A. Preparing for setup (pre-requisites)
 1. Check the credentials associated with your OpenFn jobs to ensure they’re connecting with the correct Kobo account and destination database. 
@@ -110,6 +110,7 @@ p2: 'swm', //or leave blank
 tableId: 'ConsommationUrbaineSwm'
 }
 ```
+![a1-jobs](./a1_job.png)
 2. Run job `A1. Generate Jobs, DB Tables & Dictionary`. The job can be run on demand (manually) or turn it on to allow it run automatically, as scheduled.
 
 * The following recommendations should be observed when setting the `tableId`: 
@@ -121,10 +122,16 @@ _Examples_
 1 Form: `Marche Survey 2020` → set `tableId: 'MarcheSurvey2020'` to create a table for this form
 2 Forms: `Marche Survey V1`, `Marche Survey V2` → set `tableId: 'MarcheSurvey2020'` for both forms in order to map BOTH forms to the same table
 
-**`Note:`** Postgres does **not** allow table or column names to begin with integers or contain special characters (e.g., `11Form`, `1-CT. Form`), so consider this when you create your desired tableId.
+:::NOTE
+1. Postgres does **not** allow table or column names to begin with integers or contain special characters (e.g., `11Form`, `1-CT. Form`), so consider this when you create your desired tableId.
+
+2. Ensure the Kobo forms have been shared with the Kobo user credential linked to this `A1` automation job. 
+:::
 
 #### C. Executing SQL Scripts
 Running the `A1` job will trigger the job `A3. Set up DB with SQL` to run and auto-generate a SQL script for creating metadata (DB tables and columns) for capturing survey data. 
+
+![a3-jobs](./a3_job.png)
 
 This SQL script can be auto-executed in a connected database, OR have auto-exucution turned _off_ so that DB administrators can manually edit the SQL script before running in a connected database. 
 
@@ -137,35 +144,35 @@ Administrators can manually update these  options in job `A3. Set up DB with SQL
 
 To configure this, click on the edit icon of the job and edit the entries on [line number 8](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L8), [L19](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L19), and [L35](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/02a-syncToPostgres.js#L35) of the `A3. Set up DB with SQL`  job, setting the values to true or false as per your preference. By default this entry has the following values: `{writeSql: true, execute: true}`
 
+Once the SQL script has been generated, search the `A3` job run log for `Logging queries` to copy/paste the full script. 
+
+The SQL script can be manually edited as desired by the DB admin before executing in the target DB. 
+[![sql](./sql_script.png)
+
+:::Manual SQL Edits
+If you make manual edits to the SQL script, remember to make corresponding updates in the OpenFn job that will sync data to the DB generated via this SQL script. 
+:::
+
 #### D. Auto-Generating OpenFn Jobs
-Running the `A1` job will also trigger the job `A4. Generate OpenFn Job script` to auto-create an OpenFn job script (which can be later used to integrate Kobo data with the specified target DB). 
+Running the `A1` job will also trigger the job `A4. Generate OpenFn Job script` to auto-create an OpenFn job script (which can be later used to integrate Kobo data with the specified target DB).
+
+![a4-jobs](./a4_job.png)
+
+See the `A4` run log for the name of the OpenFn job that was created/updated. 
+![a4-run](./a4_run.png)
 
 #### E. Turning "on" the integration
-_Choose whether to write submission data to database..._
-1. In job `auto/…{tableId}` related to form (e.g. `auto/swm_etude_de_marché_2020` for form `SWM Etude Marché 2020`), add database credentials (select `WCS Automation` credential to connect to test database) and toggle or turn the job “on”
-2. In job `03-KOBO-AUTO-Get Kobo Data`, add `id` (form id from Kobo), `formName`, and `destination` (`tableId` as it appears in `auto/…{tableId}` job) for a given form as shown below:
-- Assuming the form id from Kobo is `an92wDyVMw4yUtCo4d7EWi`, and the name of the form in Kobo is `SWM Etude Marché 2020`, and the tableId or name of related auto job in OpenFn is `swm_etude_de_marché_2020`. In order for this job’s data to be fetched and synced with the postgres database, you would need to find and edit a section named surveys in `03-KOBO-AUTO-Get Kobo Data`, and add the following entry:
-```
-{
-        id: 'an92wDyVMw4yUtCo4d7EWi',
-        formName: 'SWM Etude Marché 2020',
-        destination: ‘swm_etude_de_marché_2020’
-  }
-```
-Note that each entry should be separated from the other by a comma(`,`) and placed inside the two [ ]  of the surveys section on [L10](https://github.com/OpenFn/wcs/blob/1091374b09988e06c5322df6b76a725f488c3d0d/automation/03-getKoboData.js#L10) of the `03-KOBO-AUTO-Get Kobo Data` job.
-3. Save & Run the job
-The job can be run on demand (manually) or Turn it on to allow it run automatically, as scheduled.
-  
-### 2. Ongoing Management
-#### 1. Turning “off” the integration for specific forms
-**Turn off** checking for form updates in specific forms by removing or commenting out the line containing the form ID in job `00 - KOBO-AUTO 0. Find Updated Forms`. E.g.: form in line 2 below won’t be checked for updates:
-```
-{ uid: 'a9eJJ2hrRSMCJZ95WMc93j', p1: 'WCS', p2: 'swm', tableId: 'ConsommationUrbaineSwm'}
-// { uid: 'a9eJJ2hrRSMCJZ95Wfhsfnffs', p1: 'WCS', p2: 'marche', tableId: 'Marche2020'}
-```
-2. Turn off fetching submission data from specific forms using the same method in job `03-KOBO-AUTO-Get Kobo Data`. Alternatively, turn off the job for the relevant form to prevent the automation from writing data from that form into the database.
+When you're ready to sync data, enter your form id into one the `Sync Data` jobs. 
+- If data collection is just starting or ongoing, use the `Ongoing` job. 
+- To perform a one-time migration of data collected before today's date, run the `Historical` job for this form to sync the historical submissions. 
+ ![sync-jocs](./sync_data_jobs.png)
 
-#### 2. Monitoring the integration
+When editing these `Sync Data` jobs, the `tableId` should match the `Trigger` of the OpenFn job that will be used to this data to the DB. 
+
+Therefore, if multiple forms will use 1 job to sync data to the same DB tables, then the `tableId` will be the same across all of these forms. 
+
+  
+### 2. Monitoring the integration
 Monitor OpenFn `Activity History` for any run failures (learn more in [OpenFn Docs](https://docs.openfn.org/documentation.html#activity)). 
 
 Turn “on” OpenFn notifications to receive email notifications when a run fails. To do this, navigate to your OpenFn `Account Settings` (user icon in top right corner) > for `Notifications`, select the option `Each Time`.
