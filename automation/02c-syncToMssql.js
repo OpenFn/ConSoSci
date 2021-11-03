@@ -88,7 +88,7 @@ each(
         mergedColumns = [...state.data.columns, ...state.data.defaultColumns];
 
       // Note: Specify options here
-      const execute = true;
+      const execute = false;
       const writeSql = true;
 
       return describeTable(name.toLowerCase(), {
