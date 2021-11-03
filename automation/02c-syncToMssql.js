@@ -1,6 +1,9 @@
+fn(state => ({ ...state, execute: false, writeSql: true }));
+
 each(
   '$.tables[*]',
   fn(state => {
+    const { execute, writeSql } = state;
     const { name, defaultColumns } = state.data;
 
     function convertToMssqlTypes(col) {
@@ -87,10 +90,6 @@ each(
       if (state.data.defaultColumns)
         mergedColumns = [...state.data.columns, ...state.data.defaultColumns];
 
-      // Note: Specify options here
-      const execute = false;
-      const writeSql = true;
-
       return describeTable(name.toLowerCase(), {
         writeSql: true, // Keep to true to log query.
         execute, // Keep to true to execute query.
@@ -126,7 +125,7 @@ each(
 );
 
 each('$.lookupTables[*]', state => {
-  const { choiceDictionary } = state;
+  const { choiceDictionary, execute, writeSql } = state;
   const name = state.data.name.split('_')[1];
   const mapping = [];
   for (choice in choiceDictionary) {
@@ -139,7 +138,8 @@ each('$.lookupTables[*]', state => {
       }
 
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
-        writeSql: true,
+        writeSql,
+        execute,
         logValues: true,
       })(state);
     }
