@@ -148,7 +148,7 @@ To configure this, click on the edit icon of the job and edit the entries on [li
 Once the SQL script has been generated, search the `A3` job run log for `Logging queries` to copy/paste the full script. 
 
 The SQL script can be manually edited as desired by the DB admin before executing in the target DB. 
-[![sql](./sql_script.png)
+![sql](./sql_script.png)
 
 **NOTE RE: Manual SQL Edits**
 If you make manual edits to the SQL script, remember to make corresponding updates in the OpenFn job that will sync data to the DB generated via this SQL script. 
@@ -166,7 +166,7 @@ See the `A4` run log for the name of the OpenFn job that was created/updated.
 When you're ready to sync data, enter your form id into one the `Sync Data` jobs. 
 - If data collection is just starting or ongoing, use the `Ongoing` job. 
 - To perform a one-time migration of data collected before today's date, run the `Historical` job for this form to sync the historical submissions. 
- ![sync-jocs](./sync_data_jobs.png)
+![sync-jocs](./sync_data_jobs.png)
 
 When editing these `Sync Data` jobs, the `tableId` should match the `Trigger` of the OpenFn job that will be used to this data to the DB. 
 
@@ -181,7 +181,7 @@ Turn “on” OpenFn notifications to receive email notifications when a run fai
 
 ### 3. Kobo Form Management
 Form setup considerations & best practices
-1. Hidden metadata such as “Site” or “Form owner” can be added to forms as a question using a “Calculate” field. This is possible both in the Form Builder or via XLSForm. [See slides](https://docs.google.com/presentation/d/1e9UPLnEIgtDPH6_dGqgQhUyZnc3TVl8ECSwJz5JgpNQ/edit#slide=id.ga632708288_2_5) for screenshots. 
+1. Hidden metadata such as “Site” or “Form owner” can be added to forms as a question using a “Calculate” field. This is possible both in the Form Builder or via XLSForm. [See slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit#slide=id.gf855f49396_0_67) for screenshots. 
 2. Where possible, Kobo form/ project names should be unique and as concise as possible–ideally not exceeding 25 characters. This helps to ensure that auto-generated database table names are easier to identify. 
 3. Form repeat group names should also be as unique and concise as possible, as these will be mapped to database tables. 
 
