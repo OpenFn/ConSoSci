@@ -121,7 +121,7 @@ each(
   '$.MetadataForms[*]',
   fn(state => {
     const { name, columns } = state.data;
-
+    
     function insert(name, columns, execute, writeSql, state) {
       columns.forEach(col =>
         col.type === 'select_one' || col.type === 'select_multiple'
