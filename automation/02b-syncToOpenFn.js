@@ -1,9 +1,10 @@
-alterState(state => {
-  return { ...state, projectId: 'p5x4g4' };
+fn(state => {
+  const { projectId } = state.configuration;
+  return { ...state, projectId };
 });
 
-alterState(state => {
-  var expression = `alterState(state => {
+fn(state => {
+  var expression = `fn(state => {
   const multiSelectIds = ["${state.multiSelectIds.join('", "')}"];
 
   function convertMultiSelectsIntoArrays(body, multiSelectIds) {
@@ -297,9 +298,9 @@ alterState(state => {
       }
       // =======================================================
 
-      const alterSOpeningNoDepth = `alterState(async state => {\n ${mapObject} \n`;
-      const alterSOpeningDepth = `alterState(async state => {\n ${statements} \n`;
-      const alterSOpeningSelect = `alterState(async state => {\n ${selectStatement} \n`;
+      const alterSOpeningNoDepth = `fn(async state => {\n ${mapObject} \n`;
+      const alterSOpeningDepth = `fn(async state => {\n ${statements} \n`;
+      const alterSOpeningSelect = `fn(async state => {\n ${selectStatement} \n`;
       const alterSClosing = `})`;
 
       const operation =
@@ -315,7 +316,7 @@ alterState(state => {
           : ReferenceUuid || toCamelCase(state.uuid);
 
       // 1. If the current table have a ReferenceUuid, then it's a lookup table
-      // We use our alterState opening and close later and the 'logical'.
+      // We use our fn opening and close later and the 'logical'.
       // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
       // Otherwise it's a flat table and we still use the opening.
       // let mapping = ReferenceUuid
@@ -360,7 +361,7 @@ alterState(state => {
   return state;
 });
 
-alterState(state => {
+fn(state => {
   return request(
     {
       method: 'get',
@@ -373,7 +374,7 @@ alterState(state => {
   )(state);
 });
 
-alterState(state => {
+fn(state => {
   return request(
     {
       method: 'get',
@@ -386,7 +387,7 @@ alterState(state => {
   )(state);
 });
 
-alterState(state => {
+fn(state => {
   const triggerNames = state.triggers.map(t => t.name);
 
   const name = `auto/${state.prefixes}_${state.tableId}`;
@@ -419,7 +420,7 @@ alterState(state => {
   return state;
 });
 
-alterState(state => {
+fn(state => {
   const expression = state.expression;
   console.log(
     'Inserting / Updating job: ',

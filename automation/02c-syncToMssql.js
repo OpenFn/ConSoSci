@@ -26,7 +26,7 @@ each(
       // Note: Specify options here (e.g {writeSql: false, execute: true})
       return describeTable(name.toLowerCase(), {
         writeSql: true, // Keep to true to log query.
-        execute: true, // This always needs to be true so we know if we need to insert or update
+        execute: true, // This always needs to be true if we need to know whether to insert or update
       })(state).then(mssqlColumn => {
         const { rows } = mssqlColumn.response.body;
         let mergedColumns = state.data.columns;
@@ -41,7 +41,7 @@ each(
           // Note: Specify options here (e.g {writeSql: false, execute: true})
           return insertTable(name, state => columns, {
             writeSql: true, // Keep to true to log query (otherwise make it false).
-            execute: true, // keep to false to not alter DB
+            execute: false, // keep to false to not alter DB
           })(state).then(state => {
             if (defaultColumns) {
               let foreignKeyQueries = [];
@@ -75,7 +75,7 @@ each(
                   `,
                 options: {
                   writeSql: true, // Keep to true to log query (otherwise make it false).
-                  execute: true, // keep to false to not alter DB
+                  execute: false, // keep to false to not alter DB
                 },
               })(state);
             }
@@ -97,7 +97,7 @@ each(
             // Note: Specify options here (e.g {writeSql: false, execute: true})
             return modifyTable(name, state => newColumns, {
               writeSql: true, // Keep to true to log query (otherwise make it false).
-              execute: true, // keep to false to not alter DB
+              execute: false, // keep to false to not alter DB
             })(state);
           } else {
             console.log('No new columns to add.');
