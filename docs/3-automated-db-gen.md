@@ -7,9 +7,9 @@ permalink: /kobo-automation/
 
 # Project 2: Automated Database Configuration & Kobo Form Integration
 
-## Summary 
-:::Quickstart
-[See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution. :::
+
+## Quickstart
+[See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution. 
 
 
 ## Solution overview
@@ -79,6 +79,8 @@ See below for how a Kobo form might be transformed to Postgres tables. Prefixes 
 See below diagram for the envisioned Kobo/Postgres Schema Mapping flow.
 ![form-db-mapping](./form-db-mapping.png)
 
+**NOTE:** The current implementation uses WCS standard name spacing, column configuration rules, and WCS standard fields (e.g., every table should have `[TableName]ID` as the primary key). 
+
 ### Data Dictionary
 To keep track of the different data tables created, WCS may create a master “Data Dictionary” table to track the metadata generated for different forms and form groups. In this initial phase, the automation solution will export Kobo form definitions for DB admins to sync when ready. 
 
@@ -91,8 +93,8 @@ See below diagram for an overview of which steps are handled by the automation s
 ![process-decisiontree](./kobo_flow.png)
 
 
-### 2. Solution Setup
-_Creating forms, database tables and columns ([see video walkthrough](https://drive.google.com/file/d/1hd8u3I6SQuXN62qVIzmq-raHxVpE9W0U/view?usp=sharing) for step by step guide._
+### 2. Using the Automation Solution
+_Creating forms, database tables and columns ([see video walkthrough](https://drive.google.com/file/d/1hd8u3I6SQuXN62qVIzmq-raHxVpE9W0U/view?usp=sharing))for step by step guidance._
 
 ![auto-jobs](./automation_jobs.png)
 
@@ -122,11 +124,10 @@ _Examples_
 1 Form: `Marche Survey 2020` → set `tableId: 'MarcheSurvey2020'` to create a table for this form
 2 Forms: `Marche Survey V1`, `Marche Survey V2` → set `tableId: 'MarcheSurvey2020'` for both forms in order to map BOTH forms to the same table
 
-:::NOTE
+**NOTE:**
 1. Postgres does **not** allow table or column names to begin with integers or contain special characters (e.g., `11Form`, `1-CT. Form`), so consider this when you create your desired tableId.
 
 2. Ensure the Kobo forms have been shared with the Kobo user credential linked to this `A1` automation job. 
-:::
 
 #### C. Executing SQL Scripts
 Running the `A1` job will trigger the job `A3. Set up DB with SQL` to run and auto-generate a SQL script for creating metadata (DB tables and columns) for capturing survey data. 
@@ -149,9 +150,9 @@ Once the SQL script has been generated, search the `A3` job run log for `Logging
 The SQL script can be manually edited as desired by the DB admin before executing in the target DB. 
 [![sql](./sql_script.png)
 
-:::Manual SQL Edits
+**NOTE RE: Manual SQL Edits**
 If you make manual edits to the SQL script, remember to make corresponding updates in the OpenFn job that will sync data to the DB generated via this SQL script. 
-:::
+
 
 #### D. Auto-Generating OpenFn Jobs
 Running the `A1` job will also trigger the job `A4. Generate OpenFn Job script` to auto-create an OpenFn job script (which can be later used to integrate Kobo data with the specified target DB).
