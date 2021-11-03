@@ -122,51 +122,69 @@ each(
   fn(state => {
     const { name, columns } = state.data;
 
-    return describeTable(name.toLowerCase(), {
-      writeSql: true,
-      execute: true,
-    })(state).then(mssqlColumn => {
-      const { rows } = mssqlColumn.response.body;
-      if (mssqlColumn.response.body.rowCount === 0) {
-        console.log('No matching table found in mssql --- Inserting.');
+    function insert(name, columns, execute, writeSql, state) {
+      columns.forEach(col =>
+        col.type === 'select_one' || col.type === 'select_multiple'
+          ? (col.type = 'nvarchar(max)')
+          : col.type
+      );
+      return insertTable(name, state => columns, {
+        writeSql,
+        execute,
+      })(state);
+    }
 
-        const cols = columns.filter(x => x.name !== undefined);
-        cols.forEach(col =>
-          col.type === 'select_one' || col.type === 'select_multiple'
-            ? (col.type = 'nvarchar(max)')
-            : col.type
-        );
-
-        return insertTable(name, state => cols, {
-          writeSql: true,
-          execute: true,
+    function modify(name, newColumns, execute, writeSql, state) {
+      newColumns.forEach(col =>
+        col.type === 'select_one' || col.type === 'select_multiple'
+          ? (col.type = 'nvarchar(max)')
+          : col.type
+      );
+      if (newColumns && newColumns.length > 0) {
+        console.log('Existing table found in mssql --- Updating.');
+        // Note: Specify options here (e.g {writeSql: false, execute: true})
+        return modifyTable(name, state => newColumns, {
+          writeSql, // Keep to true to log query (otherwise make it false).
+          execute, // keep to false to not alter DB
         })(state);
       } else {
-        const columnNames = rows.map(x => x.column_name);
-
-        console.log('----------------------');
-        const newColumns = columns.filter(
-          x =>
-            x.name !== undefined && !columnNames.includes(x.name.toLowerCase())
-        );
-        newColumns.forEach(col =>
-          col.type === 'select_one' || col.type === 'select_multiple'
-            ? (col.type = 'nvarchar(max)')
-            : col.type
-        );
-        console.log(newColumns);
-        if (newColumns && newColumns.length > 0) {
-          console.log('Existing table found in mssql --- Updating.');
-          return modifyTable(name, state => newColumns, {
-            writeSql: true,
-            execute: true,
-          })(state);
-        } else {
-          console.log('No new columns to add.');
-          return state;
-        }
+        console.log('No new columns to add.');
+        return state;
       }
-    });
+    }
+
+    // Note: Specify options here
+    const execute = false;
+    const writeSql = true;
+
+    return describeTable(name.toLowerCase(), {
+      writeSql: true,
+      execute,
+    })(state)
+      .then(mssqlColumn => {
+        const { rows } = mssqlColumn.response.body;
+        if (mssqlColumn.response.body.rowCount === 0) {
+          console.log('No matching table found in mssql --- Inserting.');
+
+          const cols = columns.filter(x => x.name !== undefined);
+          return insert(name, cols, execute, writeSql, state);
+        } else {
+          const columnNames = rows.map(x => x.column_name);
+
+          console.log('----------------------');
+          const newColumns = columns.filter(
+            x =>
+              x.name !== undefined &&
+              !columnNames.includes(x.name.toLowerCase())
+          );
+
+          console.log(newColumns);
+          return modify(name, newColumns, execute, writeSql, state);
+        }
+      })
+      .catch(() => {
+        return insert(name, columns, execute, writeSql, state);
+      });
   })
 );
 
