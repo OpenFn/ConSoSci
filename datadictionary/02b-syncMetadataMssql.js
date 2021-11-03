@@ -124,7 +124,7 @@ each(
 
     return describeTable(name.toLowerCase(), {
       writeSql: true,
-      execute: true,
+      execute: false,
     })(state).then(mssqlColumn => {
       const { rows } = mssqlColumn.response.body;
       if (mssqlColumn.response.body.rowCount === 0) {
@@ -139,7 +139,7 @@ each(
 
         return insertTable(name, state => cols, {
           writeSql: true,
-          execute: true,
+          execute: false,
         })(state);
       } else {
         const columnNames = rows.map(x => x.column_name);
@@ -159,7 +159,7 @@ each(
           console.log('Existing table found in mssql --- Updating.');
           return modifyTable(name, state => newColumns, {
             writeSql: true,
-            execute: true,
+            execute: false,
           })(state);
         } else {
           console.log('No new columns to add.');
