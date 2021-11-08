@@ -10,11 +10,11 @@ alterState(state => {
   state.data = {
     surveys: [
       //LIST FORMS HERE THAT YOU WANT TO SYNC HIST DATA
-      // {
-      //   uid: 'aaknL3DQQgkgZ8iay89X5P',
-      //   formName: 'SHARC',
-      //   tableId: 'WCSPROGRAMS_SharksRays',
-      // },
+       {
+         uid: 'a587nJHzyBYATXi3Nb2yc7',
+         formName: 'Site Registration TZ 7 Sept 21',
+         tableId: 'TT_SiteRegistration',
+        },
     //=========================//
     ].map(survey => ({
       ...survey,
