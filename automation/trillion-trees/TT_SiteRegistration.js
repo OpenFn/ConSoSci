@@ -128,7 +128,7 @@ fn(async state => {
   DistanceToHousehol: dataValue('distance_to_househol'),
   TotalAreaLandOwned: dataValue('total_area_land_owned'),
   TotalNbSeparateFarm: dataValue('total_nb_separate_farm'),
-  TT_YesnoID_OnlyFarmOwned: await findValue({uuid: 'tt_yesnoid', relation: 'TT_yesno', where: { TT_yesnoExtCode: dataValue('only_farm_owned') }})(state),
+  TT_YesnoID_OnlyFarmOwned: dataValue('only_farm_owned') === 'yes'? true: dataValue('only_farm_owned') === 'no'? false: undefined,
   PhotoSketchMap: dataValue('photo_sketch_map'),
   TT_ProportionID_PropSettlement: await findValue({uuid: 'tt_proportionid', relation: 'TT_proportion', where: { TT_proportionExtCode: dataValue('prop_settlement') }})(state),
   TT_ProportionID_PropWetland: await findValue({uuid: 'tt_proportionid', relation: 'TT_proportion', where: { TT_proportionExtCode: dataValue('prop_wetland') }})(state),
