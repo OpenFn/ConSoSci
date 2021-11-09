@@ -14,6 +14,13 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // p2: '',
       // tableId: 'SiteRegistration'
       // },
+    //=== PROPOSED ALT for WCS Socio Economic =====
+    // {
+    //     uid: 'aukhdejQU76K33caCkF4rP',
+    //     p1: 'WCSPROGRAMS', //1st prefix applied to ALL tables
+    //     p2: 'SocioEco', //2nd prefix applied to ALL tables
+    //     tableId: 'SocioSurvey' //survey tables labels
+    // },
     //=== WCS Socio Economic Database =====
     {
         uid: 'aukhdejQU76K33caCkF4rP',
