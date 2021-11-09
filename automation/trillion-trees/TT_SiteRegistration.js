@@ -110,7 +110,7 @@ each(dataPath('where_animals_shifted[*]'), each(dataPath('undefined[*]'), fn(asy
 fn(async state => {
  const mapping = {
   FormName: dataValue('formName'),
-  DatasetId: dataValue('_xform_id_string'),
+  DatasetUuidID: dataValue('_xform_id_string'),
   LastUpdated: new Date().toISOString()
 } 
  return upsert('TT_KoboData', 'DatasetUuidID', mapping, {setNull: ["''", "'undefined'"]})(state); 
