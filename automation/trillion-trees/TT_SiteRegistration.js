@@ -113,7 +113,7 @@ fn(async state => {
   DatasetId: dataValue('_xform_id_string'),
   LastUpdated: new Date().toISOString()
 } 
- return upsert('TT_KoboDataset', 'DatasetId', mapping, {setNull: ["''", "'undefined'"]})(state); 
+ return upsert('TT_SiteRegistration', 'DatasetId', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
 fn(async state => {
  const mapping = {
