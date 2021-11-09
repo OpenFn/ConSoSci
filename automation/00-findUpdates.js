@@ -14,12 +14,13 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // p2: '',
       // tableId: 'SiteRegistration'
       // },
+
     //=== WCS Socio Economic Database =====
     {
         uid: 'aukhdejQU76K33caCkF4rP',
         p1: 'WCSPROGRAMS',
-        p2: '',
-        tableId: 'SocioEcoDB'
+        p2: 'SocioEco',
+        tableId: 'SocioEcoSurvey'
     },
     //==== SharksRays ===============//
     // {

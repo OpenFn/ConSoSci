@@ -1,4 +1,4 @@
-fn(state => ({ ...state, execute: true, writeSql: true }));
+fn(state => ({ ...state, execute: false, writeSql: true }));
 
 each(
   '$.tables[*]',
@@ -63,7 +63,7 @@ each(
           `,
             options: {
               writeSql: true, // Keep to true to log query (otherwise make it false).
-              execute: true, // keep to false to not alter DB
+              execute: false, // keep to false to not alter DB
             },
           })(state);
         }
