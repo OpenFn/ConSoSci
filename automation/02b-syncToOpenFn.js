@@ -434,7 +434,7 @@ fn(state => {
   const triggerId = state.triggers[triggerIndex].id;
   const job = {
     adaptor: 'mssql',
-    adaptor_version: 'v2.6.0',
+    adaptor_version: 'v2.6.9',
     expression,
     name,
     project_id: state.projectId,
