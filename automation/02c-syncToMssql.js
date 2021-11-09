@@ -1,3 +1,7 @@
+// This is the general 'execute' option.
+// Changing this to true/false, will spread through the whole job so that,
+// describeTable (L99), insert (L108), modify (L121) and upsertMany(L148) will alter DB or not.
+// For each one those listed functions above, this option can be overridden. See inline comments.
 fn(state => ({ ...state, execute: false, writeSql: true }));
 
 each(
@@ -100,6 +104,7 @@ each(
             console.log('No matching table found in mssql --- Inserting.');
 
             const columns = mergedColumns.filter(x => x.name !== undefined);
+            // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
             return insert(name, columns, execute, writeSql, state);
           } else {
             const columnNames = rows.map(x => x.column_name.toLowerCase());
@@ -112,6 +117,7 @@ each(
             );
             newColumns.forEach(col => convertToMssqlTypes(col));
             console.log(newColumns);
+            // change this line to 'return modify(name, newColumns, true, writeSql, state);' to override 'execute: false' at top
             return modify(name, newColumns, execute, writeSql, state);
           }
         })
@@ -137,6 +143,7 @@ each('$.lookupTables[*]', state => {
         mapping.push(obj);
       }
 
+      // change this line to 'return upsertMany(..., { writeSql, execute: true, logValues: true });' to override 'execute: false' at top
       return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
         writeSql,
         execute,
