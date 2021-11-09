@@ -134,7 +134,7 @@ fn(state => {
             : `${uuid}`;
 
           let generatedRelation =
-            question.type === 'select_multiple'
+            question.type === 'select_multiple' && question.referent
               ? question.referent
               : relation;
 
@@ -142,7 +142,7 @@ fn(state => {
 
           generatedLeftOp = question.parent
             ? 'GeneratedUuid'
-            : question.type === 'select_multiple'
+            : question.type === 'select_multiple' && question.referent
               ? `${question.referent}ExtCode`
               : !generatedLeftOp.includes(state.prefixes)
                 ? `${state.prefixes}_${generatedLeftOp}ExtCode`
@@ -153,7 +153,7 @@ fn(state => {
               ? `dataValue('._id')`
               : question.variant === 'lookupTableId'
                 ? `dataValue('gear')`
-                : question.type === 'select_multiple'
+                : question.type === 'select_multiple' && question.referent
                   ? `x`
                   : `dataValue('${rightOperand}')`;
 
@@ -210,7 +210,13 @@ fn(state => {
             (columns[k].type === 'select_one' ||
               columns[k].type === 'select_multiple')
           ) {
-            mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
+            mapKoboToPostgres[columns[k].name] = generateFindValue(
+              columns[k],
+              `${state.prefixes}_${columns[k].select_from_list_name}`,
+              `${columns[k].select_from_list_name}`,
+              paths[k]
+            );
+            // mapKoboToPostgres[columns[k].name] = `x['${paths[k]}']`;
           } else if (columns[k].rule !== 'DO_NOT_MAP') {
             mapKoboToPostgres[columns[k].name] =
               name !== `${state.prefix1}_KoboDataset`
