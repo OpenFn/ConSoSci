@@ -111,7 +111,12 @@ fn(async state => {
  const mapping = {
   DatasetName: dataValue('formName'),
   DatasetUuidID: dataValue('_xform_id_string'),
-  LastUpdateTime: new Date().toISOString()
+  DatasetOwner: state.data.formOwner,
+  DatasetYear: new Date().getFullYear(),
+  LastSubmissionTime: dataValue('_submission_time'),
+  LastCheckedTime: dataValue('_submission_time'),
+  LastUpdateTime: new Date().toISOString(),
+  KoboManaged: true,
 } 
  return upsert('TT_KoboData', 'DatasetUuidID', mapping, {setNull: ["''", "'undefined'"]})(state); 
 }) 
