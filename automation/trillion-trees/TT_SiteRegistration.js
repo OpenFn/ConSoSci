@@ -109,7 +109,7 @@ each(dataPath('where_animals_shifted[*]'), each(dataPath('undefined[*]'), fn(asy
 ))
 fn(async state => {
  const mapping = {
-  FormName: dataValue('formName'),
+  DatasetName: dataValue('formName'),
   DatasetUuidID: dataValue('_xform_id_string'),
   LastUpdated: new Date().toISOString()
 } 
