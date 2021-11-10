@@ -275,7 +275,7 @@ fn(async state => {
     GeneratedUuid: dataValue('__generatedUuid'),
   };
   return upsert('TT_SiteRegistration', 'GeneratedUuid', mapping, {
-    setNull: ["''", "'undefined'"],
+    setNull: ["''", "'undefined'"], logValues: true
   })(state);
 });
 each(
