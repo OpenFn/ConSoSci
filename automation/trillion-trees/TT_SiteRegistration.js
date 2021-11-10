@@ -8,7 +8,7 @@ fn(state => {
   function convertMultiSelectsIntoArrays(body, multiSelectIds) {
     for (const property in body) {
       if (Array.isArray(body[property])) {
-        convertMultiSelectsIntoArrawys(body[property], multiSelectIds);
+        convertMultiSelectsIntoArrays(body[property], multiSelectIds);
       } else {
         for (const thing in body[property]) {
           if (Array.isArray(body[property][thing])) {
