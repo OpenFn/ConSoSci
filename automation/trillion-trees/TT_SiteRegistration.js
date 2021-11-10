@@ -268,7 +268,6 @@ fn(async state => {
       relation: 'TT_Region',
       where: { TT_RegionExtCode: dataValue('country') },
     })(state),
-    Deviceid: dataValue('deviceid'),
     SurveyDate: dataValue('today'),
     FormDateEnd: dataValue('end'),
     Start: dataValue('start'),
