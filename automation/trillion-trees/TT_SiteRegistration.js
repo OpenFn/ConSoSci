@@ -139,128 +139,135 @@ fn(async state => {
 fn(async state => {
   const mapping = {
     __Version__: dataValue('__version__'),
-    ApprovalPhotoLandowner: dataValue('approval_photo_landowner'),
-    WitnessSignature: dataValue('witness_signature'),
+    LandownerApprovalPhoto: dataValue('approval_photo_landowner'),
+    WitnessSignaturePhoto: dataValue('witness_signature'),
     DateWitnessSigned: dataValue('date_witness_signed'),
-    NameWitness: dataValue('name_witness'),
+    WitnessName: dataValue('name_witness'),
     Signature: dataValue('signature'),
-    DateRepSigned: dataValue('date_rep_signed'),
-    Name: dataValue('name'),
+    ApprovalDate: dataValue('date_rep_signed'),
+    NameOfAppover: dataValue('name'),
     DistanceToHousehol: dataValue('distance_to_househol'),
-    TotalAreaLandOwned: dataValue('total_area_land_owned'),
-    TotalNbSeparateFarm: dataValue('total_nb_separate_farm'),
-    TT_YesnoID_OnlyFarmOwned: await findValue({
-      uuid: 'tt_yesnoid',
-      relation: 'TT_yesno',
-      where: { TT_yesnoExtCode: dataValue('only_farm_owned') },
+    AreaOfLandOwned: dataValue('total_area_land_owned'),
+    NumberOfLandholdings: dataValue('total_nb_separate_farm'),
+    OnlyFarmOwned:
+      dataValue('only_farm_owned') === 'yes'
+        ? true
+        : dataValue('only_farm_owned') === 'no'
+        ? false
+        : null,
+    SketchMapPhoto: dataValue('photo_sketch_map'),
+    TT_ProportionID_Settlement: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_settlement') },
     })(state),
-    PhotoSketchMap: dataValue('photo_sketch_map'),
-    TT_ProportionID_PropSettlement: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_settlement') },
+    TT_LandProportionID_Wetland: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_wetland') },
     })(state),
-    TT_ProportionID_PropWetland: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_wetland') },
+    TT_LandProportionID_NativeVegetation: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_native_veg') },
     })(state),
-    TT_ProportionID_PropNativeVeg: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_native_veg') },
+    TT_LandProportionID_FallowLand: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_fallow_land') },
     })(state),
-    TT_ProportionID_PropFallowLand: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_fallow_land') },
+    TT_LandProportionID_GrazingLand: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_grazing_land') },
     })(state),
-    TT_ProportionID_PropGrazingLand: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_grazing_land') },
+    TT_LandProportionID_CropLand: await findValue({
+      uuid: 'tt_landproportionid',
+      relation: 'TT_LandProportion',
+      where: { TT_LandProportionExtCode: dataValue('prop_crop_land') },
     })(state),
-    TT_ProportionID_PropCropLand: await findValue({
-      uuid: 'tt_proportionid',
-      relation: 'TT_proportion',
-      where: { TT_proportionExtCode: dataValue('prop_crop_land') },
-    })(state),
-    TotalAreaFarm: dataValue('total_area_farm'),
-    WhereAnimalsShifted: await findValue({
+    FarmArea: dataValue('total_area_farm'),
+    TT_AnimalActionShiftID: await findValue({
       uuid: 'tt_whereid',
       relation: 'TT_where',
       where: { TT_whereExtCode: dataValue('where_animals_shifted') },
     })(state),
-    TT_ActionID_WhatHappenGrazingAnimals: await findValue({
-      uuid: 'tt_actionid',
-      relation: 'TT_action',
+    TT_AnimalActionID: await findValue({
+      uuid: 'tt_animalactionid',
+      relation: 'TT_AnimalAction',
       where: { TT_actionExtCode: dataValue('what_happen_grazing_animals') },
     })(state),
-    WhyNotContinuedUse: dataValue('why_not_continued_use'),
-    TT_LengthID_FallowPeriod: await findValue({
-      uuid: 'tt_lengthid',
-      relation: 'TT_length',
-      where: { TT_lengthExtCode: dataValue('fallow_period') },
+    TT_LandNotRequiredTypeID: await findValue({
+      uuid: 'tt_landnotrequiredtypeid',
+      relation: 'TT_LandNotRequiredType',
+      where: {
+        TT_LandNotRequiredTypeExtCode: dataValue('why_not_continued_use'),
+      },
     })(state),
-    TypeTreeCrops: await findValue({
-      uuid: 'tt_treeid',
-      relation: 'TT_tree',
-      where: { TT_treeExtCode: dataValue('type_tree_crops') },
+    TT_FallowPeriodID: await findValue({
+      uuid: 'tt_fallowperiodid',
+      relation: 'TT_FallowPeriod',
+      where: { TT_FallowPeriodExtCode: dataValue('fallow_period') },
     })(state),
-    TT_CountID_NbAnimalsOnParcel: await findValue({
-      uuid: 'tt_countid',
-      relation: 'TT_count',
-      where: { TT_countExtCode: dataValue('nb_animals_on_parcel') },
+    TT_TreeTypeID: await findValue({
+      uuid: 'tt_treetypeid',
+      relation: 'TT_TreeType',
+      where: { TT_TreeTypeExtCode: dataValue('type_tree_crops') },
     })(state),
-    TypeGrazingAnimals: await findValue({
-      uuid: 'tt_animalsid',
-      relation: 'TT_animals',
-      where: { TT_animalsExtCode: dataValue('type_grazing_animals') },
+    TT_AnimalsOnParcelID: await findValue({
+      uuid: 'tt_animalsonparcelid',
+      relation: 'TT_AnimalsOnParcel',
+      where: { TT_AnimalsOnParcelExtCode: dataValue('nb_animals_on_parcel') },
+    })(state),
+    TT_AnimalID: await findValue({
+      uuid: 'tt_animalid',
+      relation: 'TT_Animal',
+      where: { TT_AnimalExtCode: dataValue('type_grazing_animals') },
     })(state),
     MainCrop: dataValue('main_crop'),
-    TT_LandID_CurrentLanduse: await findValue({
-      uuid: 'tt_landid',
-      relation: 'TT_land',
-      where: { TT_landExtCode: dataValue('current_landuse') },
+    TT_LandUseID: await findValue({
+      uuid: 'tt_landusetypeid',
+      relation: 'TT_LandUseType',
+      where: { TT_LandUseTypeExtCode: dataValue('current_landuse') },
     })(state),
-    TotalNbTreePlanted: dataValue('total_nb_tree_planted'),
+    TreesToBePlanted: dataValue('total_nb_tree_planted'),
     TertiarySpecies: dataValue('tertiary_species'),
     SecondarySpecies: dataValue('secondary_species'),
     MainSpecies: dataValue('main_species'),
-    PleaseDescribeTheRoposedIntervention: dataValue(
+    ProposedInterventionDescription: dataValue(
       'please_describe_the_roposed_intervention'
     ),
-    TT_InterventionsID_ProposedIntervention: await findValue({
-      uuid: 'tt_interventionsid',
-      relation: 'TT_interventions',
-      where: { TT_interventionsExtCode: dataValue('proposed_intervention') },
+    TT_InterventionTypeID: await findValue({
+      uuid: 'tt_interventiontypeid',
+      relation: 'TT_InterventionType',
+      where: { TT_InterventionTypeExtCode: dataValue('proposed_intervention') },
     })(state),
-    Photo: dataValue('photo'),
+    PlotPhoto: dataValue('photo'),
     RoundedShapeAcre: dataValue('rounded_shape_acre'),
     ShapeAcre: dataValue('shape_acre'),
     ShapeArea: dataValue('shape_area'),
-    Shape: dataValue('shape'),
-    OtherAdminUnit: dataValue('other_admin_unit'),
+    ParcelShape: dataValue('shape'),
+    OtherAddressDescription: dataValue('other_admin_unit'),
     Village: dataValue('village'),
     District: dataValue('district'),
-    ContactNb: dataValue('contact_nb'),
-    LandOwnersRepresentative: dataValue('land_owners_representative'),
-    TT_TypeID_TypeLandTitle: await findValue({
-      uuid: 'tt_typeid',
-      relation: 'TT_type',
-      where: { TT_typeExtCode: dataValue('type_land_title') },
+    ContactNumber: dataValue('contact_nb'),
+    LandOwnersRepresentativeName: dataValue('land_owners_representative'),
+    TT_LandTitleTypeID: await findValue({
+      uuid: 'tt_landtitletypeid',
+      relation: 'TT_LandTitleType',
+      where: { TT_LandTitleTypeExtCode: dataValue('type_land_title') },
     })(state),
-    NameInstitutionIndividual: dataValue('name_institution_individual'),
-    WcsIdentifier: dataValue('wcs_identifier'),
-    SurveyorContact: dataValue('surveyor_contact'),
-    Surveyor: dataValue('surveyor'),
-    TT_CountryID_Country: await findValue({
-      uuid: 'tt_countryid',
-      relation: 'TT_country',
-      where: { TT_countryExtCode: dataValue('country') },
+    NameOfInstitutionOrIndividual: dataValue('name_institution_individual'),
+    wcs_identifier: dataValue('wcs_identifier'),
+    SurveyorContactNumber: dataValue('surveyor_contact'),
+    SurveyorName: dataValue('surveyor'),
+    TT_RegionID: await findValue({
+      uuid: 'tt_regionid',
+      relation: 'TT_Region',
+      where: { TT_RegionExtCode: dataValue('country') },
     })(state),
     Deviceid: dataValue('deviceid'),
-    Today: dataValue('today'),
+    SurveyDate: dataValue('today'),
     FormDateEnd: dataValue('end'),
     Start: dataValue('start'),
     AnswerId: dataValue('_id'),
@@ -342,9 +349,9 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          TT_AnimalsID: await findValue({
-            uuid: 'tt_animalsid',
-            relation: 'TT_Animals',
+          TT_AnimalID: await findValue({
+            uuid: 'tt_animalid',
+            relation: 'TT_Animal',
             where: { TT_AnimalsExtCode: x },
           })(state),
           TT_SiteregistrationID: x['__parentUuid'],
