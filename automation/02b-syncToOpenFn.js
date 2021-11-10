@@ -105,12 +105,16 @@ fn(state => {
         let prefix = '';
         const depth = column.depth;
         if (depth > 1) {
+          let closingPar = 0; // hold how many brackets we need to close
           for (var i = 0; i < depth - 1; i++) {
-            prefix += `each(dataPath('${column.path[i]}[*]'), `;
+            if (column.path[i]) {
+              prefix += `each(dataPath('${column.path[i]}[*]'), `;
+              closingPar++;
+            }
           }
           // prefix += mapping;
           prefix += mapping + `)(state); \n${alterSClosing} \n`;
-          for (var i = 0; i < depth - 1; i++) {
+          for (var i = 0; i < closingPar; i++) {
             prefix += ')';
           }
 
@@ -255,9 +259,11 @@ fn(state => {
               : `dataValue('__generatedUuid')`;
 
         if (columns[0].depth > 1) {
-          mapKoboToPostgres[
-            toCamelCase(`${columns[0].path.slice(-2, -1).pop()}_uuid`)
-          ] = `x['__parentUuid']`;
+          let key =
+            columns[0].path > 1
+              ? toCamelCase(`${columns[0].path.slice(-2, -1).pop()}_uuid`)
+              : toCamelCase(`${columns[0].path[0]}_uuid`);
+          mapKoboToPostgres[key] = `x['__parentUuid']`;
         } else if (columns[0].depth > 0) {
           mapKoboToPostgres[
             toCamelCase(`${state.tableId}_uuid`)
