@@ -295,13 +295,13 @@ each(
             relation: 'TT_AnimalActionShift',
             where: { TT_AnimalActionShiftExtCode: x },
           })(state),
-          TT_SiteregistrationID: x['__parentUuid'],
+          TT_SiteRegistrationID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
       return upsertMany(
-        'TT_SiteregistrationWhere',
+        'TT_SiteRegistrationAnimalActionShift',
         'GeneratedUuid',
         () => mapping,
         { setNull: ["''", "'undefined'"] }
@@ -320,18 +320,18 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          TT_TreeID: await findValue({
-            uuid: 'tt_treeid',
-            relation: 'TT_Tree',
-            where: { TT_TreeExtCode: x },
+          TT_TreeTypeID: await findValue({
+            uuid: 'tt_treetypeid',
+            relation: 'TT_TreeType',
+            where: { TT_TreeTypeExtCode: x },
           })(state),
-          TT_SiteregistrationID: x['__parentUuid'],
+          TT_SiteRegistrationID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
       return upsertMany(
-        'TT_SiteregistrationTree',
+        'TT_SiteregistrationTreeType',
         'GeneratedUuid',
         () => mapping,
         { setNull: ["''", "'undefined'"] }
@@ -355,13 +355,13 @@ each(
             relation: 'TT_Animal',
             where: { TT_AnimalExtCode: x },
           })(state),
-          TT_SiteregistrationID: x['__parentUuid'],
+          TT_SiteRegistrationID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
       return upsertMany(
-        'TT_SiteregistrationAnimals',
+        'TT_SiteRegistrationAnimal',
         'GeneratedUuid',
         () => mapping,
         { setNull: ["''", "'undefined'"] }
