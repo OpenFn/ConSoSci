@@ -273,7 +273,6 @@ fn(async state => {
     Start: dataValue('start'),
     AnswerId: dataValue('_id'),
     GeneratedUuid: dataValue('__generatedUuid'),
-    Payload: state.data.body,
   };
   return upsert('TT_SiteRegistration', 'GeneratedUuid', mapping, {
     setNull: ["''", "'undefined'"],
