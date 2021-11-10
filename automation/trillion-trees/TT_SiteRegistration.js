@@ -331,7 +331,7 @@ each(
         });
       }
       return upsertMany(
-        'TT_SiteregistrationTreeType',
+        'TT_SiteRegistrationTreeType',
         'GeneratedUuid',
         () => mapping,
         { setNull: ["''", "'undefined'"] }
