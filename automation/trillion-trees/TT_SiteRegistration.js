@@ -269,8 +269,14 @@ fn(async state => {
       where: { TT_RegionExtCode: dataValue('country') },
     })(state),
     SurveyDate: dataValue('today'),
-    FormDateEnd: dataValue('end'),
-    FormDateStart: dataValue('start'),
+    FormDateEnd: state => {
+      const date = dataValue('end')(state).split('.')[0];
+      return date;
+    },
+    FormDateStart: state => {
+      const date = dataValue('start')(state).split('.')[0];
+      return date;
+    },
     AnswerId: dataValue('_id'),
     GeneratedUuid: dataValue('__generatedUuid'),
   };
