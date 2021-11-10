@@ -253,7 +253,7 @@ fn(async state => {
     Village: dataValue('village'),
     District: dataValue('district'),
     ContactNumber: dataValue('contact_nb'),
-    LandOwnersRepresentativeName: dataValue('land_owners_representative'),
+    LandOwnerRepresentativeName: dataValue('land_owners_representative'),
     TT_LandTitleTypeID: await findValue({
       uuid: 'tt_landtitletypeid',
       relation: 'TT_LandTitleType',
