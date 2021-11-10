@@ -158,7 +158,7 @@ fn(async state => {
         ? false
         : null,
     SketchMapPhoto: dataValue('photo_sketch_map'),
-    TT_ProportionID_Settlement: await findValue({
+    TT_LandProportionID_Settlement: await findValue({
       uuid: 'tt_landproportionid',
       relation: 'TT_LandProportion',
       where: { TT_LandProportionExtCode: dataValue('prop_settlement') },
