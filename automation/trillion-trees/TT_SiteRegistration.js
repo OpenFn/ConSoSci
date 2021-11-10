@@ -133,7 +133,7 @@ fn(async state => {
     LastUpdateTime: new Date().toISOString(),
     LastCheckedTime: new Date().toISOString(),
   };
-  return upsert('TT_KoboDataset', 'DatasetUuidID', mapping, {
+  return upsert('TT_KoboData', 'DatasetUuidID', mapping, {
     setNull: ["''", "'undefined'"],
   })(state);
 });
