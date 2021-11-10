@@ -151,12 +151,13 @@ fn(async state => {
     DistanceToHousehold: dataValue('distance_to_househol'),
     AreaOfLandOwned: dataValue('total_area_land_owned'),
     NumberOfLandholdings: dataValue('total_nb_separate_farm'),
-    OnlyFarmOwned:
-      dataValue('only_farm_owned') === 'yes'
+    OnlyFarmOwned: state => {
+      const val = dataValue('only_farm_owned')(state) === 'yes' 
         ? true
-        : dataValue('only_farm_owned') === 'no'
+        : dataValue('only_farm_owned')(state) === 'no'
         ? false
-        : null,
+        : null;
+    },
     SketchMapPhoto: dataValue('photo_sketch_map'),
     TT_LandProportionID_Settlement: await findValue({
       uuid: 'tt_landproportionid',
