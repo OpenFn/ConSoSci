@@ -227,7 +227,7 @@ fn(async state => {
     //  where: { TT_AnimalExtCode: dataValue('type_grazing_animals') },
     //})(state),
     MainCrop: dataValue('main_crop'),
-    TT_LandUseID: await findValue({
+    TT_LandUseTypeID: await findValue({
       uuid: 'tt_landusetypeid',
       relation: 'TT_LandUseType',
       where: { TT_LandUseTypeExtCode: dataValue('current_landuse') },
