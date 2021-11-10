@@ -114,13 +114,13 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          TT_WhereName: x['name'],
-          TT_WhereExtCode: x['name'],
+          TT_AnimalActionShiftID: x['name'],
+          TT_AnimalActionShiftExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
-      return upsertMany('TT_Where', 'GeneratedUuid', () => mapping, {
+      return upsertMany('TT_SiteRegistrationAnimalActionShift', 'GeneratedUuid', () => mapping, {
         setNull: ["''", "'undefined'"],
       })(state);
     })
@@ -130,6 +130,7 @@ fn(async state => {
   const mapping = {
     DatasetName: dataValue('formName'),
     DatasetUuidID: dataValue('_xform_id_string'),
+    DatasetYear: new Date().getFullYear(),
     LastUpdateTime: new Date().toISOString(),
     LastCheckedTime: new Date().toISOString(),
   };
