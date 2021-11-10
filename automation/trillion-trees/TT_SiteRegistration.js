@@ -270,7 +270,7 @@ fn(async state => {
     })(state),
     SurveyDate: dataValue('today'),
     FormDateEnd: dataValue('end'),
-    Start: dataValue('start'),
+    FormDateStart: dataValue('start'),
     AnswerId: dataValue('_id'),
     GeneratedUuid: dataValue('__generatedUuid'),
   };
