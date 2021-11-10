@@ -148,7 +148,7 @@ fn(async state => {
     Signature: dataValue('signature'),
     ApprovalDate: dataValue('date_rep_signed'),
     NameOfAppover: dataValue('name'),
-    DistanceToHousehol: dataValue('distance_to_househol'),
+    DistanceToHousehold: dataValue('distance_to_househol'),
     AreaOfLandOwned: dataValue('total_area_land_owned'),
     NumberOfLandholdings: dataValue('total_nb_separate_farm'),
     OnlyFarmOwned:
