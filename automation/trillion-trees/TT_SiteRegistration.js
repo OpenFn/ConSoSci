@@ -68,13 +68,13 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          TT_AnimalsName: x['name'],
-          TT_AnimalsExtCode: x['name'],
+          TT_AnimalName: x['name'],
+          TT_AnimalExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
-      return upsertMany('TT_Animals', 'GeneratedUuid', () => mapping, {
+      return upsertMany('TT_Animal', 'GeneratedUuid', () => mapping, {
         setNull: ["''", "'undefined'"],
       })(state);
     })
@@ -353,7 +353,7 @@ each(
           TT_AnimalID: await findValue({
             uuid: 'tt_animalid',
             relation: 'TT_Animal',
-            where: { TT_AnimalsExtCode: x },
+            where: { TT_AnimalExtCode: x },
           })(state),
           TT_SiteregistrationID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
