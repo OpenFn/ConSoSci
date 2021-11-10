@@ -290,10 +290,10 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          TT_WhereID: await findValue({
-            uuid: 'tt_whereid',
-            relation: 'TT_Where',
-            where: { TT_WhereExtCode: x },
+          TT_AnimalActionShiftID: await findValue({
+            uuid: 'tt_animalactionshiftid',
+            relation: 'TT_AnimalActionShift',
+            where: { TT_AnimalActionShiftExtCode: x },
           })(state),
           TT_SiteregistrationID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
