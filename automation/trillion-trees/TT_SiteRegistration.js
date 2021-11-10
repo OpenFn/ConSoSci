@@ -140,7 +140,7 @@ fn(async state => {
 });
 fn(async state => {
   const mapping = {
-    __Version__: dataValue('__version__'),
+    VersionID: dataValue('__version__'),
     LandownerApprovalPhoto: dataValue('approval_photo_landowner'),
     WitnessSignaturePhoto: dataValue('witness_signature'),
     DateWitnessSigned: dataValue('date_witness_signed'),
