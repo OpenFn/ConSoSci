@@ -145,7 +145,7 @@ fn(async state => {
     WitnessSignaturePhoto: dataValue('witness_signature'),
     DateWitnessSigned: dataValue('date_witness_signed'),
     WitnessName: dataValue('name_witness'),
-    Signature: dataValue('signature'),
+    SignaturePhoto: dataValue('signature'),
     ApprovalDate: dataValue('date_rep_signed'),
     NameOfAppover: dataValue('name'),
     DistanceToHousehold: dataValue('distance_to_househol'),
