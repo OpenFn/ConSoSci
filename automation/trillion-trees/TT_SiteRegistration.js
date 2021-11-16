@@ -190,11 +190,11 @@ fn(async state => {
       where: { TT_LandProportionExtCode: dataValue('prop_crop_land') },
     })(state),
     FarmArea: dataValue('total_area_farm'),
-    //TT_AnimalActionShiftID: await findValue({ // DO WE NEED THIS HERE? IT'S M:M AND MAPPED BELOW WITH EACH
-    //  uuid: 'tt_whereid',
-    //  relation: 'TT_where',
-    //  where: { TT_whereExtCode: dataValue('where_animals_shifted') },
-    //})(state),
+    TT_AnimalActionShiftID: await findValue({ 
+      uuid: 'tt_whereid',
+      relation: 'TT_where',
+      where: { TT_whereExtCode: dataValue('where_animals_shifted') },
+    })(state),
     TT_AnimalActionID: await findValue({
       uuid: 'tt_animalactionid',
       relation: 'TT_AnimalAction',
@@ -212,21 +212,21 @@ fn(async state => {
       relation: 'TT_FallowPeriod',
       where: { TT_FallowPeriodExtCode: dataValue('fallow_period') },
     })(state),
-    //TT_TreeTypeID: await findValue({ // DO WE NEED THIS HERE? IT'S M:M AND MAPPED BELOW WITH EACH
-    //  uuid: 'tt_treetypeid',
-    //  relation: 'TT_TreeType',
-    //  where: { TT_TreeTypeExtCode: dataValue('type_tree_crops') },
-    //})(state),
+    TT_TreeTypeID: await findValue({ 
+      uuid: 'tt_treetypeid',
+      relation: 'TT_TreeType',
+      where: { TT_TreeTypeExtCode: dataValue('type_tree_crops') },
+    })(state),
     TT_AnimalsOnParcelID: await findValue({
       uuid: 'tt_animalsonparcelid',
       relation: 'TT_AnimalsOnParcel',
       where: { TT_AnimalsOnParcelExtCode: dataValue('nb_animals_on_parcel') },
     })(state),
-    //TT_AnimalID: await findValue({ // DO WE NEED THIS HERE? IT'S M:M AND MAPPED BELOW WITH EACH
-    //  uuid: 'tt_animalid',
-    //  relation: 'TT_Animal',
-    //  where: { TT_AnimalExtCode: dataValue('type_grazing_animals') },
-    //})(state),
+    TT_AnimalID: await findValue({ 
+      uuid: 'tt_animalid',
+      relation: 'TT_Animal',
+      where: { TT_AnimalExtCode: dataValue('type_grazing_animals') },
+    })(state),
     MainCrop: dataValue('main_crop'),
     TT_LandUseTypeID: await findValue({
       uuid: 'tt_landusetypeid',
