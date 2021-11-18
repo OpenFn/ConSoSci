@@ -12,85 +12,14 @@ alterState(state => {
 
     //lookup table m:m WCSPROGRAMS_TaxaMetric
   
+    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
 
-  const dataFrequencyMap = {
-    //lookup table for DataFrequency types
-    near_real_time: '1',
-    weekly: '2',
-    monthly: '3',
-    quarterly: '4',
-    not_needed: '5',
-    other: '6',
-  };
-
-  const dataChallengeMap = {
-    //lookup table for DataChallenge types
-    data_collector_training: '1',
-    data_collection: '2',
-    data_management: '3',
-    data_analysis: '4',
-    result_visualization_and_reporting: '5',
-    other: '6',
-  };
-
-  const dataAssistanceMap = {
-    //lookup table for DataAssistance types
-    automated_data_backup: '1',
-    ability_to_easily_download_the_data: '2',
-    automated_tabular_data_summaries: '3',
-    automated_data_visualizations: '4',
-    automated_maps_of_the_data: '5',
-    data_collection_summary: '6',
-    none: '7',
-    other: '8',
-  };
-
-  const dataToolsMap = {
-    //lookup table for DataTools
-    acoustic_sensor: '1',
-    audio_video_interview: '3',
-    camera_trap: '4',
-    kobo_form: '8',
-    online_dataset: '10',
-    paper: '12',
-    smart_mobile: '17',
-    other: '11',
-    excel: '6',
-    kobo: '9',
-    smart: '16',
-    sql_database: '19',
-    wildlife_insights: '21',
-    other: '11',
-    excel: '6',
-    arcgis: '2',
-    qgis: '13',
-    idrisi: '7',
-    smart: '16',
-    sas: '15',
-    spss: '18',
-    stata: '20',
-    r: '14',
-    distance: '5',
-    wildlife_insights: '21',
-    other: '11',
-  };
-
-  const { body } = state.data;
-  return {
-    ...state,
-    fetchFromRef,
-    body,
-    sitesMap,
-    surveyTypeMap,
-    cameraTrapMap,
-    estimationMap,
-    metricsMap,
-    dataFrequencyMap,
-    dataChallengeMap,
-    dataAssistanceMap,
-    dataToolsMap,
-  };
-});
+    //lookup table m:m WCSPROGRAMS_DataChallenge
+  
+    //lookup table m:m WCSPROGRAMS_DataAssistance
+ 
+    //lookup table m:m WCSPROGRAMS_DataTool
+    
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
 upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
