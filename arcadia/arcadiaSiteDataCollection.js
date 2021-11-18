@@ -4,58 +4,14 @@ alterState(state => {
     return references[0];
   };
 
-
-   
-    // lookup table for DataSetSurveyTypes m:m
+    // lookup table m:m WCSPROGRAMS_DataSetSurveyType
   
+    // lookup table  m:m WCSPROGRAMS_CameraTrapSetting
 
-  const cameraTrapMap = {
-    // lookup table for CameraTrapSettings
-    still_images_will_be_collected: '1',
-    video_images_will_be_collected: '2',
-    the_cameras_will_be_cell_wifi_internet_e: '3',
-  };
+    //lookup table  m:m WCSPROGRAMS_TaxaMetricEstimationMethod
 
-  const estimationMap = {
-    //lookup table for TaxaMetricEstimationMethods
-    travel_recess: '1',
-    guided_recess: '2',
-    recording_sign_along_transects_but_without_perpendicular_distances: '3',
-    occupancy__various_software_available_: '4',
-    capture_recapture___dna: '5',
-    capture_recapture__photos_of_i: '6',
-    spatially_explicit_capture_recapture___dna: '7',
-    spatially_explicit_capture_rec: '8',
-    count_of_individually_recognis: '9',
-    distance_sampling_on_line_transects: '10',
-    distance_sampling_on_point_transects: '11',
-    _human_observer: '11',
-    distance_sampling_on_point_tra: '12',
-    demography__repeated_census_of: '13',
-    other: '15',
-    occupancy: '15',
-    trapping_rates: '16',
-    random_encounter_model: '17',
-  };
-
-  const metricsMap = {
-    //lookup table for TaxaMetrics
-    presence_absence: '1',
-    species_richness: '2',
-    encounter_rate__per_unit_time__or_per_un: '3',
-    occupancy: '4',
-    density: '5',
-    abundance__density_x_area_surveyed: '6',
-    number_of_known_individuals: '7',
-    census: '8',
-    biomass_reef: '9',
-    demographic_metrics: '10',
-    dung_density: '11',
-    other: '12',
-    species_distribution: '13',
-    species_richness__maximum_likelihood_est: '14',
-    animal_wildlife_health_assessment: '15',
-  };
+    //lookup table m:m WCSPROGRAMS_TaxaMetric
+  
 
   const dataFrequencyMap = {
     //lookup table for DataFrequency types
