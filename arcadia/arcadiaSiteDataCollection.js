@@ -4,28 +4,7 @@ alterState(state => {
     return references[0];
   };
 
-  const Map = {
-    anc_visits: 'ANC Visits',
-    early_initiation_of_anc_less_than_3_months:
-      'Early initiation of ANC (less than 3 months)',
-    completing_recomended_anc_visits: 'Completing recomended ANC visits',
-    danger_signs: 'Danger signs',
-    skilled_birth: 'Skilled birth',
-    immunization: 'Immunization',
-    individual_birth_plan: 'Individual Birth Plan',
-    emergency_preparedness: 'Emergency preparedness',
-    childcare_and_affection: 'Childcare and affection',
-    nutrition_counseling: 'Nutrition counseling',
-    growth_monitoring: 'Growth monitoring',
-    exclusive_breastfeeding: 'Exclusive breastfeeding',
-    complementary_feeding: 'Sleeping under LLITN',
-    sleeping_under_llitn: 'Knowing HIV status',
-    knowing_hiv_status: 'Indoor pollution',
-    indoor_pollution: 'Personal Hygiene',
-    personal_hygiene: 'Safe drinking water',
-    safe_drinking_water: 'Safe disposal of human waste',
-    safe_disposal_of_human_waste: 'Complementary feeding',
-  };
+  
 
   const sitesMap = {
     //swm site lookup table to ProjectIDs
