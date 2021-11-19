@@ -3,11 +3,6 @@ alterState(state => {
   const fetchFromRef = references => {
     return references[0];
   };
-
-    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
-    //lookup table m:m WCSPROGRAMS_DataChallenge
-    //lookup table m:m WCSPROGRAMS_DataAssistance
-    //lookup table m:m WCSPROGRAMS_DataTool
     
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
 fn(async state => {
@@ -52,21 +47,17 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'wcsprograms_datasetsurveytypeid',
-            relation: 'WCSPROGRAMS_DataSetSurveyType',
-            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: x },
-          })(state),
-          WCSPROGRAMS_DataSetSurveyTypeID: x['__parentUuid'],
+          WCSPROGRAMS_DataSetSurveyTypeName: x['name'],
+          WCSPROGRAMS_DataSetSurveyTypeExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-        'GeneratedUuid',
-        () => mapping,
-        { setNull: ["''", "'undefined'"] }
+        'GeneratedUuid',  
+        () => mapping,  { 
+         setNull: ["''", "'undefined'"] }
       )(state);
     })
    )
@@ -85,12 +76,8 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'wcsprograms_datasetsurveytypeid',
-            relation: 'WCSPROGRAMS_DataSetSurveyType',
-            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: x },
-          })(state),
-          WCSPROGRAMS_DataSetSurveyTypeID: x['__parentUuid'],
+          WCSPROGRAMS_DataSetSurveyTypeName: x['name'],
+          WCSPROGRAMS_DataSetSurveyTypeExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
@@ -135,12 +122,8 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'wcsprograms_cameratrapsettingid',
-            relation: 'WCSPROGRAMS_CameraTrapSetting',
-            where: { WCSPROGRAMS_CameraTrapSettingExtCode: x },
-          })(state),
-          WCSPROGRAMS_CameraTrapSettingID: x['__parentUuid'],
+          WCSPROGRAMS_CameraTrapSettingName: x['name'],
+          WCSPROGRAMS_CameraTrapSettingExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
@@ -162,18 +145,14 @@ each(
   each(
     dataPath('undefined[*]'),
     fn(async state => {
-      const dataArray = state.data['Which_metrics_questi_ith_camera_trap_data] || [];
+      const dataArray = state.data['Which_metrics_questi_ith_camera_trap_data'] || [];
 
       const mapping = [];
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'wcsprograms_taxametricid',
-            relation: 'WCSPROGRAMS_TaxaMetric',
-            where: { WCSPROGRAMS_TaxaMetricExtCode: x },
-          })(state),
-          WCSPROGRAMS_TaxaMetricID: x['__parentUuid'],
+          WCSPROGRAMS_TaxaMetricName: x['name'],
+          WCSPROGRAMS_TaxaMetricExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
@@ -195,18 +174,14 @@ each(
   each(
     dataPath('undefined[*]'),
     fn(async state => {
-      const dataArray = state.data['What_estimation_methods_do_you] || [];
+      const dataArray = state.data['What_estimation_methods_do_you'] || [];
 
       const mapping = [];
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'wcsprograms_taxametricestimationmethodid',
-            relation: 'WCSPROGRAMS_TaxaMetricEstimationMethod',
-            where: { WCSPROGRAMS_TaxaMetricEstimationMethodExtCode: x },
-          })(state),
-          WCSPROGRAMS_TaxaMetricEstimationMethodID: x['__parentUuid'],
+          WCSPROGRAMS_TaxaMetricEstimationMethodName: x['name'],
+          WCSPROGRAMS_TaxaMetricEstimationMethodExtCode: x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
@@ -248,13 +223,20 @@ each(
             dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
-          WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[dataset['datasets/survey_type']],
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_datasetsurveytypeid',
+            relation: 'WCSPROGRAMS_DataSetSurveyType',
+            where: { TT_DataSetSurveyTypExtCode: dataValue('datasets/survey_type') },
+           })(state),
           WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
             dataset['datasets/dataset_name_text'],
           CollectionStartDate: dataset['datasets/data_collection_start'],
           CollectionEndDate: dataset['datasets/data_collection_end'],
-          WCSPROGRAMS_DataAccessFrequencyID:
-            state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
+          WCSPROGRAMS_DataAccessFrequencyID: await findValue({
+            uuid: 'wcsprograms_dataaccessfrequencyid',
+            relation: 'WCSPROGRAMS_DataAccessFrequency',
+            where: { TT_DataAccessFrequencyExtCode: dataValue('datasets/data_review_frequency') },
+           })(state),
           OtherFrequency:
             state.dataFrequencyMap[
             dataset['datasets/data_review_frequency_other']
@@ -272,6 +254,17 @@ each(
           OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
           OtherAssistance: dataset['datasets/other_services'],
           OtherNotes: dataset['datasets/other_info'],
+          DataIsOpenAccess: dataset['datasets/open_access_plan'] === 'yes' ? 1 : 0,
+          WCSPROGRAMS_DataSetOpenAccessQuantityID: await findValue({
+            uuid: 'wcsprograms_datasetopenaccessquantityid',
+            relation: 'WCSPROGRAMS_DataSetOpenAccessQuantity',
+            where: { TT_DataSetOpenAccessQuantityExtCode: dataValue('datasets/open_access_dataquantity') },
+           })(state),
+          WCSPROGRAMS_DataSetOpenAccessTimelineID: await findValue({
+            uuid: 'wcsprograms_datasetopenaccesstimelineid',
+            relation: 'WCSPROGRAMS_DataSetOpenAccessTimeline',
+            where: { TT_DataSetOpenAccessTimelineExtCode: dataValue('datasets/open_access_when') },
+           })(state),
           //TODO: Update UserID_CR mappings? Or keep default?
           UserID_CR: '0',
           UserID_LM: '0',
@@ -302,30 +295,37 @@ each(
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
-        return upsertMany(
-          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
-          state =>
-            dataCollectionTools.map(dct => {
-              return {
-                DataSetUUIDID: body._id + dct,
-                AnswerId: dataValue('body._id'),
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  datasetuuid[0].value, //fk
-                IsForCollect: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dct], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
-        )(state);
-      });
-    }
-    return state;
-  })
-);
+   each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['data_collection_tool'] || [];
 
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataToolID: await findValue({
+            uuid: 'wcsprograms_datatoolid',
+            relation: 'WCSPROGRAMS_DataTool',
+            where: { WCSPROGRAMS_DataToolExtCode: x },
+          })(state),
+          WCSPROGRAMS_DataToolID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+   )
+ );
+ }); 
+
+   
 each(
   state => state.body.datasets,
   alterState(state => {
