@@ -15,6 +15,11 @@ alterState(state => {
       //   formName: 'SHARC',
       //   tableId: 'WCSPROGRAMS_SharksRays',
       // },
+      {
+      uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+      formName: 'WCS Data Collection Site Survey',
+      tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+      },
     //=========================//
     ].map(survey => ({
       ...survey,
