@@ -4,6 +4,11 @@ alterState(state => {
     return references[0];
   };
 
+    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
+    //lookup table m:m WCSPROGRAMS_DataChallenge
+    //lookup table m:m WCSPROGRAMS_DataAssistance
+    //lookup table m:m WCSPROGRAMS_DataTool
+    
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
 fn(async state => {
   const mappingAnnalDataPlan = { 
@@ -35,7 +40,6 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
 
   
 //For every survey planned...
-alterState(state => {
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned
   each(
   dataPath('surveys_planned[*]'),
@@ -65,66 +69,44 @@ alterState(state => {
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
-  )
-);
+   )
+ );
+ });
 
+  //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
+  each(
+  dataPath('surveys_planned_001[*]'),
+  each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['surveys_planned_001'] || [];
 
-alterState(state => {
-  const { body } = state;
-  const { surveys_planned_001 } = body;
+      const mapping = [];
 
-  if (surveys_planned_001 && !surveys_planned_001.includes('none')) {
-    const surveysPlanned001 = surveys_planned_001.split(' ');
-
-    //1.2 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned_001 for partners
-    return sql({
-      query: `
-    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
-    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-    WHERE DataSetUUIDID = '${body._id}'`,
-    })(state).then(state => {
-      const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
-
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_datasetsurveytypeid',
+            relation: 'WCSPROGRAMS_DataSetSurveyType',
+            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: x },
+          })(state),
+          WCSPROGRAMS_DataSetSurveyTypeID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-        'DataSetUUIDID',
-        state =>
-          surveysPlanned001.map(sp => {
-            return {
-              WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-              DataSetUUIDID: body._id + sp + '001',
-              AnswerId: body._id,
-              WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //fk
-              /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:  //TODO: Confirm how to map 'other' surveys, this column below does not exist
-            sp === 'other' ? body.survey_planned_other : '',*/
-              UserID_CR: '0', //TODO: Update UserID mappings
-              UserID_LM: '0',
-            };
-          })
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
       )(state);
-    });
-  }
-  return state;
-});
-
-    // lookup table m:m WCSPROGRAMS_DataSetSurveyType
+    })
+   )
+ );
+ });   
   
-    // lookup table  m:m WCSPROGRAMS_CameraTrapSetting
-
-    //lookup table  m:m WCSPROGRAMS_TaxaMetricEstimationMethod
-
-    //lookup table m:m WCSPROGRAMS_TaxaMetric
-  
-    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
-
-    //lookup table m:m WCSPROGRAMS_DataChallenge
-  
-    //lookup table m:m WCSPROGRAMS_DataAssistance
- 
-    //lookup table m:m WCSPROGRAMS_DataTool
-    
-alterState(state => {
+  alterState(state => {
   const { body } = state;
 
   const collectGroup =
@@ -133,6 +115,7 @@ alterState(state => {
   if (collectGroup) {
     const collectGroups = collectGroup.split(' ');
 
+   // Camera trap repeat group
     return sql({
       query: `
     SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
@@ -141,102 +124,103 @@ alterState(state => {
     })(state).then(state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
+  each(
+  dataPath('Which_of_the_followi_ata_you_will_collect[*]'),
+  each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['Which_of_the_followi_ata_you_will_collect'] || [];
+
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_cameratrapsettingid',
+            relation: 'WCSPROGRAMS_CameraTrapSetting',
+            where: { WCSPROGRAMS_CameraTrapSettingExtCode: x },
+          })(state),
+          WCSPROGRAMS_CameraTrapSettingID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
-        'DataSetUUIDID',
-        state =>
-          collectGroups.map(cg => {
-            return {
-              WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-              DataSetUUIDID: body._id + cg,
-              AnswerId: body._id,
-              WCSPROGRAMS_CameraTrapSettingID: state.cameraTrapMap[cg], //FK to whichever camera trap reference table
-              //TODO: Update UserID_CR mappings
-              UserID_CR: '0',
-              UserID_LM: '0',
-            };
-          })
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
       )(state);
-    });
-  }
-  return state;
-});
+    })
+   )
+ );
+ });  
 
-alterState(state => {
-  //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
-  const { body } = state;
+   //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
+each(
+  dataPath('Which_metrics_questi_ith_camera_trap_data[*]'),
+  each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['Which_metrics_questi_ith_camera_trap_data] || [];
 
-  const metricGroup =
-    body['group_qp5by62/Which_metrics_questi_ith_camera_trap_data'];
+      const mapping = [];
 
-  if (metricGroup) {
-    const metricGroups = metricGroup.split(' ');
-    return sql({
-      query: `
-    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
-    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-    WHERE DataSetUUIDID = '${body._id}'`,
-    })(state).then(state => {
-      const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_taxametricid',
+            relation: 'WCSPROGRAMS_TaxaMetric',
+            where: { WCSPROGRAMS_TaxaMetricExtCode: x },
+          })(state),
+          WCSPROGRAMS_TaxaMetricID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric',
-        'DataSetUUIDID',
-        state =>
-          metricGroups.map(mg => {
-            return {
-              WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-              DataSetUUIDID: body._id + mg,
-              AnswerId: body._id,
-              WCSPROGRAMS_TaxaMetricID: state.metricsMap[mg], //FK to whichever camera trap reference table
-              //TODO: Update UserID_CR mappings
-              UserID_CR: '0',
-              UserID_LM: '0',
-            };
-          })
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
       )(state);
-    });
-  }
-  return state;
-});
+    })
+   )
+ );
+ });  
 
-// NOTE: Table name not present in mapping sheet
-alterState(state => {
-  const { body } = state;
+    //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
+  each(
+  dataPath('What_estimation_methods_do_you[*]'),
+  each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['What_estimation_methods_do_you] || [];
 
-  const estimationGroup = body['group_qp5by62/What_estimation_methods_do_you'];
+      const mapping = [];
 
-  if (estimationGroup) {
-    const estimationGroups = estimationGroup.split(' ');
-    return sql({
-      query: `
-    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
-    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-    WHERE DataSetUUIDID = '${body._id}'`,
-    })(state).then(state => {
-      const datasetuuid = state.fetchFromRef(state.references[0]);
-      // console.log(datasetuuid);
-      //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_taxametricestimationmethodid',
+            relation: 'WCSPROGRAMS_TaxaMetricEstimationMethod',
+            where: { WCSPROGRAMS_TaxaMetricEstimationMethodExtCode: x },
+          })(state),
+          WCSPROGRAMS_TaxaMetricEstimationMethodID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
-        'DataSetUUIDID',
-        state =>
-          estimationGroups.map(eg => {
-            return {
-              WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlan
-              DataSetUUIDID: body._id + eg,
-              AnswerId: body._id,
-              WCSPROGRAMS_TaxaMetricEstimationMethodID: state.estimationMap[eg], //FK to whichever camera trap reference table
-              //TODO: Update UserID_CR mappings
-              UserID_CR: '0',
-              UserID_LM: '0',
-            };
-          })
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
       )(state);
-    });
-  }
-  return state;
-});
+    })
+   )
+ );
+ }); 
 
 //For every dataset repeat group entry...
 each(
