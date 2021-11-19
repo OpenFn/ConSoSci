@@ -5,7 +5,7 @@ alterState(state => {
   // BEFORE RUNNING THIS JOB...
   // Set this manual cursor to the earliest submission date you want fetch. 
   // Set this to a very early date if you want to fetch ALL data. 
-  const manualCursor = '2017-05-01T14:32:43.325+01:00';
+  const manualCursor = '2021-10-10T14:32:43.325+01:00';
   console.log('Fetching Kobo submissions starting at: ', manualCursor); 
   state.data = {
     surveys: [
