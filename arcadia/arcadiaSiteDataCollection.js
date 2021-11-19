@@ -304,18 +304,14 @@ each(
 
       for (let x of dataArray) {
         mapping.push({
-          WCSPROGRAMS_DataToolID: await findValue({
-            uuid: 'wcsprograms_datatoolid',
-            relation: 'WCSPROGRAMS_DataTool',
-            where: { WCSPROGRAMS_DataToolExtCode: x },
-          })(state),
-          WCSPROGRAMS_DataToolID: x['__parentUuid'],
+          WCSPROGRAMS_DataToolName: x['name'],
+          WCSPROGRAMS_DataToolExtCode : x['name'],
           GeneratedUuid: x['__generatedUuid'],
           UndefinedUuid: x['__parentUuid'],
         });
       }
       return upsertMany(
-        'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
         'GeneratedUuid',
         () => mapping,
         { setNull: ["''", "'undefined'"] }
@@ -345,30 +341,33 @@ each(
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
+       
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
-        return upsertMany(
-          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
-          state =>
-            dataManagementTools.map(dmt => {
-              return {
-                DataSetUUIDID: body.id + dmt,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
-                IsForManage: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dmt], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
-        )(state);
-      });
-    }
-    return state;
-  })
-);
+    each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['data_management_tool'] || [];
+
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataToolName: x['name'],
+          WCSPROGRAMS_DataToolExtCode : x['name'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+   )
+ );
+ }); 
 
 each(
   state => state.body.datasets,
@@ -390,29 +389,31 @@ each(
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
-        return upsertMany(
-          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
-          state =>
-            dataAnalysisTools.map(dat => {
-              return {
-                DataSetUUIDID: body._id + dat,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  datasetuuid[0].value, //fk
-                IsForAnalyze: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dat], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
-        )(state);
-      });
-    }
-    return state;
-  })
-);
+    each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['data_analysis_tool'] || [];
+
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataToolName: x['name'],
+          WCSPROGRAMS_DataToolExtCode : x['name'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+   )
+ );
+ }); 
 
 each(
   state => state.body.datasets,
@@ -430,30 +431,34 @@ each(
       WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
+        
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
-        return upsertMany(
-          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
-          'DataSetUUIDID',
-          state =>
-            dataChallenges.map(dc => {
-              return {
-                DataSetUUIDID: body._id + dc,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  datasetuuid[0].value, //fk
-                WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
-        )(state);
-      });
-    }
-    return state;
-  })
-);
+    each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['challenge'] || [];
 
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataChallengeName: x['name'],
+          WCSPROGRAMS_DataChallengeExtCode : x['name'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+   )
+ );
+ }); 
+        
 each(
   state => state.body.datasets,
   alterState(state => {
@@ -472,26 +477,30 @@ each(
       WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
+        
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
-        return upsertMany(
-          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
-          'DataSetUUIDID',
-          state =>
-            dataManagementHelps.map(dmh => {
-              return {
-                DataSetUUIDID: body._id + dmh,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  datasetuuid[0].value, //fk
-                WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
-        )(state);
-      });
-    }
-    return state;
-  })
-);
+    each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['data_management_help'] || [];
+
+      const mapping = [];
+
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataAssistanceName: x['name'],
+          WCSPROGRAMS_DataAssistanceExtCode : x['name'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
+      return upsertMany(
+        'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+   )
+ );
+ }); 
