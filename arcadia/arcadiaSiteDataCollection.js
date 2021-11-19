@@ -4,25 +4,9 @@ alterState(state => {
     return references[0];
   };
 
-    // lookup table m:m WCSPROGRAMS_DataSetSurveyType
-  
-    // lookup table  m:m WCSPROGRAMS_CameraTrapSetting
-
-    //lookup table  m:m WCSPROGRAMS_TaxaMetricEstimationMethod
-
-    //lookup table m:m WCSPROGRAMS_TaxaMetric
-  
-    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
-
-    //lookup table m:m WCSPROGRAMS_DataChallenge
-  
-    //lookup table m:m WCSPROGRAMS_DataAssistance
- 
-    //lookup table m:m WCSPROGRAMS_DataTool
-    
-
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
-upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
+fn(async state => {
+  const mappingAnnalDataPlan = { 
   DataSetUUIDID: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
   AnswerId: dataValue('$.body._id')(state),
   WCSPROGRAMS_ProjectAnnualDataPlanName: dataValue('$.formName'), //Capture the source survey name?
@@ -37,54 +21,53 @@ upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', {
     return role === 'other'
       ? dataValue('$.body.respondent_role_other')(state)
       : dataValue('$.body.respondent_role')(state);
-  },
-  WCSPROGRAMS_ProjectID: state =>{
-    var siteId = state.sitesMap[dataValue('$.body.swm_site')(state)]; 
-    return siteId ? siteId : dataValue('$.body.swm_site')(state); 
     },
-  CameraTrapOtherEstimationDetail: dataValue(
-    '$.body.group_qp5by62/What_other_estimatio_do_you_intend_to_use'
-  )(state),
+  WCSPROGRAMS_ProjectID: await findValue({
+    uuid: 'wcsprograms_projectid',
+    relation: 'WCSPROGRAMS_Project',
+    where: { WCSPROGRAMS_ProjectExtCode: dataValue('swm_site') },
+   })(state),
+};
+return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnalDataPlan, {
+    setNull: ["''", "'undefined'"], logValues: true
+  })(state);
 });
 
+  
 //For every survey planned...
 alterState(state => {
   //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned
-  const { body } = state;
-  const { surveys_planned } = body;
+  each(
+  dataPath('surveys_planned[*]'),
+  each(
+    dataPath('undefined[*]'),
+    fn(async state => {
+      const dataArray = state.data['surveys_planned'] || [];
 
-  if (surveys_planned && !surveys_planned.includes('none')) {
-    const surveysPlanned = surveys_planned.split(' ');
-    return sql({
-      query: `
-    SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
-    FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-    WHERE DataSetUUIDID = '${body._id}'`,
-    })(state).then(state => {
-      const datasetuuid = state.fetchFromRef(state.references[0]);
+      const mapping = [];
 
+      for (let x of dataArray) {
+        mapping.push({
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_datasetsurveytypeid',
+            relation: 'WCSPROGRAMS_DataSetSurveyType',
+            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: x },
+          })(state),
+          WCSPROGRAMS_DataSetSurveyTypeID: x['__parentUuid'],
+          GeneratedUuid: x['__generatedUuid'],
+          UndefinedUuid: x['__parentUuid'],
+        });
+      }
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-        'DataSetUUIDID',
-        state =>
-          surveysPlanned.map(sp => {
-            return {
-              WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //fk
-              DataSetUUIDID: body._id + sp,
-              AnswerId: body._id,
-              WCSPROGRAMS_DataSetSurveyTypeID: state.surveyTypeMap[sp], //fk
-              //TODO: Confirm how to map 'other' surveys, this column below does not exist
-              /*WCSPROGRAMS_ProjectAnnualDataPlanSurveyOther:
-            sp === 'other' ? body.survey_planned_other : '',*/
-              UserID_CR: '0', //TODO: Update UserID mappings
-              UserID_LM: '0',
-            };
-          })
+        'GeneratedUuid',
+        () => mapping,
+        { setNull: ["''", "'undefined'"] }
       )(state);
-    });
-  }
-  return state;
-});
+    })
+  )
+);
+
 
 alterState(state => {
   const { body } = state;
@@ -125,6 +108,22 @@ alterState(state => {
   return state;
 });
 
+    // lookup table m:m WCSPROGRAMS_DataSetSurveyType
+  
+    // lookup table  m:m WCSPROGRAMS_CameraTrapSetting
+
+    //lookup table  m:m WCSPROGRAMS_TaxaMetricEstimationMethod
+
+    //lookup table m:m WCSPROGRAMS_TaxaMetric
+  
+    //lookup table 1:m  WCSPROGRAMS_DataAccessFrequency
+
+    //lookup table m:m WCSPROGRAMS_DataChallenge
+  
+    //lookup table m:m WCSPROGRAMS_DataAssistance
+ 
+    //lookup table m:m WCSPROGRAMS_DataTool
+    
 alterState(state => {
   const { body } = state;
 
