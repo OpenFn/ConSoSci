@@ -55,12 +55,12 @@ each(
             query: state =>
               `ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_OrganizationID_Owner FOREIGN KEY (${
                 state.prefixes
-              }_OrganizationID_Owner)
+              }OrganizationID_Owner)
             REFERENCES WCSPROGRAMS_Organization (WCSPROGRAMS_OrganizationID);
             ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_OrganizationID_Owner;
             ALTER TABLE ${name} WITH CHECK ADD CONSTRAINT FK_${name}_SecuritySettingID_Row FOREIGN KEY (${
                 state.prefixes
-              }_SecuritySettingID_Row)
+              }SecuritySettingID_Row)
             REFERENCES WCSPROGRAMS_SecuritySetting (WCSPROGRAMS_SecuritySettingID);
             ALTER TABLE ${name} CHECK CONSTRAINT FK_${name}_SecuritySettingID_Row;
             ${foreignKeyQueries.join('\n')}

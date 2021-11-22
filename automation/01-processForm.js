@@ -100,7 +100,7 @@ get(`${state.data.url}`, {}, state => {
     form = form.map(x => {
       let name = toCamelCase(x.name) || toCamelCase(x.$autoname);
       name = x.select_one
-        ? `${prefixes}_${toCamelCase(x.select_from_list_name)}ID_${name}`
+        ? `${prefixes}${toCamelCase(x.select_from_list_name)}ID_${name}`
         : name;
       return {
         ...x,
@@ -130,13 +130,13 @@ get(`${state.data.url}`, {}, state => {
   function standardColumns(tableName) {
     // prettier-ignore
     return [
-      // { name: `${prefix1}_${tableName}ID`, type: 'int4', required: true, identity: true },
-      // { name: `${prefix1}_${tableName}Name`, type: 'varchar(255)', required: false },
-      // { name: `${prefix1}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
-      { name: `${prefixes}_${tableName}Code`, type: 'varchar(255)', required: false },
-      { name: `${prefixes}_${tableName}Description`, type: 'varchar(255)', required: false },
-      { name: `${prefixes}_OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
-      { name: `${prefixes}_SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
+      // { name: `${prefix1}${tableName}ID`, type: 'int4', required: true, identity: true },
+      // { name: `${prefix1}${tableName}Name`, type: 'varchar(255)', required: false },
+      // { name: `${prefix1}${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+      { name: `${prefixes}${tableName}Code`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}${tableName}Description`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}OrganizationID_Owner`, type: 'int4', required: true, default: 1 },
+      { name: `${prefixes}SecuritySettingID_Row`, type: 'int4', required: true, default: 1 },
       { name: 'Archive', type: 'BIT', required: true, default: '0' },
       { name: 'IsPublic', type: 'BIT', required: true, default: '0' },
       { name: 'CRDate', type: 'timestamp', required: true, default: 'NOW()' },
@@ -151,16 +151,16 @@ get(`${state.data.url}`, {}, state => {
   function customColumns(tableName) {
     // prettier-ignore
     return [
-      { name: `${prefixes}_${tableName}ID`, type: 'int4', required: true, identity: true },
-      { name: `${prefixes}_${tableName}Name`, type: 'varchar(255)', required: false },
-      { name: `${prefixes}_${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+      { name: `${prefixes}${tableName}ID`, type: 'int4', required: true, identity: true },
+      { name: `${prefixes}${tableName}Name`, type: 'varchar(255)', required: false },
+      { name: `${prefixes}${tableName}ExtCode`, type: 'varchar(50)', required: true, default: '' },
     ];
   }
 
   function buildLookupTableColumns(prefixes, q, i, arr) {
     return [
       {
-        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
+        name: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
         type: 'int4',
         identity: true,
         required: q.required,
@@ -171,7 +171,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}Name`,
+        name: `${prefixes}${toCamelCase(q.select_from_list_name)}Name`,
         type: 'varchar(100)',
         required: q.required,
         depth: q.type === 'select_multiple' ? 3 : 0,
@@ -180,7 +180,7 @@ get(`${state.data.url}`, {}, state => {
         parentColumn: q.name,
       },
       {
-        name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
+        name: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
         type: 'varchar(100)',
         required: q.required,
         unique: true,
@@ -200,7 +200,7 @@ get(`${state.data.url}`, {}, state => {
       defaultColumns: standardColumns(toCamelCase(q.select_from_list_name)),
       formName,
       depth: q.type === 'select_multiple' ? 1 : q.depth,
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}_${toCamelCase(q.select_from_list_name)}ExtCode`,
+      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
     tablesToBeCreated.push(lookupTableName)
   }
@@ -210,9 +210,9 @@ get(`${state.data.url}`, {}, state => {
     questions.forEach(q => {
       if (q.select_one) {
         foreignTables.push({
-          table: `${prefixes}_${toCamelCase(q.select_from_list_name)}`,
-          id: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
-          reference: `${prefixes}_${toCamelCase(
+          table: `${prefixes}${toCamelCase(q.select_from_list_name)}`,
+          id: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
+          reference: `${prefixes}${toCamelCase(
             q.select_from_list_name
           )}ID_${toCamelCase(q.name)}`,
         });
@@ -229,25 +229,24 @@ get(`${state.data.url}`, {}, state => {
 
         let suffix = q.path.slice(-1)[0];
         if (suffix && getType(suffix) === 'begin_group') suffix = undefined;
-        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`; // MC: TO CHANGE??
-        const lookupTableName = `${prefixes}_${toCamelCase(
+        const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
-        const junctionTableName = `${prefixes}_${toCamelCase(
+        const junctionTableName = `${prefixes}${toCamelCase(
           suffix || tableId
         )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
 
         // prettier-ignore
-        const parentTableName = `${prefixes}_${tableId}${toCamelCase(suffix)}`;
+        const parentTableName = `${prefixes}${tableId}${toCamelCase(suffix)}`;
         // prettier-ignore
-        const parentTableReferenceColumn = `${prefixes}_${toCamelCase(suffix || tableId)}ID`;
+        const parentTableReferenceColumn = `${prefixes}${toCamelCase(suffix || tableId)}ID`;
 
         tables.push({
           name: junctionTableName,
           dependencies: 3,
           columns: [
             {
-              name: `${prefixes}_${toCamelCase(q.select_from_list_name)}ID`,
+              name: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
               type: 'select_multiple',
               required: q.required,
               referent: lookupTableName,
@@ -268,8 +267,8 @@ get(`${state.data.url}`, {}, state => {
           defaultColumns: [
             // prettier-ignore
             ...[
-            { name: `${prefixes}_${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
-            { name: `${prefixes}_${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+            { name: `${prefixes}${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
+            { name: `${prefixes}${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
           ],
             ...standardColumns(toCamelCase(q.name)),
           ],
@@ -280,20 +279,18 @@ get(`${state.data.url}`, {}, state => {
             },
             {
               table: parentTableName,
-              id: `${prefixes}_${toCamelCase(suffix || tableId)}ID`,
+              id: `${prefixes}${toCamelCase(suffix || tableId)}ID`,
             },
           ],
           formName,
           depth: 1,
-          // ReferenceUuid: `${prefixes}_${toCamelCase(q.name)}ExtCode`,
+          // ReferenceUuid: `${prefixes}${toCamelCase(q.name)}ExtCode`,
         });
         tablesToBeCreated.push(junctionTableName);
       }
       if (['select_one', 'select_multiple'].includes(q.type)) {
-        // console.log('q', q);
-        // const lookupTableName = `${prefixes}_${toCamelCase(q.name)}`;
         // Use list_name to name select_table
-        const lookupTableName = `${prefixes}_${toCamelCase(
+        const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
 
@@ -316,7 +313,7 @@ get(`${state.data.url}`, {}, state => {
         ? questions.length - backwardsFirstBegin - 1
         : false;
 
-    const tName = `${prefixes}_${tableId}`;
+    const tName = `${prefixes}${tableId}`;
 
     if (lastBegin) {
       const firstEndAfterLastBegin =
@@ -341,7 +338,7 @@ get(`${state.data.url}`, {}, state => {
           .join('_')
           .replace('.', '')
       );
-      const name = `${prefixes}_${tableId}${tableName}`;
+      const name = `${prefixes}${tableId}${tableName}`;
 
       tables.push({
         name,

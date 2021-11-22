@@ -134,7 +134,7 @@ fn(state => {
 
           let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
           generateUUid = !uuid.includes(state.prefixes)
-            ? `${state.prefixes}_${uuid}ID`
+            ? `${state.prefixes}${uuid}ID`
             : `${uuid}`;
 
           let generatedRelation =
@@ -149,7 +149,7 @@ fn(state => {
             : question.type === 'select_multiple' && question.referent
               ? `${question.referent}ExtCode`
               : !generatedLeftOp.includes(state.prefixes)
-                ? `${state.prefixes}_${generatedLeftOp}ExtCode`
+                ? `${state.prefixes}${generatedLeftOp}ExtCode`
                 : `${generatedLeftOp}ExtCode`;
 
           let generatedRightOP =
@@ -177,7 +177,7 @@ fn(state => {
           } else if (columns[k].findValue) {
             mapKoboToPostgres[columns[k].name] = generateFindValue(
               columns[k],
-              `${state.prefixes}_${columns[k].select_from_list_name}`,
+              `${state.prefixes}${columns[k].select_from_list_name}`,
               `${columns[k].select_from_list_name}`,
               paths[k]
             );
@@ -198,7 +198,7 @@ fn(state => {
               // mapKoboToPostgres[columns[k].name] = `x['name']`;
               mapKoboToPostgres[columns[k].name] = generateFindValue(
                 columns[k],
-                `${state.prefixes}_${columns[k].select_from_list_name}`,
+                `${state.prefixes}${columns[k].select_from_list_name}`,
                 `${columns[k].select_from_list_name}`,
                 'x'
               );
@@ -216,7 +216,7 @@ fn(state => {
           ) {
             mapKoboToPostgres[columns[k].name] = generateFindValue(
               columns[k],
-              `${state.prefixes}_${columns[k].select_from_list_name}`,
+              `${state.prefixes}${columns[k].select_from_list_name}`,
               `${columns[k].select_from_list_name}`,
               paths[k]
             );
@@ -228,7 +228,7 @@ fn(state => {
                   columns[k].type === 'select_multiple'
                   ? generateFindValue(
                       columns[k],
-                      `${state.prefixes}_${columns[k].select_from_list_name}`,
+                      `${state.prefixes}${columns[k].select_from_list_name}`,
                       `${columns[k].select_from_list_name}`,
                       paths[k]
                     )
@@ -368,7 +368,7 @@ fn(state => {
   }
   state.expression = expression;
   state.triggerCriteria = {
-    tableId: `${state.prefixes}_${state.tableId}`,
+    tableId: `${state.prefixes}${state.tableId}`,
   };
   return state;
 });
@@ -402,7 +402,7 @@ fn(state => {
 fn(state => {
   const triggerNames = state.triggers.map(t => t.name);
 
-  const name = `auto/${state.prefixes}_${state.tableId}`;
+  const name = `auto/${state.prefixes}${state.tableId}`;
   const criteria = state.triggerCriteria;
   const triggerIndex = triggerNames.indexOf(name);
 
@@ -436,11 +436,11 @@ fn(state => {
   const expression = state.expression;
   console.log(
     'Inserting / Updating job: ',
-    `auto/${state.prefixes}_${state.tableId}`
+    `auto/${state.prefixes}${state.tableId}`
   );
   const jobNames = state.jobs.map(j => j.name);
   const triggersName = state.triggers.map(t => t.name);
-  const name = `auto/${state.prefixes}_${state.tableId}`;
+  const name = `auto/${state.prefixes}${state.tableId}`;
   const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
   const triggerIndex = triggersName.indexOf(name);
   const triggerId = state.triggers[triggerIndex].id;
