@@ -132,10 +132,10 @@ each(
 
 each('$.lookupTables[*]', state => {
   const { choiceDictionary, execute, writeSql } = state;
-  const name = state.data.name.split('_')[1];
+  const name = state.data.name.toLowerCase();
   const mapping = [];
   for (choice in choiceDictionary) {
-    if (choice === name.toLowerCase()) {
+    if (name.includes(choice)) {
       for (value of choiceDictionary[choice]) {
         let obj = {};
         obj[`${state.data.name}ExtCode`] = value;
