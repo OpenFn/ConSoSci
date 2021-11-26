@@ -88,10 +88,9 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
         () => mapping,
         { setNull: ["''", "'undefined'"] }
       )(state);
-    })
-   )
- );
- });   
+    }
+  )),
+  ) 
   
   alterState(state => {
   const { body } = state;
@@ -136,11 +135,11 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
       )(state);
     })
    )
- );
- });  
+  );
+  });  
 
    //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
-each(
+  each(
   dataPath('Which_metrics_questi_ith_camera_trap_data[*]'),
   each(
     dataPath('undefined[*]'),
@@ -165,11 +164,11 @@ each(
       )(state);
     })
    )
- );
- });  
+  );
+  });  
 
     //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
-  each(
+each(
   dataPath('What_estimation_methods_do_you[*]'),
   each(
     dataPath('undefined[*]'),
