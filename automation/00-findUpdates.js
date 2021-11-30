@@ -14,14 +14,21 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // p2: '',
       // tableId: 'SiteRegistration'
       // },
-
     //=== WCS Socio Economic Database =====
     {
-        uid: 'aukhdejQU76K33caCkF4rP',
+        uid: 'aDgPJqN4SAYohZ4ZueEeYU',
         p1: 'WCSPROGRAMS',
-        p2: 'SocioEco',
-        tableId: 'SocioEcoSurvey'
+        p2: 'Arcadia',
+        tableId: 'SiteSurvey'
     },
+
+    //=== WCS Socio Economic Database =====
+    // {
+    //     uid: 'aukhdejQU76K33caCkF4rP',
+    //     p1: 'WCSPROGRAMS',
+    //     p2: 'SocioEco',
+    //     tableId: 'SocioEcoSurvey'
+    // },
     //==== SharksRays ===============//
     // {
     //   uid: 'aaknL3DQQgkgZ8iay89X5P',
