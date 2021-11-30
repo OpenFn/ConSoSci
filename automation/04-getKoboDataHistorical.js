@@ -15,11 +15,16 @@ alterState(state => {
       //   formName: 'SHARC',
       //   tableId: 'WCSPROGRAMS_SharksRays',
       // },
+      // {
+      // uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+      // formName: 'WCS Data Collection Site Survey',
+      // tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+      // },
       {
-      uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-      formName: 'WCS Data Collection Site Survey',
-      tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-      },
+      uid: 'aukhdejQU76K33caCkF4rP',
+      formName: 'WCS Socio-Economic Projects Database',
+      tableId: 'WCSPROGRAMS_SocioEco_SocioEcoSurvey',
+      }
     //=========================//
     ].map(survey => ({
       ...survey,
