@@ -96,8 +96,6 @@ The Kobo forms map to the following database tables:
 | tbl_individual_urban  | individual_id        | _id                              | Urban Consumption |
 | tbl_sample_urban      | sample_id            | _id + _xform_id_string           | Urban Consumption |
 
-**External Identifiers**  
-_Docs in progress._
 
 ### (3) Assumptions & Considerations for Change Management
 1. `study_id` & `site_id` are hardcoded values.
