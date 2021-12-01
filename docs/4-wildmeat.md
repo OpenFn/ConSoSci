@@ -74,7 +74,7 @@ A message filter trigger has been configured for each of the forms above. The co
 #### Data Mappings
 The Kobo forms map to the following database tables:  
 | DB Table    | External Uuid | Source data | Form Type |
-| ----------- | ------------- | ----------- | --------- |
+|:-----------|:----------------|:----------------|:------------|
 | tbl_site | site_id | hardcoded default (e.g., `1001`) | All |
 | tbl_sample  | sample_id | _id + _xform_id_string | Rural Consumption |
 | tbl_study | study_id | hardcoded default (e.g., `2001`) | All |
