@@ -73,14 +73,6 @@ A message filter trigger has been configured for each of the forms above. The co
 
 **Data Mappings**  
 
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-
 The Kobo forms map to the following database tables: 
 
 | DB Table              | External Uuid        | Source data                      | Form Type         |
