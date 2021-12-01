@@ -10,7 +10,7 @@ permalink: /wildmeat/
 See the Wildmeat repository for the job code. These jobs run on the `Wildmeat` OpenFn.org project.
 https://github.com/OpenFn/wcs-wildmeat
 
-## Wildmeat Kobo Integration 1
+## Wildmeat Kobo Integration 2020
 
 EU SWM uses Kobo Toolbox to collect data on Rural Consumption across sites (see
 the [Kobo form template here](https://docs.google.com/spreadsheets/d/1AN2Qyjx-ua3fE5-Nj7Bg2WSdZdIE6zy4FmVVrMqGZl0/edit?usp=drive_web&ouid=101430720901034004945)). OpenFn automates data integration between Kobo
@@ -47,7 +47,7 @@ Toolbox and a Postgresql transitional database.
 8. All surveys will have the default type `consumption` to start (but downstream other types like `hunter` or `market` may be added).
 
 
-## Wildmeat Kobo Integration 2
+## Wildmeat Kobo Integration `2021 (Phase 2)`
 ### (1) Solution Overview
 OpenFn has configured an automated data integration solution between Kobo Toolbox and a PostgresSQL database to sync Kobo submissions and enable real-time monitoring of field data collection.
 
@@ -67,11 +67,11 @@ The solution is a one-way Kobo Toolbox-to-PostgresSQL integration that connects 
 [See here](https://docs.google.com/spreadsheets/d/1qfniuXap7tyjf9sZZN1M1Hn7nzGfvs_twhcxzjRV8QQ/edit#gid=0) for the data element mapping specification for exchange data between Kobo and the database.
 
 
-#### Triggers
+##### Triggers
 Trigger Type: Message Filter  
 A message filter trigger has been configured for each of the forms above. The corresponding job will run when a form with the matching message filter is recieved in the project inbox. These can be adjusted in the OpenFn project.
 
-#### Data Mappings
+##### Data Mappings
 The Kobo forms map to the following database tables: 
 | DB Table              | External Uuid        | Source data                      | Form Type         |
 |:----------------------|:---------------------|:---------------------------------|:------------------|
@@ -95,8 +95,8 @@ The Kobo forms map to the following database tables:
 | tbl_sample_urban      | sample_id            | _id + _xform_id_string           | Urban Consumption |
 
 
-#### External Identifiers
-...
+##### External Identifiers
+_Docs in progress._
 
 ### (3) Assumptions & Considerations for Change Management
 1. `study_id` & `site_id` are hardcoded values.
