@@ -141,8 +141,6 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
    //2.2 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetric
   each(
   dataPath('Which_metrics_questi_ith_camera_trap_data[*]'),
-  each(
-    dataPath('undefined[*]'),
     fn(async state => {
       const dataArray = state.data['Which_metrics_questi_ith_camera_trap_data'] || [];
 
@@ -163,15 +161,11 @@ return upsert('WCSPROGRAMS_ProjectAnnualDataPlan', 'DataSetUUIDID', mappingAnnal
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
-   )
-  );
-  });  
+  );  
 
     //2.3 Upsert records to create m:m relationships with WCSPROGRAMS_TaxaMetricEstimationMethod
 each(
   dataPath('What_estimation_methods_do_you[*]'),
-  each(
-    dataPath('undefined[*]'),
     fn(async state => {
       const dataArray = state.data['What_estimation_methods_do_you'] || [];
 
@@ -192,9 +186,7 @@ each(
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
-   )
- );
- }); 
+   ); 
 
 //For every dataset repeat group entry...
 each(
@@ -218,14 +210,13 @@ each(
           DataSetUUIDID: body._id + dataset['datasets/survey_type'],
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
           AnswerId: body._id,
-          TypeOfDataSet:
-            dataset['datasets/survey_type'] === 'other'
+          TypeOfDataSet: dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
           WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
             uuid: 'wcsprograms_datasetsurveytypeid',
             relation: 'WCSPROGRAMS_DataSetSurveyType',
-            where: { TT_DataSetSurveyTypExtCode: dataValue('datasets/survey_type') },
+            where: { TT_DataSetSurveyTypExtCode: dataValue('datasets/survey_type')},
            })(state),
           WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
             dataset['datasets/dataset_name_text'],
@@ -237,9 +228,7 @@ each(
             where: { TT_DataAccessFrequencyExtCode: dataValue('datasets/data_review_frequency') },
            })(state),
           OtherFrequency:
-            state.dataFrequencyMap[
-            dataset['datasets/data_review_frequency_other']
-            ],
+            state.dataFrequencyMap[dataset['datasets/data_review_frequency_other']],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
           DataManagementPlan:
