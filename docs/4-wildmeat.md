@@ -67,11 +67,11 @@ The solution is a one-way Kobo Toolbox-to-PostgresSQL integration that connects 
 [See here](https://docs.google.com/spreadsheets/d/1qfniuXap7tyjf9sZZN1M1Hn7nzGfvs_twhcxzjRV8QQ/edit#gid=0) for the data element mapping specification for exchange data between Kobo and the database.
 
 
-##### Triggers
+**Triggers**  
 Trigger Type: Message Filter  
 A message filter trigger has been configured for each of the forms above. The corresponding job will run when a form with the matching message filter is recieved in the project inbox. These can be adjusted in the OpenFn project.
 
-##### Data Mappings
+**Data Mappings**  
 The Kobo forms map to the following database tables: 
 | DB Table              | External Uuid        | Source data                      | Form Type         |
 |:----------------------|:---------------------|:---------------------------------|:------------------|
@@ -94,8 +94,7 @@ The Kobo forms map to the following database tables:
 | tbl_individual_urban  | individual_id        | _id                              | Urban Consumption |
 | tbl_sample_urban      | sample_id            | _id + _xform_id_string           | Urban Consumption |
 
-
-##### External Identifiers
+**External Identifiers**  
 _Docs in progress._
 
 ### (3) Assumptions & Considerations for Change Management
