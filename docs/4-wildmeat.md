@@ -72,7 +72,6 @@ Trigger Type: Message Filter
 A message filter trigger has been configured for each of the forms above. The corresponding job will run when a form with the matching message filter is recieved in the project inbox. These can be adjusted in the OpenFn project.
 
 **Data Mappings**  
-
 The Kobo forms map to the following database tables: 
 
 | DB Table              | External Uuid        | Source data                      | Form Type         |
