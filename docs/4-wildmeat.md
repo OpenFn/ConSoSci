@@ -72,27 +72,27 @@ Trigger Type: Message Filter
 A message filter trigger has been configured for each of the forms above. The corresponding job will run when a form with the matching message filter is recieved in the project inbox. These can be adjusted in the OpenFn project.
 
 #### Data Mappings
-The Kobo forms map to the following database tables:  
-| DB Table    | External Uuid | Source data | Form Type |
-|:-----------|:----------------|:----------------|:------------|
-| tbl_site | site_id | hardcoded default (e.g., `1001`) | All |
-| tbl_sample  | sample_id | _id + _xform_id_string | Rural Consumption |
-| tbl_study | study_id | hardcoded default (e.g., `2001`) | All |
-| swm_transaction | uuid | _id + _xform_id_string | Rural Consumption |
-| tbl_individual | individual_id | _id | Rural Consumption |
-| tbl_individual_char | individual_char_id | _id | Rural Consumption |
-| tbl_household | household_id | _id | Rural Consumption |
-| tbl_household_char | household_char_id | _id | Rural Consumption |
-| tbl_wildmeat | wildmeat_id | species | Rural Consumption |
-| tbl_market | external_id | market (e.g., "djazzi") | Market |
-| tbl_wildmeat_market | wildmeat_id | species | Market |
-| tbl_sample_market | sample_id | _id + _xform_id_string | Market |
-| tbl_hunter_monitoring | hunter_monitoring_id | id_hunter | Offtake |
-| tbl_wildmeat_hunter | wildmeat_id | species_id | Offtake |
-| tbl_sample_hunter | sample_id | _id + _xform_id_string | Offtake |
-| tbl_wildmeat_urban | wildmeat_id | wildmeat | Urban Consumption |
-| tbl_individual_urban | individual_id | _id | Urban Consumption |
-| tbl_sample_urban | sample_id | _id + _xform_id_string| Urban Consumption |
+The Kobo forms map to the following database tables: 
+| DB Table              | External Uuid        | Source data                      | Form Type         |
+|:----------------------|:---------------------|:---------------------------------|:------------------|
+| tbl_site              | site_id              | hardcoded default (e.g., `1001`) | All               |
+| tbl_sample            | sample_id            | _id + _xform_id_string           | Rural Consumption |
+| tbl_study             | study_id             | hardcoded default (e.g., `2001`) | All               |
+| swm_transaction       | uuid                 | _id + _xform_id_string           | Rural Consumption |
+| tbl_individual        | individual_id        | _id                              | Rural Consumption |
+| tbl_individual_char   | individual_char_id   | _id                              | Rural Consumption |
+| tbl_household         | household_id         | _id                              | Rural Consumption |
+| tbl_household_char    | household_char_id    | _id                              | Rural Consumption |
+| tbl_wildmeat          | wildmeat_id          | species                          | Rural Consumption |
+| tbl_market            | external_id          | market (e.g., "djazzi")          | Market            |
+| tbl_wildmeat_market   | wildmeat_id          | species                          | Market            |
+| tbl_sample_market     | sample_id            | _id + _xform_id_string           | Market            |
+| tbl_hunter_monitoring | hunter_monitoring_id | id_hunter                        | Offtake           |
+| tbl_wildmeat_hunter   | wildmeat_id          | species_id                       | Offtake           |
+| tbl_sample_hunter     | sample_id            | _id + _xform_id_string           | Offtake           |
+| tbl_wildmeat_urban    | wildmeat_id          | wildmeat                         | Urban Consumption |
+| tbl_individual_urban  | individual_id        | _id                              | Urban Consumption |
+| tbl_sample_urban      | sample_id            | _id + _xform_id_string           | Urban Consumption |
 
 
 #### External Identifiers
