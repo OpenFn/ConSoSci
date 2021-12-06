@@ -56,6 +56,17 @@ fn(state => {
       state.data.datasetId = `${state.data.datasetId}${body.today.split('-')[0]
         }`;
     }
+    
+    // Cleaning 2000 years
+    /*if (formName === 'BNS Makira 2019') and state.data.today === '2000-01-01' {
+      state.data.today = '2019-01-01'
+    } ;
+    if (formName === 'BNS Makira 2017') and state.data.today === '2000' {
+      state.data.today = '2017-01-01'
+    } ;
+    if (formName === 'BNS Makira 2017') and state.data.today === '2000' {
+      state.data.today = '2017-01-01'
+    } ;*/
     // ===========================================================================
 
     // ===========================================================================
