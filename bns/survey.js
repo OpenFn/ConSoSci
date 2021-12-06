@@ -57,16 +57,6 @@ fn(state => {
         }`;
     }
     
-    // Cleaning 2000 years
-    /*if (formName === 'BNS Makira 2019') and state.data.today === '2000-01-01' {
-      state.data.today = '2019-01-01'
-    } ;
-    if (formName === 'BNS Makira 2017') and state.data.today === '2000' {
-      state.data.today = '2017-01-01'
-    } ;
-    if (formName === 'BNS Makira 2017') and state.data.today === '2000' {
-      state.data.today = '2017-01-01'
-    } ;*/
     // ===========================================================================
 
     // ===========================================================================
@@ -141,8 +131,17 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   SubmissionUuid: dataValue('_uuid'),
   AnswerId: dataValue('_id'),
   LastUpdate: new Date().toISOString(),
-  SurveyDate: state => 
-    state.data.today ? state.data.today : state.data._submission_time,
+  SurveyDate: state => {
+    const date = state.data.today || state.data._submission_time
+    //if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Makira 2019')) {
+    // return 2019
+    //else if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Makira 2017')) {
+    // return 2017
+    //else if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Lac Télé 2017')) {
+    // return 2017 
+    //} 
+    //return 2019
+  },
   Landscape: state => {
     var landscape = dataValue('landscape')(state);
     return state.landscapeMap[landscape] || landscape;
