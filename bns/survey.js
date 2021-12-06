@@ -140,7 +140,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
     //else if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Lac Télé 2017')) {
     // return 2017 
     //} 
-    //return 2019
+    //return date
   },
   Landscape: state => {
     var landscape = dataValue('landscape')(state);
