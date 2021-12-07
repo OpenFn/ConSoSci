@@ -10,7 +10,7 @@ fn(state => {
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
 fn(async state => {
   const mappingAnnalDataPlan = {
-    DataSetUUIDID: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
+    DatasetUuidId: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
     AnswerId: dataValue('$.body._id')(state),
     WCSPROGRAMS_ProjectAnnualDataPlanName: dataValue('$.formName'), //Capture the source survey name?
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
@@ -33,7 +33,7 @@ fn(async state => {
   };
   return upsert(
     'WCSPROGRAMS_ProjectAnnualDataPlan',
-    'DataSetUUIDID',
+    'DatasetUuidId',
     mappingAnnalDataPlan,
     {
       setNull: ["''", "'undefined'"],
@@ -118,7 +118,7 @@ fn(async state => {
       for (collection of collectGroupArray) {
         mapping.push({
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value,
-          DataSetUUIDID: body._id + collection,
+          DatasetUuidId: body._id + collection,
           AnswerId: body._id,
           WCSPROGRAMS_CameraTrapSettingID: await findValue({
             relation: 'WCSPROGRAMS_CameraTrapSetting',
@@ -165,7 +165,7 @@ fn(state => {
       for (metric of metricGroupArray) {
         mapping.push({
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value,
-          DataSetUUIDID: body._id + metric,
+          DatasetUuidId: body._id + metric,
           AnswerId: body._id,
           WCSPROGRAMS_CameraTrapSettingID: await findValue({
             relation: 'WCSPROGRAMS_CameraTrapSetting',
@@ -211,7 +211,7 @@ fn(state => {
       for (estimation of estimationGroupArray) {
         mapping.push({
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value,
-          DataSetUUIDID: body._id + estimation,
+          DatasetUuidId: body._id + estimation,
           AnswerId: body._id,
           WCSPROGRAMS_CameraTrapSettingID: await findValue({
             relation: 'WCSPROGRAMS_CameraTrapSetting',
@@ -258,7 +258,7 @@ each(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
         'DatasetUuidId',
         {
-          DataSetUUIDID: body._id + dataset['datasets/survey_type'],
+          DatasetUuidId: body._id + dataset['datasets/survey_type'],
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
           AnswerId: body._id,
           TypeOfDataSet:
@@ -343,7 +343,7 @@ each(
           state =>
             dataCollectionTools.map(dct => {
               return {
-                DataSetUUIDID: body._id + dct,
+                DatasetUuidId: body._id + dct,
                 AnswerId: dataValue('body._id'),
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   datasetuuid[0].value, //fk
@@ -386,7 +386,7 @@ each(
           state =>
             dataManagementTools.map(dmt => {
               return {
-                DataSetUUIDID: body.id + dmt,
+                DatasetUuidId: body.id + dmt,
                 AnswerId: body._id,
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   datasetuuid[0].value, //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
@@ -429,7 +429,7 @@ each(
           state =>
             dataAnalysisTools.map(dat => {
               return {
-                DataSetUUIDID: body._id + dat,
+                DatasetUuidId: body._id + dat,
                 AnswerId: body._id,
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   datasetuuid[0].value, //fk
@@ -470,7 +470,7 @@ each(
           state =>
             dataChallenges.map(dc => {
               return {
-                DataSetUUIDID: body._id + dc,
+                DatasetUuidId: body._id + dc,
                 AnswerId: body._id,
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   datasetuuid[0].value, //fk
@@ -511,7 +511,7 @@ each(
           state =>
             dataManagementHelps.map(dmh => {
               return {
-                DataSetUUIDID: body._id + dmh,
+                DatasetUuidId: body._id + dmh,
                 AnswerId: body._id,
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   datasetuuid[0].value, //fk
