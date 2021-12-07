@@ -29,7 +29,7 @@ alterState(state => {
       // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie' }, // resynced August 25, 2021
 
       // Prices 2021
-     { id: 'aKZCAWsMgUkJDcYKv2Dern', tag: 'bns_price', name: 'BNS Prix Lac Télé 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'  }
+     { id: 'aKZCAWsMgUkJDcYKv2Dern', tag: 'bns_price', name: 'BNS Prix Lac Télé 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'  },
      // { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie'}, // synced Sept 10, 2021
 
       //  HH 2020
