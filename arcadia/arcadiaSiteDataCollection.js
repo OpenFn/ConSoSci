@@ -59,7 +59,7 @@ fn(async state => {
 
     return upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-      'DataSetUUIDID',
+      'DatasetUuidId',
       () => mapping,
       {
         setNull: ["''", "'undefined'"],
@@ -86,7 +86,7 @@ fn(async state => {
     console.log('mapping', mapping);
     return upsertMany(
       'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType',
-      'DataSetUUIDID',
+      'DatasetUuidId',
       () => mapping,
       {
         setNull: ["''", "'undefined'"],
@@ -110,7 +110,7 @@ fn(async state => {
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-      WHERE DataSetUUIDID = '${body._id}'`,
+      WHERE DatasetUuidId = '${body._id}'`,
     })(state).then(async state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
@@ -133,7 +133,7 @@ fn(async state => {
 
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanCameraTrapSetting',
-        'DataSetUUIDID',
+        'DatasetUuidId',
         () => mapping,
         { setNull: ["''", "'undefined'"], logValues: true }
       )(state);
@@ -157,7 +157,7 @@ fn(state => {
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-      WHERE DataSetUUIDID = '${body._id}'`,
+      WHERE DatasetUuidId = '${body._id}'`,
     })(state).then(async state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
@@ -180,7 +180,7 @@ fn(state => {
 
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetric',
-        'DataSetUUIDID',
+        'DatasetUuidId',
         () => mapping,
         { setNull: ["''", "'undefined'"], logValues: true }
       )(state);
@@ -203,7 +203,7 @@ fn(state => {
       query: `
       SELECT WCSPROGRAMS_ProjectAnnualDataPlanID 
       FROM WCSPROGRAMS_ProjectAnnualDataPlan 
-      WHERE DataSetUUIDID = '${body._id}'`,
+      WHERE DatasetUuidId = '${body._id}'`,
     })(state).then(async state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
@@ -226,7 +226,7 @@ fn(state => {
 
       return upsertMany(
         'WCSPROGRAMS_ProjectAnnualDataPlanTaxaMetricEstimationMethod',
-        'DataSetUUIDID',
+        'DatasetUuidId',
         () => mapping,
         { setNull: ["''", "'undefined'"], logValues: true }
       )(state);
@@ -250,13 +250,13 @@ each(
       query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanID
         FROM WCSPROGRAMS_ProjectAnnualDataPlan
-        WHERE DataSetUUIDID = '${body._id}'`,
+        WHERE DatasetUuidId = '${body._id}'`,
     })(state).then(async state => {
       const datasetuuid = state.fetchFromRef(state.references[0]);
       //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
       return upsert(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
-        'DataSetUUIDID',
+        'DatasetUuidId',
         {
           DataSetUUIDID: body._id + dataset['datasets/survey_type'],
           WCSPROGRAMS_ProjectAnnualDataPlanID: datasetuuid[0].value, //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
@@ -332,14 +332,14 @@ each(
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-        WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
+          'DatasetUuidId',
           state =>
             dataCollectionTools.map(dct => {
               return {
@@ -375,14 +375,14 @@ each(
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-        WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
+          'DatasetUuidId',
           state =>
             dataManagementTools.map(dmt => {
               return {
@@ -418,14 +418,14 @@ each(
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-        WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
-          'DataSetUUIDID',
+          'DatasetUuidId',
           state =>
             dataAnalysisTools.map(dat => {
               return {
@@ -460,13 +460,13 @@ each(
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-        WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
-          'DataSetUUIDID',
+          'DatasetUuidId',
           state =>
             dataChallenges.map(dc => {
               return {
@@ -501,13 +501,13 @@ each(
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
-        WHERE DataSetUUIDID = '${body._id}${dataset['datasets/survey_type']}'`,
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
         const datasetuuid = state.fetchFromRef(state.references[0]);
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
-          'DataSetUUIDID',
+          'DatasetUuidId',
           state =>
             dataManagementHelps.map(dmh => {
               return {
