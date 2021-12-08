@@ -25,11 +25,7 @@ fn(async state => {
         ? dataValue('$.body.respondent_role_other')(state)
         : dataValue('$.body.respondent_role')(state);
     },
-    WCSPROGRAMS_ProjectID: await findValue({
-      uuid: 'wcsprograms_projectid',
-      relation: 'WCSPROGRAMS_Project',
-      where: { WCSPROGRAMS_ProjectExtCode: dataValue('$.body.swm_site') },
-    })(state),
+    WCSPROGRAMS_ProjectID:dataValue('$.body.swm_site')(state),
   };
   return upsert(
     'WCSPROGRAMS_ProjectAnnualDataPlan',
