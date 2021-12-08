@@ -200,6 +200,8 @@ get(`${state.data.url}`, {}, state => {
       defaultColumns: standardColumns(toCamelCase(q.select_from_list_name)),
       formName,
       depth: q.type === 'select_multiple' ? 1 : q.depth,
+      lookupTable: q.type === 'select_multiple' ? true : undefined,
+      select_from_list_name: toCamelCase(q.select_from_list_name),
       ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
     tablesToBeCreated.push(lookupTableName)
@@ -224,6 +226,7 @@ get(`${state.data.url}`, {}, state => {
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
+        console.log('here', q.name);
         multiSelectIds.push(q.name);
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
@@ -241,59 +244,64 @@ get(`${state.data.url}`, {}, state => {
         // prettier-ignore
         const parentTableReferenceColumn = `${prefixes}${toCamelCase(suffix || tableId)}ID`;
 
-        tables.push({
-          name: junctionTableName,
-          dependencies: 3,
-          columns: [
-            {
-              name: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
-              type: 'select_multiple',
-              required: q.required,
-              referent: lookupTableName,
-              parent: false,
-              depth: 3,
-              path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-            },
-            {
-              name: parentTableReferenceColumn,
-              type: 'select_multiple',
-              required: q.required,
-              referent: parentTableName,
-              parent: true,
-              depth: 3,
-              path: i === 0 ? [] : [...arr[i - 1].path, q.name],
-            },
+        console.log('junctiontablename', junctionTableName);
+        if (!tables.find(t => t.name === junctionTableName)) {
+          tables.push({
+            name: junctionTableName,
+            dependencies: 3,
+            columns: [
+              {
+                name: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
+                type: 'select_multiple',
+                required: q.required,
+                referent: lookupTableName,
+                parent: false,
+                depth: 3,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              },
+              {
+                name: parentTableReferenceColumn,
+                type: 'select_multiple',
+                required: q.required,
+                referent: parentTableName,
+                parent: true,
+                depth: 3,
+                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+              },
+            ],
+            defaultColumns: [
+              // prettier-ignore
+              ...[
+            { name: `${prefixes}${toCamelCase(q.select_from_list_name)}Name`, type: 'varchar(255)', required: false },
+            { name: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
           ],
-          defaultColumns: [
-            // prettier-ignore
-            ...[
-            { name: `${prefixes}${toCamelCase(q.name)}Name`, type: 'varchar(255)', required: false },
-            { name: `${prefixes}${toCamelCase(q.name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
-          ],
-            ...standardColumns(toCamelCase(q.name)),
-          ],
-          foreignTables: [
-            {
-              table: lookupTableName,
-              id: `${lookupTableName}ID`,
-            },
-            {
-              table: parentTableName,
-              id: `${prefixes}${toCamelCase(suffix || tableId)}ID`,
-            },
-          ],
-          formName,
-          depth: 1,
-          // ReferenceUuid: `${prefixes}${toCamelCase(q.name)}ExtCode`,
-        });
-        tablesToBeCreated.push(junctionTableName);
+              ...standardColumns(toCamelCase(q.select_from_list_name)),
+            ],
+            foreignTables: [
+              {
+                table: lookupTableName,
+                id: `${lookupTableName}ID`,
+              },
+              {
+                table: parentTableName,
+                id: `${prefixes}${toCamelCase(suffix || tableId)}ID`,
+              },
+            ],
+            formName,
+            depth: 1,
+            select_multiple: true,
+            select_from_list_name: toCamelCase(q.select_from_list_name),
+            // ReferenceUuid: `${prefixes}${toCamelCase(q.name)}ExtCode`,
+          });
+          tablesToBeCreated.push(junctionTableName);
+        }
       }
       if (['select_one', 'select_multiple'].includes(q.type)) {
         // Use list_name to name select_table
         const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
-
+        console.log('lookuptable', lookupTableName);
         if (!tablesToBeCreated.includes(lookupTableName)) {
           //prettier-ignore
           addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
