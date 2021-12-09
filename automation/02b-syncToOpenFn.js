@@ -124,7 +124,11 @@ fn(state => {
             }
           }
           // prefix += mapping;
-          prefix += mapping + `)(state); \n${alterSClosing} \n`;
+          prefix +=
+            mapping +
+            (select_multiple || lookupTable
+              ? `)(state); } \n return state; \n${alterSClosing} \n`
+              : `)(state); \n${alterSClosing} \n`);
           for (var i = 0; i < closingPar; i++) {
             prefix += ')';
           }
