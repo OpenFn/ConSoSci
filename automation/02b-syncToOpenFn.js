@@ -71,7 +71,14 @@ fn(state => {
   }
   const { tables, choiceDictionary } = state;
   for (var i = 0; i < tables.length; i++) {
-    const { columns, name, depth, ReferenceUuid } = tables[i];
+    const {
+      columns,
+      name,
+      depth,
+      ReferenceUuid,
+      select_multiple,
+      lookupTable,
+    } = tables[i];
 
     if (
       !ReferenceUuid &&
@@ -104,7 +111,11 @@ fn(state => {
       function wrapper(column, mapping) {
         let prefix = '';
         const depth = column.depth;
-        if (depth > 1) {
+        /*  if (select_multiple || lookupTable) {
+          prefix += mapping + `)(state); \n${alterSClosing} \n`;
+          return prefix;
+        } else */ if (depth > 1) {
+          // console.log('Im here');
           let closingPar = 0; // hold how many brackets we need to close
           for (var i = 0; i < depth - 1; i++) {
             if (column.path[i]) {
@@ -159,6 +170,8 @@ fn(state => {
                 ? `dataValue('gear')`
                 : question.type === 'select_multiple' && question.referent
                   ? `x`
+                  : question.depth > 0 
+                  ? `x['${rightOperand}']`
                   : `dataValue('${rightOperand}')`;
 
           var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
@@ -202,7 +215,7 @@ fn(state => {
                 `${columns[k].select_from_list_name}`,
                 'x'
               );
-            } else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
+            } else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`; // To change: @Mamadou
           } else if (columns[k].select_multiple === true) {
             mapKoboToPostgres[columns[k].name] = `x['name']`;
           } else if (columns[k].depth > 0) {
@@ -283,14 +296,41 @@ fn(state => {
       // We build a set of statements for when depth > 0========
       const path = columns[0].path.join('/');
 
-      const statements = `const dataArray = state.data['${path}'] || [] \n
-        const mapping = []; \n 
+      let statements = null;
+      // console.log('select', select_multiple);
+      // console.log('name', depth);
+      if (select_multiple || lookupTable) {
+        statements = `if (state.data['${path}']) { \n
+                const array = state.data['${path}'].split(' '); \n
+                const mapping = []; \n 
+                for ( let x of array ) { \n
+                  mapping.push(${JSON.stringify(
+                    mapKoboToPostgres,
+                    null,
+                    2
+                  ).replace(/"/g, '')}); \n
+                } \n
+            }`;
+      } else {
+        //   statements = `if (state.data['${path}']) { \n
+        //     const array = state.data['${path}'].split(' '); \n
+        //     const mapping = []; \n
+        //     for ( let x of array ) { \n
+        //       mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+        //         /"/g,
+        //         ''
+        //       )}); \n
+        //     } \n
+        // }`;
+        statements = `const dataArray = state.data['${path}'] || [] \n
+        const mapping = []; \n
         for (let x of dataArray) { \n
           mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
             /"/g,
             ''
           )}) \n
           }`;
+      }
       // =======================================================
 
       // In  case of select_one, it's another story ============
@@ -337,11 +377,11 @@ fn(state => {
 
       let mapping = ReferenceUuid
         ? `${alterSOpeningSelect} ${operation}('${name}', '${uuid}', `
-        : depth > 0
+        : depth > 0 || select_multiple
         ? `${alterSOpeningDepth} ${operation}('${name}', '${uuid}', `
         : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
 
-      if (columns[0].depth > 0) {
+      if (columns[0].depth > 0 || select_multiple) {
         // const path = columns[0].path.join('/');
 
         // mapping += `state => { const dataArray = state.data['${path}'] || [];

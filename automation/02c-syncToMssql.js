@@ -131,20 +131,40 @@ each(
 );
 
 each('$.lookupTables[*]', state => {
-  const { choiceDictionary, execute, writeSql } = state;
+  const { choiceDictionary, execute, writeSql, prefixes } = state;
   const name = state.data.name.toLowerCase();
   const mapping = [];
+  // Camelize columns and table name
+  function toCamelCase(str) {
+    if (!str) return '';
+    let underscores = [];
+    let i = 0;
+    while (str[i] === '_') {
+      underscores.push(str[i]);
+      i++;
+    }
+    let words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi);
+    if (!words) return '';
+    words = words
+      .map(word => {
+        return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
+      })
+      .join('');
+    return `${underscores.join('')}${words}${underscores.join('')}`;
+  }
+
   for (choice in choiceDictionary) {
-    if (name.includes(choice)) {
+    let customChoice = `${prefixes}${toCamelCase(choice)}`;
+    if (name === customChoice.toLowerCase()) {
       for (value of choiceDictionary[choice]) {
         let obj = {};
-        obj[`${state.data.name}ExtCode`] = value;
-        obj[`${state.data.name}Name`] = value;
+        obj[`${name}ExtCode`] = value;
+        obj[`${name}Name`] = value;
         mapping.push(obj);
       }
 
       // change this line to 'return upsertMany(..., { writeSql, execute: true, logValues: true });' to override 'execute: false' at top
-      return upsertMany(state.data.name, `${state.data.name}ExtCode`, mapping, {
+      return upsertMany(state.data.name, `${name}ExtCode`, mapping, {
         writeSql,
         execute,
         logValues: true,
