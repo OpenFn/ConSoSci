@@ -2,7 +2,7 @@
 
 fn(state => {
   try {
-    const { body, formName } = state.data;
+    const { body, formName, instance } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
 
     let cleanedSubmission = {};
@@ -112,12 +112,12 @@ fn(state => {
       (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
     );
     // ===========================================================================
-    console.log(
-      'The bns_matrix',
-      JSON.stringify(state.matrix, null, 2),
-      `contains ${state.matrix.length} items.`
-    );
-    console.log(state.data.instance);
+    // console.log(
+    //   'The bns_matrix',
+    //   JSON.stringify(state.matrix, null, 2),
+    //   `contains ${state.matrix.length} items.`
+    // );
+    console.log(instance);
     return state;
   } catch (error) {
     state.connection.close();
