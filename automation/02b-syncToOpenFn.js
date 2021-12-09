@@ -310,7 +310,7 @@ fn(state => {
                     2
                   ).replace(/"/g, '')}); \n
                 } \n
-            }`;
+            `;
       } else {
         //   statements = `if (state.data['${path}']) { \n
         //     const array = state.data['${path}'].split(' '); \n
@@ -403,7 +403,11 @@ fn(state => {
       // END OF BUILDING MAPPINGS (state)
       expression +=
         wrapper(columns[0], mapping) +
-        (columns[0].depth > 1 ? '\n' : `)(state); \n${alterSClosing} \n`);
+        (columns[0].depth > 1
+          ? '\n'
+          : select_multiple || lookupTable
+          ? `)(state); } \n return state; \n${alterSClosing} \n`
+          : `)(state); \n${alterSClosing} \n`);
     }
   }
   state.expression = expression;
