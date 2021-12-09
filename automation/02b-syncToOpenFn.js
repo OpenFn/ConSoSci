@@ -111,10 +111,11 @@ fn(state => {
       function wrapper(column, mapping) {
         let prefix = '';
         const depth = column.depth;
-        if (select_multiple || lookupTable) {
+        /*  if (select_multiple || lookupTable) {
           prefix += mapping + `)(state); \n${alterSClosing} \n`;
           return prefix;
-        } else if (depth > 1) {
+        } else */ if (depth > 1) {
+          // console.log('Im here');
           let closingPar = 0; // hold how many brackets we need to close
           for (var i = 0; i < depth - 1; i++) {
             if (column.path[i]) {
@@ -169,6 +170,8 @@ fn(state => {
                 ? `dataValue('gear')`
                 : question.type === 'select_multiple' && question.referent
                   ? `x`
+                  : question.depth > 0 
+                  ? `x['${rightOperand}']`
                   : `dataValue('${rightOperand}')`;
 
           var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
@@ -212,7 +215,7 @@ fn(state => {
                 `${columns[k].select_from_list_name}`,
                 'x'
               );
-            } else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`;
+            } else mapKoboToPostgres[columns[k].name] = `x['__parentUuid']`; // To change: @Mamadou
           } else if (columns[k].select_multiple === true) {
             mapKoboToPostgres[columns[k].name] = `x['name']`;
           } else if (columns[k].depth > 0) {
@@ -294,9 +297,9 @@ fn(state => {
       const path = columns[0].path.join('/');
 
       let statements = null;
-      console.log('select', select_multiple);
-      console.log('name', name);
-      if (select_multiple) {
+      // console.log('select', select_multiple);
+      // console.log('name', depth);
+      if (select_multiple || lookupTable) {
         statements = `if (state.data['${path}']) { \n
                 const array = state.data['${path}'].split(' '); \n
                 const mapping = []; \n 
@@ -309,24 +312,24 @@ fn(state => {
                 } \n
             }`;
       } else {
-        statements = `if (state.data['${path}']) { \n
-          const array = state.data['${path}'].split(' '); \n
-          const mapping = []; \n 
-          for ( let x of array ) { \n
-            mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
-              /"/g,
-              ''
-            )}); \n
-          } \n
-      }`;
-        // statements = `const dataArray = state.data['${path}'] || [] \n
-        // const mapping = []; \n
-        // for (let x of dataArray) { \n
-        //   mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
-        //     /"/g,
-        //     ''
-        //   )}) \n
-        //   }`;
+        //   statements = `if (state.data['${path}']) { \n
+        //     const array = state.data['${path}'].split(' '); \n
+        //     const mapping = []; \n
+        //     for ( let x of array ) { \n
+        //       mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+        //         /"/g,
+        //         ''
+        //       )}); \n
+        //     } \n
+        // }`;
+        statements = `const dataArray = state.data['${path}'] || [] \n
+        const mapping = []; \n
+        for (let x of dataArray) { \n
+          mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
+            /"/g,
+            ''
+          )}) \n
+          }`;
       }
       // =======================================================
 
@@ -411,8 +414,6 @@ fn(state => {
 });
 
 fn(state => {
-  console.log(state.expression);
-  return state;
   return request(
     {
       method: 'get',
@@ -425,75 +426,75 @@ fn(state => {
   )(state);
 });
 
-// fn(state => {
-//   return request(
-//     {
-//       method: 'get',
-//       path: 'jobs',
-//       params: {
-//         project_id: state.projectId,
-//       },
-//     },
-//     state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
-//   )(state);
-// });
+fn(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'jobs',
+      params: {
+        project_id: state.projectId,
+      },
+    },
+    state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
+  )(state);
+});
 
-// fn(state => {
-//   const triggerNames = state.triggers.map(t => t.name);
+fn(state => {
+  const triggerNames = state.triggers.map(t => t.name);
 
-//   const name = `auto/${state.prefixes}${state.tableId}`;
-//   const criteria = state.triggerCriteria;
-//   const triggerIndex = triggerNames.indexOf(name);
+  const name = `auto/${state.prefixes}${state.tableId}`;
+  const criteria = state.triggerCriteria;
+  const triggerIndex = triggerNames.indexOf(name);
 
-//   const trigger = {
-//     project_id: state.projectId,
-//     name,
-//     type: 'message',
-//     criteria,
-//   };
-//   if (triggerIndex === -1) {
-//     console.log('Inserting triggers.');
-//     return request(
-//       {
-//         method: 'post',
-//         path: 'triggers',
-//         data: {
-//           trigger,
-//         },
-//       },
-//       state => {
-//         return { ...state, triggers: [...state.triggers, state.data] };
-//       }
-//     )(state);
-//   } else {
-//     console.log('Trigger already existing.');
-//   }
-//   return state;
-// });
+  const trigger = {
+    project_id: state.projectId,
+    name,
+    type: 'message',
+    criteria,
+  };
+  if (triggerIndex === -1) {
+    console.log('Inserting triggers.');
+    return request(
+      {
+        method: 'post',
+        path: 'triggers',
+        data: {
+          trigger,
+        },
+      },
+      state => {
+        return { ...state, triggers: [...state.triggers, state.data] };
+      }
+    )(state);
+  } else {
+    console.log('Trigger already existing.');
+  }
+  return state;
+});
 
-// fn(state => {
-//   const expression = state.expression;
-//   console.log(
-//     'Inserting / Updating job: ',
-//     `auto/${state.prefixes}${state.tableId}`
-//   );
-//   const jobNames = state.jobs.map(j => j.name);
-//   const triggersName = state.triggers.map(t => t.name);
-//   const name = `auto/${state.prefixes}${state.tableId}`;
-//   const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-//   const triggerIndex = triggersName.indexOf(name);
-//   const triggerId = state.triggers[triggerIndex].id;
-//   const job = {
-//     adaptor: 'mssql',
-//     adaptor_version: 'v2.6.9',
-//     expression,
-//     name,
-//     project_id: state.projectId,
-//     trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-//   };
-//   const method = jobIndex !== -1 ? 'put' : 'post';
-//   const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
-//   return request({ method, path, data: { job } }, state => {
-//     return state;
-//   })(state);
-// });
+fn(state => {
+  const expression = state.expression;
+  console.log(
+    'Inserting / Updating job: ',
+    `auto/${state.prefixes}${state.tableId}`
+  );
+  const jobNames = state.jobs.map(j => j.name);
+  const triggersName = state.triggers.map(t => t.name);
+  const name = `auto/${state.prefixes}${state.tableId}`;
+  const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
+  const triggerIndex = triggersName.indexOf(name);
+  const triggerId = state.triggers[triggerIndex].id;
+  const job = {
+    adaptor: 'mssql',
+    adaptor_version: 'v2.6.9',
+    expression,
+    name,
+    project_id: state.projectId,
+    trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
+  };
+  const method = jobIndex !== -1 ? 'put' : 'post';
+  const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
+  return request({ method, path, data: { job } }, state => {
+    return state;
+  })(state);
+});

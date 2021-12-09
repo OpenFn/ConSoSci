@@ -157,16 +157,34 @@ get(`${state.data.url}`, {}, state => {
     ];
   }
 
+  function processPath(question, i, arr) {
+    let path = [];
+    if (i === 0) {
+      path = [];
+    } else {
+      let parent = arr.find(question => question.name === arr[i - 1].path[0]);
+      if (parent.type === 'begin_group') {
+        // console.log('parent is a group');
+        path = [[arr[i - 1].path, question.name].join('/')];
+        // console.log('path', path);
+      } else {
+        path = i === 0 ? [] : [...arr[i - 1].path, question.name];
+      }
+    }
+    return path;
+  }
+
   function buildLookupTableColumns(prefixes, q, i, arr) {
+    const path = processPath(q, i, arr);
     return [
       {
         name: `${prefixes}${toCamelCase(q.select_from_list_name)}ID`,
         type: 'int4',
         identity: true,
         required: q.required,
-        depth: q.type === 'select_multiple' ? 3 : 0,
+        depth: path.length,
         select_multiple: q.type === 'select_multiple' ? true : false,
-        path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+        path,
         rule: 'DO_NOT_MAP',
         parentColumn: q.name,
       },
@@ -174,9 +192,9 @@ get(`${state.data.url}`, {}, state => {
         name: `${prefixes}${toCamelCase(q.select_from_list_name)}Name`,
         type: 'varchar(100)',
         required: q.required,
-        depth: q.type === 'select_multiple' ? 3 : 0,
+        depth: path.length,
         select_multiple: q.type === 'select_multiple' ? true : false,
-        path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+        path,
         parentColumn: q.name,
       },
       {
@@ -226,7 +244,8 @@ get(`${state.data.url}`, {}, state => {
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
-        console.log('here', q.name);
+        // console.log('here', q.path);
+        // console.log('here name', q.name, q.type);
         multiSelectIds.push(q.name);
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
@@ -244,8 +263,10 @@ get(`${state.data.url}`, {}, state => {
         // prettier-ignore
         const parentTableReferenceColumn = `${prefixes}${toCamelCase(suffix || tableId)}ID`;
 
-        console.log('junctiontablename', junctionTableName);
         if (!tables.find(t => t.name === junctionTableName)) {
+          // console.log('junctiontable', junctionTableName);
+          const path = processPath(q, i, arr);
+          // console.log('path', path);
           tables.push({
             name: junctionTableName,
             dependencies: 3,
@@ -256,8 +277,8 @@ get(`${state.data.url}`, {}, state => {
                 required: q.required,
                 referent: lookupTableName,
                 parent: false,
-                depth: 3,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                depth: path.length,
+                path,
               },
               {
                 name: parentTableReferenceColumn,
@@ -265,8 +286,8 @@ get(`${state.data.url}`, {}, state => {
                 required: q.required,
                 referent: parentTableName,
                 parent: true,
-                depth: 3,
-                path: i === 0 ? [] : [...arr[i - 1].path, q.name],
+                depth: path.length,
+                path,
               },
             ],
             defaultColumns: [
@@ -301,8 +322,8 @@ get(`${state.data.url}`, {}, state => {
         const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
-        console.log('lookuptable', lookupTableName);
         if (!tablesToBeCreated.includes(lookupTableName)) {
+          // console.log('lookup', lookupTableName);
           //prettier-ignore
           addLookupTable(tables, lookupTableName, prefixes, q, i, formName, arr);
         }
@@ -453,6 +474,8 @@ get(`${state.data.url}`, {}, state => {
   let depth = 0;
 
   survey.forEach((q, i, arr) => {
+    // console.log(q.name, q.type);
+    // console.log('depth', depth);
     switch (q.type) {
       case 'begin_group':
         arr[i] = {
@@ -496,6 +519,7 @@ get(`${state.data.url}`, {}, state => {
         };
         break;
     }
+    // console.log('arr', arr[i]);
   });
 
   const choiceDictionary = buildChoicesDictionary(choices);
