@@ -124,56 +124,48 @@ fn(state => {
     var mapKoboToPostgres = {}; // This is the jsonBody that should be given to our upsert
 
     // We generate findValue function (fn) for those that needs it.
-    function generateFindValue(question, relation, leftOperand, rightOperand) {
-      const uuid = !question.referent
-        ? question.type === 'select_multiple' || 'select_one'
-          ? question.select_from_list_name.replace(`${state.tableId}_`, '')
-          : question.name
-        : question.name;
+    function generateFindValue(question, relation, searchAttr, searchVal) {
+      const inferredUUid =
+        // if not junction, but yes select_one or many...
+        !question.referent && question.findValue
+          ? toCamelCase(
+              question.select_from_list_name.replace(`${state.tableId}_`, '')
+            )
+          : question.name;
 
-      console.log('uuid', uuid);
+      const suffixedUUid = !inferredUUid.endsWith('ID')
+        ? `${inferredUUid}ID`
+        : `${inferredUUid}`;
 
-      let generateUUid = !uuid.includes('ID') ? `${uuid}ID` : `${uuid}`;
-      generateUUid = !uuid.includes(state.prefixes)
-        ? `${state.prefixes}${uuid}ID`
-        : `${uuid}`;
+      const finalUUid = !suffixedUUid.startsWith(state.prefixes)
+        ? `${state.prefixes}${suffixedUUid}ID`
+        : suffixedUUid;
 
-      let generatedRelation =
-        question.type === 'select_multiple' && question.referent
-          ? question.referent
-          : relation;
+      searchAttr = searchAttr.replace('ID', '');
 
-      let generatedLeftOp = leftOperand.replace('ID', '');
+      if (question.referent) {
+        // if it's in a junction
+        if (question.refersToLookup) {
+          // and it refers to lookup
+          searchAttr = `${question.referent}ExtCode`;
+          searchVal = `x`;
+        }
+        // if it doesn't we don't touch it!
+      } else {
+        searchAttr = !searchAttr.includes(state.prefixes)
+          ? `${state.prefixes}${searchAttr}ExtCode`
+          : `${searchAttr}ExtCode`;
 
-      generatedLeftOp =
-        question.referent && question.refersToLookup == false
-          ? leftOperand
-          : question.parent
-          ? 'GeneratedUuid'
-          : question.type === 'select_multiple' && question.referent
-          ? `${question.referent}ExtCode`
-          : !generatedLeftOp.includes(state.prefixes)
-          ? `${state.prefixes}${generatedLeftOp}ExtCode`
-          : `${generatedLeftOp}ExtCode`;
+        searchVal =
+          question.depth > 0
+            ? `x['${searchVal}']`
+            : `dataValue('${searchVal}')`;
+      }
 
-      let generatedRightOP =
-        question.referent && question.refersToLookup == false
-          ? rightOperand
-          : question.variant === 'submissionId'
-          ? `dataValue('._id')`
-          : question.variant === 'lookupTableId'
-          ? `dataValue('gear')`
-          : question.type === 'select_multiple' && question.referent
-          ? `x`
-          : question.depth > 0
-          ? `x['${rightOperand}']`
-          : `dataValue('${rightOperand}')`;
-
-      var fn = `await findValue({uuid: '${generateUUid.toLowerCase()}', relation: '${generatedRelation.replace(
+      return `await findValue({uuid: '${finalUUid.toLowerCase()}', relation: '${relation.replace(
         'ID',
         ''
-      )}', where: { ${generatedLeftOp}: ${generatedRightOP} }})(state)`;
-      return fn;
+      )}', where: { ${searchAttr}: ${searchVal} }})(state)`;
     }
 
     // FROM HERE WE ARE BUILDING MAPPINGS

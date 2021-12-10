@@ -64,7 +64,7 @@ get(`${state.data.url}`, {}, state => {
     return `${underscores.join('')}${words}${underscores.join('')}`;
   }
 
-  function questionsToColumns(questions, main) {
+  function questionsToColumns(questions) {
     var form = questions.filter(elt => !discards.includes(elt.type));
 
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -249,7 +249,7 @@ get(`${state.data.url}`, {}, state => {
 
         let suffix = q.path.slice(-1)[0];
         if (suffix && getType(suffix) === 'begin_group') suffix = undefined;
-        
+
         const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
@@ -402,7 +402,9 @@ get(`${state.data.url}`, {}, state => {
         name: tName,
         dependencies: 1,
         columns: [
-          ...questionsToColumns(questions, 'main'),
+          // Note that we do not create columns for select multiple Qs. Answers
+          // to select multiple Qs will appear as records in a junction table.
+          ...questionsToColumns(questions.filter(q => !q.type.select_multiple)),
           ...[
             {
               name: 'Payload',
