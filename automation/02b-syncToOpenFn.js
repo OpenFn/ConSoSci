@@ -94,18 +94,9 @@ fn(state => {
       .join('');
   }
 
-  const { tables, choiceDictionary } = state;
-
   // Iterate through every table and create an operation to upsert (or upsertMany) records for that table.
-  for (const table of tables) {
-    const {
-      columns,
-      name,
-      depth,
-      select_multiple,
-      lookupTable,
-      ReferenceUuid,
-    } = table;
+  for (const table of state.tables) {
+    const { columns, name, depth, select_multiple, lookupTable } = table;
     var paths = [];
 
     for (const column of columns) {
@@ -334,40 +325,18 @@ fn(state => {
         ? `["${columns[0].name}", "${columns[1].name}"]`
         : `'${toCamelCase(state.uuidColumnName)}'`;
 
-    // 1. If the current table have a ReferenceUuid, then it's a lookup table
-    // We use our fn opening and close later and the 'logical'.
-    // 2. If it's not a lookup table, and have depth it's repeat group (upertMany)
-    // Otherwise it's a flat table and we still use the opening.
-    // let mapping = ReferenceUuid
-    //   ? `${alterSOpeningNoDepth} ${operation}(${logical},'${name}', '${uuid}', `
-    //   : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
-
-    let mapping = ReferenceUuid
-      ? `${alterSOpeningSelect} ${operation}('${name}', ${uuid}, `
-      : depth > 0 || select_multiple
-      ? `${opFirstLineDepth} ${operation}('${name}', ${uuid}, `
-      : `${opFirstLineNoDepth} ${operation}('${name}', ${uuid}, `;
+    let mapping =
+      depth > 0 || select_multiple
+        ? `${opFirstLineDepth} ${operation}('${name}', ${uuid}, `
+        : `${opFirstLineNoDepth} ${operation}('${name}', ${uuid}, `;
 
     if (columns[0].depth > 0 || select_multiple) {
-      // const path = columns[0].path.join('/');
-
-      // mapping += `state => { const dataArray = state.data['${path}'] || [];
-      // return dataArray.map(x => (${JSON.stringify(
-      //   mapKoboToPostgres,
-      //   null,
-      //   2
-      // ).replace(/"/g, '')}))}`;
       mapping += `() => mapping, {setNull: ["''", "'undefined'"]}`;
     } else {
-      // mapping += JSON.stringify(mapKoboToPostgres, null, 2).replace(
-      //   /"/g,
-      //   ''
-      // );
-      // 'mapping' here is a variable name as we remove ========
-      // the whole object from the operation====================
       mapping += `mapping, {setNull: ["''", "'undefined'"]}`;
     }
     // END OF BUILDING MAPPINGS (state)
+
     expression +=
       wrapper(columns[0], mapping) +
       (columns[0].depth > 1
@@ -377,12 +346,11 @@ fn(state => {
         : `)(state); \n${opLastLine} \n`);
   }
 
-  state.expression = expression;
   state.triggerCriteria = {
     tableId: `${state.prefixes}${state.tableId}`,
   };
 
-  return state;
+  return { ...state, expression };
 });
 
 // Get existing triggers for this project.
