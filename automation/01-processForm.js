@@ -372,7 +372,9 @@ get(`${state.data.url}`, {}, state => {
       tables.push({
         name,
         dependencies: 2,
-        columns: questionsToColumns(group),
+        columns: questionsToColumns(
+          group.filter(q => q.type !== 'select_multiple')
+        ),
         defaultColumns: [
           // prettier-ignore
           ...[ { name: `${tName}ID`, type: 'int4', required: false } ],
@@ -404,7 +406,9 @@ get(`${state.data.url}`, {}, state => {
         columns: [
           // Note that we do not create columns for select multiple Qs. Answers
           // to select multiple Qs will appear as records in a junction table.
-          ...questionsToColumns(questions.filter(q => !q.type.select_multiple)),
+          ...questionsToColumns(
+            questions.filter(q => q.type !== 'select_multiple')
+          ),
           ...[
             {
               name: 'Payload',
