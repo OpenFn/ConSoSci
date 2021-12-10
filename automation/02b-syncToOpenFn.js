@@ -152,16 +152,21 @@ fn(state => {
 
       let generatedLeftOp = leftOperand.replace('ID', '');
 
-      generatedLeftOp = question.parent
-        ? 'GeneratedUuid'
-        : question.type === 'select_multiple' && question.referent
-        ? `${question.referent}ExtCode`
-        : !generatedLeftOp.includes(state.prefixes)
-        ? `${state.prefixes}${generatedLeftOp}ExtCode`
-        : `${generatedLeftOp}ExtCode`;
+      generatedLeftOp =
+        question.referent && question.refersToLookup == false
+          ? leftOperand
+          : question.parent
+          ? 'GeneratedUuid'
+          : question.type === 'select_multiple' && question.referent
+          ? `${question.referent}ExtCode`
+          : !generatedLeftOp.includes(state.prefixes)
+          ? `${state.prefixes}${generatedLeftOp}ExtCode`
+          : `${generatedLeftOp}ExtCode`;
 
       let generatedRightOP =
-        question.variant === 'submissionId'
+        question.referent && question.refersToLookup == false
+          ? rightOperand
+          : question.variant === 'submissionId'
           ? `dataValue('._id')`
           : question.variant === 'lookupTableId'
           ? `dataValue('gear')`
@@ -208,10 +213,18 @@ fn(state => {
             );
             // if If refersToLookup is false, this column refers to the main submission table
             // TODO: Mamadou, please confirm the line below. Should it change to "findValue"?
-          } else mapKoboToPostgres[col.name] = `x['__parentUuid']`;
+          } else {
+            mapKoboToPostgres[col.name] = generateFindValue(
+              col,
+              col.referent,
+              'AnswerId',
+              '_id'
+            );
+          }
         } else if (col.depth > 0) {
           mapKoboToPostgres[col.name] = `x['${paths[i]}']`;
-        } else if (col.rule !== 'DO_NOT_MAP') {
+        } else {
+          console.log('How did we get here?', col);
           mapKoboToPostgres[col.name] =
             name !== `${state.prefix1}_KoboDataset`
               ? col.type === 'select_one' || col.type === 'select_multiple'
