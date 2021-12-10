@@ -135,16 +135,8 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
     const date = state.data.today || state.data._submission_time;
     const year = Number(date.trim().split('-')[0]);
     const formName = dataValue('formName');
-    if (year <= 2014) return Number(formName.trim().split(' ').at(-1));
+    if (year <= 2010) return Number(formName.trim().split(' ').at(-1));
     return year;
-    //if (Number() <= 2014 and (formName === 'BNS Makira 2019')) {
-    // return 2019
-    //else if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Makira 2017')) {
-    // return 2017
-    //else if (Number(date.split('-')[0]) <= 2014 and (formName === 'BNS Lac Télé 2017')) {
-    // return 2017 
-    //} 
-    //return date
   },
   Landscape: state => {
     var landscape = dataValue('landscape')(state);
