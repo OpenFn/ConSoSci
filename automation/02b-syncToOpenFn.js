@@ -218,23 +218,15 @@ fn(state => {
               col,
               col.referent,
               'AnswerId',
-              '_id'
+              "dataValue('_id')"
             );
           }
         } else if (col.depth > 0) {
           mapKoboToPostgres[col.name] = `x['${paths[i]}']`;
         } else {
-          console.log('How did we get here?', col);
           mapKoboToPostgres[col.name] =
             name !== `${state.prefix1}_KoboDataset`
-              ? col.type === 'select_one' || col.type === 'select_multiple'
-                ? generateFindValue(
-                    col,
-                    `${state.prefixes}${col.select_from_list_name}`,
-                    `${col.select_from_list_name}`,
-                    paths[i]
-                  )
-                : col.parentColumn
+              ? col.parentColumn
                 ? `dataValue('${col.path.join('/')}')`
                 : `dataValue('${paths[i]}')`
               : `${paths[i]}`;
@@ -247,28 +239,6 @@ fn(state => {
     });
 
     // =====================================================================
-
-    if (name !== `${state.prefix1}_KoboDataset`) {
-      // We check if that table has a defined ReferenceUuid that we should use ====
-      // instead of the default generated_uuid.
-      if (!ReferenceUuid)
-        mapKoboToPostgres[toCamelCase(state.uuidColumnName)] =
-          columns[0].depth > 0
-            ? `x['__generatedUuid']`
-            : `dataValue('__generatedUuid')`;
-
-      if (columns[0].depth > 1) {
-        let key =
-          columns[0].path > 1
-            ? toCamelCase(`${columns[0].path.slice(-2, -1).pop()}_uuid`)
-            : toCamelCase(`${columns[0].path[0]}_uuid`);
-        mapKoboToPostgres[key] = `x['__parentUuid']`;
-      } else if (columns[0].depth > 0) {
-        mapKoboToPostgres[
-          toCamelCase(`${state.tableId}_uuid`)
-        ] = `x['__parentUuid']`;
-      }
-    }
 
     // We generate a mapping variable that we are going=======
     // to use inside our operation============================
@@ -285,6 +255,7 @@ fn(state => {
     let statements = null;
     // console.log('select', select_multiple);
     // console.log('name', depth);
+    // if table is a table referencing a select multiple table.
     if (select_multiple || lookupTable) {
       statements = `if (state.data['${path}']) { \n
                 const array = state.data['${path}'].split(' '); \n
@@ -319,27 +290,10 @@ fn(state => {
     }
     // =======================================================
 
-    // In  case of select_one, it's another story ============
-    let selectStatement = '';
-    if (ReferenceUuid) {
-      selectStatement = `const dataArray = ["${choiceDictionary[
-        name.split('_')[1].toLowerCase()
-      ].join('","')}"] || [] \n
-        const mapping = []; \n 
-        for (let x of dataArray) { \n
-          mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
-            /"/g,
-            ''
-          )}) \n
-          }`;
-      // console.log('select', selectStatement);
-    }
-    // =======================================================
-
-    const alterSOpeningNoDepth = `fn(async state => {\n ${mapObject} \n`;
-    const alterSOpeningDepth = `fn(async state => {\n ${statements} \n`;
-    const alterSOpeningSelect = `fn(async state => {\n ${selectStatement} \n`;
-    const alterSClosing = `})`;
+    const opFirstLineNoDepth = `fn(async state => {\n ${mapObject} \n`;
+    const opFirstLineDepth = `fn(async state => {\n ${statements} \n`;
+    // const alterSOpeningSelect = `fn(async state => {\n ${selectStatement} \n`;
+    const opLastLine = `})`;
 
     function wrapper(column, mapping) {
       let prefix = '';
@@ -360,8 +314,8 @@ fn(state => {
         prefix +=
           mapping +
           (select_multiple || lookupTable
-            ? `)(state); } \n return state; \n${alterSClosing} \n`
-            : `)(state); \n${alterSClosing} \n`);
+            ? `)(state); } \n return state; \n${opLastLine} \n`
+            : `)(state); \n${opLastLine} \n`);
         for (var i = 0; i < closingPar; i++) {
           prefix += ')';
         }
@@ -371,17 +325,14 @@ fn(state => {
       return mapping;
     }
 
-    const operation =
-      depth > 0
-        ? `return upsertMany`
-        : ReferenceUuid
-        ? `return upsertMany` // Use to be "return upsertIf"
-        : `return upsert`;
+    const operation = `return ${depth > 0 ? 'upsertMany' : 'upsert'}`;
 
     var uuid =
       name === `${state.prefix1}_KoboDataset`
-        ? 'DatasetId'
-        : ReferenceUuid || toCamelCase(state.uuidColumnName);
+        ? '"DatasetId"'
+        : table.select_multiple
+        ? `["${columns[0].name}", "${columns[1].name}"]`
+        : `'${toCamelCase(state.uuidColumnName)}'`;
 
     // 1. If the current table have a ReferenceUuid, then it's a lookup table
     // We use our fn opening and close later and the 'logical'.
@@ -392,10 +343,10 @@ fn(state => {
     //   : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
 
     let mapping = ReferenceUuid
-      ? `${alterSOpeningSelect} ${operation}('${name}', '${uuid}', `
+      ? `${alterSOpeningSelect} ${operation}('${name}', ${uuid}, `
       : depth > 0 || select_multiple
-      ? `${alterSOpeningDepth} ${operation}('${name}', '${uuid}', `
-      : `${alterSOpeningNoDepth} ${operation}('${name}', '${uuid}', `;
+      ? `${opFirstLineDepth} ${operation}('${name}', ${uuid}, `
+      : `${opFirstLineNoDepth} ${operation}('${name}', ${uuid}, `;
 
     if (columns[0].depth > 0 || select_multiple) {
       // const path = columns[0].path.join('/');
@@ -422,8 +373,8 @@ fn(state => {
       (columns[0].depth > 1
         ? '\n'
         : select_multiple || lookupTable
-        ? `)(state); } \n return state; \n${alterSClosing} \n`
-        : `)(state); \n${alterSClosing} \n`);
+        ? `)(state); } \n return state; \n${opLastLine} \n`
+        : `)(state); \n${opLastLine} \n`);
   }
 
   state.expression = expression;

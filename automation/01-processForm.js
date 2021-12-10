@@ -105,7 +105,7 @@ get(`${state.data.url}`, {}, state => {
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
-        findValue: x.select_one || x.select_multiple || false,
+        findValue: x.select_one || x.type === 'select_multiple' || false,
         required: x.required,
       };
     });
