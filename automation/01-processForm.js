@@ -105,7 +105,7 @@ get(`${state.data.url}`, {}, state => {
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
-        findValue: x.select_one || false,
+        findValue: x.select_one || x.select_multiple || false,
         required: x.required,
       };
     });
@@ -276,7 +276,7 @@ get(`${state.data.url}`, {}, state => {
                 type: 'select_multiple',
                 required: q.required,
                 referent: lookupTableName,
-                parent: false,
+                refersToLookup: true,
                 depth: path.length,
                 path,
               },
@@ -285,7 +285,7 @@ get(`${state.data.url}`, {}, state => {
                 type: 'select_multiple',
                 required: q.required,
                 referent: parentTableName,
-                parent: true,
+                refersToLookup: false,
                 depth: path.length,
                 path,
               },
