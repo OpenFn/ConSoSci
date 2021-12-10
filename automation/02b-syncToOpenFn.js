@@ -421,6 +421,7 @@ fn(state => {
   return state;
 });
 
+// Get existing triggers for this project.
 fn(state => {
   return request(
     {
@@ -430,10 +431,11 @@ fn(state => {
         project_id: state.projectId,
       },
     },
-    state => ({ ...state, triggers: state.data })
+    next => ({ ...next, triggers: next.data })
   )(state);
 });
 
+// Get existing jobs for this project.
 fn(state => {
   return request(
     {
@@ -443,66 +445,66 @@ fn(state => {
         project_id: state.projectId,
       },
     },
-    state => ({ ...state, jobs: state.data.filter(job => !job.archived) })
+    next => ({ ...next, jobs: next.data.filter(job => !job.archived) })
   )(state);
 });
 
+// Create or update the trigger to detect submissions from this form.
 fn(state => {
-  const triggerNames = state.triggers.map(t => t.name);
+  const { triggers, prefixes, tableId, triggerCriteria, projectId } = state;
+  const triggerNames = triggers.map(t => t.name);
 
-  const name = `auto/${state.prefixes}${state.tableId}`;
-  const criteria = state.triggerCriteria;
+  const name = `auto/${prefixes}${tableId}`;
+  const criteria = triggerCriteria;
   const triggerIndex = triggerNames.indexOf(name);
 
   const trigger = {
-    project_id: state.projectId,
+    project_id: projectId,
     name,
     type: 'message',
     criteria,
   };
+
   if (triggerIndex === -1) {
-    console.log('Inserting triggers.');
+    console.log('Inserting trigger.');
     return request(
       {
         method: 'post',
         path: 'triggers',
-        data: {
-          trigger,
-        },
+        data: { trigger },
       },
-      state => {
-        return { ...state, triggers: [...state.triggers, state.data] };
-      }
+      next => ({ ...next, triggers: [...next.triggers, next.data] })
     )(state);
-  } else {
-    console.log('Trigger already existing.');
   }
+
+  console.log('Trigger already existing.');
   return state;
 });
 
+// Create or update the job for handling submissions from this form.
 fn(state => {
-  const expression = state.expression;
-  console.log(
-    'Inserting / Updating job: ',
-    `auto/${state.prefixes}${state.tableId}`
-  );
-  const jobNames = state.jobs.map(j => j.name);
-  const triggersName = state.triggers.map(t => t.name);
-  const name = `auto/${state.prefixes}${state.tableId}`;
+  const { expression, prefixes, tableId, jobs, triggers, projectId } = state;
+
+  console.log('Inserting/updating job: ', `auto/${prefixes}${tableId}`);
+
+  const jobNames = jobs.map(j => j.name);
+  const triggersName = triggers.map(t => t.name);
+  const name = `auto/${prefixes}${tableId}`;
   const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
   const triggerIndex = triggersName.indexOf(name);
-  const triggerId = state.triggers[triggerIndex].id;
+  const triggerId = triggers[triggerIndex].id;
+
+  const method = jobIndex !== -1 ? 'put' : 'post';
+  const path = method === 'put' ? `jobs/${jobs[jobIndex].id}` : 'jobs/';
+
   const job = {
     adaptor: 'mssql',
     adaptor_version: 'v2.6.9',
     expression,
     name,
-    project_id: state.projectId,
+    project_id: projectId,
     trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
   };
-  const method = jobIndex !== -1 ? 'put' : 'post';
-  const path = method === 'put' ? `jobs/${state.jobs[jobIndex].id}` : 'jobs/';
-  return request({ method, path, data: { job } }, state => {
-    return state;
-  })(state);
+
+  return request({ method, path, data: { job } })(state);
 });

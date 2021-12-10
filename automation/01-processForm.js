@@ -17,7 +17,7 @@ get(`${state.data.url}`, {}, state => {
   // END OF PREFIX HANDLER
 
   // TODO: Decide which metadata field to include. ========================
-  //survey.push({ name: 'generated_uuid', type: 'text' });
+  // survey.push({ name: 'generated_uuid', type: 'text' });
   // ======================================================================
 
   const multiSelectIds = [];
