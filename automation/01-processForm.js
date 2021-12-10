@@ -541,19 +541,20 @@ get(`${state.data.url}`, {}, state => {
   // Given the initial input of a "Kobo form definition", we return...
   return {
     ...state,
-    tables, // this is a list of tables (main table, lookup tables, etc.) to create in the db.
-    seeds, // this is a list of records (grouped by table) to insert at build time.
+    tableId, // this is unique per form and used to identify the main "submissions table" for the form
+    tables, // this is a list of tables (main table, lookup tables, junction tables, etc.) to create in the db
+    seeds, // this is a list of records (grouped by table) to insert at build time, not form submission time (runtime)
     prefix1, // this is a constant used in various places
     prefix2, // this is a constant used in various places
     prefixes, // this is `{prefix1}_{prefix2}`
-    uuidColumnName, // 
-    tableId,
-    data: {},
-    response: {},
-    multiSelectIds,
+    uuidColumnName, // this is a constant used identify unique ID columns in the db
+    multiSelectIds, // this is an array of the 'list_name' of every select_multiple question
+    data: {}, // we clear data
+    response: {}, // we clear response
   };
 });
 
+// Sort the tables by dependencies so that we can create them in the correct order
 fn(state => ({
   ...state,
   tables: state.tables.sort((a, b) =>
@@ -565,6 +566,7 @@ fn(state => ({
   ),
 }));
 
+// Print out a "DROP STATEMENT" for each table in the list of tables.
 fn(state => {
   console.log('====================DROP STATEMENT====================');
   console.log('Use this to clean database from created tables...');

@@ -1,9 +1,8 @@
-// This is the general 'execute' option.
-// Changing this to true/false, will spread through the whole job so that,
-// describeTable (L99), insert (L108), modify (L121) and upsertMany(L148) will alter DB or not.
-// For each one those listed functions above, this option can be overridden. See inline comments.
+// Here we set default options for the SQL adaptor. Setting execute or writeSql
+// below will set the standard behavior of all SQL functions below unless overwritten.
 fn(state => ({ ...state, execute: false, writeSql: true }));
 
+// Creates tables in the db.
 each(
   '$.tables[*]',
   fn(state => {
@@ -130,6 +129,7 @@ each(
   })
 );
 
+// Adds "seeds" to the lookup tables—rows that can be referenced in submissions.
 each(
   '$.seeds[*]',
   upsertMany(
@@ -147,6 +147,7 @@ each(
   )
 );
 
+// Prints out SQL statements for manual inspection and work.
 fn(state => {
   console.log('----------------------');
   console.log('Logging queries.');
