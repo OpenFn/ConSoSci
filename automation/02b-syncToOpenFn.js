@@ -270,7 +270,7 @@ fn(state => {
         // We check if that table has a defined ReferenceUuid that we should use ====
         // instead of the default generated_uuid.
         if (!ReferenceUuid)
-          mapKoboToPostgres[toCamelCase(state.uuid)] =
+          mapKoboToPostgres[toCamelCase(state.uuidColumnName)] =
             columns[0].depth > 0
               ? `x['__generatedUuid']`
               : `dataValue('__generatedUuid')`;
@@ -369,7 +369,7 @@ fn(state => {
       var uuid =
         name === `${state.prefix1}_KoboDataset`
           ? 'DatasetId'
-          : ReferenceUuid || toCamelCase(state.uuid);
+          : ReferenceUuid || toCamelCase(state.uuidColumnName);
 
       // 1. If the current table have a ReferenceUuid, then it's a lookup table
       // We use our fn opening and close later and the 'logical'.

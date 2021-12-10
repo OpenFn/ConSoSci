@@ -12,7 +12,7 @@ get(`${state.data.url}`, {}, state => {
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || '';
   const tableId = state.references[0].tableId;
-  const uuid = 'generated_uuid';
+  const uuidColumnName = 'generated_uuid';
   const prefixes = [prefix1, prefix2].filter(x => x).join('_');
   // END OF PREFIX HANDLER
 
@@ -121,7 +121,7 @@ get(`${state.data.url}`, {}, state => {
 
     form.push(
       { name: 'AnswerId', type: 'text' },
-      { name: toCamelCase(uuid), type: 'varchar(100)', unique: true }
+      { name: toCamelCase(uuidColumnName), type: 'varchar(100)', unique: true }
     );
 
     return form;
@@ -396,9 +396,9 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
-    // This is the main table.
     tables.push(
       {
+        // This is the main table to hold submissions for this Kobo form.
         name: tName,
         dependencies: 1,
         columns: [
@@ -422,6 +422,7 @@ get(`${state.data.url}`, {}, state => {
       },
       {
         name: `${prefix1}_KoboDataset`,
+        // This is a table that must exist in all DBs that will hold submission data from any form.
         columns: [
           {
             name: 'FormName',
@@ -457,18 +458,29 @@ get(`${state.data.url}`, {}, state => {
   }
 
   // We build a dictionary of different select_one/select_multiple questions
-  // and the diffferent values they hold ===================================
-  function buildChoicesDictionary(choices) {
-    const choicesDictionary = {};
-    choices.forEach(choice => {
-      if (!choicesDictionary[choice.list_name]) {
-        choicesDictionary[choice.list_name] = [];
-      }
+  // and the different values they hold ===================================
+  function createSeeds(choicesArr) {
+    const obj = {};
 
-      if (!choicesDictionary[choice.list_name].includes(choice.name))
-        choicesDictionary[choice.list_name].push(choice.name);
+    choicesArr.forEach(c => {
+      const table = `${prefixes}${toCamelCase(c.list_name)}`;
+      if (obj) obj[table] = table;
+      if (!obj[table]) obj[table] = [];
+      if (!obj[table].includes(c.name)) obj[table].push(c.name);
     });
-    return choicesDictionary;
+
+    const arr = [];
+
+    Object.keys(seedsObj).forEach(table => {
+      arr.push({
+        table: table,
+        externalId: `${table}ExtCode`,
+        records: [...seedsObj[table]],
+      });
+    });
+
+    // [ table: 'role', records: ['admin', standard'], ... ]
+    return arr;
   }
 
   let depth = 0;
@@ -519,23 +531,22 @@ get(`${state.data.url}`, {}, state => {
         };
         break;
     }
-    // console.log('arr', arr[i]);
   });
 
-  const choiceDictionary = buildChoicesDictionary(choices);
+  const seeds = createSeeds(choices);
   const lookupTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
   tables = lookupTables.concat(tables);
 
+  // Given the initial input of a "Kobo form definition", we return...
   return {
     ...state,
-    tables,
-    lookupTables,
-    choiceDictionary,
-    prefixes,
-    prefix1,
-    prefix2,
-    uuid,
+    tables, // this is a list of tables (main table, lookup tables, etc.) to create in the db.
+    seeds, // this is a list of records (grouped by table) to insert at build time.
+    prefix1, // this is a constant used in various places
+    prefix2, // this is a constant used in various places
+    prefixes, // this is `{prefix1}_{prefix2}`
+    uuidColumnName, // 
     tableId,
     data: {},
     response: {},
