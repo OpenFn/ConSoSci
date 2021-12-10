@@ -464,18 +464,17 @@ get(`${state.data.url}`, {}, state => {
 
     choicesArr.forEach(c => {
       const table = `${prefixes}${toCamelCase(c.list_name)}`;
-      if (obj) obj[table] = table;
       if (!obj[table]) obj[table] = [];
       if (!obj[table].includes(c.name)) obj[table].push(c.name);
     });
 
     const arr = [];
 
-    Object.keys(seedsObj).forEach(table => {
+    Object.keys(obj).forEach(table => {
       arr.push({
         table: table,
         externalId: `${table}ExtCode`,
-        records: [...seedsObj[table]],
+        records: [...obj[table]],
       });
     });
 
