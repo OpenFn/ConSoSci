@@ -1,6 +1,6 @@
 // Here we set default options for the SQL adaptor. Setting execute or writeSql
 // below will set the standard behavior of all SQL functions below unless overwritten.
-fn(state => ({ ...state, execute: false, writeSql: true }));
+fn(state => ({ ...state, execute: true, writeSql: true }));
 
 // Creates tables in the db.
 each(
@@ -136,19 +136,22 @@ each(
 // Adds "seeds" to the lookup tables—rows that can be referenced in submissions.
 each(
   '$.seeds[*]',
-  upsertMany(
-    dataValue('table'), // table name
-    dataValue('externalId'), // external ID column name
-    state => {
-      // array of records to upsert
-      const { table, externalId, records } = state.data;
-      records.map(r => ({
-        [externalId]: r,
-        [`${table}Name`]: r,
-      }));
-    },
-    { writeSql, execute, logValues: true } // options
-  )
+  fn(state => {
+    const { writeSql, execute, data } = state;
+    const { table, externalId, records } = data;
+    return upsertMany(
+      table, // table name
+      externalId, // external ID column name
+      state => {
+        // array of records to upsert
+        return records.map(r => ({
+          [externalId]: r,
+          [`${table}Name`]: r,
+        }));
+      },
+      { writeSql, execute, logValues: true } // options
+    )(state);
+  })
 );
 
 // Prints out SQL statements for manual inspection and work.
