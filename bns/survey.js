@@ -134,6 +134,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
   SurveyDate: state => {
     const date = state.data.today || state.data._submission_time;
     const year = Number(date.trim().split('-')[0]);
+    const formName = dataValue('formName');
     if (year <= 2014) return Number(formName.trim().split(' ').at(-1));
     return year;
     //if (Number() <= 2014 and (formName === 'BNS Makira 2019')) {
