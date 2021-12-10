@@ -80,8 +80,9 @@ fn(state => {
     state.data.body._id+'-'+state.data.body._xform_id_string
   );
 
-  state.data = { ...state.data, ...state.data.body };
-  return state;
+  const { body } = state.data;
+  const { _id, _xform_id_string } = body;
+  return { ...state, body, _id, _xform_id_string };
 }); \n`;
 
   function toCamelCase(str) {
@@ -103,8 +104,8 @@ fn(state => {
       // Handling master parent table
       if (name === `${state.prefix1}_KoboDataset`) {
         const values = {
-          FormName: "dataValue('formName')",
-          DatasetId: "dataValue('_xform_id_string')",
+          FormName: "dataValue('body.formName')",
+          DatasetId: "dataValue('body._xform_id_string')",
           LastUpdated: 'new Date().toISOString()',
         };
         for (x in values) paths.push(values[x]);
@@ -138,7 +139,7 @@ fn(state => {
         : `${inferredUUid}`;
 
       const finalUUid = !suffixedUUid.startsWith(state.prefixes)
-        ? `${state.prefixes}${suffixedUUid}ID`
+        ? `${state.prefixes}${suffixedUUid}`
         : suffixedUUid;
 
       searchAttr = searchAttr.replace('ID', '');
@@ -203,7 +204,7 @@ fn(state => {
               col,
               col.referent,
               'AnswerId',
-              "dataValue('_id')"
+              'state._id'
             );
           }
         } else if (col.depth > 0) {
@@ -218,7 +219,7 @@ fn(state => {
         }
 
         if (col.name === 'AnswerId') {
-          mapKoboToPostgres[col.name] = `dataValue('_id')`;
+          mapKoboToPostgres[col.name] = `state._id`;
         }
       }
     });
@@ -242,8 +243,8 @@ fn(state => {
     // console.log('name', depth);
     // if table is a table referencing a select multiple table.
     if (select_multiple || lookupTable) {
-      statements = `if (state.data['${path}']) { \n
-                const array = state.data['${path}'].split(' '); \n
+      statements = `if (state.body['${path}']) { \n
+                const array = state.body['${path}'].split(' '); \n
                 const mapping = []; \n 
                 for ( let x of array ) { \n
                   mapping.push(${JSON.stringify(
@@ -264,7 +265,7 @@ fn(state => {
       //       )}); \n
       //     } \n
       // }`;
-      statements = `const dataArray = state.data['${path}'] || [] \n
+      statements = `const dataArray = state.data.body['${path}'] || [] \n
         const mapping = []; \n
         for (let x of dataArray) { \n
           mapping.push(${JSON.stringify(mapKoboToPostgres, null, 2).replace(
@@ -290,7 +291,11 @@ fn(state => {
         // console.log('Im here');
         let closingPar = 0; // hold how many brackets we need to close
         for (var i = 0; i < depth - 1; i++) {
-          if (column.path[i]) {
+          if (i === 0 && column.path[i]) {
+            // We generate "body.something" only for the first 'each'
+            prefix += `each('$.body.${column.path[i]}[*]', `;
+            closingPar++;
+          } else if (column.path[i]) {
             prefix += `each(dataPath('${column.path[i]}[*]'), `;
             closingPar++;
           }
