@@ -20,9 +20,9 @@ fn(state => {
     ...state,
     projectId,
     tables: state.tables
-      .filter(t => !table.ReferenceUuid) // filter out tables that were seeded
-      .filter(t => t.columns.length == 0) // filter out tables with no columns
-      .filter(t => t.name == `${state.prefixes}_Untitled`), // filter out bad test data
+      .filter(t => !t.ReferenceUuid) // filter out tables that were seeded
+      .filter(t => t.columns.length > 0) // filter out tables with no columns
+      .filter(t => t.name !== `${state.prefixes}_Untitled`), // filter out bad test data
   };
 });
 
@@ -98,8 +98,14 @@ fn(state => {
 
   // Iterate through every table and create an operation to upsert (or upsertMany) records for that table.
   for (const table of tables) {
-    const { columns, name, depth, select_multiple, lookupTable } = table;
-
+    const {
+      columns,
+      name,
+      depth,
+      select_multiple,
+      lookupTable,
+      ReferenceUuid,
+    } = table;
     var paths = [];
 
     for (const column of columns) {
@@ -408,7 +414,6 @@ fn(state => {
   }
 
   state.expression = expression;
-
   state.triggerCriteria = {
     tableId: `${state.prefixes}${state.tableId}`,
   };
