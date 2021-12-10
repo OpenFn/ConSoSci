@@ -97,12 +97,13 @@ each(
         writeSql: true, // Keep to true to log query.
         execute, // Keep to true to execute query.
       })(state)
-        .then(mssqlColumn => {
-          const { rows } = mssqlColumn.response.body;
-          if (mssqlColumn.response.body.rowCount === 0) {
+        .then(resp => {
+          const { rows } = resp.response.body;
+          if (resp.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
             const columns = mergedColumns.filter(x => x.name !== undefined);
+
             // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
             return insert(name, columns, execute, writeSql, state);
           } else {
@@ -116,11 +117,14 @@ each(
             );
             newColumns.forEach(col => convertToMssqlTypes(col));
             console.log(newColumns);
+
             // change this line to 'return modify(name, newColumns, true, writeSql, state);' to override 'execute: false' at top
             return modify(name, newColumns, execute, writeSql, state);
           }
         })
         .catch(() => {
+          // If describeTable does NOT get executed because they've turned off execute,
+          // we should write the SQL for all the insert statements without executing them.
           const columns = mergedColumns.filter(x => x.name !== undefined);
           return insert(name, columns, execute, writeSql, state);
         });
