@@ -220,7 +220,7 @@ get(`${state.data.url}`, {}, state => {
       depth: q.type === 'select_multiple' ? 1 : q.depth,
       lookupTable: q.type === 'select_multiple' ? true : undefined,
       select_from_list_name: toCamelCase(q.select_from_list_name),
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
+      ReferenceUuid: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
     tablesToBeCreated.push(lookupTableName)
   }
@@ -244,16 +244,16 @@ get(`${state.data.url}`, {}, state => {
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
-        // console.log('here', q.path);
-        // console.log('here name', q.name, q.type);
         multiSelectIds.push(q.name);
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
         let suffix = q.path.slice(-1)[0];
         if (suffix && getType(suffix) === 'begin_group') suffix = undefined;
+        
         const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
+
         const junctionTableName = `${prefixes}${toCamelCase(
           suffix || tableId
         )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
@@ -312,11 +312,11 @@ get(`${state.data.url}`, {}, state => {
             depth: 1,
             select_multiple: true,
             select_from_list_name: toCamelCase(q.select_from_list_name),
-            // ReferenceUuid: `${prefixes}${toCamelCase(q.name)}ExtCode`,
           });
           tablesToBeCreated.push(junctionTableName);
         }
       }
+
       if (['select_one', 'select_multiple'].includes(q.type)) {
         // Use list_name to name select_table
         const lookupTableName = `${prefixes}${toCamelCase(

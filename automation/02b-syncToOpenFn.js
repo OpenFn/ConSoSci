@@ -1,9 +1,27 @@
+// {
+//   ...state,
+//   tableId, // this is unique per form and used to identify the main "submissions table" for the form
+//   tables, // this is a list of tables (main table, lookup tables, junction tables, etc.) to create in the db
+//   seeds, // this is a list of records (grouped by table) to insert at build time, not form submission time (runtime)
+//   prefix1, // this is a constant used in various places
+//   prefix2, // this is a constant used in various places
+//   prefixes, // this is `{prefix1}_{prefix2}`
+//   uuidColumnName, // this is a constant used identify unique ID columns in the db
+//   multiSelectIds, // this is an array of the 'list_name' of every select_multiple question
+//   data: {}, // we clear data
+//   response: {}, // we clear response
+// };
+
+// Pluck projectId out of state for convenience, filter out tables that were populated at build time.
 fn(state => {
   const { projectId } = state.configuration;
-  return { ...state, projectId };
+  const tablesForOpenFnJob = state.tables.filter(table => !table.ReferenceUuid);
+  
+  return { ...state, projectId, tables: tablesForOpenFnJob };
 });
 
 fn(state => {
+  // Create the first operation in our expression.
   var expression = `fn(state => {
   const multiSelectIds = ["${state.multiSelectIds.join('", "')}"];
 
@@ -69,8 +87,11 @@ fn(state => {
       })
       .join('');
   }
+
   const { tables, choiceDictionary } = state;
-  for (var i = 0; i < tables.length; i++) {
+
+  // Iterate through every table and create an operation to upsert (or upsertMany) records for that table.
+  for (const table of tables) {
     const {
       columns,
       name,
@@ -78,7 +99,7 @@ fn(state => {
       ReferenceUuid,
       select_multiple,
       lookupTable,
-    } = tables[i];
+    } = table;
 
     if (
       !ReferenceUuid &&
@@ -414,10 +435,13 @@ fn(state => {
           : `)(state); \n${alterSClosing} \n`);
     }
   }
+
   state.expression = expression;
+
   state.triggerCriteria = {
     tableId: `${state.prefixes}${state.tableId}`,
   };
+
   return state;
 });
 
