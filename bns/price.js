@@ -20,6 +20,8 @@ alterState(state => {
         break;
     }
   }
+  
+  cleanedSubmission.instance = instance;
 
   const landscapeMap = {
     Ndoki: 'ndoki',
@@ -97,6 +99,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   LastUpdateTime: new Date().toISOString(),
   KoboManaged: true,
   Tags: dataValue('_tags'),
+  Citation: dataValue('instance'),
 });
 
 alterState(state => {
