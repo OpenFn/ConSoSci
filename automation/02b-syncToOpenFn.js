@@ -360,8 +360,6 @@ fn(state => {
 
 // Get existing triggers for this project.
 fn(state => {
-  console.log(state.expression);
-  return state;
   return request(
     {
       method: 'get',
@@ -375,75 +373,75 @@ fn(state => {
 });
 
 // Get existing jobs for this project.
-// fn(state => {
-//   return request(
-//     {
-//       method: 'get',
-//       path: 'jobs',
-//       params: {
-//         project_id: state.projectId,
-//       },
-//     },
-//     next => ({ ...next, jobs: next.data.filter(job => !job.archived) })
-//   )(state);
-// });
+fn(state => {
+  return request(
+    {
+      method: 'get',
+      path: 'jobs',
+      params: {
+        project_id: state.projectId,
+      },
+    },
+    next => ({ ...next, jobs: next.data.filter(job => !job.archived) })
+  )(state);
+});
 
-// // Create or update the trigger to detect submissions from this form.
-// fn(state => {
-//   const { triggers, prefixes, tableId, triggerCriteria, projectId } = state;
-//   const triggerNames = triggers.map(t => t.name);
+// Create or update the trigger to detect submissions from this form.
+fn(state => {
+  const { triggers, prefixes, tableId, triggerCriteria, projectId } = state;
+  const triggerNames = triggers.map(t => t.name);
 
-//   const name = `auto/${prefixes}${tableId}`;
-//   const criteria = triggerCriteria;
-//   const triggerIndex = triggerNames.indexOf(name);
+  const name = `auto/${prefixes}${tableId}`;
+  const criteria = triggerCriteria;
+  const triggerIndex = triggerNames.indexOf(name);
 
-//   const trigger = {
-//     project_id: projectId,
-//     name,
-//     type: 'message',
-//     criteria,
-//   };
+  const trigger = {
+    project_id: projectId,
+    name,
+    type: 'message',
+    criteria,
+  };
 
-//   if (triggerIndex === -1) {
-//     console.log('Inserting trigger.');
-//     return request(
-//       {
-//         method: 'post',
-//         path: 'triggers',
-//         data: { trigger },
-//       },
-//       next => ({ ...next, triggers: [...next.triggers, next.data] })
-//     )(state);
-//   }
+  if (triggerIndex === -1) {
+    console.log('Inserting trigger.');
+    return request(
+      {
+        method: 'post',
+        path: 'triggers',
+        data: { trigger },
+      },
+      next => ({ ...next, triggers: [...next.triggers, next.data] })
+    )(state);
+  }
 
-//   console.log('Trigger already existing.');
-//   return state;
-// });
+  console.log('Trigger already existing.');
+  return state;
+});
 
-// // Create or update the job for handling submissions from this form.
-// fn(state => {
-//   const { expression, prefixes, tableId, jobs, triggers, projectId } = state;
+// Create or update the job for handling submissions from this form.
+fn(state => {
+  const { expression, prefixes, tableId, jobs, triggers, projectId } = state;
 
-//   console.log('Inserting/updating job: ', `auto/${prefixes}${tableId}`);
+  console.log('Inserting/updating job: ', `auto/${prefixes}${tableId}`);
 
-//   const jobNames = jobs.map(j => j.name);
-//   const triggersName = triggers.map(t => t.name);
-//   const name = `auto/${prefixes}${tableId}`;
-//   const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-//   const triggerIndex = triggersName.indexOf(name);
-//   const triggerId = triggers[triggerIndex].id;
+  const jobNames = jobs.map(j => j.name);
+  const triggersName = triggers.map(t => t.name);
+  const name = `auto/${prefixes}${tableId}`;
+  const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
+  const triggerIndex = triggersName.indexOf(name);
+  const triggerId = triggers[triggerIndex].id;
 
-//   const method = jobIndex !== -1 ? 'put' : 'post';
-//   const path = method === 'put' ? `jobs/${jobs[jobIndex].id}` : 'jobs/';
+  const method = jobIndex !== -1 ? 'put' : 'post';
+  const path = method === 'put' ? `jobs/${jobs[jobIndex].id}` : 'jobs/';
 
-//   const job = {
-//     adaptor: 'mssql',
-//     adaptor_version: 'v2.6.9',
-//     expression,
-//     name,
-//     project_id: projectId,
-//     trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-//   };
+  const job = {
+    adaptor: 'mssql',
+    adaptor_version: 'v2.6.9',
+    expression,
+    name,
+    project_id: projectId,
+    trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
+  };
 
-//   return request({ method, path, data: { job } })(state);
-// });
+  return request({ method, path, data: { job } })(state);
+});
