@@ -42,6 +42,7 @@ fn(state => {
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
+    cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
 
     state.landscapeMap = {
