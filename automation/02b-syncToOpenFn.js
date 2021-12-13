@@ -31,26 +31,6 @@ fn(state => {
   var expression = `fn(state => {
   const multiSelectIds = ["${state.multiSelectIds.join('", "')}"];
 
-  function convertMultiSelectsIntoArrays(body, multiSelectIds) {
-    for (const property in body) {
-      if (Array.isArray(body[property])) {
-        convertMultiSelectsIntoArrays(body[property], multiSelectIds);
-      } else {
-        for (const thing in body[property]) {
-          if (Array.isArray(body[property][thing])) {
-            convertMultiSelectsIntoArrays(
-              body[property][thing],
-              multiSelectIds
-            );
-          } else if (thing.includes(multiSelectIds)) {
-            const multiVals = body[property][thing].split(' ');
-            body[property][thing] = multiVals.map(val => ({ name: val }));
-          }
-        }
-      }
-    }
-  }
-
   function generateUuid(body, uuid) {
     for (const property in body) {
       if (Array.isArray(body[property]) && body !== null) {
@@ -70,10 +50,6 @@ fn(state => {
       }
     }
   }
-
-  multiSelectIds.forEach(msIds => {
-    convertMultiSelectsIntoArrays(state.data.body, msIds);
-  });
 
   generateUuid(
     state.data.body,
