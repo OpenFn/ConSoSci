@@ -1,9 +1,8 @@
-// This is the general 'execute' option.
-// Changing this to true/false, will spread through the whole job so that,
-// describeTable (L99), insert (L108), modify (L121) and upsertMany(L148) will alter DB or not.
-// For each one those listed functions above, this option can be overridden. See inline comments.
-fn(state => ({ ...state, execute: false, writeSql: true }));
+// Here we set default options for the SQL adaptor. Setting execute or writeSql
+// below will set the standard behavior of all SQL functions below unless overwritten.
+fn(state => ({ ...state, execute: true, writeSql: true }));
 
+// Creates tables in the db.
 each(
   '$.tables[*]',
   fn(state => {
@@ -98,12 +97,13 @@ each(
         writeSql: true, // Keep to true to log query.
         execute, // Keep to true to execute query.
       })(state)
-        .then(mssqlColumn => {
-          const { rows } = mssqlColumn.response.body;
-          if (mssqlColumn.response.body.rowCount === 0) {
+        .then(resp => {
+          const { rows } = resp.response.body;
+          if (resp.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
 
             const columns = mergedColumns.filter(x => x.name !== undefined);
+
             // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
             return insert(name, columns, execute, writeSql, state);
           } else {
@@ -117,11 +117,14 @@ each(
             );
             newColumns.forEach(col => convertToMssqlTypes(col));
             console.log(newColumns);
+
             // change this line to 'return modify(name, newColumns, true, writeSql, state);' to override 'execute: false' at top
             return modify(name, newColumns, execute, writeSql, state);
           }
         })
         .catch(() => {
+          // If describeTable does NOT get executed because they've turned off execute,
+          // we should write the SQL for all the insert statements without executing them.
           const columns = mergedColumns.filter(x => x.name !== undefined);
           return insert(name, columns, execute, writeSql, state);
         });
@@ -130,50 +133,28 @@ each(
   })
 );
 
-each('$.lookupTables[*]', state => {
-  const { choiceDictionary, execute, writeSql, prefixes } = state;
-  const name = state.data.name.toLowerCase();
-  const mapping = [];
-  // Camelize columns and table name
-  function toCamelCase(str) {
-    if (!str) return '';
-    let underscores = [];
-    let i = 0;
-    while (str[i] === '_') {
-      underscores.push(str[i]);
-      i++;
-    }
-    let words = str.match(/[0-9a-zA-Z\u00C0-\u00FF]+/gi);
-    if (!words) return '';
-    words = words
-      .map(word => {
-        return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-      })
-      .join('');
-    return `${underscores.join('')}${words}${underscores.join('')}`;
-  }
+// Adds "seeds" to the lookup tables—rows that can be referenced in submissions.
+each(
+  '$.seeds[*]',
+  fn(state => {
+    const { writeSql, execute, data } = state;
+    const { table, externalId, records } = data;
+    return upsertMany(
+      table, // table name
+      externalId, // external ID column name
+      state => {
+        // array of records to upsert
+        return records.map(r => ({
+          [externalId]: r,
+          [`${table}Name`]: r,
+        }));
+      },
+      { writeSql, execute, logValues: true } // options
+    )(state);
+  })
+);
 
-  for (choice in choiceDictionary) {
-    let customChoice = `${prefixes}${toCamelCase(choice)}`;
-    if (name === customChoice.toLowerCase()) {
-      for (value of choiceDictionary[choice]) {
-        let obj = {};
-        obj[`${name}ExtCode`] = value;
-        obj[`${name}Name`] = value;
-        mapping.push(obj);
-      }
-
-      // change this line to 'return upsertMany(..., { writeSql, execute: true, logValues: true });' to override 'execute: false' at top
-      return upsertMany(state.data.name, `${name}ExtCode`, mapping, {
-        writeSql,
-        execute,
-        logValues: true,
-      })(state);
-    }
-  }
-  return state;
-});
-
+// Prints out SQL statements for manual inspection and work.
 fn(state => {
   console.log('----------------------');
   console.log('Logging queries.');

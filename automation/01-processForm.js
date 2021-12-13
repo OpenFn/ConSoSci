@@ -12,7 +12,7 @@ get(`${state.data.url}`, {}, state => {
   const prefix1 = state.references[0].prefix1 || 'WCS';
   const prefix2 = state.references[0].prefix2 || '';
   const tableId = state.references[0].tableId;
-  const uuid = 'generated_uuid';
+  const uuidColumnName = 'generated_uuid';
   const prefixes = [prefix1, prefix2].filter(x => x).join('_');
   // END OF PREFIX HANDLER
 
@@ -64,7 +64,7 @@ get(`${state.data.url}`, {}, state => {
     return `${underscores.join('')}${words}${underscores.join('')}`;
   }
 
-  function questionsToColumns(questions, main) {
+  function questionsToColumns(questions) {
     var form = questions.filter(elt => !discards.includes(elt.type));
 
     form.forEach(obj => (obj.type = mapType[obj.type] || 'text'));
@@ -105,7 +105,7 @@ get(`${state.data.url}`, {}, state => {
       return {
         ...x,
         name: `${name.split(/-/).join('_')}`,
-        findValue: x.select_one || false,
+        findValue: x.select_one || x.type === 'select_multiple' || false,
         required: x.required,
       };
     });
@@ -121,7 +121,7 @@ get(`${state.data.url}`, {}, state => {
 
     form.push(
       { name: 'AnswerId', type: 'text' },
-      { name: toCamelCase(uuid), type: 'varchar(100)', unique: true }
+      { name: toCamelCase(uuidColumnName), type: 'varchar(100)', unique: true }
     );
 
     return form;
@@ -220,7 +220,7 @@ get(`${state.data.url}`, {}, state => {
       depth: q.type === 'select_multiple' ? 1 : q.depth,
       lookupTable: q.type === 'select_multiple' ? true : undefined,
       select_from_list_name: toCamelCase(q.select_from_list_name),
-      ReferenceUuid: q.type === 'select_multiple' ? undefined : `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
+      ReferenceUuid: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`,
     });
     tablesToBeCreated.push(lookupTableName)
   }
@@ -244,16 +244,16 @@ get(`${state.data.url}`, {}, state => {
   function buildTablesFromSelect(questions, formName, tables) {
     questions.forEach((q, i, arr) => {
       if (q.type === 'select_multiple') {
-        // console.log('here', q.path);
-        // console.log('here name', q.name, q.type);
         multiSelectIds.push(q.name);
         const getType = name => survey.find(s => s.name === name).type; // return the type of a question
 
         let suffix = q.path.slice(-1)[0];
         if (suffix && getType(suffix) === 'begin_group') suffix = undefined;
+
         const lookupTableName = `${prefixes}${toCamelCase(
           q.select_from_list_name
         )}`;
+
         const junctionTableName = `${prefixes}${toCamelCase(
           suffix || tableId
         )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
@@ -276,7 +276,7 @@ get(`${state.data.url}`, {}, state => {
                 type: 'select_multiple',
                 required: q.required,
                 referent: lookupTableName,
-                parent: false,
+                refersToLookup: true,
                 depth: path.length,
                 path,
               },
@@ -285,7 +285,7 @@ get(`${state.data.url}`, {}, state => {
                 type: 'select_multiple',
                 required: q.required,
                 referent: parentTableName,
-                parent: true,
+                refersToLookup: false,
                 depth: path.length,
                 path,
               },
@@ -312,11 +312,11 @@ get(`${state.data.url}`, {}, state => {
             depth: 1,
             select_multiple: true,
             select_from_list_name: toCamelCase(q.select_from_list_name),
-            // ReferenceUuid: `${prefixes}${toCamelCase(q.name)}ExtCode`,
           });
           tablesToBeCreated.push(junctionTableName);
         }
       }
+
       if (['select_one', 'select_multiple'].includes(q.type)) {
         // Use list_name to name select_table
         const lookupTableName = `${prefixes}${toCamelCase(
@@ -372,7 +372,9 @@ get(`${state.data.url}`, {}, state => {
       tables.push({
         name,
         dependencies: 2,
-        columns: questionsToColumns(group),
+        columns: questionsToColumns(
+          group.filter(q => q.type !== 'select_multiple')
+        ),
         defaultColumns: [
           // prettier-ignore
           ...[ { name: `${tName}ID`, type: 'int4', required: false } ],
@@ -396,13 +398,17 @@ get(`${state.data.url}`, {}, state => {
       return tablesFromQuestions(questions, formName, tables);
     }
 
-    // This is the main table.
     tables.push(
       {
+        // This is the main table to hold submissions for this Kobo form.
         name: tName,
         dependencies: 1,
         columns: [
-          ...questionsToColumns(questions, 'main'),
+          // Note that we do not create columns for select multiple Qs. Answers
+          // to select multiple Qs will appear as records in a junction table.
+          ...questionsToColumns(
+            questions.filter(q => q.type !== 'select_multiple')
+          ),
           ...[
             {
               name: 'Payload',
@@ -422,6 +428,7 @@ get(`${state.data.url}`, {}, state => {
       },
       {
         name: `${prefix1}_KoboDataset`,
+        // This is a table that must exist in all DBs that will hold submission data from any form.
         columns: [
           {
             name: 'FormName',
@@ -457,18 +464,28 @@ get(`${state.data.url}`, {}, state => {
   }
 
   // We build a dictionary of different select_one/select_multiple questions
-  // and the diffferent values they hold ===================================
-  function buildChoicesDictionary(choices) {
-    const choicesDictionary = {};
-    choices.forEach(choice => {
-      if (!choicesDictionary[choice.list_name]) {
-        choicesDictionary[choice.list_name] = [];
-      }
+  // and the different values they hold ===================================
+  function createSeeds(choicesArr) {
+    const obj = {};
 
-      if (!choicesDictionary[choice.list_name].includes(choice.name))
-        choicesDictionary[choice.list_name].push(choice.name);
+    choicesArr.forEach(c => {
+      const table = `${prefixes}${toCamelCase(c.list_name)}`;
+      if (!obj[table]) obj[table] = [];
+      if (!obj[table].includes(c.name)) obj[table].push(c.name);
     });
-    return choicesDictionary;
+
+    const arr = [];
+
+    Object.keys(obj).forEach(table => {
+      arr.push({
+        table: table,
+        externalId: `${table}ExtCode`,
+        records: [...obj[table]],
+      });
+    });
+
+    // [ table: 'role', records: ['admin', standard'], ... ]
+    return arr;
   }
 
   let depth = 0;
@@ -519,30 +536,30 @@ get(`${state.data.url}`, {}, state => {
         };
         break;
     }
-    // console.log('arr', arr[i]);
   });
 
-  const choiceDictionary = buildChoicesDictionary(choices);
+  const seeds = createSeeds(choices);
   const lookupTables = buildTablesFromSelect(survey, state.data.name, []);
   let tables = tablesFromQuestions(survey, state.data.name, []).reverse();
   tables = lookupTables.concat(tables);
 
+  // Given the initial input of a "Kobo form definition", we return...
   return {
     ...state,
-    tables,
-    lookupTables,
-    choiceDictionary,
-    prefixes,
-    prefix1,
-    prefix2,
-    uuid,
-    tableId,
-    data: {},
-    response: {},
-    multiSelectIds,
+    tableId, // this is unique per form and used to identify the main "submissions table" for the form
+    tables, // this is a list of tables (main table, lookup tables, junction tables, etc.) to create in the db
+    seeds, // this is a list of records (grouped by table) to insert at build time, not form submission time (runtime)
+    prefix1, // this is a constant used in various places
+    prefix2, // this is a constant used in various places
+    prefixes, // this is `{prefix1}_{prefix2}`
+    uuidColumnName, // this is a constant used identify unique ID columns in the db
+    multiSelectIds, // this is an array of the 'list_name' of every select_multiple question
+    data: {}, // we clear data
+    response: {}, // we clear response
   };
 });
 
+// Sort the tables by dependencies so that we can create them in the correct order
 fn(state => ({
   ...state,
   tables: state.tables.sort((a, b) =>
@@ -554,6 +571,7 @@ fn(state => ({
   ),
 }));
 
+// Print out a "DROP STATEMENT" for each table in the list of tables.
 fn(state => {
   console.log('====================DROP STATEMENT====================');
   console.log('Use this to clean database from created tables...');
