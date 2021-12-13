@@ -82,7 +82,9 @@ fn(state => {
 
   const { body } = state.data;
   const { _id, _xform_id_string } = body;
-  return { ...state, body, _id, _xform_id_string };
+  state.data = { ...state.data, ...body };
+
+  return { ...state, _id, _xform_id_string };
 }); \n`;
 
   function toCamelCase(str) {
@@ -104,8 +106,8 @@ fn(state => {
       // Handling master parent table
       if (name === `${state.prefix1}_KoboDataset`) {
         const values = {
-          FormName: "dataValue('body.formName')",
-          DatasetId: "dataValue('body._xform_id_string')",
+          FormName: "dataValue('formName')",
+          DatasetId: "dataValue('_xform_id_string')",
           LastUpdated: 'new Date().toISOString()',
         };
         for (x in values) paths.push(values[x]);
@@ -221,6 +223,10 @@ fn(state => {
         if (col.name === 'AnswerId') {
           mapKoboToPostgres[col.name] = `state._id`;
         }
+        if (col.name === 'GeneratedUuid') {
+          if (depth > 0) mapKoboToPostgres[col.name] = `x['__generatedUuid']`;
+          else mapKoboToPostgres[col.name] = `dataValue('__generatedUuid')`;
+        }
       }
     });
 
@@ -243,8 +249,8 @@ fn(state => {
     // console.log('name', depth);
     // if table is a table referencing a select multiple table.
     if (select_multiple || lookupTable) {
-      statements = `if (state.body['${path}']) { \n
-                const array = state.body['${path}'].split(' '); \n
+      statements = `if (state.data['${path}']) { \n
+                const array = state.data['${path}'].split(' '); \n
                 const mapping = []; \n 
                 for ( let x of array ) { \n
                   mapping.push(${JSON.stringify(
@@ -293,7 +299,7 @@ fn(state => {
         for (var i = 0; i < depth - 1; i++) {
           if (i === 0 && column.path[i]) {
             // We generate "body.something" only for the first 'each'
-            prefix += `each('$.body.${column.path[i]}[*]', `;
+            prefix += `each('$.${column.path[i]}[*]', `;
             closingPar++;
           } else if (column.path[i]) {
             prefix += `each(dataPath('${column.path[i]}[*]'), `;
