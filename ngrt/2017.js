@@ -30,6 +30,7 @@ alterState(state => {
 
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
+    cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
     return state;
   } catch (error) {
@@ -81,6 +82,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
   DatasetUuidId: dataValue('datasetId'),
+  Citation: dataValue('instance'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
