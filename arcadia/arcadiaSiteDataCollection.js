@@ -25,7 +25,7 @@ fn(async state => {
         ? dataValue('$.body.respondent_role_other')(state)
         : dataValue('$.body.respondent_role')(state);
     },
-    WCSPROGRAMS_ProjectID:dataValue('$.body.swm_site')(state),
+    WCSPROGRAMS_ProjectID: dataValue('$.body.swm_site')(state),
   };
   return upsert(
     'WCSPROGRAMS_ProjectAnnualDataPlan',
@@ -75,6 +75,7 @@ fn(async state => {
 
     for (let survey of surveyPlanned001Array) {
       mapping.push({
+        DatasetUuidId: body._id,
         WCSPROGRAMS_DataSetSurveyTypeName: survey,
         WCSPROGRAMS_DataSetSurveyTypeExtCode: survey,
       });
