@@ -48,7 +48,7 @@ fn(async state => {
 
     for (let survey of surveyPlannedArray) {
       mapping.push({
-        WCSPROGRAMS_DataSetSurveyType: survey,
+        WCSPROGRAMS_DataSetSurveyTypeName: survey,
         WCSPROGRAMS_DataSetSurveyTypeExtCode: survey,
       });
     }
@@ -76,7 +76,7 @@ fn(async state => {
     for (let survey of surveyPlanned001Array) {
       mapping.push({
         DatasetUuidId: body._id,
-        WCSPROGRAMS_DataSetSurveyType: survey,
+        WCSPROGRAMS_DataSetSurveyTypeName: survey,
         WCSPROGRAMS_DataSetSurveyTypeExtCode: survey,
       });
     }
