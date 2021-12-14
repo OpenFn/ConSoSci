@@ -48,8 +48,16 @@ fn(async state => {
 
     for (let survey of surveyPlannedArray) {
       mapping.push({
-        WCSPROGRAMS_DataSetSurveyTypeID: survey,
-        WCSPROGRAMS_DataSetSurveyTypeExtCode: survey,
+        WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            relation: 'WCSPROGRAMS_DataSetSurveyType',
+            uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
+            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
+          })(state),
+        WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
+            relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+            uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
+            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: survey },
+          })(state),
       });
     }
 
@@ -76,8 +84,16 @@ fn(async state => {
     for (let survey of surveyPlanned001Array) {
       mapping.push({
         DatasetUuidId: body._id,
-        WCSPROGRAMS_DataSetSurveyTypeID: survey,
-        WCSPROGRAMS_DataSetSurveyTypeExtCode: survey,
+        WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            relation: 'WCSPROGRAMS_DataSetSurveyType',
+            uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
+            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
+          })(state),
+        WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
+            relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+            uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
+            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: survey },
+          })(state),
       });
     }
     console.log('mapping', mapping);
