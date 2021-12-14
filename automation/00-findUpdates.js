@@ -7,11 +7,18 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
   const manualFormList = [
     //=================================
-    {
+    // Test forms
+    /*{
       uid: 'aaknL3DQQgkgZ8iay89X5P',
       p1: 'WCSPROGRAMS',
       p2: '',
       tableId: 'SharksDecTest',
+    },*/
+    {
+        uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+        p1: 'WCSPROGRAMS',
+        p2: 'Arcadia',
+        tableId: 'SiteSurvey'
     },
     // Trillion Trees Testing //NOTE: openfn_kobo does not have access to this form
       //     {
@@ -20,14 +27,6 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // p2: '',
       // tableId: 'SiteRegistration'
       // },
-    //=== WCS Socio Economic Database =====
-    // {
-    //     uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-    //     p1: 'WCSPROGRAMS',
-    //     p2: 'Arcadia',
-    //     tableId: 'SiteSurvey'
-    // },
-
     //=== WCS Socio Economic Database =====
     // {
     //     uid: 'aukhdejQU76K33caCkF4rP',
