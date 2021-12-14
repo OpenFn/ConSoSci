@@ -412,7 +412,7 @@ fn(state => {
 
   const job = {
     adaptor: 'mssql',
-    adaptor_version: 'v2.6.9',
+    adaptor_version: 'v2.6.11',
     expression,
     name,
     project_id: projectId,
