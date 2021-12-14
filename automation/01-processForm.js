@@ -13,12 +13,8 @@ get(`${state.data.url}`, {}, state => {
   const prefix2 = state.references[0].prefix2 || '';
   const tableId = state.references[0].tableId;
   const uuidColumnName = 'generated_uuid';
-  const prefixes = [prefix1, prefix2].filter(x => x).join('_');
+  const prefixes = [prefix1, prefix2].join('_');
   // END OF PREFIX HANDLER
-
-  // TODO: Decide which metadata field to include. ========================
-  // survey.push({ name: 'generated_uuid', type: 'text' });
-  // ======================================================================
 
   const multiSelectIds = [];
 
@@ -164,9 +160,7 @@ get(`${state.data.url}`, {}, state => {
     } else {
       let parent = arr.find(question => question.name === arr[i - 1].path[0]);
       if (parent.type === 'begin_group') {
-        // console.log('parent is a group');
         path = [[arr[i - 1].path, question.name].join('/')];
-        // console.log('path', path);
       } else {
         path = i === 0 ? [] : [...arr[i - 1].path, question.name];
       }
@@ -256,7 +250,7 @@ get(`${state.data.url}`, {}, state => {
 
         const junctionTableName = `${prefixes}${toCamelCase(
           suffix || tableId
-        )}${toCamelCase(q.select_from_list_name)}`; // MC: TO CHANGE?? -- CHANGED
+        )}${toCamelCase(q.select_from_list_name)}`;
 
         // prettier-ignore
         const parentTableName = `${prefixes}${tableId}${toCamelCase(suffix)}`;
@@ -266,7 +260,6 @@ get(`${state.data.url}`, {}, state => {
         if (!tables.find(t => t.name === junctionTableName)) {
           // console.log('junctiontable', junctionTableName);
           const path = processPath(q, i, arr);
-          // console.log('path', path);
           tables.push({
             name: junctionTableName,
             dependencies: 3,
@@ -293,9 +286,9 @@ get(`${state.data.url}`, {}, state => {
             defaultColumns: [
               // prettier-ignore
               ...[
-            { name: `${prefixes}${toCamelCase(q.select_from_list_name)}Name`, type: 'varchar(255)', required: false },
-            { name: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
-          ],
+                { name: `${prefixes}${toCamelCase(q.select_from_list_name)}Name`, type: 'varchar(255)', required: false },
+                { name: `${prefixes}${toCamelCase(q.select_from_list_name)}ExtCode`, type: 'varchar(50)', required: true, default: '' },
+              ],
               ...standardColumns(toCamelCase(q.select_from_list_name)),
             ],
             foreignTables: [
@@ -549,15 +542,12 @@ get(`${state.data.url}`, {}, state => {
       });
     });
 
-    // [ table: 'role', records: ['admin', standard'], ... ]
     return arr;
   }
 
   let depth = 0;
 
   survey.forEach((q, i, arr) => {
-    // console.log(q.name, q.type);
-    // console.log('depth', depth);
     switch (q.type) {
       case 'begin_group':
         arr[i] = {
