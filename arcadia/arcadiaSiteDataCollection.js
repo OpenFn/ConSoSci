@@ -56,7 +56,7 @@ fn(async state => {
         WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
             relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
             uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
-            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: survey },
+            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: AnswerId },
           })(state),
       });
     }
@@ -92,7 +92,7 @@ fn(async state => {
         WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
             relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
             uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
-            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: survey },
+            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: AnswerId },
           })(state),
       });
     }
