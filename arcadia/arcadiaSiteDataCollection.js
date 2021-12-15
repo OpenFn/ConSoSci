@@ -8,35 +8,32 @@ fn(state => {
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
-fn(async state => {
-  const mappingAnnalDataPlan = {
-    DatasetUuidId: dataValue('$.body._id')(state), //set custom uuid that can be used as ext Id to relate related tables
-    AnswerId: dataValue('$.body._id')(state),
+upsert(
+  'WCSPROGRAMS_ProjectAnnualDataPlan',
+  'DatasetUuidId',
+  {
+    DatasetUuidId: dataValue('$.body._id'), //set custom uuid that can be used as ext Id to relate related tables
+    AnswerId: dataValue('$.body._id'),
     WCSPROGRAMS_ProjectAnnualDataPlanName: dataValue('$.formName'), //Capture the source survey name?
     UserID_CR: '0', //TODO: Update User_ID and Address mappings?
     UserID_LM: '0',
     CRIPAddress: 'wcs',
     LMIPAddress: 'wcs',
-    SubmitterName: dataValue('$.body.participant')(state),
-    SubmitterEmail: dataValue('$.body.email_address')(state),
+    SubmitterName: dataValue('$.body.participant'),
+    SubmitterEmail: dataValue('$.body.email_address'),
     SubmitterRole: state => {
-      const role = dataValue('$.body.respondent_role')(state);
+      const role = dataValue('$.body.respondent_role');
       return role === 'other'
         ? dataValue('$.body.respondent_role_other')(state)
         : dataValue('$.body.respondent_role')(state);
     },
-    WCSPROGRAMS_ProjectID: dataValue('$.body.swm_site')(state),
-  };
-  return upsert(
-    'WCSPROGRAMS_ProjectAnnualDataPlan',
-    'DatasetUuidId',
-    mappingAnnalDataPlan,
-    {
-      setNull: ["''", "'undefined'"],
-      logValues: true,
-    }
-  )(state);
-});
+    WCSPROGRAMS_ProjectID: dataValue('$.body.swm_site'),
+  },
+  {
+    setNull: ["''", "'undefined'"],
+    logValues: true,
+  }
+);
 
 //For every survey planned...
 //1.1 Upsert records to create m:m relationship with WCSPROGRAMS_DataSetSurveyType for every Kobo survey_planned
@@ -50,15 +47,15 @@ fn(async state => {
       mapping.push({
         DatasetUuidId: body._id,
         WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            relation: 'WCSPROGRAMS_DataSetSurveyType',
-            uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
-            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
-          })(state),
+          relation: 'WCSPROGRAMS_DataSetSurveyType',
+          uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
+          where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
+        })(state),
         WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
-            relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-            uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
-            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: DatasetUuidId },
-          })(state),
+          relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+          uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
+          where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: body._id },
+        })(state),
       });
     }
 
@@ -86,15 +83,15 @@ fn(async state => {
       mapping.push({
         DatasetUuidId: body._id,
         WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            relation: 'WCSPROGRAMS_DataSetSurveyType',
-            uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
-            where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
-          })(state),
+          relation: 'WCSPROGRAMS_DataSetSurveyType',
+          uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
+          where: { WCSPROGRAMS_DataSetSurveyTypeExtCode: survey },
+        })(state),
         WCSPROGRAMS_ProjectAnnualDataPlanID: await findValue({
-            relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-            uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
-            where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: DatasetUuidId },
-          })(state),
+          relation: 'WCSPROGRAMS_ProjectAnnualDataPlan',
+          uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanID',
+          where: { WCSPROGRAMS_ProjectAnnualDataPlanExtCode: body._id },
+        })(state),
       });
     }
     console.log('mapping', mapping);
