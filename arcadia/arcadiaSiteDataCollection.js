@@ -104,7 +104,7 @@ fn(async state => {
       }
     )(state);
   }
-  console.log('No survey_planned_001. Skipping upsert!');
+  console.log('No survey_planned for partners. Skipping upsert!');
   return state;
 });
 
@@ -151,7 +151,7 @@ fn(async state => {
     });
   }
   console.log(
-    'No group_qp5by62/Which_of_the_followi_ata_you_will_collect. Skipping upsert!'
+    'No camera trap method question. Skipping upsert!'
   );
   return state;
 });
@@ -198,7 +198,7 @@ fn(state => {
     });
   }
   console.log(
-    'No group_qp5by62/Which_metrics_questi_ith_camera_trap_data. Skipping upsert!'
+    'No camera trap metric question. Skipping upsert!'
   );
   return state;
 });
@@ -244,7 +244,7 @@ fn(state => {
     });
   }
   console.log(
-    'No group_qp5by62/What_estimation_methods_do_you. Skipping upsert!'
+    'No camera trap estimation method question. Skipping upsert!'
   );
   return state;
 });
