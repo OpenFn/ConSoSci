@@ -306,17 +306,13 @@ each(
           WCSPROGRAMS_DataSetOpenAccessQuantityID: await findValue({
             uuid: 'wcsprograms_datasetopenaccessquantityid',
             relation: 'WCSPROGRAMS_DataSetOpenAccessQuantity',
-            where: {
-              TT_DataSetOpenAccessQuantityExtCode:
-                dataset['datasets/open_access_dataquantity'],
+            where: { DataSetOpenAccessQuantityExtCode: dataset['datasets/open_access_dataquantity'],
             },
           })(state),
           WCSPROGRAMS_DataSetOpenAccessTimelineID: await findValue({
             uuid: 'wcsprograms_datasetopenaccesstimelineid',
             relation: 'WCSPROGRAMS_DataSetOpenAccessTimeline',
-            where: {
-              TT_DataSetOpenAccessTimelineExtCode:
-                dataset['datasets/open_access_when'],
+            where: { DataSetOpenAccessTimelineExtCode: dataset['datasets/open_access_when'],
             },
           })(state),
           //TODO: Update UserID_CR mappings? Or keep default?
