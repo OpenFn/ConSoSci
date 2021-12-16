@@ -260,6 +260,7 @@ each(
     })(state).then(async state => {
       const { response } = state;
       //3. Upsert 1 ProjectAnnualDataPlanDataSet for every dataset
+      console.log('Upserting WCSPROGRAMS_ProjectAnnualDataPlanDataSet... ');
       return upsert(
         'WCSPROGRAMS_ProjectAnnualDataPlanDataSet',
         'DatasetUuidId',
