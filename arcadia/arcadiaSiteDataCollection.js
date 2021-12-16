@@ -288,8 +288,8 @@ each(
           WCSPROGRAMS_DataAccessFrequencyID: await findValue({
             uuid: 'WCSPROGRAMS_DataAccessFrequencyID',
             relation: 'WCSPROGRAMS_DataAccessFrequency',
-            where: {WCSPROGRAMS_DataAccessFrequencyExtCode: dataset['datasets/data_review_frequency']|| 'NA', 
-            },
+            where: {WCSPROGRAMS_DataAccessFrequencyExtCode: dataset['datasets/data_review_frequency'], 
+            }|| 'NA',
           })(state),
           OtherFrequency: 
             dataset['datasets/data_review_frequency_other'],
