@@ -273,8 +273,14 @@ each(
             dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
-          WCSPROGRAMS_DataSetSurveyTypeID:
-            state.surveyTypeMap[dataset['datasets/survey_type']],
+          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
+            uuid: 'wcsprograms_datasetsurveytypeid',
+            relation: 'WCSPROGRAMS_DataSetSurveyTypeID',
+            where: {
+              WCSPROGRAMS_DataSetSurveyTypeExtCode:
+                dataset['datasets/survey_type'],
+            },
+          })(state),
           WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
             dataset['datasets/dataset_name_text'],
           CollectionStartDate: dataset['datasets/data_collection_start'],
