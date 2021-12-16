@@ -286,11 +286,9 @@ each(
           CollectionStartDate: dataset['datasets/data_collection_start'],
           CollectionEndDate: dataset['datasets/data_collection_end'],
           WCSPROGRAMS_DataAccessFrequencyID:
-            state.dataFrequencyMap[dataset['datasets/data_review_frequency']],
+            dataset['datasets/data_review_frequency'],
           OtherFrequency:
-            state.dataFrequencyMap[
-              dataset['datasets/data_review_frequency_other']
-            ],
+            dataset['datasets/data_review_frequency_other'],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
           DataManagementPlan:
