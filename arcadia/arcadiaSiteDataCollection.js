@@ -314,7 +314,7 @@ each(
             uuid: 'wcsprograms_datasetopenaccessquantityid',
             relation: 'WCSPROGRAMS_DataSetOpenAccessQuantity',
             where: {
-              DataSetOpenAccessQuantityExtCode:
+              WCSPROGRAMS_DataSetOpenAccessQuantityExtCode:
                 dataset['datasets/open_access_dataquantity'],
             },
           })(state),
