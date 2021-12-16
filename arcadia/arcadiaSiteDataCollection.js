@@ -273,8 +273,8 @@ each(
             dataset['datasets/survey_type'] === 'other'
               ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
-          WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
-            uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
+          WCSPROGRAMS_DataSetSurveyType: await findValue({
+            uuid: 'WCSPROGRAMS_DataSetSurveyType',
             relation: 'WCSPROGRAMS_DataSetSurveyTypeID',
             where: {
               WCSPROGRAMS_DataSetSurveyTypeExtCode:
