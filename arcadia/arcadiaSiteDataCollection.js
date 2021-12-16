@@ -285,9 +285,15 @@ each(
             dataset['datasets/dataset_name_text'],
           CollectionStartDate: dataset['datasets/data_collection_start'],
           CollectionEndDate: dataset['datasets/data_collection_end'],
-          WCSPROGRAMS_DataAccessFrequencyID:
-            dataset['datasets/data_review_frequency'],
-          OtherFrequency:
+          WCSPROGRAMS_DataAccessFrequencyID: await findValue({
+            uuid: 'WCSPROGRAMS_DataAccessFrequency',
+            relation: 'WCSPROGRAMS_DataAccessFrequencyID',
+            where: {
+              WCSPROGRAMS_DataAccessFrequencyExtCode:
+                dataset['datasets/data_review_frequency'],
+            },
+          })(state),
+          OtherFrequency: 
             dataset['datasets/data_review_frequency_other'],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
