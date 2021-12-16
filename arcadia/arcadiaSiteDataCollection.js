@@ -345,6 +345,7 @@ each(
         const { response } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
+        console.log('Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -388,6 +389,7 @@ each(
         const { response } = state;
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
+        console.log('Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -431,6 +433,7 @@ each(
         const { response } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
+        console.log('Upserting data analysis WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -472,6 +475,7 @@ each(
       })(state).then(state => {
         const { response } = state;
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
+        console.log('Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge... ');
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
           'DatasetUuidId',
