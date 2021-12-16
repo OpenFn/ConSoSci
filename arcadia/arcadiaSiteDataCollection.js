@@ -308,7 +308,7 @@ each(
           OtherHelpNeeded: dataset['datasets/data_mgmt_help_other'],
           OtherAssistance: dataset['datasets/other_services'],
           OtherNotes: dataset['datasets/other_info'],
-          WCSPROGRAMS_DataIsOpenAccess:
+          DatailsOpenAccess:
             dataset['datasets/open_access_plan'] === 'yes' ? 1 : 0,
           WCSPROGRAMS_DataSetOpenAccessQuantityID: await findValue({
             uuid: 'wcsprograms_datasetopenaccessquantityid',
