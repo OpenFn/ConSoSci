@@ -322,7 +322,7 @@ each(
             uuid: 'wcsprograms_datasetopenaccesstimelineid',
             relation: 'WCSPROGRAMS_DataSetOpenAccessTimeline',
             where: {
-              DataSetOpenAccessTimelineExtCode:
+              WCSPROGRAMS_DataSetOpenAccessTimelineExtCode:
                 dataset['datasets/open_access_when'],
             },
           })(state),
