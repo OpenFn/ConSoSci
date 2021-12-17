@@ -288,11 +288,13 @@ each(
           WCSPROGRAMS_DataAccessFrequencyID: await findValue({
             uuid: 'WCSPROGRAMS_DataAccessFrequencyID',
             relation: 'WCSPROGRAMS_DataAccessFrequency',
-            where: {WCSPROGRAMS_DataAccessFrequencyExtCode: dataset['datasets/data_review_frequency'], 
-            }|| 'NA',
+            where:
+              {
+                WCSPROGRAMS_DataAccessFrequencyExtCode:
+                  dataset['datasets/data_review_frequency'],
+              } || 'NA',
           })(state),
-          OtherFrequency: 
-            dataset['datasets/data_review_frequency_other'],
+          OtherFrequency: dataset['datasets/data_review_frequency_other'],
           AnalysisCompletionDate:
             dataset['datasets/data_analysis_completion_date'],
           DataManagementPlan:
@@ -349,28 +351,36 @@ each(
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
-      })(state).then(state => {
+      })(state).then(async state => {
         const { response } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
-        console.log('Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
+        console.log(
+          'Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
+        );
+        const mapping = [];
+        for (dct of dataCollectionTools) {
+          mapping.push({
+            DatasetUuidId: body._id + dct,
+            AnswerId: body._id,
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
+            IsForCollect: 1,
+            WCSPROGRAMS_DataToolID: await findValue({
+              relation: 'WCSPROGRAMS_DataTool',
+              uuid: 'WCSPROGRAMS_DataToolID',
+              where: { WCSPROGRAMS_DataToolExtCode: dct },
+            })(state),
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          });
+        }
+
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
-          state =>
-            dataCollectionTools.map(dct => {
-              return {
-                DatasetUuidId: body._id + dct,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
-                IsForCollect: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dct], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
+          () => mapping
         )(state);
       });
     }
@@ -397,7 +407,9 @@ each(
         const { response } = state;
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
-        console.log('Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
+        console.log(
+          'Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
+        );
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -441,7 +453,9 @@ each(
         const { response } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
-        console.log('Upserting data analysis WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... ');
+        console.log(
+          'Upserting data analysis WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
+        );
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -483,7 +497,9 @@ each(
       })(state).then(state => {
         const { response } = state;
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
-        console.log('Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge... ');
+        console.log(
+          'Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge... '
+        );
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
           'DatasetUuidId',
