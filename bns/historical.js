@@ -39,7 +39,7 @@ alterState(state => {
       // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // resynced Sept 7,2021
 
       // Prices 2020
-          { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_survey', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // fetched Oct25 ✓  
+          { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_price', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // fetched Oct25 ✓  
       //  { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs_ndoki' }, // resynced May 4,2021
 
       // HH 2019
