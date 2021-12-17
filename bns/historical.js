@@ -33,18 +33,18 @@ alterState(state => {
       { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021'}, // synced Sept 10, 2021
 
       //  HH 2020
-        { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'wcs_soariake' }, // fetched Oct25 ✓
-      // { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki Parc 2020', owner: 'wcs_ndoki', citation: "Y. Londza & Nouabalé-Ndoki National Park team" }, // resynced Sept 10,2021
-      // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'Socio-Eco Uganda 2020', owner: 'wcs_uganda_carbon', citation: "M. Nyago, H. Musabende & WCS Uganda Carbon team"}, // resynced Sept 10, 2021
-      // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver'}, // resynced Sept 7,2021
+       { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // fetched Oct25 ✓
+       { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki Parc 2020', owner: 'wcs_ndoki', instance: 'Y. Londza & Nouabalé-Ndoki National Park team' }, // resynced Sept 10,2021
+       { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'Socio-Eco Uganda 2020', owner: 'wcs_uganda_carbon', instance: 'M. Nyago, H. Musabende & WCS Uganda Carbon team'}, // resynced Sept 10, 2021
+       { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017-2020'}, // resynced Sept 7,2021
 
       // Prices 2020
           { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_price', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // fetched Oct25 ✓  
-      //  { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs_ndoki' }, // resynced May 4,2021
+        { id: 'aTRKQW2b8TJGxF7DVPfjFv', tag: 'bns_price', name: 'BNS Ndoki Prix 2020', owner: 'wcs_ndoki', instance: 'Y. Londza & Nouabalé-Ndoki National Park team' }, // resynced May 4,2021
 
       // HH 2019
-      //  { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS SWM Ndoki 2019', owner: 'wcs_ndoki', citation: "G. Mavah, B. Avelino, G. Ngohouani, R. Mouanda, F. Mossoula, B. Ngampamou" }, //synced Sept 10, 2021
-      //  { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'BNS_Soariake_2019', owner: 'wcs_soariake' }, // fetched Oct25 ✓
+        { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS SWM Ndoki 2019', owner: 'wcs_ndoki', instance: 'G. Mavah, B. Avelino, G. Ngohouani, R. Mouanda, F. Mossoula, B. Ngampamou' }, //synced Sept 10, 2021
+        { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'BNS_Soariake_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // fetched Oct25 ✓
       //  { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_survey', name: 'BNS_ABS_2019_FINAL', owner: 'wcs_antongil' }, // fetched Oct25 ✓
       //  { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2019', owner: 'wcs_soariake' }, // fetched Oct25 ✓
       //  { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS Ndoki 2019', owner: 'wcs_ndoki' }, // fetched Oct25 ✓
