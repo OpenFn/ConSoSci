@@ -248,7 +248,7 @@ fn(state => {
 //For every dataset repeat group entry...
 each(
   dataPath('$.body.datasets[*]'),
-  alterState(state => {
+  fn(state => {
     const dataset = state.data;
     const { body } = state;
 
@@ -337,7 +337,7 @@ each(
 
 each(
   state => state.body.datasets,
-  alterState(state => {
+  fn(state => {
     console.log('Upserting');
     const dataset = state.data;
     const { body } = state;
@@ -390,7 +390,7 @@ each(
 
 each(
   state => state.body.datasets,
-  alterState(state => {
+  fn(state => {
     const dataset = state.data;
     const { body } = state;
 
@@ -436,7 +436,7 @@ each(
 
 each(
   state => state.body.datasets,
-  alterState(state => {
+  fn(state => {
     const dataset = state.data;
     const { body } = state;
 
@@ -482,7 +482,7 @@ each(
 
 each(
   state => state.body.datasets,
-  alterState(state => {
+  fn(state => {
     const dataset = state.data;
     const { body } = state;
 
@@ -525,7 +525,7 @@ each(
 
 each(
   state => state.body.datasets,
-  alterState(state => {
+  fn(state => {
     const dataset = state.data;
     const { body } = state;
 
