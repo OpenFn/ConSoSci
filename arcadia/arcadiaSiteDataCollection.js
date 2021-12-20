@@ -525,7 +525,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(async state => {
-        const { response } = state;
+        const { response, cleanValue } = state;
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
         console.log(
           'Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge... '
@@ -577,7 +577,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(async state => {
-        const { response } = state;
+        const { response, cleanValue } = state;
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
         const mappedArray = [];
 
