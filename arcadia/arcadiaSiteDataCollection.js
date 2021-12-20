@@ -433,7 +433,7 @@ each(
             WCSPROGRAMS_DataToolID: await findValue({
               relation: 'WCSPROGRAMS_DataTool',
               uuid: 'WCSPROGRAMS_DataToolID',
-              where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
+              where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dmt) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
@@ -475,21 +475,25 @@ each(
           'Upserting data analysis WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
         );
 
-        const mappedArray = dataAnalysisTools.map(dat => ({
-          DatasetUuidId: body._id + dat,
-          AnswerId: body._id,
-          WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-            response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
-          IsForAnalyze: 1,
-          WCSPROGRAMS_DataToolID: await findValue({
-            relation: 'WCSPROGRAMS_DataTool',
-            uuid: 'WCSPROGRAMS_DataToolID',
-            where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
-          })(state),
-          //TODO: Update UserID_CR mappings
-          UserID_CR: '0',
-          UserID_LM: '0',
-        }));
+        const mappedArray = [];
+
+        for (dat of dataCollectionTools) {
+          mappedArray.push({
+            DatasetUuidId: body._id + dat,
+            AnswerId: body._id,
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
+            IsForAnalyze: 1,
+            WCSPROGRAMS_DataToolID: await findValue({
+              relation: 'WCSPROGRAMS_DataTool',
+              uuid: 'WCSPROGRAMS_DataToolID',
+              where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dat) },
+            })(state),
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          });
+        }
 
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
