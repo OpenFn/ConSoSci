@@ -6,6 +6,7 @@ fn(state => {
     const replacements = {
       paper: 'paper_form',
       other_dat: 'other',
+      camera_trap: 'camera_trap'
     };
 
     if (Object.keys(replacements).includes(value)) return replacements[value];
