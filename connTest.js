@@ -5,9 +5,9 @@
 // `,
 // });
 
-// sql({
-// query:`Select * from WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType`
-// });
+sql({
+query:`Select WCSPROGRAMS_ProjectID, WCSPROGRAMS_ProjectName from WCSPROGRAMS_Project`
+});
 
 // sql({
 // query:
@@ -21,12 +21,12 @@
 // And name = 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType');`
 // });*/
 
-sql({
-  query: `INSERT INTO WCSPROGRAMS_DataTool (WCSPROGRAMS_DataToolName, WCSPROGRAMS_DataToolExtCode, 
-  UserID_CR, UserID_LM, IsForCollect, IsForManage, IsForAnalyze)
-VALUES ('Audio video interview', 'audio_video_interview', '0', '0', '1', '0', '0');
-`,
-});
+// sql({
+//   query: `INSERT INTO WCSPROGRAMS_DataTool (WCSPROGRAMS_DataToolName, WCSPROGRAMS_DataToolExtCode, 
+//   UserID_CR, UserID_LM, IsForCollect, IsForManage, IsForAnalyze)
+// VALUES ('Audio video interview', 'audio_video_interview', '0', '0', '1', '0', '0');
+// `,
+// });
 
 
 
