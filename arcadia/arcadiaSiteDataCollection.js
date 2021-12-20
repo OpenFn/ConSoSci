@@ -1,7 +1,17 @@
 //Job based on mapping spec: https://docs.google.com/spreadsheets/d/1SjSHpYYzlRUa9rQRW3mN2ruI7k_QWTeF7qX4Rnvy_wk/edit#gid=264797739
 fn(state => {
   const { body } = state.data;
-  return { ...state, body };
+
+  const cleanValue = value => {
+    const replacements = {
+      paper: 'paper_form',
+    };
+
+    if (Object.keys(replacements).includes(value)) return replacements[value];
+    return value;
+  };
+
+  return { ...state, body, cleanValue };
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
@@ -352,7 +362,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(async state => {
-        const { response } = state;
+        const { response, cleanValue } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.1. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_collection_tools
         console.log(
@@ -369,7 +379,7 @@ each(
             WCSPROGRAMS_DataToolID: await findValue({
               relation: 'WCSPROGRAMS_DataTool',
               uuid: 'WCSPROGRAMS_DataToolID',
-              where: { WCSPROGRAMS_DataToolExtCode: dct },
+              where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
@@ -404,7 +414,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
-        const { response } = state;
+        const { response, cleanValue } = state;
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
         console.log(
@@ -421,7 +431,7 @@ each(
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
                 IsForManage: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dmt], //fk
+                WCSPROGRAMS_DataToolID: cleanValue(dmt), //fk
                 //TODO: Update UserID_CR mappings
                 UserID_CR: '0',
                 UserID_LM: '0',
@@ -450,7 +460,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(state => {
-        const { response } = state;
+        const { response, cleanValue } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
         console.log(
@@ -467,7 +477,7 @@ each(
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
                 IsForAnalyze: 1,
-                WCSPROGRAMS_DataToolID: state.dataToolsMap[dat], //fk
+                WCSPROGRAMS_DataToolID: cleanValue(dat), //fk
                 //TODO: Update UserID_CR mappings
                 UserID_CR: '0',
                 UserID_LM: '0',
