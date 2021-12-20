@@ -10,6 +10,7 @@ fn(state => {
       other_dct: 'other',
       other_challenge: 'other',
       kobo: 'kobo_form',
+      other_dmh: 'other',
     };
 
     if (Object.keys(replacements).includes(value)) return replacements[value];
@@ -591,7 +592,7 @@ each(
             WCSPROGRAMS_DataAssistanceID: await findValue({
               relation: 'WCSPROGRAMS_DataAssistance',
               uuid: 'WCSPROGRAMS_DataAssistanceID',
-              where: { WCSPROGRAMS_DataAssistanceExtCode: dmh },
+              where: { WCSPROGRAMS_DataAssistanceExtCode: cleanValue(dmh) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
