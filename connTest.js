@@ -6,8 +6,9 @@
 // });
 
 sql({
-  query: `INSERT INTO WCSPROGRAMS_DataSetSurveyType (WCSPROGRAMS_DataSetSurveyTypeName, WCSPROGRAMS_DataSetSurveyTypeExtCode)
-VALUES ('Line transect survey', 'line_transect_survey');
+  query: `INSERT INTO WCSPROGRAMS_DataSetSurveyType (WCSPROGRAMS_DataSetSurveyTypeName, WCSPROGRAMS_DataSetSurveyTypeExtCode, 
+  UserID_CR, UserID_LM)
+VALUES ('Line transect survey', 'line_transect_survey', '0', '0');
 `,
 });
 
