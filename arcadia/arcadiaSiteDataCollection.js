@@ -516,6 +516,8 @@ each(
     if (dataset['datasets/challenge']) {
       const dataChallenges = dataset['datasets/challenge'].split(' ');
 
+      console.log('dataChallenges', dataChallenges);
+
       return sql({
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
@@ -531,6 +533,7 @@ each(
         const mappedArray = [];
 
         for (dc in dataChallenges) {
+          console.log('dc', dc);
           mappedArray.push({
             DatasetUuidId: body._id + dc,
             AnswerId: body._id,
