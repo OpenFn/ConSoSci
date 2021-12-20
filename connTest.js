@@ -7,9 +7,14 @@
 
 sql({
 query:
-`select COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_COLUMN_NAME
-from information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_NAME='WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType'`
+`Select C.*, (Select definition From sys.default_constraints Where object_id = C.object_id) As dk_definition,
+(Select definition From sys.check_constraints Where object_id = C.object_id) As ck_definition,
+(Select name From sys.objects Where object_id = D.referenced_object_id) As fk_table,
+(Select name From sys.columns Where column_id = D.parent_column_id And object_id = D.parent_object_id) As fk_col
+From sys.objects As C
+Left Join (Select * From sys.foreign_key_columns) As D On D.constraint_object_id = C.object_id 
+Where C.parent_object_id = (Select object_id From sys.objects Where type = 'U'
+And name = 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType');`
 });
 
 // sql({
