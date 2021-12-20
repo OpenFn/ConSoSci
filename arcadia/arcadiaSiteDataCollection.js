@@ -440,7 +440,7 @@ each(
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
-          mappedArray
+          () => mappedArray
         )(state);
       });
     }
@@ -490,7 +490,7 @@ each(
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
-          mappedArray
+          () => mappedArray
         )(state);
       });
     }
