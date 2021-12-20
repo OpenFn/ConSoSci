@@ -101,7 +101,7 @@ fn(async state => {
 
     for (let survey of surveyPlanned001Array) {
       mapping.push({
-        DatasetUuidId: body._id,
+        DatasetUuidId: body._id + survey,
         WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
           relation: 'WCSPROGRAMS_DataSetSurveyType',
           uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
