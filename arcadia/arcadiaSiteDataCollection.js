@@ -10,14 +10,23 @@ fn(state => {
       other_dct: 'other',
       other_challenge: 'other',
       kobo: 'kobo_form',
-      other_dmh: 'other',
+      'other': 'other_dmh',
     };
+    
+    if (Object.keys(replacements).includes(value)) return replacements[value];
+    return value;
+  };
+    
+    const cleanValueDmh = value => {
+      const replacements = {
+        other: 'other_dmh',
+      };
 
     if (Object.keys(replacements).includes(value)) return replacements[value];
     return value;
   };
 
-  return { ...state, body, cleanValue };
+  return { ...state, body, cleanValue, cleanValueDmh };
 });
 
 //1. For every Kobo form, upsert 1 ProjectAnnualDataPlan
