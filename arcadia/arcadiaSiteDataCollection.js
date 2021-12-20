@@ -542,7 +542,7 @@ each(
             WCSPROGRAMS_DataChallengeID: await findValue({
               relation: 'WCSPROGRAMS_DataChallenge',
               uuid: 'WCSPROGRAMS_DataChallengeID',
-              where: { WCSPROGRAMS_DataChallengeExtCode: dc },
+              where: { WCSPROGRAMS_DataChallengeExtCode: cleanValue(dc) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
