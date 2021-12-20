@@ -431,7 +431,11 @@ each(
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
                 IsForManage: 1,
-                WCSPROGRAMS_DataToolID: cleanValue(dmt), //fk
+                WCSPROGRAMS_DataToolID: await findValue({
+                  relation: 'WCSPROGRAMS_DataTool',
+                  uuid: 'WCSPROGRAMS_DataToolID',
+                  where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
+                })(state),
                 //TODO: Update UserID_CR mappings
                 UserID_CR: '0',
                 UserID_LM: '0',
@@ -477,7 +481,11 @@ each(
                 WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
                   response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
                 IsForAnalyze: 1,
-                WCSPROGRAMS_DataToolID: cleanValue(dat), //fk
+                WCSPROGRAMS_DataToolID: await findValue({
+                  relation: 'WCSPROGRAMS_DataTool',
+                  uuid: 'WCSPROGRAMS_DataToolID',
+                  where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
+                })(state),
                 //TODO: Update UserID_CR mappings
                 UserID_CR: '0',
                 UserID_LM: '0',
