@@ -307,7 +307,7 @@ each(
             },
           })(state),
           WCSPROGRAMS_ProjectAnnualDataPlanDataSetName:
-            dataset['datasets/dataset_name_text'],
+            dataset['datasets/dataset_name_text'] ? dataset['datasets/dataset_name_text'].substring(0,98) : dataset['datasets/dataset_name_text'],
           CollectionStartDate: dataset['datasets/data_collection_start'],
           CollectionEndDate: dataset['datasets/data_collection_end'],
           WCSPROGRAMS_DataAccessFrequencyID: await findValue({
