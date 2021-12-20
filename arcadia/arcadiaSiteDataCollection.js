@@ -516,8 +516,6 @@ each(
     if (dataset['datasets/challenge']) {
       const dataChallenges = dataset['datasets/challenge'].split(' ');
 
-      console.log('dataChallenges', dataChallenges);
-
       return sql({
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
@@ -532,8 +530,7 @@ each(
 
         const mappedArray = [];
 
-        for (dc in dataChallenges) {
-          console.log('dc', dc);
+        for (dc of dataChallenges) {
           mappedArray.push({
             DatasetUuidId: body._id + dc,
             AnswerId: body._id,
@@ -581,7 +578,7 @@ each(
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
         const mappedArray = [];
 
-        for (dmh in dataManagementHelps) {
+        for (dmh of dataManagementHelps) {
           mappedArray.push({
             DatasetUuidId: body._id + dmh,
             AnswerId: body._id,
