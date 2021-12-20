@@ -175,11 +175,11 @@ fn(state => {
             response.body['WCSPROGRAMS_ProjectAnnualDataPlanID'],
           DatasetUuidId: body._id + metric,
           AnswerId: body._id,
-          WCSPROGRAMS_CameraTrapSettingID: await findValue({
-            relation: 'WCSPROGRAMS_CameraTrapSetting',
-            uuid: 'WCSPROGRAMS_CameraTrapSettingID',
-            where: { WCSPROGRAMS_CameraTrapSettingExtCode: metric },
-          })(state),
+          // WCSPROGRAMS_CameraTrapSettingID: await findValue({
+          //   relation: 'WCSPROGRAMS_CameraTrapSetting',
+          //   uuid: 'WCSPROGRAMS_CameraTrapSettingID',
+          //   where: { WCSPROGRAMS_CameraTrapSettingExtCode: metric },
+          // })(state),
           //TODO: Update UserID_CR mappings
           UserID_CR: '0',
           UserID_LM: '0',
