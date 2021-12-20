@@ -6,8 +6,8 @@
 // });
 
 sql({
-  query: `SELECT WCSPROGRAMS_DataToolExtCode
-   FROM WCSPROGRAMS_DataTool`,
+  query: `SELECT WCSPROGRAMS_DataAssistanceExtCode
+   FROM WCSPROGRAMS_DataAssistance`,
 });
 
 
