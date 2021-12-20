@@ -6,8 +6,8 @@
 // });
 
 sql({
-  query: `SELECT WCSPROGRAMS_DataAssistanceExtCode
-   FROM WCSPROGRAMS_DataAssistance`,
+  query: `SELECT WCSPROGRAMS_DataSetSurveyTypeExtCode
+   FROM WCSPROGRAMS_DataSetSurveyType`,
 });
 
 
