@@ -8,6 +8,7 @@ fn(state => {
       other_dat: 'other',
       other_dmt: 'other',
       other_dct: 'other',
+      other_challenge: 'other',
     };
 
     if (Object.keys(replacements).includes(value)) return replacements[value];
