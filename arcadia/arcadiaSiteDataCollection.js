@@ -11,7 +11,6 @@ fn(state => {
       other_dmh: 'other',
       other_challenge: 'other',
       kobo: 'kobo_form',
-      'other': 'other_dmh',
     };
     
     if (Object.keys(replacements).includes(value)) return replacements[value];
