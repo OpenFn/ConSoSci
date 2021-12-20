@@ -5,6 +5,7 @@ fn(state => {
   const cleanValue = value => {
     const replacements = {
       paper: 'paper_form',
+      other_dat: 'other',
     };
 
     if (Object.keys(replacements).includes(value)) return replacements[value];
