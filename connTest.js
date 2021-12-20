@@ -6,8 +6,8 @@
 // });
 
 sql({
-  query: `SELECT WCSPROGRAMS_VegetationSoilDescriptionName
-   FROM WCSPROGRAMS_VegetationSoilDescription`,
+  query: `SELECT WCSPROGRAMS_DataToolExtCode
+   FROM WCSPROGRAMS_DataTool`,
 });
 
 
