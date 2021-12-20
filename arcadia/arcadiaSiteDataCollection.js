@@ -588,7 +588,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(async state => {
-        const { response, cleanValue } = state;
+        const { response, cleanValueDmh } = state;
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
         const mappedArray = [];
 
@@ -601,7 +601,7 @@ each(
             WCSPROGRAMS_DataAssistanceID: await findValue({
               relation: 'WCSPROGRAMS_DataAssistance',
               uuid: 'WCSPROGRAMS_DataAssistanceID',
-              where: { WCSPROGRAMS_DataAssistanceExtCode: cleanValue(dmh) },
+              where: { WCSPROGRAMS_DataAssistanceExtCode: cleanValueDmh(dmh) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
