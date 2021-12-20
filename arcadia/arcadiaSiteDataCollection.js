@@ -47,7 +47,7 @@ upsert(
       dataValue('body.respondent_role') === 'other'
         ? dataValue('body.respondent_role_other')
         : dataValue('body.respondent_role'),
-    WCSPROGRAMS_ProjectID: dataValue('body.swm_site'),
+    WCSPROGRAMS_ProjectID: dataValue('body.swm_site')==='other' ? '590' : dataValue('body.swm_site') ,
   },
   {
     setNull: ["''", "'undefined'"],
