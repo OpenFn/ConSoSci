@@ -232,11 +232,11 @@ fn(state => {
             response.body['WCSPROGRAMS_ProjectAnnualDataPlanID'],
           DatasetUuidId: body._id + estimation,
           AnswerId: body._id,
-          WCSPROGRAMS_CameraTrapSettingID: await findValue({
-            relation: 'WCSPROGRAMS_CameraTrapSetting',
-            uuid: 'WCSPROGRAMS_CameraTrapSettingID',
-            where: { WCSPROGRAMS_CameraTrapSettingExtCode: estimation },
-          })(state),
+          // WCSPROGRAMS_CameraTrapSettingID: await findValue({
+          //   relation: 'WCSPROGRAMS_CameraTrapSetting',
+          //   uuid: 'WCSPROGRAMS_CameraTrapSettingID',
+          //   where: { WCSPROGRAMS_CameraTrapSettingExtCode: estimation },
+          // })(state),
           //TODO: Update UserID_CR mappings
           UserID_CR: '0',
           UserID_LM: '0',
