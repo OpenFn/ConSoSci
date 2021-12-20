@@ -521,28 +521,36 @@ each(
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
-      })(state).then(state => {
+      })(state).then(async state => {
         const { response } = state;
         //3.4. Upsert many ProjectAnnualDataPlanDataSetDataChallenge records to log each dataset's related dataChallenge
         console.log(
           'Upserting data management WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge... '
         );
+
+        const mappedArray = [];
+
+        for (dc in dataChallenges) {
+          mappedArray.push({
+            DatasetUuidId: body._id + dc,
+            AnswerId: body._id,
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
+            WCSPROGRAMS_DataChallengeID: await findValue({
+              relation: 'WCSPROGRAMS_DataChallenge',
+              uuid: 'WCSPROGRAMS_DataChallengeID',
+              where: { WCSPROGRAMS_DataChallengeExtCode: dc },
+            })(state),
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          });
+        }
+
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataChallenge',
           'DatasetUuidId',
-          state =>
-            dataChallenges.map(dc => {
-              return {
-                DatasetUuidId: body._id + dc,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
-                WCSPROGRAMS_DataChallengeID: state.dataChallengeMap[dc], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
+          () => mappedArray
         )(state);
       });
     }
@@ -565,25 +573,32 @@ each(
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
-      })(state).then(state => {
+      })(state).then(async state => {
         const { response } = state;
         //3.5. Upsert many ProjectAnnualDataPlanDataSetDataAssistance records to log each dataset's related dataAssistance
+        const mappedArray = [];
+
+        for (dmh in dataManagementHelps) {
+          mappedArray.push({
+            DatasetUuidId: body._id + dmh,
+            AnswerId: body._id,
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
+            WCSPROGRAMS_DataAssistanceID: await findValue({
+              relation: 'WCSPROGRAMS_DataAssistance',
+              uuid: 'WCSPROGRAMS_DataAssistanceID',
+              where: { WCSPROGRAMS_DataAssistanceExtCode: dmh },
+            })(state),
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          });
+        }
+
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataAssistance',
           'DatasetUuidId',
-          state =>
-            dataManagementHelps.map(dmh => {
-              return {
-                DatasetUuidId: body._id + dmh,
-                AnswerId: body._id,
-                WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
-                  response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
-                WCSPROGRAMS_DataAssistanceID: state.dataAssistanceMap[dmh], //fk
-                //TODO: Update UserID_CR mappings
-                UserID_CR: '0',
-                UserID_LM: '0',
-              };
-            })
+          () => mappedArray
         )(state);
       });
     }
