@@ -477,7 +477,7 @@ each(
 
         const mappedArray = [];
 
-        for (dat of dataCollectionTools) {
+        for (dat of dataAnalysisTools) {
           mappedArray.push({
             DatasetUuidId: body._id + dat,
             AnswerId: body._id,
