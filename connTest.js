@@ -23,8 +23,8 @@
 
 sql({
   query: `INSERT INTO WCSPROGRAMS_DataTool (WCSPROGRAMS_DataToolName, WCSPROGRAMS_DataToolExtCode, 
-  UserID_CR, UserID_LM)
-VALUES ('Audio video interview', 'audio_video_interview', '0', '0');
+  UserID_CR, UserID_LM, IsForCollect)
+VALUES ('Audio video interview', 'audio_video_interview', '0', '0', '0');
 `,
 });
 
