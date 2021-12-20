@@ -413,7 +413,7 @@ each(
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
-      })(state).then(async state => {
+      })(state).then(state => {
         const { response, cleanValue } = state;
         //1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.2. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_management_tools
@@ -423,7 +423,7 @@ each(
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
-          state =>
+          async state =>
             dataManagementTools.map(dmt => {
               return {
                 DatasetUuidId: body.id + dmt,
@@ -463,7 +463,7 @@ each(
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
-      })(state).then(async state => {
+      })(state).then(state => {
         const { response, cleanValue } = state;
         //NOTE: 1 data tool in the dataToolsMap (e.g., Excel) might be used collection, management, AND/OR analysis --> potentially all 3 uses
         //3.3. Upsert many ProjectAnnualDataPlanDataSetDataTool records to log each dataset's related data_analysis_tools
@@ -473,7 +473,7 @@ each(
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
-          state =>
+          async state =>
             dataAnalysisTools.map(dat => {
               return {
                 DatasetUuidId: body._id + dat,
