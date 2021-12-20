@@ -6,11 +6,17 @@
 // });
 
 sql({
-  query: `INSERT INTO WCSPROGRAMS_DataSetSurveyType (WCSPROGRAMS_DataSetSurveyTypeName, WCSPROGRAMS_DataSetSurveyTypeExtCode, 
-  UserID_CR, UserID_LM)
-VALUES ('Fisheries assessment', 'fisheries_assessment', '0', '0');
-`,
+query:
+`SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+WHERE TABLE_NAME='WCSPROGRAMS_ProjectAnnualDataPlanDataSetSurveyType'`
 });
+
+// sql({
+//   query: `INSERT INTO WCSPROGRAMS_DataSetSurveyType (WCSPROGRAMS_DataSetSurveyTypeName, WCSPROGRAMS_DataSetSurveyTypeExtCode, 
+//   UserID_CR, UserID_LM)
+// VALUES ('Line transect survey', 'line_transect_survey', '0', '0');
+// `,
+// });
 
 
 
