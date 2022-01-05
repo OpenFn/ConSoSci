@@ -650,7 +650,7 @@ each(
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID: await findValue({
               relation: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
               uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID',
-              where: { WCSPROGRAMS_DataAssistanceExtCode: cleanValueDmh(dmh) },
+              where: { WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeExtCode: cleanValueDmh(dmh) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
