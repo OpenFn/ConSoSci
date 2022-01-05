@@ -619,3 +619,52 @@ each(
     return state;
   })
 );
+
+///------ New mapping added by Diane on Janyart 5th for the select_multiple question on open_access_challenges
+each(
+  state => state.body.datasets,
+  fn(state => {
+    const dataset = state.data;
+    const { body } = state;
+
+    if (dataset['datasets/open_access_challenges']) {
+      const OpenAccessChallenges =
+        dataset['datasets/open_access_challenges'].split(' ');
+
+      return sql({
+        query: `
+        SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
+        FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
+        WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
+      })(state).then(async state => {
+        const { response, cleanValueDmh } = state;
+        //3.6. Upsert many WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge records to log each dataset's related OpenAccessChallenge
+        const mappedArray = [];
+
+        for (dmh of OpenAccessChallenges) {
+          mappedArray.push({
+            DatasetUuidId: body._id + dmh,
+            AnswerId: body._id,
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
+              response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
+            WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID: await findValue({
+              relation: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
+              uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID',
+              where: { WCSPROGRAMS_DataAssistanceExtCode: cleanValueDmh(dmh) },
+            })(state),
+            //TODO: Update UserID_CR mappings
+            UserID_CR: '0',
+            UserID_LM: '0',
+          });
+        }
+
+        return upsertMany(
+          'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
+          'DatasetUuidId',
+          () => mappedArray
+        )(state);
+      });
+    }
+    return state;
+  })
+);
