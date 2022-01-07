@@ -637,7 +637,7 @@ each(
         FROM WCSPROGRAMS_ProjectAnnualDataPlanDataSet
         WHERE DatasetUuidId = '${body._id}${dataset['datasets/survey_type']}'`,
       })(state).then(async state => {
-        const { response, cleanValueDmh } = state;
+        const { response, cleanValue } = state;
         //3.6. Upsert many WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge records to log each dataset's related OpenAccessChallenge
         const mappedArray = [];
 
