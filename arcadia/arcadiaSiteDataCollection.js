@@ -641,16 +641,16 @@ each(
         //3.6. Upsert many WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge records to log each dataset's related OpenAccessChallenge
         const mappedArray = [];
 
-        for (dmh of OpenAccessChallenges) {
+        for (oac of OpenAccessChallenges) {
           mappedArray.push({
-            DatasetUuidId: body._id + dmh,
+            DatasetUuidId: body._id + oac,
             AnswerId: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID: await findValue({
               relation: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
               uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID',
-              where: { WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeExtCode: cleanValueDmh(dmh) },
+              where: { WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeExtCode: cleanValueDmh(oac) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
