@@ -643,7 +643,7 @@ each(
 
         for (oac of OpenAccessChallenges) {
           mappedArray.push({
-            DatasetUuidId: body._id + oac,
+            DataSetUUIDId: body._id + oac,
             AnswerId: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
@@ -660,7 +660,7 @@ each(
 
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
-          'DatasetUuidId',
+          'DataSetUUIDId',
           () => mappedArray
         )(state);
       });
