@@ -644,7 +644,7 @@ each(
         for (oac of OpenAccessChallenges) {
           mappedArray.push({
             DataSetUUIDId: body._id + oac,
-            AnswerId: body._id,
+            //AnswerId: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID: await findValue({
