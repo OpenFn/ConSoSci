@@ -647,10 +647,10 @@ each(
             AnswerID: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
-            WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID: await findValue({
-              relation: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallenge',
-              uuid: 'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeID',
-              where: { WCSPROGRAMS_ProjectAnnualDataPlanDataSetDatasetOpenAccessChallengeExtCode: cleanValue(oac) },
+            WCSPROGRAMS_DataSetOpenAccessChallengeID: await findValue({
+              relation: 'WCSPROGRAMS_DataSetOpenAccessChallenge',
+              uuid: 'WCSPROGRAMS_DataSetOpenAccessChallengeID',
+              where: { WCSPROGRAMS_DataSetOpenAccessChallengeExtCode: cleanValue(oac) },
             })(state),
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
