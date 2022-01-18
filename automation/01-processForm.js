@@ -159,7 +159,7 @@ get(`${state.data.url}`, {}, state => {
       path = [];
     } else {
       let parent = arr.find(question => question.name === arr[i - 1].path[0]);
-      if (parent.type === 'begin_group') {
+      if (parent && parent.type === 'begin_group') {
         path = [[arr[i - 1].path, question.name].join('/')];
       } else {
         path = i === 0 ? [] : [...arr[i - 1].path, question.name];
