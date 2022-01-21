@@ -9,6 +9,13 @@ alterState(state => {
   const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
+      {
+      uid: 'aEQjRDMcEgLzRDQYcFqSCC',
+      formName: 'SSMT GRM Intake Form Template',
+      tableId: 'WCSPROGRAMS_SSMT',
+    },
+      
+      
     //==== ARCADIA ===============//
     {
       uid: 'aDgPJqN4SAYohZ4ZueEeYU',
