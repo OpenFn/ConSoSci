@@ -6,7 +6,7 @@ alterState(state => {
 
   // IF YOU CLEAR STATE...
   // Set this manual cursor to the earliest submission date you want fetch.
-  const manualCursor = '022-01-21T05:32:43.325+01:00';
+  const manualCursor = '22-01-21T05:32:43.325+01:00';
   //const manualCursor = '2017-05-01T14:32:43.325+01:00';
   state.data = {
     surveys: [
