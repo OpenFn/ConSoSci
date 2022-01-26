@@ -5,8 +5,8 @@ upsertTask('1201382240883590', {
     name: 'Joseph test task2',
     projects: ['1201382240883590'],  //WCS project gid
     created_at: dataValue('body.start'),
-    completed_at: state.data.body.end,
-    notes: state.data.bodyFormatReport,
+    completed_at: dataValue('body.end'),
+    notes: dataValue('body.ReporterFullName'),
   
     
   },
@@ -22,8 +22,8 @@ state => {
 updateTask('1201687476823315', {   //my task_gid
   name: 'Joseph test task2',
   custom_fields: {
-      '1200603908440348': state.data.body.GrievanceOrSuggestion,   //GrievanceOrSuggestion
-      '1192836094355010': state.data.body.FormatReport           //Grievance Report Format
+      '1200603908440348': dataValue('body.GrievanceOrSuggestion'),   //GrievanceOrSuggestion
+      '1192836094355010': dataValue('body.FormatReport')           //Grievance Report Format
   },
   
   
