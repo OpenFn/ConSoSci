@@ -11,7 +11,7 @@ fn(state => {   //Mapping table to map Kobo fields to Asana custom_fields gids
     Suggestion: '1200603908441454',
     //Region: '1187328718760755',
 Global: '1200158315275974',
-Andes,Amazon,Orinoco: '1187328718760756',
+//Andes,Amazon,Orinoco: '1187328718760756',            //Variable name must be modified
 ArcticBeringia: '1187328718760757',
 Boreal: '1187328718760758',
 CentralAfricaAndGulfOfGuinea: '1187328718760759',
@@ -24,7 +24,7 @@ Patagonia: '1187850790401228',
 RockyMountainsWest: '1187850790401229',
 SouthAsiaAndBayOfBengal: '1187850790401230',
 SoutheastAsiaArchipelago: '1187850790401231',
-//Sudano-Sahel: '1187850790401232',            //Variable name must be changed.    
+//Sudano-Sahel: '1187850790401232',            //Variable name must be modified.    
 
 //Country: '1187466717116801',
 AllCountryPrograms: '1200158353214078',
@@ -54,7 +54,7 @@ Gabon: '1187842971453067',
 Guatemala: '1187842971453069',
 India: '1187842971453070',
 Indonesia: '1187842971453071',
-//IslasMalvinas/FalklandIslands: '1187842971453072',       // Variable name must changed
+//IslasMalvinas/FalklandIslands: '1187842971453072',       // Variable name must modified
 Kenya: '1187842971453073',
 LaoPdr: '1187842971453074',
 Madagascar: '1187842971453075',
