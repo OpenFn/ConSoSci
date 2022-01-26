@@ -4,7 +4,7 @@ upsertTask('1201382240883590', {
     gid: '1201687476823315',
     name: 'Joseph test task2',
     projects: ['1201382240883590'],  //WCS project gid
-    created_at: state.data.body.start,
+    created_at: dataValue('body.start'),
     completed_at: state.data.body.end,
     notes: state.data.bodyFormatReport,
   
