@@ -29,8 +29,10 @@ upsertTask(
       custom_fields: {
         /*'1200603908440348': dataValue('body.GrievanceOrSuggestion'), */ //GrievanceOrSuggestion
         // 1192836094355010: '1192836094355011', //Grievance Report Format
-        1192836094355010: state =>
+          1192836094355010: state =>
           state.formatMapping[dataValue('body.ReportFormat')(state)],
+          1200603908440348: state =>
+          state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
       },
     },
   },
