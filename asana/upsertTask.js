@@ -23,8 +23,8 @@ updateTask('1201687476823315', {   //my tsdk_gid
   approval_status: 'pending',
   assignee: '12345',
   custom_fields: {
-      '1200603908440348': 'Not Started',   //GrievanceOrSuggestion
-      '1192836094355010': 'On Hold'           //Grievance Report Format
+      '1200603908440348': state.data.GrievanceOrSuggestion,   //GrievanceOrSuggestion
+      '1192836094355010': state.data.FormatReport           //Grievance Report Format
   },
   
   
