@@ -110,6 +110,8 @@ upsertTask(
           state.formatMapping[dataValue('body.ReportFormat')(state)],
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
+          1187328718760755: state =>
+          state.formatMapping[dataValue('body.Region')(state)],
       },
     },
   },
