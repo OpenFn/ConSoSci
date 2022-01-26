@@ -5,7 +5,7 @@ upsertTask('1201382240883590', {
     projects: ['1201382240883590'],  //WCS project gid
     created_at: state.data.start,
     completed_at: state.data.end,
-    notes: state.data.ReporterFullName,
+    notes: 'reported by Aleksa in Kobo',
   
     
   },
