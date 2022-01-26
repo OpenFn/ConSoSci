@@ -1,10 +1,15 @@
 fn(state => {   //Mapping table to map Kobo fields to Asana custom_fields gids
   const formatMapping = {
+    //ReportFormat - gid 1192836094355010
     InPerson: '1192836094355011',
     VoiceCall: '1192836094355012',
     TextMessage: '1192847692374160',
     Email: '1192847692376214',
     PostalLetter: '1192847692376223',
+    //GrievanceOrSuggestion - gid 1200603908440348
+    Grievance: '1200603908441383',
+    Suggestion: '1200603908441454',
+    
   };
 
   return { ...state, formatMapping };
