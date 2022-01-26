@@ -18,10 +18,8 @@ state => {
 
 );
 
-updateTask('1201687476823315', {   //my tsdk_gid
-  name: 'test',
-  approval_status: 'pending',
-  assignee: '12345',
+updateTask('1201687476823315', {   //my task_gid
+  name: 'Joseph test task2',
   custom_fields: {
       '1200603908440348': state.data.GrievanceOrSuggestion,   //GrievanceOrSuggestion
       '1192836094355010': state.data.FormatReport           //Grievance Report Format
