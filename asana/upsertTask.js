@@ -7,6 +7,10 @@ upsertTask('1201382240883590', {
     /*created_at: dataValue('body.start'),
     completed_at: dataValue('body.end'),*/
     notes: dataValue('body.ReporterFullName'),
+    custom_fields: {
+      '1200603908440348': dataValue('body.GrievanceOrSuggestion'),   //GrievanceOrSuggestion
+      '1192836094355010': dataValue('body.FormatReport'),           //Grievance Report Format
+  },
     
   
     
