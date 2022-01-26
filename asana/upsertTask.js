@@ -18,7 +18,7 @@ state => {
 
 );
 
-updateTask('1201382240883590/1201687476823315', {   //my task_gid
+updateTask('1201687476823315', {   //my task_gid
   name: 'Joseph test task2',
   custom_fields: {
       '1200603908440348': state.data.GrievanceOrSuggestion,   //GrievanceOrSuggestion
