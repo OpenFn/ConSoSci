@@ -1,4 +1,4 @@
-fn(state => {
+fn(state => {   //Mapping table to map Kobo fields to Asana custom_fields gids
   const formatMapping = {
     InPerson: '1192836094355011',
   };
