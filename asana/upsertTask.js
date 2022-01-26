@@ -19,11 +19,11 @@ state => {
 
 );
 
-/*updateTask('1201687476823315', {   //my task_gid
+updateTask('1201687476823315', {   //my task_gid
   name: 'Joseph test task2',
   custom_fields: {
-      '1200603908440348': state.data.GrievanceOrSuggestion,   //GrievanceOrSuggestion
-      '1192836094355010': state.data.FormatReport           //Grievance Report Format
+      '1200603908440348': state.data.body.GrievanceOrSuggestion,   //GrievanceOrSuggestion
+      '1192836094355010': state.data.body.FormatReport           //Grievance Report Format
   },
   
   
@@ -34,4 +34,4 @@ state => {
   }
 
 
-);*/
+);
