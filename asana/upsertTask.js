@@ -2,7 +2,7 @@ upsertTask('1201382240883590', {
   externalId: 'gid', //Per the docs, I think here we put the Asana external Id field name (e.g., 'gid')
   data: {
     gid: '1201687476823315',
-    name: 'Joseph test task2',
+    name: 'Joseph test task 2',
     projects: ['1201382240883590'],  //WCS project gid
     created_at: dataValue('body.start'),
     completed_at: dataValue('body.end'),
@@ -18,7 +18,7 @@ state => {
   }
 
 );
-
+/*
 updateTask('1201687476823315', {   //my task_gid
   name: 'Joseph test task2',
   custom_fields: {
@@ -34,4 +34,4 @@ state => {
   }
 
 
-);
+);*/
