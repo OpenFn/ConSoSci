@@ -4,8 +4,8 @@ upsertTask('1201382240883590', {
     gid: '1201687476823315',
     name: 'Joseph test task 2',
     projects: ['1201382240883590'],  //WCS project gid
-    created_at: dataValue('body.start'),
-    completed_at: dataValue('body.end'),
+    /*created_at: dataValue('body.start'),
+    completed_at: dataValue('body.end'),*/
     notes: dataValue('body.ReporterFullName'),
     
   
