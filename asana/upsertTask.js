@@ -28,4 +28,11 @@ updateTask('1201687476823315', {   //my tsdk_gid
   },
   
   
-});
+},
+state => {
+    console.log(JSON.stringify(state.data, null, 2 )); //log data
+    return state;
+  }
+
+
+);
