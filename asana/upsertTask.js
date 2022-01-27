@@ -98,7 +98,7 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
 upsertTask(
   '1201382240883590',
   {
-    externalId: 'name', // Asana external Id field name (e.g., 'gid')
+    externalId: "name", // Asana external Id field name (e.g., 'gid')
     data: {
       /*gid: dataValue('body._id'),*/
       name: state =>
