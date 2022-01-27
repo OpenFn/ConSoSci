@@ -98,11 +98,11 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
 upsertTask(
   '1201382240883590',
   {
-    externalId: 'gid', // Asana external Id field name (e.g., 'gid')
+    externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
       gid: dataValue('body._id'),
       name: state =>
-        `${dataValue('formName')(state)} changed string ${dataValue(
+        `${dataValue('formName')(state)} changed2 string ${dataValue(
           'body.GrievanceID'
         )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
