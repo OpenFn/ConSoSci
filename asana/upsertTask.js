@@ -1,4 +1,6 @@
 
+
+
 fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
@@ -96,10 +98,10 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
 upsertTask(
   '1201382240883590',
   {
-    externalId: 'gid', // Asana external Id field name (e.g., 'gid')
+    externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
-      gid: '1201687476823315',
-      name: 'Joseph test task 2',
+      /*gid: '1201687476823315',*/
+      name: dataValue('body.formName'), 
       projects: ['1201382240883590'], //WCS project gid
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
