@@ -111,7 +111,7 @@ upsertTask(
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
           1187328718760755: state =>
-          state.formatMapping[dataValue('body.RegionProgram')(state)],
+          state.formatMapping[dataValue('body.RegionalProgram')(state)],
           1187466717116801: state =>
           state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly defined as 'Singapore' in Asana
       },
