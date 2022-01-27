@@ -101,7 +101,7 @@ upsertTask(
       gid: '1201687476823315',
       name: 'Joseph test task 2',
       projects: ['1201382240883590'], //WCS project gid
-      notes: [dataValue('body.ReporterFullName'), dataValue('body.StaffName')],
+      notes: dataValue('body.ReporterFullName') + dataValue('body.StaffName'),
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
