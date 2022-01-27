@@ -103,6 +103,8 @@ upsertTask(
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
+          '1201382335160256': dataValue('body.WhenGrievance'),  //Mapped to Grievance Date in Asana
+          '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
 
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
@@ -112,8 +114,6 @@ upsertTask(
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
           1187634487549328: state =>
           state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
-          
-          
           
           1187466717116801: state =>
           state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly defined as 'Singapore' in Asana
