@@ -101,7 +101,7 @@ upsertTask(
     externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
       /*gid: '1201687476823315',*/
-      name: dataValue('body.formName'), 
+      name: dataValue('formName'), 
       projects: ['1201382240883590'], //WCS project gid
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
