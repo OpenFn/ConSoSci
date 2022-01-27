@@ -1,4 +1,4 @@
-fn(state => {   //Mapping table to map Kobo fields to Asana custom_fields gids
+fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
     InPerson: '1192836094355011',
@@ -11,7 +11,7 @@ fn(state => {   //Mapping table to map Kobo fields to Asana custom_fields gids
     Suggestion: '1200603908441454',
     //Region: '1187328718760755',
 Global: '1200158315275974',
-'Andes,Amazon,Orinoco': '1187328718760756',            //Variable name must be modified
+'Andes,Amazon,Orinoco': '1187328718760756',            
 ArcticBeringia: '1187328718760757',
 Boreal: '1187328718760758',
 CentralAfricaAndGulfOfGuinea: '1187328718760759',
@@ -24,7 +24,7 @@ Patagonia: '1187850790401228',
 RockyMountainsWest: '1187850790401229',
 SouthAsiaAndBayOfBengal: '1187850790401230',
 SoutheastAsiaArchipelago: '1187850790401231',
-'Sudano-Sahel': '1187850790401232',            //Variable name must be modified.    
+'Sudano-Sahel': '1187850790401232',               
 
 //Country: '1187466717116801',
 AllCountryPrograms: '1200158353214078',
@@ -54,7 +54,7 @@ Gabon: '1187842971453067',
 Guatemala: '1187842971453069',
 India: '1187842971453070',
 Indonesia: '1187842971453071',
-'IslasMalvinas/FalklandIslands': '1187842971453072',       // Variable name must modified
+'IslasMalvinas/FalklandIslands': '1187842971453072',       
 Kenya: '1187842971453073',
 LaoPdr: '1187842971453074',
 Madagascar: '1187842971453075',
@@ -100,18 +100,23 @@ upsertTask(
       gid: '1201687476823315',
       name: 'Joseph test task 2',
       projects: ['1201382240883590'], //WCS project gid
-      /*created_at: dataValue('body.start'),
-    completed_at: dataValue('body.end'),*/
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
         /*'1200603908440348': dataValue('body.GrievanceOrSuggestion'), */ //GrievanceOrSuggestion
         // 1192836094355010: '1192836094355011', //Grievance Report Format
-          1192836094355010: state =>
-          state.formatMapping[dataValue('body.ReportFormat')(state)],
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
+          1201382335160251: state =>
+          state.formatMapping[dataValue('body.DateGrievanceEntered')(state)],   //Mapped to Submission Date in Asana
+          1192836094355010: state =>
+          state.formatMapping[dataValue('body.ReportFormat')(state)],
           1187328718760755: state =>
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
+          1187634487549328: state =>
+          state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
+          
+          
+          
           1187466717116801: state =>
           state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly defined as 'Singapore' in Asana
       },
