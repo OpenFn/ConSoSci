@@ -1,3 +1,4 @@
+
 fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
@@ -100,7 +101,7 @@ upsertTask(
       gid: '1201687476823315',
       name: 'Joseph test task 2',
       projects: ['1201382240883590'], //WCS project gid
-      notes: dataValue('body.ReporterFullName'),
+      notes: [dataValue('body.ReporterFullName'), dataValue('body.GrievanceAgainst')],
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
