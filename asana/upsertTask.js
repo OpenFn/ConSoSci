@@ -102,12 +102,10 @@ upsertTask(
       projects: ['1201382240883590'], //WCS project gid
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
-        /*'1200603908440348': dataValue('body.GrievanceOrSuggestion'), */ //GrievanceOrSuggestion
-        // 1192836094355010: '1192836094355011', //Grievance Report Format
+          '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
+
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
-          1201382335160251: state =>
-          state.formatMapping[dataValue('body.DateGrievanceEntered')(state)],   //Mapped to Submission Date in Asana
           1192836094355010: state =>
           state.formatMapping[dataValue('body.ReportFormat')(state)],
           1187328718760755: state =>
