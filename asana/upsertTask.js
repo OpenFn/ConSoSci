@@ -100,9 +100,9 @@ upsertTask(
   {
     externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
-      gid: dataValue('body._id'),
+      /*gid: dataValue('body._id'),*/
       name: state =>
-        `${dataValue('formName')(state)} changed2 string ${dataValue(
+        `${dataValue('formName')(state)} changed3 string ${dataValue(
           'body.GrievanceID'
         )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
