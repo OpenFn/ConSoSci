@@ -102,12 +102,12 @@ upsertTask(
     data: {
       gid: dataValue('body._id'),
       name: state =>
-        `${dataValue('formName')(state)} some string ${dataValue(
+        `${dataValue('formName')(state)} changed string ${dataValue(
           'body.GrievanceID'
         )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
       notes: state =>
-        `${dataValue('formName')(state)} some string ${dataValue('body.ReportFormat')(state)}`,
+        `${dataValue('formName')(state)} submitted via ${dataValue('body.ReportFormat')(state)} by ${dataValue('body.ReporterFullName')(state)}`,
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
