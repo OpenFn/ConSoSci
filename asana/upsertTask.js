@@ -1,7 +1,5 @@
-
-
-
-fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
+fn(state => {
+  //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
     InPerson: '1192836094355011',
@@ -14,7 +12,7 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     Suggestion: '1200603908441454',
     //Region: '1187328718760755',
     Global: '1200158315275974',
-    'Andes,Amazon,Orinoco': '1187328718760756',            
+    'Andes,Amazon,Orinoco': '1187328718760756',
     ArcticBeringia: '1187328718760757',
     Boreal: '1187328718760758',
     CentralAfricaAndGulfOfGuinea: '1187328718760759',
@@ -27,8 +25,8 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     RockyMountainsWest: '1187850790401229',
     SouthAsiaAndBayOfBengal: '1187850790401230',
     SoutheastAsiaArchipelago: '1187850790401231',
-    'Sudano-Sahel': '1187850790401232',               
-    
+    'Sudano-Sahel': '1187850790401232',
+
     //Country: '1187466717116801',
     AllCountryPrograms: '1200158353214078',
     Afghanistan: '1187466717116802',
@@ -57,7 +55,7 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     Guatemala: '1187842971453069',
     India: '1187842971453070',
     Indonesia: '1187842971453071',
-    'IslasMalvinas/FalklandIslands': '1187842971453072',       
+    'IslasMalvinas/FalklandIslands': '1187842971453072',
     Kenya: '1187842971453073',
     LaoPdr: '1187842971453074',
     Madagascar: '1187842971453075',
@@ -82,14 +80,13 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     UnitedStatesOfAmerica: '1187842971453096',
     Zanzibar: '1196351192285314',
     Singapore: '1201527559680033',
-    
+
     //GrievanceAgainst: '1187634487549328',
     Wcs: '1187634487549329',
     GovernmentPartner: '1187634487549330',
     PrivateSectorPartner: '1187634487549331',
     CivilSocietyPartner: '1187634487549332',
     NotWcsAndNotAWcsPartner: '1187634487549333',
-    
   };
 
   return { ...state, formatMapping };
@@ -101,25 +98,28 @@ upsertTask(
     externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
       /*gid: '1201687476823315',*/
-      name: `${dataValue('.formName')} some string ${dataValue('body.GrievanceID')}`,
+      name: state =>
+        `${dataValue('formName')(state)} some string ${dataValue(
+          'body.GrievanceID'
+        )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
-          '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
-          '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
-          '1201382335160256': dataValue('body.WhenGrievance'),  //Mapped to Grievance Date in Asana
-         /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
-          1200603908440348: state =>
+        1201382335160247: dataValue('body.OneDriveFolder'), //Mapped to Grievance OneDrive Folder in Asana
+        1201382335160251: dataValue('body.DateGrievanceEntered'), //Mapped to Submission Date in Asana
+        1201382335160256: dataValue('body.WhenGrievance'), //Mapped to Grievance Date in Asana
+        /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
+        1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
-          1192836094355010: state =>
+        1192836094355010: state =>
           state.formatMapping[dataValue('body.ReportFormat')(state)],
-          1187328718760755: state =>
+        1187328718760755: state =>
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
-          1187634487549328: state =>
+        1187634487549328: state =>
           state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
-          
-          1187466717116801: state =>
-          state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly labelled as 'Singapore' in Asana
+
+        1187466717116801: state =>
+          state.formatMapping[dataValue('body.Country')(state)], // 'Country' wrongly labelled as 'Singapore' in Asana
       },
     },
   },
