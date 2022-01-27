@@ -102,9 +102,11 @@ upsertTask(
       projects: ['1201382240883590'], //WCS project gid
       notes: dataValue('body.ReporterFullName'),
       custom_fields: {
+          '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
           '1201382335160256': dataValue('body.WhenGrievance'),  //Mapped to Grievance Date in Asana
-          '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
+         /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
+          
 
           1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
