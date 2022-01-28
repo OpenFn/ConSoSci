@@ -241,6 +241,7 @@ each(
         GeneratedUuid: x['__generatedUuid'],
       });
     }
+      console.log(mappingSales);
     return upsertMany(
       'WCSPROGRAMS_SharksRaysSales',
       'GeneratedUuid',
@@ -288,6 +289,7 @@ alterState(async state => {
       GeneratedUuid: x['__generatedUuid'],
     });
   }
+    console.log(mappingVendor);
   return upsertMany(
     'WCSPROGRAMS_SharksRaysVendor',
     'GeneratedUuid',
@@ -313,6 +315,7 @@ each(
           GeneratedUuid: x['__generatedUuid'],
         });
       }
+        console.log(mappingSample);
       return upsertMany(
         'WCSPROGRAMS_SharksRaysSample',
         'GeneratedUuid',
@@ -348,6 +351,7 @@ each(
         GeneratedUuid: x['__generatedUuid'],
       });
     }
+      console.log(mappingFish);
     return upsertMany(
       'WCSPROGRAMS_SharksRaysFishCatch',
       'GeneratedUuid',
@@ -449,6 +453,7 @@ each(
         GeneratedUuid: x['__generatedUuid'],
       });
     }
+      console.log(mappingDetails);
     return upsertMany(
       'WCSPROGRAMS_SharksRaysCatchDetails',
       'GeneratedUuid',
@@ -577,6 +582,7 @@ alterState(async state => {
       GeneratedUuid: x['__generatedUuid'],
     });
   }
+    console.log(mappingBoat);
   return upsertMany(
     'WCSPROGRAMS_SharksRaysBoat',
     'GeneratedUuid',
@@ -606,6 +612,7 @@ each(
           SalesUuid: x['__parentUuid'],
         });
       }
+        console.log(mappingSGear);
       return upsertMany(
         'WCSPROGRAMS_SalesGear',
         'GeneratedUuid',
@@ -636,6 +643,7 @@ each(
           CatchDetailsUuid: x['__parentUuid'],
         });
       }
+        console.log(mappingGear);
       return upsertMany(
         'WCSPROGRAMS_CatchDetailsGear',
         'GeneratedUuid',
