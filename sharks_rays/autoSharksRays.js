@@ -190,26 +190,25 @@ each(
         SPic10: x['market_details/vendor/sales/s_img10/s_pic10'] || x['market_details/market_001/vendor/sales/s_img10/s_pic10'] ,
         SPic11: x['market_details/vendor/sales/s_img11/s_pic11'] || x['market_details/market_001/vendor/sales/s_img11/s_pic11'] ,
         SPic12: x['market_details/vendor/sales/s_img12/s_pic12'] || x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
-        SLocalName: x['market_details/vendor/sales/s_local_name'] || x['market_details/market_001/vendor/sales/s_local_name'] |,
+        SLocalName: x['market_details/vendor/sales/s_local_name'] || x['market_details/market_001/vendor/sales/s_local_name'],
         WCSPROGRAMS_SexID_SSex: await findValue({
           uuid: 'wcsprograms_sexid',
           relation: 'WCSPROGRAMS_sex',
           where: {
-            WCSPROGRAMS_sexExtCode: dataValue(
-              'market_details/vendor/sales/s_sex'
-            ),
+            WCSPROGRAMS_sexExtCode: 
+            dataValue('market_details/vendor/sales/s_sex')||dataValue('market_details/market_001/vendor/sales/s_sex') ,
           },
         })(state),
-        SWeight: x['market_details/vendor/sales/s_weight'],
-        SDiscWidth: x['market_details/vendor/sales/s_disc_width'],
-        SDiscLength: x['market_details/vendor/sales/s_disc_length'],
-        STotalLength: x['market_details/vendor/sales/s_total_length'],
-        SPrecaudalLength: x['market_details/vendor/sales/s_precaudal_length'],
-        SForkLength: x['market_details/vendor/sales/s_fork_length'],
-        SCarapaceLength: x['market_details/vendor/sales/s_carapace_length'],
-        SCarapaceWidth: x['market_details/vendor/sales/s_carapace_width'],
-        SGearType: x['market_details/vendor/sales/s_gear_type'],
-        SGearTypeOther: x['market_details/vendor/sales/s_gear_type_other'],
+        SWeight: x['market_details/vendor/sales/s_weight']||x['market_details/market_001/vendor/sales/s_weight'],
+        SDiscWidth: x['market_details/vendor/sales/s_disc_width']||x['market_details/market_001/vendor/sales/s_disc_width'],
+        SDiscLength: x['market_details/vendor/sales/s_disc_length']||x['market_details/market_001/vendor/sales/s_disc_length'],
+        STotalLength: x['market_details/vendor/sales/s_total_length']||x['market_details/market_001/vendor/sales/s_total_length'],
+        SPrecaudalLength: x['market_details/vendor/sales/s_precaudal_length']||x['market_details/market_001/vendor/sales/s_precaudal_length'],
+        SForkLength: x['market_details/vendor/sales/s_fork_length']||x['market_details/market_001/vendor/sales/s_fork_length'],
+        SCarapaceLength: x['market_details/vendor/sales/s_carapace_length']||x['market_details/market_001/vendor/sales/s_carapace_length'],
+        SCarapaceWidth: x['market_details/vendor/sales/s_carapace_width']||x['market_details/market_001/vendor/sales/s_carapace_width'],
+        SGearType: x['market_details/vendor/sales/s_gear_type']||x['market_details/market_001/vendor/sales/s_gear_type'],
+        SGearTypeOther: x['market_details/vendor/sales/s_gear_type_other']||x['market_details/market_001/vendor/sales/s_gear_type_other'],
         //=== Adjusted to match WCS table name
         WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected: await findValue({
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
