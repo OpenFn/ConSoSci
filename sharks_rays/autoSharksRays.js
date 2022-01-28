@@ -157,9 +157,8 @@ each(
           uuid: 'wcsprograms_genusid',
           relation: 'WCSPROGRAMS_genus',
           where: {
-            WCSPROGRAMS_genusExtCode: dataValue(
-              'market_details/vendor/sales/s_genus'
-            ),
+            WCSPROGRAMS_genusExtCode: 
+            dataValue('market_details/vendor/sales/s_genus') || dataValue('market_details/market_001/vendor/sales/s_genus') ,
           },
         })(state),
         //=================================================//
@@ -177,22 +176,21 @@ each(
           uuid: 'wcsprograms_taxaid',
           relation: 'WCSPROGRAMS_Taxa',
           where: {
-            WCSPROGRAMS_TaxaExtCode: dataValue(
-              'market_details/vendor/sales/s_species'
-            ),
+            WCSPROGRAMS_TaxaExtCode: 
+            dataValue('market_details/vendor/sales/s_species') || dataValue('market_details/market_001/vendor/sales/s_species') ,
           },
         })(state),
         //=================================================//
-        SPic4: x['market_details/vendor/sales/s_img4/s_pic_4'],
-        SPic5: x['market_details/vendor/sales/s_img5/s_pic_5'],
-        SPic6: x['market_details/vendor/sales/s_img6/s_pic6'],
-        SPic7: x['market_details/vendor/sales/s_img7/s_pic7'],
-        SPic8: x['market_details/vendor/sales/s_img8/s_pic8'],
-        SPic9: x['market_details/vendor/sales/s_img9/s_pic9'],
-        SPic10: x['market_details/vendor/sales/s_img10/s_pic10'],
-        SPic11: x['market_details/vendor/sales/s_img11/s_pic11'],
-        SPic12: x['market_details/vendor/sales/s_img12/s_pic12'],
-        SLocalName: x['market_details/vendor/sales/s_local_name'],
+        SPic4: x['market_details/vendor/sales/s_img4/s_pic_4'] || x['market_details/market_001/vendor/sales/s_img4/s_pic_4']  ,
+        SPic5: x['market_details/vendor/sales/s_img5/s_pic_5'] || x['market_details/market_001/vendor/sales/s_img5/s_pic_5'] ,
+        SPic6: x['market_details/vendor/sales/s_img6/s_pic6'] || x['market_details/market_001/vendor/sales/s_img6/s_pic6'],
+        SPic7: x['market_details/vendor/sales/s_img7/s_pic7'] || x['market_details/market_001/vendor/sales/s_img7/s_pic7'],
+        SPic8: x['market_details/vendor/sales/s_img8/s_pic8'] || x['market_details/market_001/vendor/sales/s_img8/s_pic8'],
+        SPic9: x['market_details/vendor/sales/s_img9/s_pic9'] || x['market_details/market_001/vendor/sales/s_img9/s_pic9'],
+        SPic10: x['market_details/vendor/sales/s_img10/s_pic10'] || x['market_details/market_001/vendor/sales/s_img10/s_pic10'] ,
+        SPic11: x['market_details/vendor/sales/s_img11/s_pic11'] || x['market_details/market_001/vendor/sales/s_img11/s_pic11'] ,
+        SPic12: x['market_details/vendor/sales/s_img12/s_pic12'] || x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
+        SLocalName: x['market_details/vendor/sales/s_local_name'] || x['market_details/market_001/vendor/sales/s_local_name'] |,
         WCSPROGRAMS_SexID_SSex: await findValue({
           uuid: 'wcsprograms_sexid',
           relation: 'WCSPROGRAMS_sex',
