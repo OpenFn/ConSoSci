@@ -67,8 +67,8 @@ alterState(async state => {
   const mapping = {
     Verification: dataValue('verification'),
     SharkRayVendorsNb: state => {
-      return dataValue('market_details/shark_ray_vendors_nb')(state)
-        ? dataValue('market_details/shark_ray_vendors_nb')(state)
+      return dataValue('market_details/shark_ray_vendors_nb')(state) || dataValue('market_details/market_001/shark_ray_vendors_nb')(state) 
+        ? dataValue('market_details/shark_ray_vendors_nb')(state) || dataValue('market_details/market_001/shark_ray_vendors_nb')(state)
         : 0;
     },
     Consent: dataValue('consent'),
@@ -261,29 +261,27 @@ alterState(async state => {
         uuid: 'wcsprograms_sexid',
         relation: 'WCSPROGRAMS_sex',
         where: {
-          WCSPROGRAMS_sexExtCode: dataValue('market_details/vendor/vendor_sex'),
+          WCSPROGRAMS_sexExtCode: dataValue('market_details/vendor/vendor_sex') || ataValue('market_details/market_001/vendor/vendor_sex') ,
         },
       })(state),
-      WhenLastSellSharkRay: x['market_details/vendor/when_last_sell_shark_ray'],
+      WhenLastSellSharkRay: x['market_details/vendor/when_last_sell_shark_ray'] ||x['market_details/market_001/vendor/when_last_sell_shark_ray'] ,
       WCSPROGRAMS_VendorID_WhereBought: await findValue({
         uuid: 'wcsprograms_vendorid',
         relation: 'WCSPROGRAMS_vendor',
         where: {
-          WCSPROGRAMS_vendorExtCode: dataValue(
-            'market_details/vendor/where_bought'
-          ),
+          WCSPROGRAMS_vendorExtCode: 
+          dataValue('market_details/vendor/where_bought') || dataValue('market_details/market_001/vendor/where_bought') ,
         },
       })(state),
       WCSPROGRAMS_VendorID_WhoSoldTo: await findValue({
         uuid: 'wcsprograms_vendorid',
         relation: 'WCSPROGRAMS_vendor',
         where: {
-          WCSPROGRAMS_vendorExtCode: dataValue(
-            'market_details/vendor/who_sold_to'
-          ),
+          WCSPROGRAMS_vendorExtCode: 
+          dataValue('market_details/vendor/who_sold_to') || dataValue('market_details/market001/vendor/who_sold_to'),
         },
       })(state),
-      WhoSoldOther: x['market_details/vendor/who_sold_other'],
+      WhoSoldOther: x['market_details/vendor/who_sold_other'] || x['market_details/market_001/vendor/who_sold_other'],
       SharksraysUuid: x['__parentUuid'],
       AnswerId: dataValue('_id'),
       GeneratedUuid: x['__generatedUuid'],
