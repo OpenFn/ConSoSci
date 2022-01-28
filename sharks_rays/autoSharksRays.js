@@ -373,14 +373,14 @@ each(
           uuid: 'wcsprograms_typeid',
           relation: 'WCSPROGRAMS_type',
           where: {
-            WCSPROGRAMS_typeExtCode: dataValue('boat/catch_details/type'),
+            WCSPROGRAMS_typeExtCode: dataValue('boat/catch/catch_details/type'),
           },
         })(state),
         WCSPROGRAMS_GenusID_Genus: await findValue({
           uuid: 'wcsprograms_genusid',
           relation: 'WCSPROGRAMS_genus',
           where: {
-            WCSPROGRAMS_genusExtCode: dataValue('boat/catch_details/genus'),
+            WCSPROGRAMS_genusExtCode: dataValue('boat/catch/catch_details/genus'),
           },
         })(state),
         //=================================================//
