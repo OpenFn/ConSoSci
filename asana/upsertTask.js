@@ -105,8 +105,22 @@ upsertTask(
         `Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
       projects: ['1201382240883590'], //WCS project gid
       notes: state =>
-        `${dataValue('formName')(state)} submitted some time back via ${dataValue('body.ReportFormat')(state)} by ${dataValue('body.ReporterFullName')(state)}. 
-        The grievance is against ${dataValue('body.GrievanceAgainst')(state)}`,
+        `DETAILS:
+WCS Staff name: ${dataValue('body.StaffName')(state)}.
+WCS Staff email address: ${dataValue('body.StaffEmail')(state)}.
+Grievance reporter full name: ${dataValue('body.ReporterFullName')(state)}.
+Grievance reporter contact information: ${dataValue('body.ReporterContactInformation')(state)}.
+Authority of the Grievance reporter: ${dataValue('body.AuthorityGrievanceReporter')(state)}.
+Where did this grievance take place: ${dataValue('body.WhereGrievance')(state)}.
+When did this grievance take place: ${dataValue('body.WhenGrievance')(state)}.
+Parties involved in the grievance: ${dataValue('body.PartiesInvolvedGrievance')(state)}.
+Local authorities contacted: ${dataValue('body.LocalAuthoritiesContacted')(state)}.
+Include a description of the grievance here: ${dataValue('body.DescriptioGrievance')(state)}.
+Harm suffered: ${dataValue('body.HarmSuffered')(state)}.
+Relief requested: ${dataValue('body.ReliefRequested')(state)}.
+
+Kobo FormID: ${dataValue('body._id')(state)}.
+Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
