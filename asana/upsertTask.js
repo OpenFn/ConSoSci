@@ -146,20 +146,4 @@ Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
   }
 );
 
-/*
-updateTask('1201687476823315', {   //my task_gid
-  name: 'Joseph test task2',
-  custom_fields: {
-      '1200603908440348': dataValue('body.GrievanceOrSuggestion'),   //GrievanceOrSuggestion
-      '1192836094355010': dataValue('body.FormatReport')           //Grievance Report Format
-  },
-  
-  
-},
-state => {
-    console.log(JSON.stringify(state.data, null, 2 )); //log data
-    return state;
-  }
 
-
-);*/
