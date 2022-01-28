@@ -101,10 +101,11 @@ upsertTask(
     externalId: "name", // Asana external Id field name (e.g., 'gid')
     data: {
       /*gid: dataValue('body._id'),*/
-      name: state =>
-        `${dataValue('formName')(state)} - ${dataValue(
-          'body.GrievanceID'
-        )(state)}`,
+      name: dataValue('formName')(state),
+      //name: state =>
+      //  `${dataValue('formName')(state)} - ${dataValue(
+      //    'body.GrievanceID'
+      //  )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
       notes: state =>
         `${dataValue('formName')(state)} submitted some time back via ${dataValue('body.ReportFormat')(state)} by ${dataValue('body.ReporterFullName')(state)}. 
