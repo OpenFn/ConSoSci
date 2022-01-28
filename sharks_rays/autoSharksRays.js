@@ -431,9 +431,9 @@ each(
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
-              'boat/catch/catch_details/dna_sample_collected'
-            ),
+            WCSPROGRAMS_SharksRaysYesNoExtCode: 
+            dataValue('boat/catch_details/dna_sample_collected') || 
+            dataValue('boat/catch/catch_details/dna_sample_collected'),
           },
         })(state),
         //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
