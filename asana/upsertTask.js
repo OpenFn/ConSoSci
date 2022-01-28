@@ -102,7 +102,7 @@ upsertTask(
     data: {
       /*gid: dataValue('body._id'),*/
       name: state =>
-        `${dataValue('formName')(state)} changed3 string ${dataValue(
+        `${dataValue('formName')(state)} - ${dataValue(
           'body.GrievanceID'
         )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
