@@ -560,14 +560,13 @@ alterState(async state => {
           dataValue('boat/targeted') || dataValue('boat/catch/targeted'),
         },
       })(state),
-      LastCatchSharkRay: x['boat/last_catch_shark_ray'],
+      LastCatchSharkRay: x['boat/last_catch_shark_ray'] || x['boat/catch/last_catch_shark_ray'],
       WCSPROGRAMS_SharksRaysYesNoID_ReleaseSharkRay: await findValue({
         uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
         relation: 'WCSPROGRAMS_SharksRaysYesNo',
         where: {
-          WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
-            'boat/release_shark_ray'
-          ),
+          WCSPROGRAMS_SharksRaysYesNoExtCode: 
+          dataValue('boat/release_shark_ray') || dataValue('boat/catch/release_shark_ray'),
         },
       })(state),
       PercentEat: x['boat/percent_eat'],
@@ -613,7 +612,7 @@ each(
           WCSPROGRAMS_GearID: await findValue({
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
-            where: { WCSPROGRAMS_GearExtCode: x },
+            where: { WCSPROGRAMS_GearExtCode: dataValue('market_details/vendor/sales/s_gear_type') },
           })(state),
           WCSPROGRAMS_SalesID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
@@ -635,7 +634,7 @@ each(
   each(
     dataPath('catch_details[*]'),
     alterState(async state => {
-      const dataArray = state.data['boat/catch_details/gear_type'] || [];
+      const dataArray = state.data['boat/catch_details/gear_type'] || state.data['boat/catch/catch_details/gear_type'] || [];
 
       const mappingGear = []; // DD added Gear
 
