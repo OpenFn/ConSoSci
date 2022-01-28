@@ -612,7 +612,7 @@ each(
           WCSPROGRAMS_GearID: await findValue({
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
-            where: { WCSPROGRAMS_GearExtCode: dataValue('market_details/vendor/sales/s_gear_type') },
+            where: { WCSPROGRAMS_GearExtCode: dataValue('market_details/vendor/sales/s_gear_type') || dataValue('market_details/market_001/vendor/sales/s_gear_type') },
           })(state),
           WCSPROGRAMS_SalesID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
@@ -643,7 +643,7 @@ each(
           WCSPROGRAMS_GearID: await findValue({
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
-            where: { WCSPROGRAMS_GearExtCode: x },
+            where: { WCSPROGRAMS_GearExtCode: dataValue('boat/catch_details/gear_type') || dataValue('boat/catch/catch_details/gear_type') },
           })(state),
           WCSPROGRAMS_CatchDetailsID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
