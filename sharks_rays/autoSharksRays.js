@@ -363,7 +363,7 @@ each(
 each(
   dataPath('boat[*]'),
   alterState(async state => {
-    const dataArray = state.data['boat/catch/catch_details'] || [];
+    const dataArray = state.data['boat/catch_details'] || state.data['boat/catch/catch_details'] || [];
 
     const mappingDetails = []; // DD added Details
 
@@ -373,14 +373,14 @@ each(
           uuid: 'wcsprograms_typeid',
           relation: 'WCSPROGRAMS_type',
           where: {
-            WCSPROGRAMS_typeExtCode: dataValue('boat/catch/catch_details/type'),
+            WCSPROGRAMS_typeExtCode: dataValue('boat/catch_details/type') || dataValue('boat/catch/catch_details/type'),
           },
         })(state),
         WCSPROGRAMS_GenusID_Genus: await findValue({
           uuid: 'wcsprograms_genusid',
           relation: 'WCSPROGRAMS_genus',
           where: {
-            WCSPROGRAMS_genusExtCode: dataValue('boat/catch/catch_details/genus'),
+            WCSPROGRAMS_genusExtCode: dataValue('boat/catch_details/genus') || dataValue('boat/catch/catch_details/genus'),
           },
         })(state),
         //=================================================//
@@ -397,35 +397,35 @@ each(
           uuid: 'wcsprograms_taxaid',
           relation: 'WCSPROGRAMS_Taxa',
           where: {
-            WCSPROGRAMS_TaxaExtCode: dataValue('boat/catch/catch_details/species'),
+            WCSPROGRAMS_TaxaExtCode: dataValue('boat/catch_details/species') || dataValue('boat/catch/catch_details/species'),
           },
         })(state),
         //=================================================//
-        LocalName: x['boat/catch/catch_details/local_name'],
+        LocalName: x['boat/catch_details/local_name'] || x['boat/catch/catch_details/local_name'],
         WCSPROGRAMS_SexID_Sex: await findValue({
           uuid: 'wcsprograms_sexid',
           relation: 'WCSPROGRAMS_sex',
           where: {
-            WCSPROGRAMS_sexExtCode: dataValue('boat/catch/catch_details/sex'),
+            WCSPROGRAMS_sexExtCode: dataValue('boat/catch_details/sex') || dataValue('boat/catch/catch_details/sex'),
           },
         })(state),
-        Weight: x['boat/catch/catch_details/weight'],
-        DiscWidth: x['boat/catch/catch_details/disc_width'],
-        DiscLength: x['boat/catch/catch_details/disc_length'],
-        TotalLength: x['boat/catch/catch_details/total_length'],
-        ForkLength: x['boat/catch/catch_details/fork_length'],
-        PrecaudalLength: x['boat/catch/catch_details/precaudal_length'],
-        Pic4: x['boat/catch/catch_details/img4/pic_4'],
-        Pic5: x['boat/catch/catch_details/img5/pic_5'],
-        Pic6: x['boat/catch/catch_details/img6/pic6'],
-        Pic7: x['boat/catch/catch_details/img7/pic7'],
-        Pic8: x['boat/catch/catch_details/img8/pic8'],
-        Pic9: x['boat/catch/catch_details/img9/pic9'],
-        Pic10: x['boat/catch/catch_details/img10/pic10'],
-        Pic11: x['boat/catch/catch_details/img11/pic11'],
-        Pic12: x['boat/catch/catch_details/img12/pic12'],
-        GearType: x['boat/catch/catch_details/gear_type'],
-        GearTypeOther: x['boat/catch/catch_details/gear_type_other'],
+        Weight: x['boat/catch_details/weight'] || x['boat/catch/catch_details/weight'],
+        DiscWidth: x['boat/catch_details/disc_width'] || x['boat/catch/catch_details/disc_width'],
+        DiscLength: x['boat/catch_details/disc_length'] || x['boat/catch/catch_details/disc_length'],
+        TotalLength: x['boat/catch_details/total_length'] || x['boat/catch/catch_details/total_length'],
+        ForkLength: x['boat/catch_details/fork_length'] || x['boat/catch/catch_details/fork_length'],
+        PrecaudalLength: x['boat/catch_details/precaudal_length'] || x['boat/catch/catch_details/precaudal_length'],
+        Pic4: x['boat/catch_details/img4/pic_4'] || x['boat/catch/catch_details/img4/pic_4'],
+        Pic5: x['boat/catch_details/img5/pic_5'] || x['boat/catch/catch_details/img5/pic_5'],
+        Pic6: x['boat/catch_details/img6/pic6'] || x['boat/catch/catch_details/img6/pic6'],
+        Pic7: x['boat/catch_details/img7/pic7'] || x['boat/catch/catch_details/img7/pic7'],
+        Pic8: x['boat/catch_details/img8/pic8'] || x['boat/catch/catch_details/img8/pic8'],
+        Pic9: x['boat/catch_details/img9/pic9'] || x['boat/catch/catch_details/img9/pic9'],
+        Pic10: x['boat/catch_details/img10/pic10'] || x['boat/catch/catch_details/img10/pic10'],
+        Pic11: x['boat/catch_details/img11/pic11'] || x['boat/catch/catch_details/img11/pic11'],
+        Pic12: x['boat/catch_details/img12/pic12'] || x['boat/catch/catch_details/img12/pic12'],
+        GearType: x['boat/catch_details/gear_type'] || x['boat/catch/catch_details/gear_type'],
+        GearTypeOther: x['boat/catch/catch_details/gear_type_other'] || x['boat/catch/catch_details/gear_type_other'],
         //=================================================//
         WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
