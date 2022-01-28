@@ -1,6 +1,3 @@
-
-
-
 fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
@@ -100,27 +97,26 @@ upsertTask(
   {
     externalId: "name", // Asana external Id field name (e.g., 'gid')
     data: {
-      /*gid: dataValue('body._id'),*/
       name: state =>
         `Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
       projects: ['1201382240883590'], //WCS project gid
       notes: state =>
         `DETAILS:
-WCS Staff name: ${dataValue('body.StaffName')(state)}.
-WCS Staff email address: ${dataValue('body.StaffEmail')(state)}.
-Grievance reporter full name: ${dataValue('body.ReporterFullName')(state)}.
-Grievance reporter contact information: ${dataValue('body.ReporterContactInformation')(state)}.
-Authority of the Grievance reporter: ${dataValue('body.AuthorityGrievanceReporter')(state)}.
-Where did this grievance take place: ${dataValue('body.WhereGrievance')(state)}.
-When did this grievance take place: ${dataValue('body.WhenGrievance')(state)}.
-Parties involved in the grievance: ${dataValue('body.PartiesInvolvedGrievance')(state)}.
-Local authorities contacted: ${dataValue('body.LocalAuthoritiesContacted')(state)}.
-Include a description of the grievance here: ${dataValue('body.DescriptioGrievance')(state)}.
-Harm suffered: ${dataValue('body.HarmSuffered')(state)}.
-Relief requested: ${dataValue('body.ReliefRequested')(state)}.
+        WCS Staff name: ${dataValue('body.StaffName')(state)}.
+        WCS Staff email address: ${dataValue('body.StaffEmail')(state)}.
+        Grievance reporter full name: ${dataValue('body.ReporterFullName')(state)}.
+        Grievance reporter contact information: ${dataValue('body.ReporterContactInformation')(state)}.
+        Authority of the Grievance reporter: ${dataValue('body.AuthorityGrievanceReporter')(state)}.
+        Where did this grievance take place: ${dataValue('body.WhereGrievance')(state)}.
+        When did this grievance take place: ${dataValue('body.WhenGrievance')(state)}.
+        Parties involved in the grievance: ${dataValue('body.PartiesInvolvedGrievance')(state)}.
+        Local authorities contacted: ${dataValue('body.LocalAuthoritiesContacted')(state)}.
+        Include a description of the grievance here: ${dataValue('body.DescriptioGrievance')(state)}.
+        Harm suffered: ${dataValue('body.HarmSuffered')(state)}.
+        Relief requested: ${dataValue('body.ReliefRequested')(state)}.
 
-Kobo FormID: ${dataValue('body._id')(state)}.
-Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
+        Kobo FormID: ${dataValue('body._id')(state)}.
+        Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
@@ -134,7 +130,6 @@ Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
           1187634487549328: state =>
           state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
-          
           1187466717116801: state =>
           state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly labelled as 'Singapore' in Asana
       },
