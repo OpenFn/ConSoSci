@@ -107,7 +107,8 @@ upsertTask(
         )(state)}`,
       projects: ['1201382240883590'], //WCS project gid
       notes: state =>
-        `${dataValue('formName')(state)} submitted today via ${dataValue('body.ReportFormat')(state)} by ${dataValue('body.ReporterFullName')(state)}`,
+        `${dataValue('formName')(state)} submitted some time back via ${dataValue('body.ReportFormat')(state)} by ${dataValue('body.ReporterFullName')(state)}. 
+        The grievance is against ${dataValue('body.GrievanceAgainst')(state)}`,
       custom_fields: {
           '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
           '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
