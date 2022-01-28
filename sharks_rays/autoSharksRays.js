@@ -141,10 +141,10 @@ each(
   alterState(async state => {
     const dataArray = state.data['market_details/vendor/sales'] || [];
 
-    const mapping = [];
+    const mappingSales = []; // DD added Sales to give specific mapping name
 
     for (let x of dataArray) {
-      mapping.push({
+      mappingSales.push({ // DD added Sales to give specific mapping name
         WCSPROGRAMS_TypeID_SType: await findValue({
           uuid: 'wcsprograms_typeid',
           relation: 'WCSPROGRAMS_type',
@@ -244,7 +244,7 @@ each(
     return upsertMany(
       'WCSPROGRAMS_SharksRaysSales',
       'GeneratedUuid',
-      () => mapping,
+      () => mappingSales, // DD added Sales to give specific name to mapping
       { setNull: ["''", "'undefined'"] }
     )(state);
   })
@@ -252,10 +252,10 @@ each(
 alterState(async state => {
   const dataArray = state.data['market_details/vendor'] || [];
 
-  const mapping = [];
+  const mappingVendor = []; // DD added Vendor
 
   for (let x of dataArray) {
-    mapping.push({
+    mappingVendor.push({
       WCSPROGRAMS_SexID_VendorSex: await findValue({
         uuid: 'wcsprograms_sexid',
         relation: 'WCSPROGRAMS_sex',
@@ -291,7 +291,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_SharksRaysVendor',
     'GeneratedUuid',
-    () => mapping,
+    () => mappingVendor, // DD added Vendor
     { setNull: ["''", "'undefined'"] }
   )(state);
 });
@@ -302,10 +302,10 @@ each(
     alterState(async state => {
       const dataArray = state.data['boat/fish_catch/sample'] || [];
 
-      const mapping = [];
+      const mappingSample = []; // DD added Sample
 
       for (let x of dataArray) {
-        mapping.push({
+        mappingSample.push({ // DD added Sample
           FishLength: x['boat/fish_catch/sample/fish_length'],
           FishWeight: x['boat/fish_catch/sample/fish_weight'],
           FishCatchUuid: x['__parentUuid'],
@@ -316,7 +316,7 @@ each(
       return upsertMany(
         'WCSPROGRAMS_SharksRaysSample',
         'GeneratedUuid',
-        () => mapping,
+        () => mappingSample, // DD added Sample
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
@@ -327,10 +327,10 @@ each(
   alterState(async state => {
     const dataArray = state.data['boat/fish_catch'] || [];
 
-    const mapping = [];
+    const mappingFish = []; // DD added Fish
 
     for (let x of dataArray) {
-      mapping.push({
+      mappingFish.push({ // DD added Fish
         WCSPROGRAMS_FishID_FishSpecie: await findValue({
           uuid: 'wcsprograms_fishid',
           relation: 'WCSPROGRAMS_fish',
@@ -351,7 +351,7 @@ each(
     return upsertMany(
       'WCSPROGRAMS_SharksRaysFishCatch',
       'GeneratedUuid',
-      () => mapping,
+      () => mappingFish,
       { setNull: ["''", "'undefined'"] }
     )(state);
   })
@@ -361,10 +361,10 @@ each(
   alterState(async state => {
     const dataArray = state.data['boat/catch_details'] || [];
 
-    const mapping = [];
+    const mappingDetails = []; // DD added Details
 
     for (let x of dataArray) {
-      mapping.push({
+      mappingDetails.push({ // DD added Details
         WCSPROGRAMS_TypeID_Type: await findValue({
           uuid: 'wcsprograms_typeid',
           relation: 'WCSPROGRAMS_type',
@@ -452,7 +452,7 @@ each(
     return upsertMany(
       'WCSPROGRAMS_SharksRaysCatchDetails',
       'GeneratedUuid',
-      () => mapping,
+      () => mappingDetails, // DD added Details
       { setNull: ["''", "'undefined'"] }
     )(state);
   })
@@ -460,10 +460,10 @@ each(
 alterState(async state => {
   const dataArray = state.data['boat'] || [];
 
-  const mapping = [];
+  const mappingBoat = []; // DD added Boat
 
   for (let x of dataArray) {
-    mapping.push({
+    mappingBoat.push({ // DD added Boat
       WCSPROGRAMS_SharksRaysYesNoID_BoatInfo: await findValue({
         uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
         relation: 'WCSPROGRAMS_SharksRaysYesNo',
@@ -580,7 +580,7 @@ alterState(async state => {
   return upsertMany(
     'WCSPROGRAMS_SharksRaysBoat',
     'GeneratedUuid',
-    () => mapping,
+    () => mappingBoat, // DD added Boat
     { setNull: ["''", "'undefined'"] }
   )(state);
 });
@@ -592,10 +592,10 @@ each(
       const dataArray =
         state.data['market_details/vendor/sales/s_gear_type'] || [];
 
-      const mapping = [];
+      const mappingSGear = []; // DD added SGear
 
       for (let x of dataArray) {
-        mapping.push({
+        mappingSGear.push({ // DD added SGear
           WCSPROGRAMS_GearID: await findValue({
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
@@ -609,7 +609,7 @@ each(
       return upsertMany(
         'WCSPROGRAMS_SalesGear',
         'GeneratedUuid',
-        () => mapping,
+        () => mappingSGear, // DD added SGear
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
@@ -622,10 +622,10 @@ each(
     alterState(async state => {
       const dataArray = state.data['boat/catch_details/gear_type'] || [];
 
-      const mapping = [];
+      const mappingGear = []; // DD added Gear
 
       for (let x of dataArray) {
-        mapping.push({
+        mappingGear.push({ // DD added Gear
           WCSPROGRAMS_GearID: await findValue({
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
@@ -639,7 +639,7 @@ each(
       return upsertMany(
         'WCSPROGRAMS_CatchDetailsGear',
         'GeneratedUuid',
-        () => mapping,
+        () => mappingGear, // DD added Gear
         { setNull: ["''", "'undefined'"] }
       )(state);
     })
