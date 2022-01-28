@@ -116,7 +116,7 @@ alterState(async state => {
     WCSPROGRAMS_SurveytypeID_SurveyType: await findValue({
       uuid: 'wcsprograms_surveytypeid',
       relation: 'WCSPROGRAMS_surveytype',
-      where: { WCSPROGRAMS_surveytypeExtCode: 'practice' },
+      where: { WCSPROGRAMS_surveytypeExtCode: dataValue('survey_type') },
     })(state), //dataValue('survey_type') placeholder
     Deviceid: dataValue('deviceid'),
     FormDateEnd: dataValue('end'),
