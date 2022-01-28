@@ -363,7 +363,7 @@ each(
 each(
   dataPath('boat[*]'),
   alterState(async state => {
-    const dataArray = state.data['boat/catch_details'] || [];
+    const dataArray = state.data['boat/catch/catch_details'] || [];
 
     const mappingDetails = []; // DD added Details
 
