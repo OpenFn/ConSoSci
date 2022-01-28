@@ -139,7 +139,7 @@ alterState(async state => {
 each(
   dataPath('market_details[*]'),
   alterState(async state => {
-    const dataArray = state.data['market_details/vendor/sales'] || [];
+    const dataArray = state.data['market_details/vendor/sales'] || state.data['market_details/market_001/vendor/sales'] || [];
 
     const mappingSales = []; // DD added Sales to give specific mapping name
 
@@ -149,9 +149,8 @@ each(
           uuid: 'wcsprograms_typeid',
           relation: 'WCSPROGRAMS_type',
           where: {
-            WCSPROGRAMS_typeExtCode: dataValue(
-              'market_details/vendor/sales/s_type'
-            ),
+            WCSPROGRAMS_typeExtCode: 
+            dataValue('market_details/vendor/sales/s_type') || dataValue('market_details/market_001/vendor/sales/s_type') ,
           },
         })(state),
         WCSPROGRAMS_GenusID_SGenus: await findValue({
@@ -601,7 +600,7 @@ each(
     dataPath('vendor[*]'),
     alterState(async state => {
       const dataArray =
-        state.data['market_details/vendor/sales/s_gear_type'] || [];
+        state.data['market_details/vendor/sales/s_gear_type'] || state.data['market_details/market_001/vendor/sales/s_gear_type'] || [];
 
       const mappingSGear = []; // DD added SGear
 
