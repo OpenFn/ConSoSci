@@ -246,7 +246,7 @@ each(
   })
 );
 alterState(async state => {
-  const dataArray = state.data['market_details/vendor'] || [];
+  const dataArray = state.data['market_details/vendor'] || state.data['market_details/market_001/vendor'] || [];
 
   const mappingVendor = []; // DD added Vendor
 
