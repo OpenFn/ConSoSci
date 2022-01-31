@@ -214,9 +214,8 @@ each(
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue(
-              'market_details/vendor/sales/s_dna_sample_collected'
-            ),
+            WCSPROGRAMS_SharksRaysYesNoExtCode: 
+            dataValue('market_details/vendor/sales/s_dna_sample_collected') || dataValue('market_details/market_001/vendor/sales/s_dna_sample_collected')  ,
           },
         })(state),
         //=================================================//
@@ -228,10 +227,10 @@ each(
         //       ? false
         //       : undefined,
         //=================================================//
-        SDnaCode: x['market_details/vendor/sales/s_dna_code'],
-        SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'],
-        SPriceSoldUsd: x['market_details/vendor/sales/s_price_sold_usd'],
-        SComment: x['market_details/vendor/sales/s_comment'],
+        SDnaCode: x['market_details/vendor/sales/s_dna_code'] || x['market_details/market_001/vendor/sales/s_dna_code'] ,
+        SPriceSoldFor: x['market_details/vendor/sales/s_price_sold_for'] || x['market_details/market_001/vendor/sales/s_price_sold_for'],
+        SPriceSoldUsd: x['market_details/vendor/sales/s_price_sold_usd'] || x['market_details/market_001/vendor/sales/s_price_sold_usd'],
+        SComment: x['market_details/vendor/sales/s_comment'] || x['market_details/market_001/vendor/sales/s_comment'] ,
         VendorUuid: x['__parentUuid'],
         AnswerId: dataValue('_id'),
         GeneratedUuid: x['__generatedUuid'],
