@@ -257,7 +257,7 @@ alterState(async state => {
         uuid: 'wcsprograms_sexid',
         relation: 'WCSPROGRAMS_sex',
         where: {
-          WCSPROGRAMS_sexExtCode: dataValue('market_details/vendor/vendor_sex') || ataValue('market_details/market_001/vendor/vendor_sex') ,
+          WCSPROGRAMS_sexExtCode: dataValue('market_details/vendor/vendor_sex') || dataValue('market_details/market_001/vendor/vendor_sex') ,
         },
       })(state),
       WhenLastSellSharkRay: x['market_details/vendor/when_last_sell_shark_ray'] ||x['market_details/market_001/vendor/when_last_sell_shark_ray'] ,
