@@ -87,6 +87,10 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     CivilSocietyPartner: '1187634487549332',
     NotWcsAndNotAWcsPartner: '1187634487549333',
     
+    //Confientiality or Sensitivty: '1201743216292434',
+     Yes: '1201743216292435',
+      No: '1201743216292436',
+    
   };
 
   return { ...state, formatMapping };
@@ -130,8 +134,10 @@ upsertTask(
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
           1187634487549328: state =>
           state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
+          1201743216292434: state =>
+          state.formatMapping[dataValue('body.ConfidentialitySensitivity')(state)],
           1187466717116801: state =>
-          state.formatMapping[dataValue('body.Country')(state)],    // 'Country' wrongly labelled as 'Singapore' in Asana
+          state.formatMapping[dataValue('body.Country')(state)],    
       },
     },
   },
