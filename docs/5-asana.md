@@ -26,7 +26,7 @@ Jobs:
    OpenFn.org and automatically triggers the next job.
 2. [rural-consumption-to-postgres.js](https://github.com/OpenFn/wcs-consocsci/blob/master/rural-consumption-to-postgres.js): OpenFn automatically cleans, maps, & loads the Kobo survey data into structured tables in a Postgres Wildmeat database.
 
-### (2) Mappings
+### (2) Data Element Mappings
 
 [See here](https://docs.google.com/spreadsheets/d/15VRibnaglShF3oNNLMbiyGopTJrYbP02aQ04cz4Qt-k/edit#gid=767749359) for the integration mapping specifications. These jobs leverage [language-postgresql](https://github.com/OpenFn/postgresql) to perform `upsert()` operations in the Postgres database.
 
