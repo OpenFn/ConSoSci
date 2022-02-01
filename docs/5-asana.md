@@ -19,15 +19,14 @@ Toolbox and Asana project.
 
 **[See this data flow](https://lucid.app/lucidchart/b7d25cb3-067c-4e80-ade6-adc3f741a66f/view?page=0_0#?folder_id=home&browser=icon) diagram.** The following jobs are configured on OpenFn.org to run automatically.
 
-Jobs: 
-1. [fetch-rc-submissions.js](https://github.com/OpenFn/wcs-wildmeat/blob/master/jobs/fetch-rc-submissions.js):
-   On a timer-basis, OpenFn fetches all Kobo survey submissions where form
+Jobs Description: 
+1. On a timer-basis, OpenFn fetches all Kobo survey submissions where form
    `name` matches "SSMT GRM Intake Form Template" with a specific uid. 
    
    The data is fetched via OpenFn's language-http adaptor and important metadata such as `formName`, `formType` are appended to the Kobo form submission data.
-2. Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
+  Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
    OpenFn.org and automatically triggers the next job.
-3. [rural-consumption-to-postgres.js](https://github.com/OpenFn/wcs-consocsci/blob/master/rural-consumption-to-postgres.js): A second job is triggerd in OpenFn by the arrival of New Kobo Form data in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received. tables in a Postgres Wildmeat database.
+2. A second job is triggerd in OpenFn by the arrival of New Kobo Form data in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received. tables in a Postgres Wildmeat database.
 
 ### (2) Data Element Mappings
 
@@ -39,7 +38,7 @@ This job requires a  *one-to-one mapping* i.e.
 
 For scalability, WCS also required that this integration be designed such that multiple versions of the Kono form (with identical fields) can be mapped to their own correspondingproject tasks in Asana. 
 
-The [Asana API documentation](https://developers.asana.com/docs) explains how Asana assigns aunique identifier called, `gid` to each question field, as well as its associated answer options (if any). This is crucial for writing the actual job for creating the task in Asana.
+The [Asana API documentation](https://developers.asana.com/docs) explains how Asana assigns a unique identifier called, `gid` to each question field, as well as its associated answer options (if any). This is crucial for writing the actual job for creating the task in Asana.
 
 
 ### (3) Job-writing
