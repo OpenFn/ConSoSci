@@ -65,15 +65,15 @@ The desired behaviour was as follows:
 
 ### (4) Assumptions
 
-1. The jobs and mapping design are based on [this DRC version](https://docs.google.com/spreadsheets/d/1AN2Qyjx-ua3fE5-Nj7Bg2WSdZdIE6zy4FmVVrMqGZl0/edit?usp=drive_web&ouid=101430720901034004945) of the Rural Consumption Kobo survey.
+1. The jobs and mapping design are based on this [KoboToolBox to Asana Integration Requirement](https://docs.google.com/document/d/1blAjAyZ1UfDI-3zDdf38sXYqevroGQVHxOkFWseNTS4/edit#) of WCS.
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is
-   sent to Asana, it will either update existing Task records or create new Tak records using the `upsert()` helper funtion in OpenFn platform.
-3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. 
+   received, OpenFn first checks for a matching task record in Asana, If a match is found, the Task is updated with new details. If a matching task is not found, a new Task is created in Asana with the data fields populated.
+3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. The combination of `GrievanceID` and Kobo `_id_` creates a unique identifier for each form across various systems that would interact wit this data. **Note:** `uuid` may vary, and hence not a reliable unique identifier.
 
 
 ### (4) Administration & Support
 #### Provisioning, Hosting, & Maintenance
-This integration is hosted on OpenFn.org with hosted SaaS. The Postgres DB is managed by WCS/EU SWM Wildmeat partners (email: U.Muchlish@cgiar.org).
+This integration is hosted on OpenFn.org with hosted SaaS. The KoboToolBox Forms managed by WCS (email: ddetoeuf@wcs.org).
 
 ####  Questions or support needed?
 Contact support@openfn.org. 
