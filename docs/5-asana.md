@@ -67,8 +67,7 @@ The desired behaviour was as follows:
 
 1. The jobs and mapping design are based on [this DRC version](https://docs.google.com/spreadsheets/d/1AN2Qyjx-ua3fE5-Nj7Bg2WSdZdIE6zy4FmVVrMqGZl0/edit?usp=drive_web&ouid=101430720901034004945) of the Rural Consumption Kobo survey.
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is
-   synced with the DB, it will overwrite the records saved there and use the
-   above uuid to upsert existing records.
+   sent to Asana, it will either update existing Task records or create new Tak records using the `upsert()` helper funtion in OpenFn platform.
 3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. 
 
 
