@@ -791,7 +791,6 @@ each(
   each(
     dataPath('boat/catch_details[*]'),
     alterState(async state => {
-      console.log('we are here');
       const dataArray =
         state.data['boat/catch_details/gear_type'] ||
         state.data['boat/catch/catch_details/gear_type'] ||
