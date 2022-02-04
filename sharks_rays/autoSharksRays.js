@@ -754,15 +754,6 @@ each(
                 ),
             },
           })(state),
-          //=================================================//
-          //NOTE: abandoned; Replaced about auto-mapping to map yes/no values to BIT column
-          // SDnaSampleCollected:
-          //   x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
-          //     ? true
-          //     : x['boat/catch_details/dna_sample_collected'] === 'no'
-          //       ? false
-          //       : undefined,
-          //=================================================//
           SDnaCode:
             x['market_details/vendor/sales/s_dna_code'] ||
             x['market_details/market_001/vendor/sales/s_dna_code'],
