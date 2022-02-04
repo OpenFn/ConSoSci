@@ -760,6 +760,7 @@ alterState(async state => {
     )(state);
   }
   console.log('No "boat" array. Skipping upsert.');
+  return state
 });
 
 each(
