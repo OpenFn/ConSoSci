@@ -760,7 +760,7 @@ alterState(async state => {
     )(state);
   }
   console.log('No "boat" array. Skipping upsert.');
-  return state
+  return state;
 });
 
 each(
@@ -787,8 +787,15 @@ each(
                 dataValue('market_details/market_001/vendor/sales/s_gear_type'),
             },
           })(state),
-          // WCSPROGRAMS_SalesID: x['__parentUuid'], // SHOULD BE A FINDVALUE??
           GeneratedUuid: x['__generatedUuid'],
+          // WCSPROGRAMS_SalesID: x['__parentUuid'], // SHOULD BE A FINDVALUE??
+          WCSPROGRAMS_SalesID: await findValue({
+            uuid: 'wcsprograms_salessid',
+            relation: 'WCSPROGRAMS_SharksRaysSales',
+            where: {
+              GeneratedUuid: x['__parentUuid'],
+            },
+          })(state),
           //SalesUuid: x['__parentUuid'],
         });
       }
@@ -827,9 +834,15 @@ each(
                 dataValue('boat/catch/catch_details/gear_type'),
             },
           })(state),
+          GeneratedUuid: x['__generatedUuid'],
           // WCSPROGRAMS_CatchDetailsID: x['__parentUuid'], // SHOULD BE A FINDVALUE??
-          GeneratedUuid: x['__generatedUuid'], // The column does not exist in the table.
-          // CatchDetailsUuid: x['__parentUuid'],
+          WCSPROGRAMS_CatchDetailsID: await findValue({
+            uuid: 'wcsprograms_catchdetailsid',
+            relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
+            where: {
+              GeneratedUuid: x['__parentUuid'],
+            },
+          })(state),
         });
       }
       console.log(mappingGear);
