@@ -788,7 +788,7 @@ each(
           })(state),
           WCSPROGRAMS_SalesID: x['__parentUuid'],
           GeneratedUuid: x['__generatedUuid'],
-          SalesUuid: x['__parentUuid'],
+          //SalesUuid: x['__parentUuid'],
         });
       }
       console.log(mappingSGear);
@@ -827,7 +827,7 @@ each(
             },
           })(state),
           WCSPROGRAMS_CatchDetailsID: x['__parentUuid'],
-          // GeneratedUuid: x['__generatedUuid'], // The column does not exist in the table.
+          GeneratedUuid: x['__generatedUuid'], // The column does not exist in the table.
           // CatchDetailsUuid: x['__parentUuid'],
         });
       }
