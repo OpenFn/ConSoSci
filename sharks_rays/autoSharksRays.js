@@ -55,6 +55,7 @@ alterState(state => {
   return { ...state, body };
 });
 
+//------------------ WCSPROGRAMS_KoboDataset -------------------------
 alterState(async state => {
   const mapping = {
     FormName: dataValue('formName'),
@@ -66,6 +67,7 @@ alterState(async state => {
   })(state);
 });
 
+//------------------ WCSPROGRAMS_SharksRays -------------------------
 alterState(async state => {
   const mapping = {
     Verification: dataValue('verification'),
@@ -141,6 +143,438 @@ alterState(async state => {
   })(state);
 });
 
+//------------------ WCSPROGRAMS_SharksRaysBoat ---------------------
+alterState(async state => {
+  const dataArray = state.body['boat'] || [];
+
+  if (dataArray.length > 0) {
+    const mappingBoat = []; // DD added Boat
+
+    for (let x of dataArray) {
+      mappingBoat.push({
+        // DD added Boat
+        WCSPROGRAMS_SharksRaysYesNoID_BoatInfo: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info'),
+          },
+        })(state),
+        WCSPROGRAMS_SharksRaysYesNoID_CatchInfo: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/catch_info'),
+          },
+        })(state),
+        WCSPROGRAMS_BoatID_BoatType: await findValue({
+          uuid: 'wcsprograms_boatid',
+          relation: 'WCSPROGRAMS_boat',
+          where: {
+            WCSPROGRAMS_boatExtCode:
+              dataValue('boat/boat_type') || dataValue('boat/catch/boat_type'),
+          },
+        })(state),
+        OtherBoat: x['boat/other_boat'] || x['boat/catch/other_boat'],
+        Crew: x['boat/crew'],
+        WomenCrew: x['boat/women_crew'],
+        Engine: x['boat/engine'] || x['boat/catch/engine'],
+        WCSPROGRAMS_GearID_PrimaryGear: await findValue({
+          uuid: 'wcsprograms_gearid',
+          relation: 'WCSPROGRAMS_gear',
+          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/primary_gear') },
+        })(state),
+        PrimaryNetType: x['boat/primary_net_type'],
+        PrimaryLineType: x['boat/primary_line_type'],
+        PrimaryOtherType: x['boat/primary_other_type'],
+        PrimaryGearLocalName: x['boat/primary_gear_local_name'],
+        PrimaryNetLength: x['boat/primary_net_length'],
+        PrimaryNetHeight: x['boat/primary_net_height'],
+        PrimaryMeshSize: x['boat/primary_mesh_size'],
+        WCSPROGRAMS_UnitID_PrimaryMeshSizeUnit: await findValue({
+          uuid: 'wcsprograms_unitid',
+          relation: 'WCSPROGRAMS_unit',
+          where: {
+            WCSPROGRAMS_unitExtCode: dataValue('boat/primary_mesh_size_unit'),
+          },
+        })(state),
+        PrimaryLinesNb: x['boat/primary_lines_nb'],
+        PrimaryHooksNb: x['boat/primary_hooks_nb'],
+        PrimaryHookSize: x['boat/primary_hook_size'],
+        WCSPROGRAMS_GearID_SecondaryGear: await findValue({
+          uuid: 'wcsprograms_gearid',
+          relation: 'WCSPROGRAMS_gear',
+          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/secondary_gear') },
+        })(state),
+        SecondaryNetType: x['boat/secondary_net_type'],
+        SecondaryLineType: x['boat/secondary_line_type'],
+        SecondaryOtherType: x['boat/secondary_other_type'],
+        SecondaryGearLocalName: x['boat/secondary_gear_local_name'],
+        SecondaryNetLength: x['boat/secondary_net_length'],
+        SecondaryNetHeight: x['boat/secondary_net_height'],
+        SecondaryMeshSize: x['boat/secondary_mesh_size'],
+        WCSPROGRAMS_UnitID_SecondaryMeshSizeUnit: await findValue({
+          uuid: 'wcsprograms_unitid',
+          relation: 'WCSPROGRAMS_unit',
+          where: {
+            WCSPROGRAMS_unitExtCode: dataValue('boat/secondary_mesh_size_unit'),
+          },
+        })(state),
+        SecondaryLinesNb: x['boat/secondary_lines_nb'],
+        SecondaryHooksNb: x['boat/secondary_hooks_nb'],
+        SecondaryHookSize: x['boat/secondary_hook_size'],
+        FishingLocation:
+          x['boat/fishing_location'] || x['boat/catch/fishing_location'],
+        FishingDepth: x['boat/fishing_depth'],
+        WCSPROGRAMS_HabitatID_FishingHabitat: await findValue({
+          uuid: 'wcsprograms_habitatid',
+          relation: 'WCSPROGRAMS_habitat',
+          where: {
+            WCSPROGRAMS_habitatExtCode: dataValue('boat/fishing_habitat'),
+          },
+        })(state),
+        OtherHabitat: x['boat/other_habitat'],
+        DistanceSite: x['boat/distance_site'],
+        FishingStart: x['boat/fishing_start'] || x['boat/catch/fishing_start'],
+        FishingEnd: x['boat/fishing_end'] || x['boat/catch/fishing_end'],
+        FishingTime: x['boat/fishing_time'],
+        TravelTime: x['boat/travel_time'],
+        NbBoats: x['boat/nb_boats'],
+        WCSPROGRAMS_SharksRaysYesNoID_Targeted: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode:
+              dataValue('boat/targeted') || dataValue('boat/catch/targeted'),
+          },
+        })(state),
+        LastCatchSharkRay:
+          x['boat/last_catch_shark_ray'] ||
+          x['boat/catch/last_catch_shark_ray'],
+        WCSPROGRAMS_SharksRaysYesNoID_ReleaseSharkRay: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode:
+              dataValue('boat/release_shark_ray') ||
+              dataValue('boat/catch/release_shark_ray'),
+          },
+        })(state),
+        PercentEat: x['boat/percent_eat'],
+        PercentSell: x['boat/percent_sell'],
+        PercentGive: x['boat/percent_give'],
+        WhereSellFins: x['boat/where_sell_fins'],
+        WhereSellMeat: x['boat/where_sell_meat'],
+        WhereSellOil: x['boat/where_sell_oil'],
+        FinsPrice: x['boat/fins_price'],
+        FinsPriceUsd: x['boat/fins_price_usd'],
+        MeatPrice: x['boat/meat_price'],
+        MeatPriceUsd: x['boat/meat_price_usd'],
+        OilPrice: x['boat/oil_price'],
+        OilPriceUsd: x['boat/oil_price_usd'],
+        NbSharksUnsampled: x['boat/nb_sharks_unsampled'],
+        NbRaysUnsampled: x['boat/nb_rays_unsampled'],
+        NbSharkLikeRaysUnsampled: x['boat/nb_shark_like_rays_unsampled'],
+        SharksraysUuid: x['__parentUuid'],
+        AnswerId: dataValue('_id'),
+        GeneratedUuid: x['__generatedUuid'],
+      });
+    }
+    console.log(mappingBoat);
+    return upsertMany(
+      'WCSPROGRAMS_SharksRaysBoat',
+      'GeneratedUuid',
+      () => mappingBoat, // DD added Boat
+      { setNull: ["''", "'undefined'"] }
+    )(state);
+  }
+  console.log('No "boat" array. Skipping upsert.');
+  return state;
+});
+
+//------------------ WCSPROGRAMS_SharksRaysCatchDetails ---------------
+each(
+  '$.body.boat[*]',
+  alterState(async state => {
+    const dataArray =
+      state.data['boat/catch_details'] ||
+      state.data['boat/catch/catch_details'] ||
+      [];
+
+    if (dataArray.length > 0) {
+      const mappingDetails = []; // DD added Details
+
+      for (let x of dataArray) {
+        mappingDetails.push({
+          // DD added Details
+          WCSPROGRAMS_TypeID_Type: await findValue({
+            uuid: 'wcsprograms_typeid',
+            relation: 'WCSPROGRAMS_type',
+            where: {
+              WCSPROGRAMS_typeExtCode:
+                dataValue('boat/catch_details/type') ||
+                dataValue('boat/catch/catch_details/type'),
+            },
+          })(state),
+          WCSPROGRAMS_GenusID_Genus: await findValue({
+            uuid: 'wcsprograms_genusid',
+            relation: 'WCSPROGRAMS_genus',
+            where: {
+              WCSPROGRAMS_genusExtCode:
+                dataValue('boat/catch_details/genus') ||
+                dataValue('boat/catch/catch_details/genus'),
+            },
+          })(state),
+          //=================================================//
+          // WCSPROGRAMS_SpeciesID_Species: await findValue({
+          //   uuid: 'wcsprograms_speciesid',
+          //   relation: 'WCSPROGRAMS_species',
+          //   where: {
+          //     WCSPROGRAMS_speciesExtCode: dataValue('boat/catch_details/species'),
+          //   },
+          // })(state),
+          //
+          //NOTE: Replaced above auto-mapping with below Taxa mapping
+          WCSPROGRAMS_TaxaID_Species: await findValue({
+            uuid: 'wcsprograms_taxaid',
+            relation: 'WCSPROGRAMS_Taxa',
+            where: {
+              WCSPROGRAMS_TaxaExtCode:
+                dataValue('boat/catch_details/species') ||
+                dataValue('boat/catch/catch_details/species'),
+            },
+          })(state),
+          //=================================================//
+          LocalName:
+            x['boat/catch_details/local_name'] ||
+            x['boat/catch/catch_details/local_name'],
+          WCSPROGRAMS_SexID_Sex: await findValue({
+            uuid: 'wcsprograms_sexid',
+            relation: 'WCSPROGRAMS_sex',
+            where: {
+              WCSPROGRAMS_sexExtCode:
+                dataValue('boat/catch_details/sex') ||
+                dataValue('boat/catch/catch_details/sex'),
+            },
+          })(state),
+          Weight:
+            x['boat/catch_details/weight'] ||
+            x['boat/catch/catch_details/weight'],
+          DiscWidth:
+            x['boat/catch_details/disc_width'] ||
+            x['boat/catch/catch_details/disc_width'],
+          DiscLength:
+            x['boat/catch_details/disc_length'] ||
+            x['boat/catch/catch_details/disc_length'],
+          TotalLength:
+            x['boat/catch_details/total_length'] ||
+            x['boat/catch/catch_details/total_length'],
+          ForkLength:
+            x['boat/catch_details/fork_length'] ||
+            x['boat/catch/catch_details/fork_length'],
+          PrecaudalLength:
+            x['boat/catch_details/precaudal_length'] ||
+            x['boat/catch/catch_details/precaudal_length'],
+          Pic4:
+            x['boat/catch_details/img4/pic_4'] ||
+            x['boat/catch/catch_details/img4/pic_4'],
+          Pic5:
+            x['boat/catch_details/img5/pic_5'] ||
+            x['boat/catch/catch_details/img5/pic_5'],
+          Pic6:
+            x['boat/catch_details/img6/pic6'] ||
+            x['boat/catch/catch_details/img6/pic6'],
+          Pic7:
+            x['boat/catch_details/img7/pic7'] ||
+            x['boat/catch/catch_details/img7/pic7'],
+          Pic8:
+            x['boat/catch_details/img8/pic8'] ||
+            x['boat/catch/catch_details/img8/pic8'],
+          Pic9:
+            x['boat/catch_details/img9/pic9'] ||
+            x['boat/catch/catch_details/img9/pic9'],
+          Pic10:
+            x['boat/catch_details/img10/pic10'] ||
+            x['boat/catch/catch_details/img10/pic10'],
+          Pic11:
+            x['boat/catch_details/img11/pic11'] ||
+            x['boat/catch/catch_details/img11/pic11'],
+          Pic12:
+            x['boat/catch_details/img12/pic12'] ||
+            x['boat/catch/catch_details/img12/pic12'],
+          GearType:
+            x['boat/catch_details/gear_type'] ||
+            x['boat/catch/catch_details/gear_type'],
+          GearTypeOther:
+            x['boat/catch/catch_details/gear_type_other'] ||
+            x['boat/catch/catch_details/gear_type_other'],
+          //=================================================//
+          WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
+            uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+            relation: 'WCSPROGRAMS_SharksRaysYesNo',
+            where: {
+              WCSPROGRAMS_SharksRaysYesNoExtCode:
+                dataValue('boat/catch_details/dna_sample_collected') ||
+                dataValue('boat/catch/catch_details/dna_sample_collected'),
+            },
+          })(state),
+          //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
+          // DnaSampleCollected:
+          //   x['boat/catch_details/dna_sample_collected'] === 'yes'
+          //     ? true
+          //     : x['boat/catch_details/dna_sample_collected'] === 'no'
+          //       ? false
+          //       : undefined,
+          //=================================================//
+          DnaCode:
+            x['boat/catch_details/dna_code'] ||
+            x['boat/catch/catch_details/dna_code'],
+          PriceSoldFor:
+            x['boat/catch_details/price_sold_for'] ||
+            x['boat/catch/catch_details/price_sold_for'],
+          PriceSoldUsd:
+            x['boat/catch_details/price_sold_usd'] ||
+            x['boat/catch/catch_details/price_sold_usd'],
+          Comment:
+            x['boat/catch_details/comment'] ||
+            x['boat/catch/catch_details/comment'],
+          BoatUuid: x['__parentUuid'],
+          AnswerId: dataValue('_id'),
+          GeneratedUuid: x['__generatedUuid'],
+        });
+      }
+      console.log(mappingDetails);
+      return upsertMany(
+        'WCSPROGRAMS_SharksRaysCatchDetails',
+        'GeneratedUuid',
+        () => mappingDetails, // DD added Details
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    }
+    console.log(
+      'No boat/catch_details or boat/catch/catch_details array. Skipping upsert.'
+    );
+    return state;
+  })
+);
+
+//------------------ WCSPROGRAMS_CatchDetailsGear ---------------------
+each(
+  '$.body.boat[*]',
+  each(
+    dataPath('boat/catch_details[*]'),
+    alterState(async state => {
+      const dataArray =
+        state.data['boat/catch_details/gear_type'] ||
+        state.data['boat/catch/catch_details/gear_type'] ||
+        [];
+
+      const mappingGear = []; // DD added Gear
+
+      for (let x of dataArray) {
+        mappingGear.push({
+          // DD added Gear
+          WCSPROGRAMS_GearID: await findValue({
+            uuid: 'wcsprograms_gearid',
+            relation: 'WCSPROGRAMS_Gear',
+            where: {
+              WCSPROGRAMS_GearExtCode: x['name'],
+            },
+          })(state),
+          GeneratedUuid: x['__generatedUuid'],
+          WCSPROGRAMS_CatchDetailsID: await findValue({
+            uuid: 'wcsprograms_catchdetailsid',
+            relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
+            where: {
+              GeneratedUuid: x['__parentUuid'],
+            },
+          })(state),
+        });
+      }
+      console.log(mappingGear);
+      return upsertMany(
+        'WCSPROGRAMS_CatchDetailsGear',
+        'GeneratedUuid', // Check unique constraint on DB.
+        () => mappingGear, // DD added Gear
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+  )
+);
+
+// ---------------- WCSPROGRAMS_SharksRaysSample ----------------------
+each(
+  '$.body.boat[*]',
+  each(
+    dataPath('fish_catch[*]'),
+    alterState(async state => {
+      const dataArray = state.data['boat/fish_catch/sample'] || [];
+
+      const mappingSample = []; // DD added Sample
+
+      for (let x of dataArray) {
+        mappingSample.push({
+          // DD added Sample
+          FishLength: x['boat/fish_catch/sample/fish_length'],
+          FishWeight: x['boat/fish_catch/sample/fish_weight'],
+          FishCatchUuid: x['__parentUuid'],
+          AnswerId: dataValue('_id'),
+          GeneratedUuid: x['__generatedUuid'],
+        });
+      }
+      console.log(mappingSample);
+      return upsertMany(
+        'WCSPROGRAMS_SharksRaysSample',
+        'GeneratedUuid', // Check unique constraint on DB.
+        () => mappingSample, // DD added Sample
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
+  )
+);
+
+//----------------- WCSPROGRAMS_SharksRaysFishCatch -------------------------
+each(
+  '$.body.boat[*]',
+  alterState(async state => {
+    const dataArray = state.data['boat/fish_catch'] || [];
+    if (dataArray.length > 0) {
+      const mappingFish = []; // DD added Fish
+
+      for (let x of dataArray) {
+        mappingFish.push({
+          // DD added Fish
+          WCSPROGRAMS_FishID_FishSpecie: await findValue({
+            uuid: 'wcsprograms_fishid',
+            relation: 'WCSPROGRAMS_fish',
+            where: {
+              WCSPROGRAMS_fishExtCode: dataValue('boat/fish_catch/fish_specie'),
+            },
+          })(state),
+          NbObserved: x['boat/fish_catch/nb_observed'],
+          TotalWeightFish: x['boat/fish_catch/total_weight_fish'],
+          FishPartConsumed: x['boat/fish_catch/fish_part_consumed'],
+          FishPriceKg: x['boat/fish_catch/fish_price_kg'],
+          FishPriceSoldUsd: x['boat/fish_catch/fish_price_sold_usd'],
+          BoatUuid: x['__parentUuid'],
+          AnswerId: dataValue('_id'),
+          GeneratedUuid: x['__generatedUuid'],
+        });
+      }
+      console.log(mappingFish);
+      return upsertMany(
+        'WCSPROGRAMS_SharksRaysFishCatch',
+        'GeneratedUuid', // Check unique constraint on DB.
+        () => mappingFish,
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    }
+    console.log('No "boat/fish_catch array". Skipping upsert.');
+    return state;
+  })
+);
+
+//----------------- WCSPROGRAMS_SharksRaysSales -------------------------
 each(
   '$.body.market_details[*]',
   alterState(async state => {
@@ -318,6 +752,7 @@ each(
   })
 );
 
+//----------------- WCSPROGRAMS_SharksRaysVendor -------------------------
 alterState(async state => {
   const dataArray =
     state.body['market_details/vendor'] ||
@@ -380,389 +815,7 @@ alterState(async state => {
   return state;
 });
 
-each(
-  '$.body.boat[*]',
-  each(
-    dataPath('fish_catch[*]'),
-    alterState(async state => {
-      const dataArray = state.data['boat/fish_catch/sample'] || [];
-
-      const mappingSample = []; // DD added Sample
-
-      for (let x of dataArray) {
-        mappingSample.push({
-          // DD added Sample
-          FishLength: x['boat/fish_catch/sample/fish_length'],
-          FishWeight: x['boat/fish_catch/sample/fish_weight'],
-          FishCatchUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
-          GeneratedUuid: x['__generatedUuid'],
-        });
-      }
-      console.log(mappingSample);
-      return upsertMany(
-        'WCSPROGRAMS_SharksRaysSample',
-        'GeneratedUuid', // Check unique constraint on DB.
-        () => mappingSample, // DD added Sample
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    })
-  )
-);
-
-each(
-  '$.body.boat[*]',
-  alterState(async state => {
-    const dataArray = state.data['boat/fish_catch'] || [];
-    if (dataArray.length > 0) {
-      const mappingFish = []; // DD added Fish
-
-      for (let x of dataArray) {
-        mappingFish.push({
-          // DD added Fish
-          WCSPROGRAMS_FishID_FishSpecie: await findValue({
-            uuid: 'wcsprograms_fishid',
-            relation: 'WCSPROGRAMS_fish',
-            where: {
-              WCSPROGRAMS_fishExtCode: dataValue('boat/fish_catch/fish_specie'),
-            },
-          })(state),
-          NbObserved: x['boat/fish_catch/nb_observed'],
-          TotalWeightFish: x['boat/fish_catch/total_weight_fish'],
-          FishPartConsumed: x['boat/fish_catch/fish_part_consumed'],
-          FishPriceKg: x['boat/fish_catch/fish_price_kg'],
-          FishPriceSoldUsd: x['boat/fish_catch/fish_price_sold_usd'],
-          BoatUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
-          GeneratedUuid: x['__generatedUuid'],
-        });
-      }
-      console.log(mappingFish);
-      return upsertMany(
-        'WCSPROGRAMS_SharksRaysFishCatch',
-        'GeneratedUuid', // Check unique constraint on DB.
-        () => mappingFish,
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    }
-    console.log('No "boat/fish_catch array". Skipping upsert.');
-    return state;
-  })
-);
-
-each(
-  '$.body.boat[*]',
-  alterState(async state => {
-    const dataArray =
-      state.data['boat/catch_details'] ||
-      state.data['boat/catch/catch_details'] ||
-      [];
-
-    if (dataArray.length > 0) {
-      const mappingDetails = []; // DD added Details
-
-      for (let x of dataArray) {
-        mappingDetails.push({
-          // DD added Details
-          WCSPROGRAMS_TypeID_Type: await findValue({
-            uuid: 'wcsprograms_typeid',
-            relation: 'WCSPROGRAMS_type',
-            where: {
-              WCSPROGRAMS_typeExtCode:
-                dataValue('boat/catch_details/type') ||
-                dataValue('boat/catch/catch_details/type'),
-            },
-          })(state),
-          WCSPROGRAMS_GenusID_Genus: await findValue({
-            uuid: 'wcsprograms_genusid',
-            relation: 'WCSPROGRAMS_genus',
-            where: {
-              WCSPROGRAMS_genusExtCode:
-                dataValue('boat/catch_details/genus') ||
-                dataValue('boat/catch/catch_details/genus'),
-            },
-          })(state),
-          //=================================================//
-          // WCSPROGRAMS_SpeciesID_Species: await findValue({
-          //   uuid: 'wcsprograms_speciesid',
-          //   relation: 'WCSPROGRAMS_species',
-          //   where: {
-          //     WCSPROGRAMS_speciesExtCode: dataValue('boat/catch_details/species'),
-          //   },
-          // })(state),
-          //
-          //NOTE: Replaced above auto-mapping with below Taxa mapping
-          WCSPROGRAMS_TaxaID_Species: await findValue({
-            uuid: 'wcsprograms_taxaid',
-            relation: 'WCSPROGRAMS_Taxa',
-            where: {
-              WCSPROGRAMS_TaxaExtCode:
-                dataValue('boat/catch_details/species') ||
-                dataValue('boat/catch/catch_details/species'),
-            },
-          })(state),
-          //=================================================//
-          LocalName:
-            x['boat/catch_details/local_name'] ||
-            x['boat/catch/catch_details/local_name'],
-          WCSPROGRAMS_SexID_Sex: await findValue({
-            uuid: 'wcsprograms_sexid',
-            relation: 'WCSPROGRAMS_sex',
-            where: {
-              WCSPROGRAMS_sexExtCode:
-                dataValue('boat/catch_details/sex') ||
-                dataValue('boat/catch/catch_details/sex'),
-            },
-          })(state),
-          Weight:
-            x['boat/catch_details/weight'] ||
-            x['boat/catch/catch_details/weight'],
-          DiscWidth:
-            x['boat/catch_details/disc_width'] ||
-            x['boat/catch/catch_details/disc_width'],
-          DiscLength:
-            x['boat/catch_details/disc_length'] ||
-            x['boat/catch/catch_details/disc_length'],
-          TotalLength:
-            x['boat/catch_details/total_length'] ||
-            x['boat/catch/catch_details/total_length'],
-          ForkLength:
-            x['boat/catch_details/fork_length'] ||
-            x['boat/catch/catch_details/fork_length'],
-          PrecaudalLength:
-            x['boat/catch_details/precaudal_length'] ||
-            x['boat/catch/catch_details/precaudal_length'],
-          Pic4:
-            x['boat/catch_details/img4/pic_4'] ||
-            x['boat/catch/catch_details/img4/pic_4'],
-          Pic5:
-            x['boat/catch_details/img5/pic_5'] ||
-            x['boat/catch/catch_details/img5/pic_5'],
-          Pic6:
-            x['boat/catch_details/img6/pic6'] ||
-            x['boat/catch/catch_details/img6/pic6'],
-          Pic7:
-            x['boat/catch_details/img7/pic7'] ||
-            x['boat/catch/catch_details/img7/pic7'],
-          Pic8:
-            x['boat/catch_details/img8/pic8'] ||
-            x['boat/catch/catch_details/img8/pic8'],
-          Pic9:
-            x['boat/catch_details/img9/pic9'] ||
-            x['boat/catch/catch_details/img9/pic9'],
-          Pic10:
-            x['boat/catch_details/img10/pic10'] ||
-            x['boat/catch/catch_details/img10/pic10'],
-          Pic11:
-            x['boat/catch_details/img11/pic11'] ||
-            x['boat/catch/catch_details/img11/pic11'],
-          Pic12:
-            x['boat/catch_details/img12/pic12'] ||
-            x['boat/catch/catch_details/img12/pic12'],
-          GearType:
-            x['boat/catch_details/gear_type'] ||
-            x['boat/catch/catch_details/gear_type'],
-          GearTypeOther:
-            x['boat/catch/catch_details/gear_type_other'] ||
-            x['boat/catch/catch_details/gear_type_other'],
-          //=================================================//
-          WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
-            uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-            relation: 'WCSPROGRAMS_SharksRaysYesNo',
-            where: {
-              WCSPROGRAMS_SharksRaysYesNoExtCode:
-                dataValue('boat/catch_details/dna_sample_collected') ||
-                dataValue('boat/catch/catch_details/dna_sample_collected'),
-            },
-          })(state),
-          //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
-          // DnaSampleCollected:
-          //   x['boat/catch_details/dna_sample_collected'] === 'yes'
-          //     ? true
-          //     : x['boat/catch_details/dna_sample_collected'] === 'no'
-          //       ? false
-          //       : undefined,
-          //=================================================//
-          DnaCode:
-            x['boat/catch_details/dna_code'] ||
-            x['boat/catch/catch_details/dna_code'],
-          PriceSoldFor:
-            x['boat/catch_details/price_sold_for'] ||
-            x['boat/catch/catch_details/price_sold_for'],
-          PriceSoldUsd:
-            x['boat/catch_details/price_sold_usd'] ||
-            x['boat/catch/catch_details/price_sold_usd'],
-          Comment:
-            x['boat/catch_details/comment'] ||
-            x['boat/catch/catch_details/comment'],
-          BoatUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
-          GeneratedUuid: x['__generatedUuid'],
-        });
-      }
-      console.log(mappingDetails);
-      return upsertMany(
-        'WCSPROGRAMS_SharksRaysCatchDetails',
-        'GeneratedUuid',
-        () => mappingDetails, // DD added Details
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    }
-    console.log(
-      'No boat/catch_details or boat/catch/catch_details array. Skipping upsert.'
-    );
-    return state;
-  })
-);
-
-alterState(async state => {
-  const dataArray = state.body['boat'] || [];
-
-  if (dataArray.length > 0) {
-    const mappingBoat = []; // DD added Boat
-
-    for (let x of dataArray) {
-      mappingBoat.push({
-        // DD added Boat
-        WCSPROGRAMS_SharksRaysYesNoID_BoatInfo: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info'),
-          },
-        })(state),
-        WCSPROGRAMS_SharksRaysYesNoID_CatchInfo: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/catch_info'),
-          },
-        })(state),
-        WCSPROGRAMS_BoatID_BoatType: await findValue({
-          uuid: 'wcsprograms_boatid',
-          relation: 'WCSPROGRAMS_boat',
-          where: {
-            WCSPROGRAMS_boatExtCode:
-              dataValue('boat/boat_type') || dataValue('boat/catch/boat_type'),
-          },
-        })(state),
-        OtherBoat: x['boat/other_boat'] || x['boat/catch/other_boat'],
-        Crew: x['boat/crew'],
-        WomenCrew: x['boat/women_crew'],
-        Engine: x['boat/engine'] || x['boat/catch/engine'],
-        WCSPROGRAMS_GearID_PrimaryGear: await findValue({
-          uuid: 'wcsprograms_gearid',
-          relation: 'WCSPROGRAMS_gear',
-          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/primary_gear') },
-        })(state),
-        PrimaryNetType: x['boat/primary_net_type'],
-        PrimaryLineType: x['boat/primary_line_type'],
-        PrimaryOtherType: x['boat/primary_other_type'],
-        PrimaryGearLocalName: x['boat/primary_gear_local_name'],
-        PrimaryNetLength: x['boat/primary_net_length'],
-        PrimaryNetHeight: x['boat/primary_net_height'],
-        PrimaryMeshSize: x['boat/primary_mesh_size'],
-        WCSPROGRAMS_UnitID_PrimaryMeshSizeUnit: await findValue({
-          uuid: 'wcsprograms_unitid',
-          relation: 'WCSPROGRAMS_unit',
-          where: {
-            WCSPROGRAMS_unitExtCode: dataValue('boat/primary_mesh_size_unit'),
-          },
-        })(state),
-        PrimaryLinesNb: x['boat/primary_lines_nb'],
-        PrimaryHooksNb: x['boat/primary_hooks_nb'],
-        PrimaryHookSize: x['boat/primary_hook_size'],
-        WCSPROGRAMS_GearID_SecondaryGear: await findValue({
-          uuid: 'wcsprograms_gearid',
-          relation: 'WCSPROGRAMS_gear',
-          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/secondary_gear') },
-        })(state),
-        SecondaryNetType: x['boat/secondary_net_type'],
-        SecondaryLineType: x['boat/secondary_line_type'],
-        SecondaryOtherType: x['boat/secondary_other_type'],
-        SecondaryGearLocalName: x['boat/secondary_gear_local_name'],
-        SecondaryNetLength: x['boat/secondary_net_length'],
-        SecondaryNetHeight: x['boat/secondary_net_height'],
-        SecondaryMeshSize: x['boat/secondary_mesh_size'],
-        WCSPROGRAMS_UnitID_SecondaryMeshSizeUnit: await findValue({
-          uuid: 'wcsprograms_unitid',
-          relation: 'WCSPROGRAMS_unit',
-          where: {
-            WCSPROGRAMS_unitExtCode: dataValue('boat/secondary_mesh_size_unit'),
-          },
-        })(state),
-        SecondaryLinesNb: x['boat/secondary_lines_nb'],
-        SecondaryHooksNb: x['boat/secondary_hooks_nb'],
-        SecondaryHookSize: x['boat/secondary_hook_size'],
-        FishingLocation:
-          x['boat/fishing_location'] || x['boat/catch/fishing_location'],
-        FishingDepth: x['boat/fishing_depth'],
-        WCSPROGRAMS_HabitatID_FishingHabitat: await findValue({
-          uuid: 'wcsprograms_habitatid',
-          relation: 'WCSPROGRAMS_habitat',
-          where: {
-            WCSPROGRAMS_habitatExtCode: dataValue('boat/fishing_habitat'),
-          },
-        })(state),
-        OtherHabitat: x['boat/other_habitat'],
-        DistanceSite: x['boat/distance_site'],
-        FishingStart: x['boat/fishing_start'] || x['boat/catch/fishing_start'],
-        FishingEnd: x['boat/fishing_end'] || x['boat/catch/fishing_end'],
-        FishingTime: x['boat/fishing_time'],
-        TravelTime: x['boat/travel_time'],
-        NbBoats: x['boat/nb_boats'],
-        WCSPROGRAMS_SharksRaysYesNoID_Targeted: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode:
-              dataValue('boat/targeted') || dataValue('boat/catch/targeted'),
-          },
-        })(state),
-        LastCatchSharkRay:
-          x['boat/last_catch_shark_ray'] ||
-          x['boat/catch/last_catch_shark_ray'],
-        WCSPROGRAMS_SharksRaysYesNoID_ReleaseSharkRay: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode:
-              dataValue('boat/release_shark_ray') ||
-              dataValue('boat/catch/release_shark_ray'),
-          },
-        })(state),
-        PercentEat: x['boat/percent_eat'],
-        PercentSell: x['boat/percent_sell'],
-        PercentGive: x['boat/percent_give'],
-        WhereSellFins: x['boat/where_sell_fins'],
-        WhereSellMeat: x['boat/where_sell_meat'],
-        WhereSellOil: x['boat/where_sell_oil'],
-        FinsPrice: x['boat/fins_price'],
-        FinsPriceUsd: x['boat/fins_price_usd'],
-        MeatPrice: x['boat/meat_price'],
-        MeatPriceUsd: x['boat/meat_price_usd'],
-        OilPrice: x['boat/oil_price'],
-        OilPriceUsd: x['boat/oil_price_usd'],
-        NbSharksUnsampled: x['boat/nb_sharks_unsampled'],
-        NbRaysUnsampled: x['boat/nb_rays_unsampled'],
-        NbSharkLikeRaysUnsampled: x['boat/nb_shark_like_rays_unsampled'],
-        SharksraysUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
-        GeneratedUuid: x['__generatedUuid'],
-      });
-    }
-    console.log(mappingBoat);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysBoat',
-      'GeneratedUuid',
-      () => mappingBoat, // DD added Boat
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  }
-  console.log('No "boat" array. Skipping upsert.');
-  return state;
-});
-
+//------------------ WCSPROGRAMS_SalesGear ---------------
 each(
   '$.market_details[*]',
   each(
@@ -807,45 +860,4 @@ each(
   )
 );
 
-each(
-  '$.body.boat[*]',
-  each(
-    dataPath('boat/catch_details[*]'),
-    alterState(async state => {
-      const dataArray =
-        state.data['boat/catch_details/gear_type'] ||
-        state.data['boat/catch/catch_details/gear_type'] ||
-        [];
 
-      const mappingGear = []; // DD added Gear
-
-      for (let x of dataArray) {
-        mappingGear.push({
-          // DD added Gear
-          WCSPROGRAMS_GearID: await findValue({
-            uuid: 'wcsprograms_gearid',
-            relation: 'WCSPROGRAMS_Gear',
-            where: {
-              WCSPROGRAMS_GearExtCode: x['name'],
-            },
-          })(state),
-          GeneratedUuid: x['__generatedUuid'],
-          WCSPROGRAMS_CatchDetailsID: await findValue({
-            uuid: 'wcsprograms_catchdetailsid',
-            relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
-            where: {
-              GeneratedUuid: x['__parentUuid'],
-            },
-          })(state),
-        });
-      }
-      console.log(mappingGear);
-      return upsertMany(
-        'WCSPROGRAMS_CatchDetailsGear',
-        'GeneratedUuid', // Check unique constraint on DB.
-        () => mappingGear, // DD added Gear
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    })
-  )
-);
