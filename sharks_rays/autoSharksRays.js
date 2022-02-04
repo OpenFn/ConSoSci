@@ -787,7 +787,7 @@ each(
                 dataValue('market_details/market_001/vendor/sales/s_gear_type'),
             },
           })(state),
-          WCSPROGRAMS_SalesID: x['__parentUuid'],
+          // WCSPROGRAMS_SalesID: x['__parentUuid'], // SHOULD BE A FINDVALUE??
           GeneratedUuid: x['__generatedUuid'],
           //SalesUuid: x['__parentUuid'],
         });
@@ -827,7 +827,7 @@ each(
                 dataValue('boat/catch/catch_details/gear_type'),
             },
           })(state),
-          WCSPROGRAMS_CatchDetailsID: x['__parentUuid'],
+          // WCSPROGRAMS_CatchDetailsID: x['__parentUuid'], // SHOULD BE A FINDVALUE??
           GeneratedUuid: x['__generatedUuid'], // The column does not exist in the table.
           // CatchDetailsUuid: x['__parentUuid'],
         });
