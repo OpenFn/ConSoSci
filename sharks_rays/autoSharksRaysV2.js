@@ -229,6 +229,7 @@ each(
             relation: 'WCSPROGRAMS_sex',
             where: {
               WCSPROGRAMS_sexExtCode:
+                dataValue('market_details/vendor/vendor_sex') ||
                 dataValue('market_details/vendor/sales/s_sex') ||
                 dataValue('market_details/market_001/vendor/sales/s_sex'),
             },
