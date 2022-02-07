@@ -188,7 +188,7 @@ each(
             uuid: 'wcsprograms_taxaid',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
-              WCSPROGRAMS_TaxaExtCode:
+              ScientificName:
                 dataValue('market_details/vendor/sales/s_species') ||
                 dataValue('market_details/market_001/vendor/sales/s_species'),
             },
@@ -492,7 +492,7 @@ fn(async state => {
           uuid: 'wcsprograms_taxaid',
           relation: 'WCSPROGRAMS_Taxa',
           where: {
-            WCSPROGRAMS_TaxaExtCode: x[`${path}/species`],
+            ScientificName: x[`${path}/species`],
           },
         })(state),
         //=================================================//

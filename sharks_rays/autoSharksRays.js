@@ -329,7 +329,7 @@ each(
             uuid: 'wcsprograms_taxaid',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
-              WCSPROGRAMS_ScientificName:
+              ScientificName:
                 dataValue('boat/catch_details/species') ||
                 dataValue('boat/catch/catch_details/species'),
             },
@@ -665,7 +665,7 @@ each(
             uuid: 'wcsprograms_taxaid',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
-              WCSPROGRAMS_ScientificName:
+              ScientificName:
                 dataValue('market_details/vendor/sales/s_species') ||
                 dataValue('market_details/market_001/vendor/sales/s_species'),
             },
@@ -830,5 +830,3 @@ each(
     })
   )
 );
-
-
