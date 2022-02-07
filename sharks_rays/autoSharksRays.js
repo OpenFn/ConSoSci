@@ -788,9 +788,11 @@ each(
 
 //------------------ WCSPROGRAMS_SalesGear ---------------
 each(
-  '$.market_details[*]',
+  '$.market_details/vendor[*]',
+  //'$.market_details[*]',
   each(
-    dataPath('vendor[*]'),
+    dataPath('market_details/vendor/sales[*]'),
+    //dataPath('vendor[*]'),
     alterState(async state => {
       const dataArray =
         state.data['market_details/vendor/sales/s_gear_type'] ||
