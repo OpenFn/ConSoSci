@@ -320,6 +320,9 @@ each(
 );
 
 fn(async state => {
+  const path = state.body['market_details/vendor']
+    ? 'market_details/vendor'
+    : 'market_details/market_001/vendor';
   const dataArray =
     state.body['market_details/vendor'] ||
     state.body['market_details/market_001/vendor'] ||
@@ -333,9 +336,7 @@ fn(async state => {
           uuid: 'wcsprograms_sexid',
           relation: 'WCSPROGRAMS_sex',
           where: {
-            WCSPROGRAMS_sexExtCode:
-              dataValue('market_details/vendor/vendor_sex') ||
-              dataValue('market_details/market_001/vendor/vendor_sex'),
+            WCSPROGRAMS_sexExtCode: x[`${path}/vendor_sex`],
           },
         })(state),
         WhenLastSellSharkRay:
@@ -345,18 +346,14 @@ fn(async state => {
           uuid: 'wcsprograms_vendorid',
           relation: 'WCSPROGRAMS_vendor',
           where: {
-            WCSPROGRAMS_vendorExtCode:
-              dataValue('market_details/vendor/where_bought') ||
-              dataValue('market_details/market_001/vendor/where_bought'),
+            WCSPROGRAMS_vendorExtCode: x[`${path}/where_bought`],
           },
         })(state),
         WCSPROGRAMS_VendorID_WhoSoldTo: await findValue({
           uuid: 'wcsprograms_vendorid',
           relation: 'WCSPROGRAMS_vendor',
           where: {
-            WCSPROGRAMS_vendorExtCode:
-              dataValue('market_details/vendor/who_sold_to') ||
-              dataValue('market_details/market001/vendor/who_sold_to'),
+            WCSPROGRAMS_vendorExtCode: x[`${path}/who_sold_to`],
           },
         })(state),
         WhoSoldOther:
@@ -704,53 +701,63 @@ fn(async state => {
   )(state);
 });
 
-each(
-  '$.market_details[*]',
-  each(
-    dataPath('vendor[*]'),
-    fn(async state => {
-      const path = state.data['market_details/vendor/sales']
-        ? 'market_details/vendor/sales'
-        : 'market_details/market_001/vendor/sales';
-      const dataArray =
-        state.data['market_details/vendor/sales'] ||
-        state.data['market_details/market_001/vendor/sales'] ||
-        [];
+fn(state => {
+  const outerPath = state.body['market_details/vendor']
+    ? 'market_details/vendor'
+    : 'market_details/market_001/vendor';
+  const outerDataArray =
+    state.body['market_details/vendor'] ||
+    state.body['market_details/market_001/vendor'] ||
+    [];
 
-      const mappingSGear = []; // DD added SGear
+  if (outerDataArray.length > 0) {
+    return each(
+      outerDataArray,
+      fn(async state => {
+        const dataArray = state.data[`${outerPath}/sales`];
+        const nestedPath = `${outerPath}/sales`;
 
-      for (let x of dataArray) {
-        mappingSGear.push({
-          // DD added SGear
-          WCSPROGRAMS_GearID: await findValue({
-            uuid: 'wcsprograms_gearid',
-            relation: 'WCSPROGRAMS_Gear',
-            where: {
-              WCSPROGRAMS_GearExtCode: x[`${path}/s_gear_type`],
-            },
-          })(state),
-          // WCSPROGRAMS_SalesID: x['__parentUuid'],
-          WCSPROGRAMS_SalesID: await findValue({
-            uuid: 'wcsprograms_salessid',
-            relation: 'WCSPROGRAMS_SharksRaysSales',
-            where: {
-              GeneratedUuid: x['__parentUuid'],
-            },
-          })(state),
-          GeneratedUuid: x['__generatedUuid'],
-          // SalesUuid: x['__parentUuid'],
-        });
-      }
-      console.log(mappingSGear);
-      return upsertMany(
-        'WCSPROGRAMS_SalesGear',
-        'GeneratedUuid', // Check unique constraint on DB.
-        () => mappingSGear, // DD added SGear
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    })
-  )
-);
+        if (dataArray.length > 0) {
+          const mappingSGear = []; // DD added SGear
+          for (let x of dataArray) {
+            mappingSGear.push({
+              // DD added SGear
+              WCSPROGRAMS_GearID: await findValue({
+                uuid: 'wcsprograms_gearid',
+                relation: 'WCSPROGRAMS_Gear',
+                where: {
+                  WCSPROGRAMS_GearExtCode: x[`${nestedPath}/s_gear_type`],
+                },
+              })(state),
+              // WCSPROGRAMS_SalesID: x['__parentUuid'],
+              WCSPROGRAMS_SalesID: await findValue({
+                uuid: 'wcsprograms_salesid',
+                relation: 'WCSPROGRAMS_SharksRaysSales',
+                where: {
+                  GeneratedUuid: x['__parentUuid'],
+                },
+              })(state),
+              GeneratedUuid: x['__generatedUuid'],
+              // SalesUuid: x['__parentUuid'],
+            });
+          }
+          console.log(mappingSGear);
+          return upsertMany(
+            'WCSPROGRAMS_SalesGear',
+            'GeneratedUuid', // Check unique constraint on DB.
+            () => mappingSGear, // DD added SGear
+            { setNull: ["''", "'undefined'"] }
+          )(state);
+        }
+        return state;
+      })
+    )(state);
+  }
+  console.log(
+    'No "market_details/vendor" or "market_details/market_001/vendor" array. Skipping upsert.'
+  );
+  return state;
+});
 
 fn(async state => {
   const path = state.data['boat/catch_details']
