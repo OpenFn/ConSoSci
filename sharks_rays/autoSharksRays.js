@@ -1,4 +1,9 @@
 alterState(state => {
+  const handleValue = value => {
+    if (value && value !== undefined && value !== 'undefined' && value !== '')
+      return value ? value.toString().replace(/_/g, ' ') : value;
+  };
+
   const multiSelectIds = ['gear_type', 's_gear_type'];
   const { body } = state.data;
 
@@ -52,7 +57,7 @@ alterState(state => {
   );
 
   state.data = { ...state.data, ...state.data.body };
-  return { ...state, body };
+  return { ...state, body, handleValue };
 });
 
 //------------------ WCSPROGRAMS_KoboDataset -------------------------
@@ -296,6 +301,9 @@ alterState(async state => {
 each(
   '$.body.boat[*]',
   alterState(async state => {
+    const path = state.data['boat/catch_details']
+      ? 'boat/catch_details'
+      : 'boat/catch/catch_details';
     const dataArray =
       state.data['boat/catch_details'] ||
       state.data['boat/catch/catch_details'] ||
@@ -311,27 +319,21 @@ each(
             uuid: 'wcsprograms_typeid',
             relation: 'WCSPROGRAMS_type',
             where: {
-              WCSPROGRAMS_typeExtCode:
-                dataValue('boat/catch_details/type') ||
-                dataValue('boat/catch/catch_details/type'),
+              WCSPROGRAMS_typeExtCode: x[`${path}/type`],
             },
           })(state),
           WCSPROGRAMS_GenusID_Genus: await findValue({
             uuid: 'wcsprograms_genusid',
             relation: 'WCSPROGRAMS_genus',
             where: {
-              WCSPROGRAMS_genusExtCode:
-                dataValue('boat/catch_details/genus') ||
-                dataValue('boat/catch/catch_details/genus'),
+              WCSPROGRAMS_genusExtCode: x[`${path}/genus`],
             },
           })(state),
           WCSPROGRAMS_TaxaID_Species: await findValue({
             uuid: 'wcsprograms_taxaid',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
-              ScientificName:
-                dataValue('boat/catch_details/species') ||
-                dataValue('boat/catch/catch_details/species'),
+              ScientificName: state.handleValue(x[`${path}/species`]),
             },
           })(state),
           LocalName:
@@ -341,9 +343,7 @@ each(
             uuid: 'wcsprograms_sexid',
             relation: 'WCSPROGRAMS_sex',
             where: {
-              WCSPROGRAMS_sexExtCode:
-                dataValue('boat/catch_details/sex') ||
-                dataValue('boat/catch/catch_details/sex'),
+              WCSPROGRAMS_sexExtCode: x[`${path}/sex`],
             },
           })(state),
           Weight:
@@ -402,8 +402,7 @@ each(
             relation: 'WCSPROGRAMS_SharksRaysYesNo',
             where: {
               WCSPROGRAMS_SharksRaysYesNoExtCode:
-                dataValue('boat/catch_details/dna_sample_collected') ||
-                dataValue('boat/catch/catch_details/dna_sample_collected'),
+                x[`${path}/dna_sample_collected`],
             },
           })(state),
           DnaCode:
@@ -621,6 +620,9 @@ alterState(async state => {
 each(
   '$.body.market_details[*]',
   alterState(async state => {
+    const path = state.data['market_details/vendor/sales']
+      ? 'market_details/vendor/sales'
+      : 'market_details/market_001/vendor/sales';
     const dataArray =
       state.data['market_details/vendor/sales'] ||
       state.data['market_details/market_001/vendor/sales'] ||
@@ -636,18 +638,14 @@ each(
             uuid: 'wcsprograms_typeid',
             relation: 'WCSPROGRAMS_type',
             where: {
-              WCSPROGRAMS_typeExtCode:
-                dataValue('market_details/vendor/sales/s_type') ||
-                dataValue('market_details/market_001/vendor/sales/s_type'),
+              WCSPROGRAMS_typeExtCode: x[`${path}/s_type`],
             },
           })(state),
           WCSPROGRAMS_GenusID_SGenus: await findValue({
             uuid: 'wcsprograms_genusid',
             relation: 'WCSPROGRAMS_genus',
             where: {
-              WCSPROGRAMS_genusExtCode:
-                dataValue('market_details/vendor/sales/s_genus') ||
-                dataValue('market_details/market_001/vendor/sales/s_genus'),
+              WCSPROGRAMS_genusExtCode: x[`${path}/s_genus`],
             },
           })(state),
           //=================================================//
@@ -665,9 +663,7 @@ each(
             uuid: 'wcsprograms_taxaid',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
-              ScientificName:
-                dataValue('market_details/vendor/sales/s_species') ||
-                dataValue('market_details/market_001/vendor/sales/s_species'),
+              ScientificName: state.handleValue(x[`${path}/s_species`]),
             },
           })(state),
           //=================================================//
@@ -705,9 +701,7 @@ each(
             uuid: 'wcsprograms_sexid',
             relation: 'WCSPROGRAMS_sex',
             where: {
-              WCSPROGRAMS_sexExtCode:
-                dataValue('market_details/vendor/sales/s_sex') ||
-                dataValue('market_details/market_001/vendor/sales/s_sex'),
+              WCSPROGRAMS_sexExtCode: x[`${path}/s_sex`],
             },
           })(state),
           SWeight:
@@ -746,12 +740,7 @@ each(
             relation: 'WCSPROGRAMS_SharksRaysYesNo',
             where: {
               WCSPROGRAMS_SharksRaysYesNoExtCode:
-                dataValue(
-                  'market_details/vendor/sales/s_dna_sample_collected'
-                ) ||
-                dataValue(
-                  'market_details/market_001/vendor/sales/s_dna_sample_collected'
-                ),
+                x[`${path}/s_dna_sample_collected`],
             },
           })(state),
           SDnaCode:
