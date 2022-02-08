@@ -555,6 +555,9 @@ each(
 
 //----------------- WCSPROGRAMS_SharksRaysVendor -------------------------
 alterState(async state => {
+  const path = state.body['market_details/vendor']
+    ? 'market_details/vendor'
+    : 'market_details/market_001/vendor';
   const dataArray =
     state.body['market_details/vendor'] ||
     state.body['market_details/market_001/vendor'] ||
@@ -568,9 +571,7 @@ alterState(async state => {
           uuid: 'wcsprograms_sexid',
           relation: 'WCSPROGRAMS_sex',
           where: {
-            WCSPROGRAMS_sexExtCode:
-              dataValue('market_details/vendor/vendor_sex') ||
-              dataValue('market_details/market_001/vendor/vendor_sex'),
+            WCSPROGRAMS_sexExtCode: x[`${path}/vendor_sex`],
           },
         })(state),
         WhenLastSellSharkRay:
@@ -580,18 +581,14 @@ alterState(async state => {
           uuid: 'wcsprograms_vendorid',
           relation: 'WCSPROGRAMS_vendor',
           where: {
-            WCSPROGRAMS_vendorExtCode:
-              dataValue('market_details/vendor/where_bought') ||
-              dataValue('market_details/market_001/vendor/where_bought'),
+            WCSPROGRAMS_vendorExtCode: x[`${path}/where_bought`],
           },
         })(state),
         WCSPROGRAMS_VendorID_WhoSoldTo: await findValue({
           uuid: 'wcsprograms_vendorid',
           relation: 'WCSPROGRAMS_vendor',
           where: {
-            WCSPROGRAMS_vendorExtCode:
-              dataValue('market_details/vendor/who_sold_to') ||
-              dataValue('market_details/market001/vendor/who_sold_to'),
+            WCSPROGRAMS_vendorExtCode: x[`${path}/who_sold_to`],
           },
         })(state),
         WhoSoldOther:
@@ -777,7 +774,7 @@ each(
 
 //------------------ WCSPROGRAMS_SalesGear ---------------
 each(
-  '$.market_details/vendor[*]',
+  '$.body.market_details/vendor[*]',
   //'$.market_details[*]',
   each(
     dataPath('market_details/vendor/sales[*]'),
@@ -802,7 +799,7 @@ each(
           })(state),
           GeneratedUuid: x['__generatedUuid'],
           WCSPROGRAMS_SalesID: await findValue({
-            uuid: 'wcsprograms_salessid',
+            uuid: 'wcsprograms_salesid',
             relation: 'WCSPROGRAMS_SharksRaysSales',
             where: {
               GeneratedUuid: x['__parentUuid'],
