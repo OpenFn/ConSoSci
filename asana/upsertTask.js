@@ -97,13 +97,15 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
 });
 
 upsertTask(
-  '1201382240883590',
+  dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job
+  //'1201382240883590', //hardcoded project id
   {
     externalId: "name", // Asana external Id field name (e.g., 'gid')
     data: {
       name: state =>
         `Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-      projects: ['1201382240883590'], //WCS project gid
+      projects: state => `[${dataValue('projectid')(state)}]`, //to dynamically map project id, assuming it's defined in the Get job
+      //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
       notes: state =>
         `DETAILS:
         WCS Staff name: ${dataValue('body.StaffName')(state)}.
