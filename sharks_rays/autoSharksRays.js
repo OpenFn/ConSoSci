@@ -162,14 +162,14 @@ alterState(async state => {
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/boat_info'),
+            WCSPROGRAMS_SharksRaysYesNoExtCode: x['boat/boat_info'],
           },
         })(state),
         WCSPROGRAMS_SharksRaysYesNoID_CatchInfo: await findValue({
           uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode: dataValue('boat/catch_info'),
+            WCSPROGRAMS_SharksRaysYesNoExtCode: x['boat/catch_info'],
           },
         })(state),
         WCSPROGRAMS_BoatID_BoatType: await findValue({
@@ -177,7 +177,7 @@ alterState(async state => {
           relation: 'WCSPROGRAMS_boat',
           where: {
             WCSPROGRAMS_boatExtCode:
-              dataValue('boat/boat_type') || dataValue('boat/catch/boat_type'),
+              x['boat/boat_type'] || x['boat/catch/boat_type'],
           },
         })(state),
         OtherBoat: x['boat/other_boat'] || x['boat/catch/other_boat'],
@@ -187,7 +187,7 @@ alterState(async state => {
         WCSPROGRAMS_GearID_PrimaryGear: await findValue({
           uuid: 'wcsprograms_gearid',
           relation: 'WCSPROGRAMS_gear',
-          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/primary_gear') },
+          where: { WCSPROGRAMS_gearExtCode: x['boat/primary_gear'] },
         })(state),
         PrimaryNetType: x['boat/primary_net_type'],
         PrimaryLineType: x['boat/primary_line_type'],
@@ -200,7 +200,7 @@ alterState(async state => {
           uuid: 'wcsprograms_unitid',
           relation: 'WCSPROGRAMS_unit',
           where: {
-            WCSPROGRAMS_unitExtCode: dataValue('boat/primary_mesh_size_unit'),
+            WCSPROGRAMS_unitExtCode: x['boat/primary_mesh_size_unit'],
           },
         })(state),
         PrimaryLinesNb: x['boat/primary_lines_nb'],
@@ -209,7 +209,7 @@ alterState(async state => {
         WCSPROGRAMS_GearID_SecondaryGear: await findValue({
           uuid: 'wcsprograms_gearid',
           relation: 'WCSPROGRAMS_gear',
-          where: { WCSPROGRAMS_gearExtCode: dataValue('boat/secondary_gear') },
+          where: { WCSPROGRAMS_gearExtCode: x['boat/secondary_gear'] },
         })(state),
         SecondaryNetType: x['boat/secondary_net_type'],
         SecondaryLineType: x['boat/secondary_line_type'],
@@ -222,7 +222,7 @@ alterState(async state => {
           uuid: 'wcsprograms_unitid',
           relation: 'WCSPROGRAMS_unit',
           where: {
-            WCSPROGRAMS_unitExtCode: dataValue('boat/secondary_mesh_size_unit'),
+            WCSPROGRAMS_unitExtCode: x['boat/secondary_mesh_size_unit'],
           },
         })(state),
         SecondaryLinesNb: x['boat/secondary_lines_nb'],
@@ -235,7 +235,7 @@ alterState(async state => {
           uuid: 'wcsprograms_habitatid',
           relation: 'WCSPROGRAMS_habitat',
           where: {
-            WCSPROGRAMS_habitatExtCode: dataValue('boat/fishing_habitat'),
+            WCSPROGRAMS_habitatExtCode: x['boat/fishing_habitat'],
           },
         })(state),
         OtherHabitat: x['boat/other_habitat'],
@@ -250,7 +250,7 @@ alterState(async state => {
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
             WCSPROGRAMS_SharksRaysYesNoExtCode:
-              dataValue('boat/targeted') || dataValue('boat/catch/targeted'),
+              x['boat/targeted'] || x['boat/catch/targeted'],
           },
         })(state),
         LastCatchSharkRay:
@@ -261,8 +261,7 @@ alterState(async state => {
           relation: 'WCSPROGRAMS_SharksRaysYesNo',
           where: {
             WCSPROGRAMS_SharksRaysYesNoExtCode:
-              dataValue('boat/release_shark_ray') ||
-              dataValue('boat/catch/release_shark_ray'),
+              x['boat/release_shark_ray'] || x['boat/catch/release_shark_ray'],
           },
         })(state),
         PercentEat: x['boat/percent_eat'],
@@ -527,7 +526,7 @@ each(
             uuid: 'wcsprograms_fishid',
             relation: 'WCSPROGRAMS_fish',
             where: {
-              WCSPROGRAMS_fishExtCode: dataValue('boat/fish_catch/fish_specie'),
+              WCSPROGRAMS_fishExtCode: x['boat/fish_catch/fish_specie'],
             },
           })(state),
           NbObserved: x['boat/fish_catch/nb_observed'],
