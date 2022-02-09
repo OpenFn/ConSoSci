@@ -613,163 +613,164 @@ alterState(async state => {
 });
 
 //----------------- WCSPROGRAMS_SharksRaysSales -------------------------
-// each(
-//   '$.body.market_details[*]',
-alterState(async state => {
-  const path = state.data['market_details/vendor/sales']
-    ? 'market_details/vendor/sales'
-    : 'market_details/market_001/vendor/sales';
-  const dataArray =
-    state.data['market_details/vendor/sales'] ||
-    state.data['market_details/market_001/vendor/sales'] ||
-    [];
+each(
+  //'$.market_details[*]',
+  '$.body.market_details/vendor[*]',
+  alterState(async state => {
+    const path = state.data['market_details/vendor/sales']
+      ? 'market_details/vendor/sales'
+      : 'market_details/market_001/vendor/sales';
+    const dataArray =
+      state.data['market_details/vendor/sales'] ||
+      state.data['market_details/market_001/vendor/sales'] ||
+      [];
 
-  if (dataArray.length > 0) {
-    const mappingSales = []; // DD added Sales to give specific mapping name
+    if (dataArray.length > 0) {
+      const mappingSales = []; // DD added Sales to give specific mapping name
 
-    for (let x of dataArray) {
-      mappingSales.push({
-        // DD added Sales to give specific mapping name
-        WCSPROGRAMS_TypeID_SType: await findValue({
-          uuid: 'wcsprograms_typeid',
-          relation: 'WCSPROGRAMS_type',
-          where: {
-            WCSPROGRAMS_typeExtCode: x[`${path}/s_type`],
-          },
-        })(state),
-        WCSPROGRAMS_GenusID_SGenus: await findValue({
-          uuid: 'wcsprograms_genusid',
-          relation: 'WCSPROGRAMS_genus',
-          where: {
-            WCSPROGRAMS_genusExtCode: x[`${path}/s_genus`],
-          },
-        })(state),
-        //=================================================//
-        // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
-        //   uuid: 'wcsprograms_speciesid',
-        //   relation: 'WCSPROGRAMS_species',
-        //   where: {
-        //     WCSPROGRAMS_speciesExtCode: dataValue(
-        //       'market_details/vendor/sales/s_species'
-        //     ),
-        //   },
-        // })(state),
-        //NOTE: Replaced above auto-mapping with below Taxa mapping
-        WCSPROGRAMS_TaxaID_SSpecies: await findValue({
-          uuid: 'wcsprograms_taxaid',
-          relation: 'WCSPROGRAMS_Taxa',
-          where: {
-            ScientificName: state.handleValue(x[`${path}/s_species`]),
-          },
-        })(state),
-        //=================================================//
-        SPic4:
-          x['market_details/vendor/sales/s_img4/s_pic_4'] ||
-          x['market_details/market_001/vendor/sales/s_img4/s_pic_4'],
-        SPic5:
-          x['market_details/vendor/sales/s_img5/s_pic_5'] ||
-          x['market_details/market_001/vendor/sales/s_img5/s_pic_5'],
-        SPic6:
-          x['market_details/vendor/sales/s_img6/s_pic6'] ||
-          x['market_details/market_001/vendor/sales/s_img6/s_pic6'],
-        SPic7:
-          x['market_details/vendor/sales/s_img7/s_pic7'] ||
-          x['market_details/market_001/vendor/sales/s_img7/s_pic7'],
-        SPic8:
-          x['market_details/vendor/sales/s_img8/s_pic8'] ||
-          x['market_details/market_001/vendor/sales/s_img8/s_pic8'],
-        SPic9:
-          x['market_details/vendor/sales/s_img9/s_pic9'] ||
-          x['market_details/market_001/vendor/sales/s_img9/s_pic9'],
-        SPic10:
-          x['market_details/vendor/sales/s_img10/s_pic10'] ||
-          x['market_details/market_001/vendor/sales/s_img10/s_pic10'],
-        SPic11:
-          x['market_details/vendor/sales/s_img11/s_pic11'] ||
-          x['market_details/market_001/vendor/sales/s_img11/s_pic11'],
-        SPic12:
-          x['market_details/vendor/sales/s_img12/s_pic12'] ||
-          x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
-        SLocalName:
-          x['market_details/vendor/sales/s_local_name'] ||
-          x['market_details/market_001/vendor/sales/s_local_name'],
-        WCSPROGRAMS_SexID_SSex: await findValue({
-          uuid: 'wcsprograms_sexid',
-          relation: 'WCSPROGRAMS_sex',
-          where: {
-            WCSPROGRAMS_sexExtCode: x[`${path}/s_sex`],
-          },
-        })(state),
-        SWeight:
-          x['market_details/vendor/sales/s_weight'] ||
-          x['market_details/market_001/vendor/sales/s_weight'],
-        SDiscWidth:
-          x['market_details/vendor/sales/s_disc_width'] ||
-          x['market_details/market_001/vendor/sales/s_disc_width'],
-        SDiscLength:
-          x['market_details/vendor/sales/s_disc_length'] ||
-          x['market_details/market_001/vendor/sales/s_disc_length'],
-        STotalLength:
-          x['market_details/vendor/sales/s_total_length'] ||
-          x['market_details/market_001/vendor/sales/s_total_length'],
-        SPrecaudalLength:
-          x['market_details/vendor/sales/s_precaudal_length'] ||
-          x['market_details/market_001/vendor/sales/s_precaudal_length'],
-        SForkLength:
-          x['market_details/vendor/sales/s_fork_length'] ||
-          x['market_details/market_001/vendor/sales/s_fork_length'],
-        SCarapaceLength:
-          x['market_details/vendor/sales/s_carapace_length'] ||
-          x['market_details/market_001/vendor/sales/s_carapace_length'],
-        SCarapaceWidth:
-          x['market_details/vendor/sales/s_carapace_width'] ||
-          x['market_details/market_001/vendor/sales/s_carapace_width'],
-        SGearType:
-          x['market_details/vendor/sales/s_gear_type'] ||
-          x['market_details/market_001/vendor/sales/s_gear_type'],
-        SGearTypeOther:
-          x['market_details/vendor/sales/s_gear_type_other'] ||
-          x['market_details/market_001/vendor/sales/s_gear_type_other'],
-        //=== Adjusted to match WCS table name
-        WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode:
-              x[`${path}/s_dna_sample_collected`],
-          },
-        })(state),
-        SDnaCode:
-          x['market_details/vendor/sales/s_dna_code'] ||
-          x['market_details/market_001/vendor/sales/s_dna_code'],
-        SPriceSoldFor:
-          x['market_details/vendor/sales/s_price_sold_for'] ||
-          x['market_details/market_001/vendor/sales/s_price_sold_for'],
-        SPriceSoldUsd:
-          x['market_details/vendor/sales/s_price_sold_usd'] ||
-          x['market_details/market_001/vendor/sales/s_price_sold_usd'],
-        SComment:
-          x['market_details/vendor/sales/s_comment'] ||
-          x['market_details/market_001/vendor/sales/s_comment'],
-        VendorUuid: x['__parentUuid'],
-        AnswerId: state.body._id,
-        GeneratedUuid: x['__generatedUuid'],
-      });
+      for (let x of dataArray) {
+        mappingSales.push({
+          // DD added Sales to give specific mapping name
+          WCSPROGRAMS_TypeID_SType: await findValue({
+            uuid: 'wcsprograms_typeid',
+            relation: 'WCSPROGRAMS_type',
+            where: {
+              WCSPROGRAMS_typeExtCode: x[`${path}/s_type`],
+            },
+          })(state),
+          WCSPROGRAMS_GenusID_SGenus: await findValue({
+            uuid: 'wcsprograms_genusid',
+            relation: 'WCSPROGRAMS_genus',
+            where: {
+              WCSPROGRAMS_genusExtCode: x[`${path}/s_genus`],
+            },
+          })(state),
+          //=================================================//
+          // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
+          //   uuid: 'wcsprograms_speciesid',
+          //   relation: 'WCSPROGRAMS_species',
+          //   where: {
+          //     WCSPROGRAMS_speciesExtCode: dataValue(
+          //       'market_details/vendor/sales/s_species'
+          //     ),
+          //   },
+          // })(state),
+          //NOTE: Replaced above auto-mapping with below Taxa mapping
+          WCSPROGRAMS_TaxaID_SSpecies: await findValue({
+            uuid: 'wcsprograms_taxaid',
+            relation: 'WCSPROGRAMS_Taxa',
+            where: {
+              ScientificName: state.handleValue(x[`${path}/s_species`]),
+            },
+          })(state),
+          //=================================================//
+          SPic4:
+            x['market_details/vendor/sales/s_img4/s_pic_4'] ||
+            x['market_details/market_001/vendor/sales/s_img4/s_pic_4'],
+          SPic5:
+            x['market_details/vendor/sales/s_img5/s_pic_5'] ||
+            x['market_details/market_001/vendor/sales/s_img5/s_pic_5'],
+          SPic6:
+            x['market_details/vendor/sales/s_img6/s_pic6'] ||
+            x['market_details/market_001/vendor/sales/s_img6/s_pic6'],
+          SPic7:
+            x['market_details/vendor/sales/s_img7/s_pic7'] ||
+            x['market_details/market_001/vendor/sales/s_img7/s_pic7'],
+          SPic8:
+            x['market_details/vendor/sales/s_img8/s_pic8'] ||
+            x['market_details/market_001/vendor/sales/s_img8/s_pic8'],
+          SPic9:
+            x['market_details/vendor/sales/s_img9/s_pic9'] ||
+            x['market_details/market_001/vendor/sales/s_img9/s_pic9'],
+          SPic10:
+            x['market_details/vendor/sales/s_img10/s_pic10'] ||
+            x['market_details/market_001/vendor/sales/s_img10/s_pic10'],
+          SPic11:
+            x['market_details/vendor/sales/s_img11/s_pic11'] ||
+            x['market_details/market_001/vendor/sales/s_img11/s_pic11'],
+          SPic12:
+            x['market_details/vendor/sales/s_img12/s_pic12'] ||
+            x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
+          SLocalName:
+            x['market_details/vendor/sales/s_local_name'] ||
+            x['market_details/market_001/vendor/sales/s_local_name'],
+          WCSPROGRAMS_SexID_SSex: await findValue({
+            uuid: 'wcsprograms_sexid',
+            relation: 'WCSPROGRAMS_sex',
+            where: {
+              WCSPROGRAMS_sexExtCode: x[`${path}/s_sex`],
+            },
+          })(state),
+          SWeight:
+            x['market_details/vendor/sales/s_weight'] ||
+            x['market_details/market_001/vendor/sales/s_weight'],
+          SDiscWidth:
+            x['market_details/vendor/sales/s_disc_width'] ||
+            x['market_details/market_001/vendor/sales/s_disc_width'],
+          SDiscLength:
+            x['market_details/vendor/sales/s_disc_length'] ||
+            x['market_details/market_001/vendor/sales/s_disc_length'],
+          STotalLength:
+            x['market_details/vendor/sales/s_total_length'] ||
+            x['market_details/market_001/vendor/sales/s_total_length'],
+          SPrecaudalLength:
+            x['market_details/vendor/sales/s_precaudal_length'] ||
+            x['market_details/market_001/vendor/sales/s_precaudal_length'],
+          SForkLength:
+            x['market_details/vendor/sales/s_fork_length'] ||
+            x['market_details/market_001/vendor/sales/s_fork_length'],
+          SCarapaceLength:
+            x['market_details/vendor/sales/s_carapace_length'] ||
+            x['market_details/market_001/vendor/sales/s_carapace_length'],
+          SCarapaceWidth:
+            x['market_details/vendor/sales/s_carapace_width'] ||
+            x['market_details/market_001/vendor/sales/s_carapace_width'],
+          SGearType:
+            x['market_details/vendor/sales/s_gear_type'] ||
+            x['market_details/market_001/vendor/sales/s_gear_type'],
+          SGearTypeOther:
+            x['market_details/vendor/sales/s_gear_type_other'] ||
+            x['market_details/market_001/vendor/sales/s_gear_type_other'],
+          //=== Adjusted to match WCS table name
+          WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected: await findValue({
+            uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+            relation: 'WCSPROGRAMS_SharksRaysYesNo',
+            where: {
+              WCSPROGRAMS_SharksRaysYesNoExtCode:
+                x[`${path}/s_dna_sample_collected`],
+            },
+          })(state),
+          SDnaCode:
+            x['market_details/vendor/sales/s_dna_code'] ||
+            x['market_details/market_001/vendor/sales/s_dna_code'],
+          SPriceSoldFor:
+            x['market_details/vendor/sales/s_price_sold_for'] ||
+            x['market_details/market_001/vendor/sales/s_price_sold_for'],
+          SPriceSoldUsd:
+            x['market_details/vendor/sales/s_price_sold_usd'] ||
+            x['market_details/market_001/vendor/sales/s_price_sold_usd'],
+          SComment:
+            x['market_details/vendor/sales/s_comment'] ||
+            x['market_details/market_001/vendor/sales/s_comment'],
+          VendorUuid: x['__parentUuid'],
+          AnswerId: state.body._id,
+          GeneratedUuid: x['__generatedUuid'],
+        });
+      }
+      console.log(mappingSales);
+      return upsertMany(
+        'WCSPROGRAMS_SharksRaysSales',
+        'GeneratedUuid', // Check unique constraint on DB.
+        () => mappingSales, // DD added Sales to give specific name to mapping
+        { setNull: ["''", "'undefined'"] }
+      )(state);
     }
-    console.log(mappingSales);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysSales',
-      'GeneratedUuid', // Check unique constraint on DB.
-      () => mappingSales, // DD added Sales to give specific name to mapping
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  }
-  console.log(
-    'No market_details/vendor/sales or market_details/market_001/vendor/sales array. Skipping upsert.'
-  );
-  return state;
-});
-//);
+    console.log(
+      'No market_details/vendor/sales or market_details/market_001/vendor/sales array. Skipping upsert.'
+    );
+    return state;
+  })
+);
 
 //------------------ WCSPROGRAMS_SalesGear ---------------
 each(
