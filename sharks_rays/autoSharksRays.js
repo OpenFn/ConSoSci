@@ -138,7 +138,7 @@ alterState(async state => {
       state.data.gps ? state.data.gps.split(' ')[0] : undefined,
     Longitude: state =>
       state.data.gps ? state.data.gps.split(' ')[1] : undefined,
-    AnswerId: dataValue('_id'),
+    AnswerId: dataValue('body._id'),
     GeneratedUuid: dataValue('__generatedUuid'),
     Payload: state.data.body,
   };
