@@ -329,7 +329,7 @@ each(
             },
           })(state),
           WCSPROGRAMS_TaxaID_Species: await findValue({
-            uuid: 'wcsprograms_taxaid',
+            uuid: 'WCSPROGRAMS_TaxaID',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
               ScientificName: state.handleValue(x[`${path}/species`]),
@@ -657,7 +657,7 @@ each(
           // })(state),
           //NOTE: Replaced above auto-mapping with below Taxa mapping
           WCSPROGRAMS_TaxaID_SSpecies: await findValue({
-            uuid: 'wcsprograms_taxaid',
+            uuid: 'WCSPROGRAMS_TaxaID',
             relation: 'WCSPROGRAMS_Taxa',
             where: {
               ScientificName: state.handleValue(x[`${path}/s_species`]),
