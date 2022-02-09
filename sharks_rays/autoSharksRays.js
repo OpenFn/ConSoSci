@@ -47,9 +47,9 @@ alterState(state => {
     }
   }
 
-  multiSelectIds.forEach(msIds => {
-    convertMultiSelectsIntoArrays(state.data.body, msIds);
-  });
+  // multiSelectIds.forEach(msIds => {
+  //   convertMultiSelectsIntoArrays(state.data.body, msIds);
+  // });
 
   generateUuid(
     state.data.body,
@@ -138,7 +138,7 @@ alterState(async state => {
       state.data.gps ? state.data.gps.split(' ')[0] : undefined,
     Longitude: state =>
       state.data.gps ? state.data.gps.split(' ')[1] : undefined,
-    AnswerId: dataValue('body._id'),
+    AnswerId: state.body._id,
     GeneratedUuid: dataValue('__generatedUuid'),
     Payload: state.data.body,
   };
@@ -281,7 +281,7 @@ alterState(async state => {
         NbRaysUnsampled: x['boat/nb_rays_unsampled'],
         NbSharkLikeRaysUnsampled: x['boat/nb_shark_like_rays_unsampled'],
         SharksraysUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
+        AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
       });
     }
@@ -418,7 +418,7 @@ each(
             x['boat/catch_details/comment'] ||
             x['boat/catch/catch_details/comment'],
           BoatUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
+          AnswerId: state.body._id,
           GeneratedUuid: x['__generatedUuid'],
         });
       }
@@ -443,10 +443,10 @@ each(
   each(
     dataPath('boat/catch_details[*]'),
     alterState(async state => {
-      const dataArray =
-        state.data['boat/catch_details/gear_type'] ||
-        state.data['boat/catch/catch_details/gear_type'] ||
-        [];
+      const path = state.data['boat/catch_details/gear_type']
+        ? 'boat/catch_details'
+        : 'boat/catch/catch_details';
+      const dataArray = state.data[`${path}/gear_type`].split(' ') || [];
 
       const mappingGear = []; // DD added Gear
 
@@ -457,15 +457,15 @@ each(
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
             where: {
-              WCSPROGRAMS_GearExtCode: x['name'],
+              WCSPROGRAMS_GearExtCode: x,
             },
           })(state),
-          GeneratedUuid: x['__generatedUuid'],
+          // GeneratedUuid: x['__generatedUuid'],
           WCSPROGRAMS_CatchDetailsID: await findValue({
             uuid: 'wcsprograms_catchdetailsid',
             relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
             where: {
-              GeneratedUuid: x['__parentUuid'],
+              AnswerId: state.body._id,
             },
           })(state),
         });
@@ -473,7 +473,7 @@ each(
       console.log(mappingGear);
       return upsertMany(
         'WCSPROGRAMS_CatchDetailsGear',
-        'GeneratedUuid', // Check unique constraint on DB.
+        ['WCSPROGRAMS_GearID', 'WCSPROGRAMS_CatchDetailsID'], // Check unique constraint on DB.
         () => mappingGear, // DD added Gear
         { setNull: ["''", "'undefined'"] }
       )(state);
@@ -497,7 +497,7 @@ each(
           FishLength: x['boat/fish_catch/sample/fish_length'],
           FishWeight: x['boat/fish_catch/sample/fish_weight'],
           FishCatchUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
+          AnswerId: state.body._id,
           GeneratedUuid: x['__generatedUuid'],
         });
       }
@@ -536,7 +536,7 @@ each(
           FishPriceKg: x['boat/fish_catch/fish_price_kg'],
           FishPriceSoldUsd: x['boat/fish_catch/fish_price_sold_usd'],
           BoatUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
+          AnswerId: state.body._id,
           GeneratedUuid: x['__generatedUuid'],
         });
       }
@@ -595,7 +595,7 @@ alterState(async state => {
           x['market_details/vendor/who_sold_other'] ||
           x['market_details/market_001/vendor/who_sold_other'],
         SharksraysUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
+        AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
       });
     }
@@ -753,7 +753,7 @@ each(
             x['market_details/vendor/sales/s_comment'] ||
             x['market_details/market_001/vendor/sales/s_comment'],
           VendorUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
+          AnswerId: state.body._id,
           GeneratedUuid: x['__generatedUuid'],
         });
       }
@@ -780,10 +780,10 @@ each(
     dataPath('market_details/vendor/sales[*]'),
     //dataPath('vendor[*]'),
     alterState(async state => {
-      const dataArray =
-        state.data['market_details/vendor/sales/s_gear_type'] ||
-        state.data['market_details/market_001/vendor/sales/s_gear_type'] ||
-        [];
+      const path = state.data['market_details/vendor/sales/s_gear_type']
+        ? 'market_details/vendor/sales'
+        : 'market_details/market_001/vendor/sales';
+      const dataArray = state.data[`${path}/s_gear_type`].split(' ') || [];
 
       const mappingSGear = []; // DD added SGear
 
@@ -794,24 +794,23 @@ each(
             uuid: 'wcsprograms_gearid',
             relation: 'WCSPROGRAMS_Gear',
             where: {
-              WCSPROGRAMS_GearExtCode: x['name'],
+              WCSPROGRAMS_GearExtCode: x,
             },
           })(state),
-          GeneratedUuid: x['__generatedUuid'],
+          // GeneratedUuid: x['__generatedUuid'],
           WCSPROGRAMS_SalesID: await findValue({
             uuid: 'wcsprograms_salesid',
             relation: 'WCSPROGRAMS_SharksRaysSales',
             where: {
-              GeneratedUuid: x['__parentUuid'],
+              AnswerId: state.body._id,
             },
           })(state),
-          //SalesUuid: x['__parentUuid'],
         });
       }
       console.log(mappingSGear);
       return upsertMany(
         'WCSPROGRAMS_SalesGear',
-        'GeneratedUuid', // Check unique constraint on DB.
+        ['WCSPROGRAMS_GearID', 'WCSPROGRAMS_SalesID'], // Check unique constraint on DB.
         () => mappingSGear, // DD added SGear
         { setNull: ["''", "'undefined'"] }
       )(state);
