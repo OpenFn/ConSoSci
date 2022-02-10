@@ -1,4 +1,13 @@
 fn(state => {
+  const handleValue = value => {
+    if (value && value !== undefined && value !== 'undefined' && value !== '')
+      return value === 'unknown_species'
+        ? 'unknown'
+        : value
+        ? value.toString().replace(/_/g, ' ')
+        : value;
+  };
+
   const multiSelectIds = ['gear_type', 's_gear_type'];
   const { body } = state.data;
 
@@ -52,9 +61,10 @@ fn(state => {
   );
 
   state.data = { ...state.data, ...state.data.body };
-  return { ...state, body };
+  return { ...state, body, handleValue };
 });
 
+//------------------ WCSPROGRAMS_KoboDataset -------------------------
 fn(async state => {
   const mapping = {
     FormName: dataValue('formName'),
@@ -66,6 +76,7 @@ fn(async state => {
   })(state);
 });
 
+//------------------ WCSPROGRAMS_SharksRays -------------------------
 fn(async state => {
   const mapping = {
     Verification: dataValue('verification'),
@@ -131,7 +142,7 @@ fn(async state => {
       state.data.gps ? state.data.gps.split(' ')[0] : undefined,
     Longitude: state =>
       state.data.gps ? state.data.gps.split(' ')[1] : undefined,
-    AnswerId: dataValue('_id'),
+    AnswerId: state.body._id,
     GeneratedUuid: dataValue('__generatedUuid'),
     Payload: state.data.body,
   };
@@ -141,424 +152,7 @@ fn(async state => {
   })(state);
 });
 
-each(
-  '$.body.market_details[*]',
-  fn(async state => {
-    const dataArray =
-      state.data['market_details/vendor/sales'] ||
-      state.data['market_details/market_001/vendor/sales'] ||
-      [];
-
-    if (dataArray.length > 0) {
-      const mappingSales = []; // DD added Sales to give specific mapping name
-
-      for (let x of dataArray) {
-        mappingSales.push({
-          // DD added Sales to give specific mapping name
-          WCSPROGRAMS_TypeID_SType: await findValue({
-            uuid: 'wcsprograms_typeid',
-            relation: 'WCSPROGRAMS_type',
-            where: {
-              WCSPROGRAMS_typeExtCode:
-                dataValue('market_details/vendor/sales/s_type') ||
-                dataValue('market_details/market_001/vendor/sales/s_type'),
-            },
-          })(state),
-          WCSPROGRAMS_GenusID_SGenus: await findValue({
-            uuid: 'wcsprograms_genusid',
-            relation: 'WCSPROGRAMS_genus',
-            where: {
-              WCSPROGRAMS_genusExtCode:
-                dataValue('market_details/vendor/sales/s_genus') ||
-                dataValue('market_details/market_001/vendor/sales/s_genus'),
-            },
-          })(state),
-          //=================================================//
-          // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
-          //   uuid: 'wcsprograms_speciesid',
-          //   relation: 'WCSPROGRAMS_species',
-          //   where: {
-          //     WCSPROGRAMS_speciesExtCode: dataValue(
-          //       'market_details/vendor/sales/s_species'
-          //     ),
-          //   },
-          // })(state),
-          //NOTE: Replaced above auto-mapping with below Taxa mapping
-          WCSPROGRAMS_TaxaID_SSpecies: await findValue({
-            uuid: 'wcsprograms_taxaid',
-            relation: 'WCSPROGRAMS_Taxa',
-            where: {
-              ScientificName:
-                dataValue('market_details/vendor/sales/s_species') ||
-                dataValue('market_details/market_001/vendor/sales/s_species'),
-            },
-          })(state),
-          //=================================================//
-          SPic4:
-            x['market_details/vendor/sales/s_img4/s_pic_4'] ||
-            x['market_details/market_001/vendor/sales/s_img4/s_pic_4'],
-          SPic5:
-            x['market_details/vendor/sales/s_img5/s_pic_5'] ||
-            x['market_details/market_001/vendor/sales/s_img5/s_pic_5'],
-          SPic6:
-            x['market_details/vendor/sales/s_img6/s_pic6'] ||
-            x['market_details/market_001/vendor/sales/s_img6/s_pic6'],
-          SPic7:
-            x['market_details/vendor/sales/s_img7/s_pic7'] ||
-            x['market_details/market_001/vendor/sales/s_img7/s_pic7'],
-          SPic8:
-            x['market_details/vendor/sales/s_img8/s_pic8'] ||
-            x['market_details/market_001/vendor/sales/s_img8/s_pic8'],
-          SPic9:
-            x['market_details/vendor/sales/s_img9/s_pic9'] ||
-            x['market_details/market_001/vendor/sales/s_img9/s_pic9'],
-          SPic10:
-            x['market_details/vendor/sales/s_img10/s_pic10'] ||
-            x['market_details/market_001/vendor/sales/s_img10/s_pic10'],
-          SPic11:
-            x['market_details/vendor/sales/s_img11/s_pic11'] ||
-            x['market_details/market_001/vendor/sales/s_img11/s_pic11'],
-          SPic12:
-            x['market_details/vendor/sales/s_img12/s_pic12'] ||
-            x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
-          SLocalName:
-            x['market_details/vendor/sales/s_local_name'] ||
-            x['market_details/market_001/vendor/sales/s_local_name'],
-          WCSPROGRAMS_SexID_SSex: await findValue({
-            uuid: 'wcsprograms_sexid',
-            relation: 'WCSPROGRAMS_sex',
-            where: {
-              WCSPROGRAMS_sexExtCode:
-                dataValue('market_details/vendor/vendor_sex') ||
-                dataValue('market_details/vendor/sales/s_sex') ||
-                dataValue('market_details/market_001/vendor/sales/s_sex'),
-            },
-          })(state),
-          SWeight:
-            x['market_details/vendor/sales/s_weight'] ||
-            x['market_details/market_001/vendor/sales/s_weight'],
-          SDiscWidth:
-            x['market_details/vendor/sales/s_disc_width'] ||
-            x['market_details/market_001/vendor/sales/s_disc_width'],
-          SDiscLength:
-            x['market_details/vendor/sales/s_disc_length'] ||
-            x['market_details/market_001/vendor/sales/s_disc_length'],
-          STotalLength:
-            x['market_details/vendor/sales/s_total_length'] ||
-            x['market_details/market_001/vendor/sales/s_total_length'],
-          SPrecaudalLength:
-            x['market_details/vendor/sales/s_precaudal_length'] ||
-            x['market_details/market_001/vendor/sales/s_precaudal_length'],
-          SForkLength:
-            x['market_details/vendor/sales/s_fork_length'] ||
-            x['market_details/market_001/vendor/sales/s_fork_length'],
-          SCarapaceLength:
-            x['market_details/vendor/sales/s_carapace_length'] ||
-            x['market_details/market_001/vendor/sales/s_carapace_length'],
-          SCarapaceWidth:
-            x['market_details/vendor/sales/s_carapace_width'] ||
-            x['market_details/market_001/vendor/sales/s_carapace_width'],
-          SGearType:
-            x['market_details/vendor/sales/s_gear_type'] ||
-            x['market_details/market_001/vendor/sales/s_gear_type'],
-          SGearTypeOther:
-            x['market_details/vendor/sales/s_gear_type_other'] ||
-            x['market_details/market_001/vendor/sales/s_gear_type_other'],
-          //=== Adjusted to match WCS table name
-          WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected: await findValue({
-            uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-            relation: 'WCSPROGRAMS_SharksRaysYesNo',
-            where: {
-              WCSPROGRAMS_SharksRaysYesNoExtCode:
-                dataValue(
-                  'market_details/vendor/sales/s_dna_sample_collected'
-                ) ||
-                dataValue(
-                  'market_details/market_001/vendor/sales/s_dna_sample_collected'
-                ),
-            },
-          })(state),
-          //=================================================//
-          //NOTE: abandoned; Replaced about auto-mapping to map yes/no values to BIT column
-          // SDnaSampleCollected:
-          //   x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
-          //     ? true
-          //     : x['boat/catch_details/dna_sample_collected'] === 'no'
-          //       ? false
-          //       : undefined,
-          //=================================================//
-          SDnaCode:
-            x['market_details/vendor/sales/s_dna_code'] ||
-            x['market_details/market_001/vendor/sales/s_dna_code'],
-          SPriceSoldFor:
-            x['market_details/vendor/sales/s_price_sold_for'] ||
-            x['market_details/market_001/vendor/sales/s_price_sold_for'],
-          SPriceSoldUsd:
-            x['market_details/vendor/sales/s_price_sold_usd'] ||
-            x['market_details/market_001/vendor/sales/s_price_sold_usd'],
-          SComment:
-            x['market_details/vendor/sales/s_comment'] ||
-            x['market_details/market_001/vendor/sales/s_comment'],
-          VendorUuid: x['__parentUuid'],
-          AnswerId: dataValue('_id'),
-          GeneratedUuid: x['__generatedUuid'],
-        });
-      }
-      console.log(mappingSales);
-      return upsertMany(
-        'WCSPROGRAMS_SharksRaysSales',
-        'GeneratedUuid', // Check unique constraint on DB.
-        () => mappingSales, // DD added Sales to give specific name to mapping
-        { setNull: ["''", "'undefined'"] }
-      )(state);
-    }
-    console.log(
-      'No "market_details/vendor/sales" or "market_details/market_001/vendor/sales" array. Skipping upsert.'
-    );
-    return state;
-  })
-);
-
-fn(async state => {
-  const path = state.body['market_details/vendor']
-    ? 'market_details/vendor'
-    : 'market_details/market_001/vendor';
-  const dataArray =
-    state.body['market_details/vendor'] ||
-    state.body['market_details/market_001/vendor'] ||
-    [];
-  if (dataArray.length > 0) {
-    const mappingVendor = []; // DD added Vendor
-
-    for (let x of dataArray) {
-      mappingVendor.push({
-        WCSPROGRAMS_SexID_VendorSex: await findValue({
-          uuid: 'wcsprograms_sexid',
-          relation: 'WCSPROGRAMS_sex',
-          where: {
-            WCSPROGRAMS_sexExtCode: x[`${path}/vendor_sex`],
-          },
-        })(state),
-        WhenLastSellSharkRay:
-          x['market_details/vendor/when_last_sell_shark_ray'] ||
-          x['market_details/market_001/vendor/when_last_sell_shark_ray'],
-        WCSPROGRAMS_VendorID_WhereBought: await findValue({
-          uuid: 'wcsprograms_vendorid',
-          relation: 'WCSPROGRAMS_vendor',
-          where: {
-            WCSPROGRAMS_vendorExtCode: x[`${path}/where_bought`],
-          },
-        })(state),
-        WCSPROGRAMS_VendorID_WhoSoldTo: await findValue({
-          uuid: 'wcsprograms_vendorid',
-          relation: 'WCSPROGRAMS_vendor',
-          where: {
-            WCSPROGRAMS_vendorExtCode: x[`${path}/who_sold_to`],
-          },
-        })(state),
-        WhoSoldOther:
-          x['market_details/vendor/who_sold_other'] ||
-          x['market_details/market_001/vendor/who_sold_other'],
-        SharksraysUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
-        GeneratedUuid: x['__generatedUuid'],
-      });
-    }
-    console.log(mappingVendor);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysVendor',
-      'GeneratedUuid', // Check unique constraint on DB.
-      () => mappingVendor, // DD added Vendor
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  }
-  console.log(
-    'No "market_details/vendor" or "market_details/market_001/vendor" array. Skipping upsert.'
-  );
-  return state;
-});
-
-// removed parent 'boat[*]'
-each(
-  dataPath('fish_catch[*]'),
-  fn(async state => {
-    const dataArray = state.data['boat/fish_catch/sample'] || [];
-
-    const mappingSample = []; // DD added Sample
-
-    for (let x of dataArray) {
-      mappingSample.push({
-        // DD added Sample
-        FishLength: x['boat/fish_catch/sample/fish_length'],
-        FishWeight: x['boat/fish_catch/sample/fish_weight'],
-        FishCatchUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
-        GeneratedUuid: x['__generatedUuid'],
-      });
-    }
-    console.log(mappingSample);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysSample',
-      'GeneratedUuid', // Check unique constraint on DB.
-      () => mappingSample, // DD added Sample
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  })
-);
-
-// removed parent 'boat[*]'
-fn(async state => {
-  const dataArray = state.data['boat/fish_catch'] || [];
-  if (dataArray.length > 0) {
-    const mappingFish = []; // DD added Fish
-
-    for (let x of dataArray) {
-      mappingFish.push({
-        // DD added Fish
-        WCSPROGRAMS_FishID_FishSpecie: await findValue({
-          uuid: 'wcsprograms_fishid',
-          relation: 'WCSPROGRAMS_fish',
-          where: {
-            WCSPROGRAMS_fishExtCode: dataValue('boat/fish_catch/fish_specie'),
-          },
-        })(state),
-        NbObserved: x['boat/fish_catch/nb_observed'],
-        TotalWeightFish: x['boat/fish_catch/total_weight_fish'],
-        FishPartConsumed: x['boat/fish_catch/fish_part_consumed'],
-        FishPriceKg: x['boat/fish_catch/fish_price_kg'],
-        FishPriceSoldUsd: x['boat/fish_catch/fish_price_sold_usd'],
-        BoatUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
-        GeneratedUuid: x['__generatedUuid'],
-      });
-    }
-    console.log(mappingFish);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysFishCatch',
-      'GeneratedUuid', // Check unique constraint on DB.
-      () => mappingFish,
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  }
-  console.log('No "boat/fish_catch" array. Skipping upsert.');
-  return state;
-});
-
-// removed parent 'boat[*]'
-// Iterate directly on 'boat/catch_details' array
-fn(async state => {
-  const path = state.data['boat/catch_details']
-    ? 'boat/catch_details'
-    : 'boat/catch/catch_details';
-
-  const dataArray =
-    state.data['boat/catch_details'] ||
-    state.data['boat/catch/catch_details'] ||
-    [];
-
-  if (dataArray.length > 0) {
-    const mappingDetails = []; // DD added Details
-
-    for (let x of dataArray) {
-      mappingDetails.push({
-        // DD added Details
-        WCSPROGRAMS_TypeID_Type: await findValue({
-          uuid: 'wcsprograms_typeid',
-          relation: 'WCSPROGRAMS_type',
-          where: {
-            WCSPROGRAMS_typeExtCode: x[`${path}/type`] || x[`${path}/type`],
-          },
-        })(state),
-        WCSPROGRAMS_GenusID_Genus: await findValue({
-          uuid: 'wcsprograms_genusid',
-          relation: 'WCSPROGRAMS_genus',
-          where: {
-            WCSPROGRAMS_genusExtCode: x[`${path}/genus`] || x[`${path}/genus`],
-          },
-        })(state),
-        //=================================================//
-        // WCSPROGRAMS_SpeciesID_Species: await findValue({
-        //   uuid: 'wcsprograms_speciesid',
-        //   relation: 'WCSPROGRAMS_species',
-        //   where: {
-        //     WCSPROGRAMS_speciesExtCode: x[`${path}/species`],
-        //   },
-        // })(state),
-        //
-        //NOTE: Replaced above auto-mapping with below Taxa mapping
-        WCSPROGRAMS_TaxaID_Species: await findValue({
-          uuid: 'wcsprograms_taxaid',
-          relation: 'WCSPROGRAMS_Taxa',
-          where: {
-            ScientificName: x[`${path}/species`],
-          },
-        })(state),
-        //=================================================//
-        LocalName: x[`${path}/local_name`],
-        WCSPROGRAMS_SexID_Sex: await findValue({
-          uuid: 'wcsprograms_sexid',
-          relation: 'WCSPROGRAMS_sex',
-          where: {
-            WCSPROGRAMS_sexExtCode: x[`${path}/sex`],
-          },
-        })(state),
-        Weight: x[`${path}/weight`],
-        DiscWidth: x[`${path}/disc_width`],
-        DiscLength: x[`${path}/disc_length`],
-        TotalLength: x[`${path}/total_length`],
-        ForkLength: x[`${path}/fork_length`],
-        PrecaudalLength: x[`${path}/precaudal_length`],
-        Pic4: x[`${path}/img4/pic_4`],
-        Pic5: x[`${path}/img5/pic_5`],
-        Pic6: x[`${path}/img6/pic6`],
-        Pic7: x[`${path}/img7/pic7`],
-        Pic8: x[`${path}/img8/pic8`],
-        Pic9: x[`${path}/img9/pic9`],
-        Pic10: x[`${path}/img10/pic10`],
-        Pic11: x[`${path}/img11/pic11`],
-        Pic12: x[`${path}/img12/pic12`],
-        GearType: x[`${path}/gear_type`],
-        GearTypeOther: x[`${path}/gear_type_other`],
-        //=================================================//
-        WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
-          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
-          relation: 'WCSPROGRAMS_SharksRaysYesNo',
-          where: {
-            WCSPROGRAMS_SharksRaysYesNoExtCode:
-              x[`${path}/dna_sample_collected`],
-          },
-        })(state),
-        //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
-        // DnaSampleCollected:
-        //   x[`${path}/dna_sample_collected`] === 'yes'
-        //     ? true
-        //     : x[`${path}/dna_sample_collected`] === 'no'
-        //       ? false
-        //       : undefined,
-        //=================================================//
-        DnaCode: x[`${path}/dna_code`],
-        PriceSoldFor: x[`${path}/price_sold_for`],
-        PriceSoldUsd: x[`${path}/price_sold_usd`],
-        Comment: x[`${path}/comment`],
-        BoatUuid: x['__parentUuid'],
-        AnswerId: dataValue('_id'),
-        GeneratedUuid: x['__generatedUuid'],
-      });
-    }
-    console.log(mappingDetails);
-    return upsertMany(
-      'WCSPROGRAMS_SharksRaysCatchDetails',
-      'GeneratedUuid', // Check unique constraint on DB.
-      () => mappingDetails, // DD added Details
-      { setNull: ["''", "'undefined'"] }
-    )(state);
-  }
-  console.log(
-    'No boat/catch_details or boat/catch/catch_details array. Skipping upsert.'
-  );
-  return state;
-});
-
+//------------------ WCSPROGRAMS_SharksRaysBoat ---------------------
 fn(async state => {
   const mappingBoat = {
     // DD added Boat
@@ -701,6 +295,434 @@ fn(async state => {
   )(state);
 });
 
+//------------------ WCSPROGRAMS_SharksRaysSales ---------------------
+fn(state => {
+  const outerPath = state.body['market_details/vendor']
+    ? 'market_details/vendor'
+    : 'market_details/market_001/vendor';
+  const outerDataArray =
+    state.body['market_details/vendor'] ||
+    state.body['market_details/market_001/vendor'] ||
+    [];
+
+  if (outerDataArray.length > 0) {
+    return each(
+      // '$.body.market_details[*]',
+      outerDataArray,
+      fn(async state => {
+        const path = `${outerPath}/sales`;
+        const dataArray = state.data[`${path}`] || [];
+        console.log(path);
+
+        if (dataArray.length > 0) {
+          const mappingSales = []; // DD added Sales to give specific mapping name
+
+          for (let x of dataArray) {
+            mappingSales.push({
+              // DD added Sales to give specific mapping name
+              WCSPROGRAMS_TypeID_SType: await findValue({
+                uuid: 'wcsprograms_typeid',
+                relation: 'WCSPROGRAMS_type',
+                where: {
+                  WCSPROGRAMS_typeExtCode: x[`${path}/s_type`],
+                },
+              })(state),
+              WCSPROGRAMS_GenusID_SGenus: await findValue({
+                uuid: 'wcsprograms_genusid',
+                relation: 'WCSPROGRAMS_genus',
+                where: {
+                  WCSPROGRAMS_genusExtCode: x[`${path}/s_genus`],
+                },
+              })(state),
+              //=================================================//
+              // WCSPROGRAMS_SpeciesID_SSpecies: await findValue({
+              //   uuid: 'wcsprograms_speciesid',
+              //   relation: 'WCSPROGRAMS_species',
+              //   where: {
+              //     WCSPROGRAMS_speciesExtCode: dataValue(
+              //       'market_details/vendor/sales/s_species'
+              //     ),
+              //   },
+              // })(state),
+              //NOTE: Replaced above auto-mapping with below Taxa mapping
+              WCSPROGRAMS_TaxaID_SSpecies: await findValue({
+                uuid: 'wcsprograms_taxaid',
+                relation: 'WCSPROGRAMS_Taxa',
+                where: {
+                  ScientificName: state.handleValue(x[`${path}/s_species`]),
+                },
+              })(state),
+              //=================================================//
+              SPic4:
+                x['market_details/vendor/sales/s_img4/s_pic_4'] ||
+                x['market_details/market_001/vendor/sales/s_img4/s_pic_4'],
+              SPic5:
+                x['market_details/vendor/sales/s_img5/s_pic_5'] ||
+                x['market_details/market_001/vendor/sales/s_img5/s_pic_5'],
+              SPic6:
+                x['market_details/vendor/sales/s_img6/s_pic6'] ||
+                x['market_details/market_001/vendor/sales/s_img6/s_pic6'],
+              SPic7:
+                x['market_details/vendor/sales/s_img7/s_pic7'] ||
+                x['market_details/market_001/vendor/sales/s_img7/s_pic7'],
+              SPic8:
+                x['market_details/vendor/sales/s_img8/s_pic8'] ||
+                x['market_details/market_001/vendor/sales/s_img8/s_pic8'],
+              SPic9:
+                x['market_details/vendor/sales/s_img9/s_pic9'] ||
+                x['market_details/market_001/vendor/sales/s_img9/s_pic9'],
+              SPic10:
+                x['market_details/vendor/sales/s_img10/s_pic10'] ||
+                x['market_details/market_001/vendor/sales/s_img10/s_pic10'],
+              SPic11:
+                x['market_details/vendor/sales/s_img11/s_pic11'] ||
+                x['market_details/market_001/vendor/sales/s_img11/s_pic11'],
+              SPic12:
+                x['market_details/vendor/sales/s_img12/s_pic12'] ||
+                x['market_details/market_001/vendor/sales/s_img12/s_pic12'],
+              SLocalName:
+                x['market_details/vendor/sales/s_local_name'] ||
+                x['market_details/market_001/vendor/sales/s_local_name'],
+              WCSPROGRAMS_SexID_SSex: await findValue({
+                uuid: 'wcsprograms_sexid',
+                relation: 'WCSPROGRAMS_sex',
+                where: {
+                  WCSPROGRAMS_sexExtCode: x[`${path}/s_sex`],
+                },
+              })(state),
+              SWeight:
+                x['market_details/vendor/sales/s_weight'] ||
+                x['market_details/market_001/vendor/sales/s_weight'],
+              SDiscWidth:
+                x['market_details/vendor/sales/s_disc_width'] ||
+                x['market_details/market_001/vendor/sales/s_disc_width'],
+              SDiscLength:
+                x['market_details/vendor/sales/s_disc_length'] ||
+                x['market_details/market_001/vendor/sales/s_disc_length'],
+              STotalLength:
+                x['market_details/vendor/sales/s_total_length'] ||
+                x['market_details/market_001/vendor/sales/s_total_length'],
+              SPrecaudalLength:
+                x['market_details/vendor/sales/s_precaudal_length'] ||
+                x['market_details/market_001/vendor/sales/s_precaudal_length'],
+              SForkLength:
+                x['market_details/vendor/sales/s_fork_length'] ||
+                x['market_details/market_001/vendor/sales/s_fork_length'],
+              SCarapaceLength:
+                x['market_details/vendor/sales/s_carapace_length'] ||
+                x['market_details/market_001/vendor/sales/s_carapace_length'],
+              SCarapaceWidth:
+                x['market_details/vendor/sales/s_carapace_width'] ||
+                x['market_details/market_001/vendor/sales/s_carapace_width'],
+              SGearType:
+                x['market_details/vendor/sales/s_gear_type'] ||
+                x['market_details/market_001/vendor/sales/s_gear_type'],
+              SGearTypeOther:
+                x['market_details/vendor/sales/s_gear_type_other'] ||
+                x['market_details/market_001/vendor/sales/s_gear_type_other'],
+              //=== Adjusted to match WCS table name
+              WCSPROGRAMS_SharksRaysYesNoID_SDnaSampleCollected:
+                await findValue({
+                  uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+                  relation: 'WCSPROGRAMS_SharksRaysYesNo',
+                  where: {
+                    WCSPROGRAMS_SharksRaysYesNoExtCode:
+                      x[`${path}/s_dna_sample_collected`],
+                  },
+                })(state),
+              //=================================================//
+              //NOTE: abandoned; Replaced about auto-mapping to map yes/no values to BIT column
+              // SDnaSampleCollected:
+              //   x['market_details/vendor/sales/s_dna_sample_collected'] === 'yes'
+              //     ? true
+              //     : x['boat/catch_details/dna_sample_collected'] === 'no'
+              //       ? false
+              //       : undefined,
+              //=================================================//
+              SDnaCode:
+                x['market_details/vendor/sales/s_dna_code'] ||
+                x['market_details/market_001/vendor/sales/s_dna_code'],
+              SPriceSoldFor:
+                x['market_details/vendor/sales/s_price_sold_for'] ||
+                x['market_details/market_001/vendor/sales/s_price_sold_for'],
+              SPriceSoldUsd:
+                x['market_details/vendor/sales/s_price_sold_usd'] ||
+                x['market_details/market_001/vendor/sales/s_price_sold_usd'],
+              SComment:
+                x['market_details/vendor/sales/s_comment'] ||
+                x['market_details/market_001/vendor/sales/s_comment'],
+              VendorUuid: x['__parentUuid'],
+              AnswerId: state.body._id,
+              GeneratedUuid: x['__generatedUuid'],
+            });
+          }
+          console.log(mappingSales);
+          return upsertMany(
+            'WCSPROGRAMS_SharksRaysSales',
+            'GeneratedUuid', // Check unique constraint on DB.
+            () => mappingSales, // DD added Sales to give specific name to mapping
+            { setNull: ["''", "'undefined'"] }
+          )(state);
+        }
+        console.log(
+          'No "market_details/vendor/sales" or "market_details/market_001/vendor/sales" array. Skipping upsert.'
+        );
+        return state;
+      })
+    )(state);
+  }
+  console.log(
+    'No "market_details/vendor" or "market_details/market_001/vendor" array. Skipping upsert.'
+  );
+  return state;
+});
+
+//----------------- WCSPROGRAMS_SharksRaysVendor -------------------------
+fn(async state => {
+  const path = state.body['market_details/vendor']
+    ? 'market_details/vendor'
+    : 'market_details/market_001/vendor';
+  const dataArray =
+    state.body['market_details/vendor'] ||
+    state.body['market_details/market_001/vendor'] ||
+    [];
+  if (dataArray.length > 0) {
+    const mappingVendor = []; // DD added Vendor
+
+    for (let x of dataArray) {
+      mappingVendor.push({
+        WCSPROGRAMS_SexID_VendorSex: await findValue({
+          uuid: 'wcsprograms_sexid',
+          relation: 'WCSPROGRAMS_sex',
+          where: {
+            WCSPROGRAMS_sexExtCode: x[`${path}/vendor_sex`],
+          },
+        })(state),
+        WhenLastSellSharkRay:
+          x['market_details/vendor/when_last_sell_shark_ray'] ||
+          x['market_details/market_001/vendor/when_last_sell_shark_ray'],
+        WCSPROGRAMS_VendorID_WhereBought: await findValue({
+          uuid: 'wcsprograms_vendorid',
+          relation: 'WCSPROGRAMS_vendor',
+          where: {
+            WCSPROGRAMS_vendorExtCode: x[`${path}/where_bought`],
+          },
+        })(state),
+        WCSPROGRAMS_VendorID_WhoSoldTo: await findValue({
+          uuid: 'wcsprograms_vendorid',
+          relation: 'WCSPROGRAMS_vendor',
+          where: {
+            WCSPROGRAMS_vendorExtCode: x[`${path}/who_sold_to`],
+          },
+        })(state),
+        WhoSoldOther:
+          x['market_details/vendor/who_sold_other'] ||
+          x['market_details/market_001/vendor/who_sold_other'],
+        SharksraysUuid: x['__parentUuid'],
+        AnswerId: state.body._id,
+        GeneratedUuid: x['__generatedUuid'],
+      });
+    }
+    console.log(mappingVendor);
+    return upsertMany(
+      'WCSPROGRAMS_SharksRaysVendor',
+      'GeneratedUuid', // Check unique constraint on DB.
+      () => mappingVendor, // DD added Vendor
+      { setNull: ["''", "'undefined'"] }
+    )(state);
+  }
+  console.log(
+    'No "market_details/vendor" or "market_details/market_001/vendor" array. Skipping upsert.'
+  );
+  return state;
+});
+
+// ---------------- WCSPROGRAMS_SharksRaysSample ----------------------
+// removed parent 'boat[*]'
+each(
+  // dataPath('fish_catch[*]'),
+  '$.body.fish_catch[*]',
+  fn(async state => {
+    const dataArray = state.data['boat/fish_catch/sample'] || [];
+
+    const mappingSample = []; // DD added Sample
+
+    for (let x of dataArray) {
+      mappingSample.push({
+        // DD added Sample
+        FishLength: x['boat/fish_catch/sample/fish_length'],
+        FishWeight: x['boat/fish_catch/sample/fish_weight'],
+        FishCatchUuid: x['__parentUuid'],
+        AnswerId: state.body._id,
+        GeneratedUuid: x['__generatedUuid'],
+      });
+    }
+    console.log(mappingSample);
+    return upsertMany(
+      'WCSPROGRAMS_SharksRaysSample',
+      'GeneratedUuid', // Check unique constraint on DB.
+      () => mappingSample, // DD added Sample
+      { setNull: ["''", "'undefined'"] }
+    )(state);
+  })
+);
+
+//----------------- WCSPROGRAMS_SharksRaysFishCatch -------------------------
+// removed parent 'boat[*]'
+fn(async state => {
+  const dataArray = state.body['boat/fish_catch'] || [];
+  if (dataArray.length > 0) {
+    const mappingFish = []; // DD added Fish
+
+    for (let x of dataArray) {
+      mappingFish.push({
+        // DD added Fish
+        WCSPROGRAMS_FishID_FishSpecie: await findValue({
+          uuid: 'wcsprograms_fishid',
+          relation: 'WCSPROGRAMS_fish',
+          where: {
+            WCSPROGRAMS_fishExtCode: x['boat/fish_catch/fish_specie'],
+          },
+        })(state),
+        NbObserved: x['boat/fish_catch/nb_observed'],
+        TotalWeightFish: x['boat/fish_catch/total_weight_fish'],
+        FishPartConsumed: x['boat/fish_catch/fish_part_consumed'],
+        FishPriceKg: x['boat/fish_catch/fish_price_kg'],
+        FishPriceSoldUsd: x['boat/fish_catch/fish_price_sold_usd'],
+        BoatUuid: x['__parentUuid'],
+        AnswerId: state.body._id,
+        GeneratedUuid: x['__generatedUuid'],
+      });
+    }
+    console.log(mappingFish);
+    return upsertMany(
+      'WCSPROGRAMS_SharksRaysFishCatch',
+      'GeneratedUuid', // Check unique constraint on DB.
+      () => mappingFish,
+      { setNull: ["''", "'undefined'"] }
+    )(state);
+  }
+  console.log('No "boat/fish_catch" array. Skipping upsert.');
+  return state;
+});
+
+//------------------ WCSPROGRAMS_SharksRaysCatchDetails ---------------
+// removed parent 'boat[*]'
+// Iterate directly on 'boat/catch_details' array
+fn(async state => {
+  const path = state.body['boat/catch_details']
+    ? 'boat/catch_details'
+    : 'boat/catch/catch_details';
+
+  const dataArray =
+    state.body['boat/catch_details'] ||
+    state.body['boat/catch/catch_details'] ||
+    [];
+
+  if (dataArray.length > 0) {
+    const mappingDetails = []; // DD added Details
+
+    for (let x of dataArray) {
+      mappingDetails.push({
+        // DD added Details
+        WCSPROGRAMS_TypeID_Type: await findValue({
+          uuid: 'wcsprograms_typeid',
+          relation: 'WCSPROGRAMS_type',
+          where: {
+            WCSPROGRAMS_typeExtCode: x[`${path}/type`],
+          },
+        })(state),
+        WCSPROGRAMS_GenusID_Genus: await findValue({
+          uuid: 'wcsprograms_genusid',
+          relation: 'WCSPROGRAMS_genus',
+          where: {
+            WCSPROGRAMS_genusExtCode: x[`${path}/genus`],
+          },
+        })(state),
+        //=================================================//
+        // WCSPROGRAMS_SpeciesID_Species: await findValue({
+        //   uuid: 'wcsprograms_speciesid',
+        //   relation: 'WCSPROGRAMS_species',
+        //   where: {
+        //     WCSPROGRAMS_speciesExtCode: x[`${path}/species`],
+        //   },
+        // })(state),
+        //
+        //NOTE: Replaced above auto-mapping with below Taxa mapping
+        WCSPROGRAMS_TaxaID_Species: await findValue({
+          uuid: 'wcsprograms_taxaid',
+          relation: 'WCSPROGRAMS_Taxa',
+          where: {
+            ScientificName: state.handleValue(x[`${path}/species`]),
+          },
+        })(state),
+        //=================================================//
+        LocalName: x[`${path}/local_name`],
+        WCSPROGRAMS_SexID_Sex: await findValue({
+          uuid: 'wcsprograms_sexid',
+          relation: 'WCSPROGRAMS_sex',
+          where: {
+            WCSPROGRAMS_sexExtCode: x[`${path}/sex`],
+          },
+        })(state),
+        Weight: x[`${path}/weight`],
+        DiscWidth: x[`${path}/disc_width`],
+        DiscLength: x[`${path}/disc_length`],
+        TotalLength: x[`${path}/total_length`],
+        ForkLength: x[`${path}/fork_length`],
+        PrecaudalLength: x[`${path}/precaudal_length`],
+        Pic4: x[`${path}/img4/pic_4`],
+        Pic5: x[`${path}/img5/pic_5`],
+        Pic6: x[`${path}/img6/pic6`],
+        Pic7: x[`${path}/img7/pic7`],
+        Pic8: x[`${path}/img8/pic8`],
+        Pic9: x[`${path}/img9/pic9`],
+        Pic10: x[`${path}/img10/pic10`],
+        Pic11: x[`${path}/img11/pic11`],
+        Pic12: x[`${path}/img12/pic12`],
+        GearType: x[`${path}/gear_type`],
+        GearTypeOther: x[`${path}/gear_type_other`],
+        //=================================================//
+        WCSPROGRAMS_SharksRaysYesNoID_DnaSampleCollected: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysYesNoID',
+          relation: 'WCSPROGRAMS_SharksRaysYesNo',
+          where: {
+            WCSPROGRAMS_SharksRaysYesNoExtCode:
+              x[`${path}/dna_sample_collected`],
+          },
+        })(state),
+        //Abandoned: Replaced about auto-mapping to map yes/no values to BIT column
+        // DnaSampleCollected:
+        //   x[`${path}/dna_sample_collected`] === 'yes'
+        //     ? true
+        //     : x[`${path}/dna_sample_collected`] === 'no'
+        //       ? false
+        //       : undefined,
+        //=================================================//
+        DnaCode: x[`${path}/dna_code`],
+        PriceSoldFor: x[`${path}/price_sold_for`],
+        PriceSoldUsd: x[`${path}/price_sold_usd`],
+        Comment: x[`${path}/comment`],
+        BoatUuid: x['__parentUuid'],
+        AnswerId: state.body._id,
+        GeneratedUuid: x['__generatedUuid'],
+      });
+    }
+    console.log(mappingDetails);
+    return upsertMany(
+      'WCSPROGRAMS_SharksRaysCatchDetails',
+      'GeneratedUuid', // Check unique constraint on DB.
+      () => mappingDetails, // DD added Details
+      { setNull: ["''", "'undefined'"] }
+    )(state);
+  }
+  console.log(
+    'No boat/catch_details or boat/catch/catch_details array. Skipping upsert.'
+  );
+  return state;
+});
+
+//------------------ WCSPROGRAMS_SalesGear ---------------
 fn(state => {
   const outerPath = state.body['market_details/vendor']
     ? 'market_details/vendor'
@@ -713,44 +735,46 @@ fn(state => {
   if (outerDataArray.length > 0) {
     return each(
       outerDataArray,
-      fn(async state => {
-        const dataArray = state.data[`${outerPath}/sales`];
-        const nestedPath = `${outerPath}/sales`;
+      each(
+        dataPath(`${outerPath}/sales[*]`),
+        fn(async state => {
+          const nestedPath = `${outerPath}/sales`;
+          const dataArray = state.data[`${nestedPath}/s_gear_type`].split(' ');
 
-        if (dataArray.length > 0) {
-          const mappingSGear = []; // DD added SGear
-          for (let x of dataArray) {
-            mappingSGear.push({
-              // DD added SGear
-              WCSPROGRAMS_GearID: await findValue({
-                uuid: 'wcsprograms_gearid',
-                relation: 'WCSPROGRAMS_Gear',
-                where: {
-                  WCSPROGRAMS_GearExtCode: x[`${nestedPath}/s_gear_type`],
-                },
-              })(state),
-              // WCSPROGRAMS_SalesID: x['__parentUuid'],
-              WCSPROGRAMS_SalesID: await findValue({
-                uuid: 'wcsprograms_salesid',
-                relation: 'WCSPROGRAMS_SharksRaysSales',
-                where: {
-                  GeneratedUuid: x['__parentUuid'],
-                },
-              })(state),
-              GeneratedUuid: x['__generatedUuid'],
-              // SalesUuid: x['__parentUuid'],
-            });
+          console.log(dataArray);
+
+          if (dataArray.length > 0) {
+            const mappingSGear = []; // DD added SGear
+            for (let x of dataArray) {
+              mappingSGear.push({
+                // DD added SGear
+                WCSPROGRAMS_GearID: await findValue({
+                  uuid: 'wcsprograms_gearid',
+                  relation: 'WCSPROGRAMS_Gear',
+                  where: {
+                    WCSPROGRAMS_GearExtCode: x,
+                  },
+                })(state),
+                WCSPROGRAMS_SalesID: await findValue({
+                  uuid: 'wcsprograms_salesid',
+                  relation: 'WCSPROGRAMS_SharksRaysSales',
+                  where: {
+                    AnswerId: state.body._id,
+                  },
+                })(state),
+              });
+            }
+            console.log(mappingSGear);
+            return upsertMany(
+              'WCSPROGRAMS_SalesGear',
+              ['WCSPROGRAMS_GearID', 'WCSPROGRAMS_SalesID'], // Check unique constraint on DB.
+              () => mappingSGear, // DD added SGear
+              { setNull: ["''", "'undefined'"] }
+            )(state);
           }
-          console.log(mappingSGear);
-          return upsertMany(
-            'WCSPROGRAMS_SalesGear',
-            'GeneratedUuid', // Check unique constraint on DB.
-            () => mappingSGear, // DD added SGear
-            { setNull: ["''", "'undefined'"] }
-          )(state);
-        }
-        return state;
-      })
+          return state;
+        })
+      )
     )(state);
   }
   console.log(
@@ -759,46 +783,47 @@ fn(state => {
   return state;
 });
 
-fn(async state => {
-  const path = state.data['boat/catch_details']
+//------------------ WCSPROGRAMS_CatchDetailsGear ---------------------
+fn(state => {
+  const path = state.body['boat/catch_details']
     ? 'boat/catch_details'
     : 'boat/catch/catch_details';
+  const outerDataArray = state.body[`${path}`] || [];
 
-  const dataArray =
-    state.data['boat/catch_details'] ||
-    state.data['boat/catch/catch_details'] ||
-    [];
+  return each(
+    outerDataArray,
+    fn(async state => {
+      const dataArray = state.data[`${path}/gear_type`].split(' ') || [];
 
-  const mappingGear = []; // DD added Gear
-  console.log(dataArray);
+      const mappingGear = []; // DD added Gear
+      console.log(dataArray);
 
-  for (let x of dataArray) {
-    mappingGear.push({
-      // DD added Gear
-      WCSPROGRAMS_GearID: await findValue({
-        uuid: 'wcsprograms_gearid',
-        relation: 'WCSPROGRAMS_Gear',
-        where: {
-          WCSPROGRAMS_GearExtCode: x[`${path}/gear_type`],
-        },
-      })(state),
-      // WCSPROGRAMS_CatchDetailsID: x['__parentUuid'],
-      WCSPROGRAMS_CatchDetailsID: await findValue({
-        uuid: 'wcsprograms_catchdetailsid',
-        relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
-        where: {
-          GeneratedUuid: x['__parentUuid'],
-        },
-      })(state),
-      GeneratedUuid: x['__generatedUuid'],
-      // CatchDetailsUuid: x['__parentUuid'],
-    });
-  }
-  console.log(mappingGear);
-  return upsertMany(
-    'WCSPROGRAMS_CatchDetailsGear',
-    'GeneratedUuid', // Check unique constraint on DB.
-    () => mappingGear, // DD added Gear
-    { setNull: ["''", "'undefined'"] }
+      for (let x of dataArray) {
+        mappingGear.push({
+          // DD added Gear
+          WCSPROGRAMS_GearID: await findValue({
+            uuid: 'wcsprograms_gearid',
+            relation: 'WCSPROGRAMS_Gear',
+            where: {
+              WCSPROGRAMS_GearExtCode: x,
+            },
+          })(state),
+          WCSPROGRAMS_CatchDetailsID: await findValue({
+            uuid: 'wcsprograms_catchdetailsid',
+            relation: 'WCSPROGRAMS_SharksRaysCatchDetails',
+            where: {
+              AnswerId: state.body._id,
+            },
+          })(state),
+        });
+      }
+      console.log(mappingGear);
+      return upsertMany(
+        'WCSPROGRAMS_CatchDetailsGear',
+        ['WCSPROGRAMS_GearID', 'WCSPROGRAMS_CatchDetailsID'], // Check unique constraint on DB.
+        () => mappingGear, // DD added Gear
+        { setNull: ["''", "'undefined'"] }
+      )(state);
+    })
   )(state);
 });
