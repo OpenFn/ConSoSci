@@ -1,8 +1,11 @@
 alterState(state => {
   const handleValue = value => {
     if (value && value !== undefined && value !== 'undefined' && value !== '')
-      const newValue = value === 'unknown species' ? 'unknown' : value; 
-      return newValue ?  newValue.toString().replace(/_/g, ' ') : newValue;
+      return value === 'unknown species'
+        ? 'unknown'
+        : value
+        ? value.toString().replace(/_/g, ' ')
+        : value;
   };
 
   const multiSelectIds = ['gear_type', 's_gear_type'];
