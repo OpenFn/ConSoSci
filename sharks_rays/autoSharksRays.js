@@ -1,7 +1,7 @@
 alterState(state => {
   const handleValue = value => {
     if (value && value !== undefined && value !== 'undefined' && value !== '')
-      return value === 'unknown species'
+      return value === 'unknown_species'
         ? 'unknown'
         : value
         ? value.toString().replace(/_/g, ' ')
