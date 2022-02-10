@@ -20,7 +20,7 @@ alterState(state => {
     {
         uid: 'aaknL3DQQgkgZ8iay89X5P',
         formName: 'SHARC',
-        tableId: 'WCSPROGRAMS_SharksRays',
+        tableId: 'WCSPROGRAMS_SharksRaysV2',
       },
     {
       uid: 'aStMvYShWXZsKYa7AyN6sr',
