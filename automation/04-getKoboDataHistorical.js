@@ -10,16 +10,16 @@ alterState(state => {
   state.data = {
     surveys: [
       //LIST FORMS HERE THAT YOU WANT TO SYNC HIST DATA
+      {
+        uid: 'aaknL3DQQgkgZ8iay89X5P',
+        formName: 'SHARC',
+        tableId: 'WCSPROGRAMS_SharksRaysV2',
+      },
       // {
-      //   uid: 'aaknL3DQQgkgZ8iay89X5P',
-      //   formName: 'SHARC',
-      //   tableId: 'WCSPROGRAMS_SharksRays',
+      // uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+      // formName: 'WCS Data Collection Site Survey',
+      // tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
       // },
-       {
-       uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-       formName: 'WCS Data Collection Site Survey',
-       tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
-       },
       // {
       // uid: 'aukhdejQU76K33caCkF4rP',
       // formName: 'WCS Socio-Economic Projects Database',
