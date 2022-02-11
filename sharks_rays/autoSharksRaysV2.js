@@ -739,7 +739,9 @@ fn(state => {
         dataPath(`${outerPath}/sales[*]`),
         fn(async state => {
           const nestedPath = `${outerPath}/sales`;
-          const dataArray = state.data[`${nestedPath}/s_gear_type`].split(' ');
+          const dataArray = state.data[`${nestedPath}/s_gear_type`]
+            ? state.data[`${nestedPath}/s_gear_type`].split(' ')
+            : [];
 
           console.log(dataArray);
 
@@ -793,7 +795,9 @@ fn(state => {
   return each(
     outerDataArray,
     fn(async state => {
-      const dataArray = state.data[`${path}/gear_type`].split(' ') || [];
+      const dataArray = state.data[`${path}/gear_type`]
+        ? state.data[`${path}/gear_type`].split(' ')
+        : [];
 
       const mappingGear = []; // DD added Gear
       console.log(dataArray);
