@@ -23,6 +23,18 @@ alterState(state => {
         name: 'Prix Makira 2021',
         owner: 'wcs_mamabaie',
       },
+      {
+        id: 'aSgFKK6Ufq7a4qXDe5yshg',
+        tag: 'bns_survey',
+        name: 'BNS Ituri : Enquête Ménages 2021',
+        owner: 'wcs_ituri',
+      },
+      {
+        id: 'arwWLVDnQkJkNV4HtzgmeX',
+        tag: 'bns_price',
+        name: 'BNS Prix Ituri 2021',
+        owner: 'wcs_ituri',
+      },
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
