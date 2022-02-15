@@ -285,6 +285,13 @@ fn(async state => {
     SharksraysUuid: dataValue('__parentUuid'),
     AnswerId: dataValue('_id'),
     GeneratedUuid: dataValue('__generatedUuid'),
+    WCSPROGRAMS_SharksRaysID: await findValue({
+      uuid: 'WCSPROGRAMS_SharksRaysID',
+      relation: 'WCSPROGRAMS_SharksRays',
+      where: {
+        AnswerId: state.body._id,
+      },
+    })(state),
   };
   console.log(mappingBoat);
   return upsert(
@@ -454,6 +461,13 @@ fn(state => {
               VendorUuid: x['__parentUuid'],
               AnswerId: state.body._id,
               GeneratedUuid: x['__generatedUuid'],
+              WCSPROGRAMS_SharksRaysID: await findValue({
+                uuid: 'WCSPROGRAMS_SharksRaysID',
+                relation: 'WCSPROGRAMS_SharksRays',
+                where: {
+                  AnswerId: state.body._id,
+                },
+              })(state),
             });
           }
           console.log(mappingSales);
@@ -521,6 +535,13 @@ fn(async state => {
         SharksraysUuid: x['__parentUuid'],
         AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
+        WCSPROGRAMS_SharksRaysID: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysID',
+          relation: 'WCSPROGRAMS_SharksRays',
+          where: {
+            AnswerId: state.body._id,
+          },
+        })(state),
       });
     }
     console.log(mappingVendor);
@@ -555,6 +576,13 @@ each(
         FishCatchUuid: x['__parentUuid'],
         AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
+        WCSPROGRAMS_SharksRaysID: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysID',
+          relation: 'WCSPROGRAMS_SharksRays',
+          where: {
+            AnswerId: state.body._id,
+          },
+        })(state),
       });
     }
     console.log(mappingSample);
@@ -592,6 +620,13 @@ fn(async state => {
         BoatUuid: x['__parentUuid'],
         AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
+        WCSPROGRAMS_SharksRaysID: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysID',
+          relation: 'WCSPROGRAMS_SharksRays',
+          where: {
+            AnswerId: state.body._id,
+          },
+        })(state),
       });
     }
     console.log(mappingFish);
@@ -706,6 +741,13 @@ fn(async state => {
         BoatUuid: x['__parentUuid'],
         AnswerId: state.body._id,
         GeneratedUuid: x['__generatedUuid'],
+        WCSPROGRAMS_SharksRaysID: await findValue({
+          uuid: 'WCSPROGRAMS_SharksRaysID',
+          relation: 'WCSPROGRAMS_SharksRays',
+          where: {
+            AnswerId: state.body._id,
+          },
+        })(state),
       });
     }
     console.log(mappingDetails);
