@@ -502,7 +502,7 @@ each(
 each(
   '$.body.boat[*]',
   each(
-    dataPath('fish_catch[*]'),
+    dataPath('boat/fish_catch[*]'),
     alterState(async state => {
       const dataArray = state.data['boat/fish_catch/sample'] || [];
 
