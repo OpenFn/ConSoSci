@@ -561,8 +561,7 @@ fn(async state => {
 // ---------------- WCSPROGRAMS_SharksRaysSample ----------------------
 // removed parent 'boat[*]'
 each(
-  // dataPath('fish_catch[*]'),
-  '$.body.fish_catch[*]',
+  '$.body.boat/fish_catch[*]',
   fn(async state => {
     const dataArray = state.data['boat/fish_catch/sample'] || [];
 
