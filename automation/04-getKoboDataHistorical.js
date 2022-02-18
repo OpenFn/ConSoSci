@@ -10,31 +10,36 @@ alterState(state => {
   state.data = {
     surveys: [
       //LIST FORMS HERE THAT YOU WANT TO SYNC HIST DATA
-      {
-      uid: 'aStMvYShWXZsKYa7AyN6sr',
-      formName: 'Sharks_Rays_20210521_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
     {
-      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-      formName: 'Sharks_Rays_20210627_Kenya',
+      uid: 'awjdb6AEFF5WgN3bYVNbof',
+      formName: 'Sharks_Rays_20220110_Kenya',
       tableId: 'WCSPROGRAMS_SharksRays',
     },
-    {
-      uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
-      formName: 'Sharks_Rays_20210701_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aCp2CojjXBoazzhweWrRUr',
-      formName: 'Sharks_Rays_20210920_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aSDqbJNRcEkvgKHJSMK2z7',
-      formName: 'Sharks_Rays_20220111_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
+    //  {
+    //  uid: 'aStMvYShWXZsKYa7AyN6sr',
+    //  formName: 'Sharks_Rays_20210521_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
+    //{
+    //  uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+    //  formName: 'Sharks_Rays_20210627_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
+    //{
+    //  uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
+    //  formName: 'Sharks_Rays_20210701_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
+    //{
+    //  uid: 'aCp2CojjXBoazzhweWrRUr',
+    //  formName: 'Sharks_Rays_20210920_Mada',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
+    //{
+    //  uid: 'aSDqbJNRcEkvgKHJSMK2z7',
+    //  formName: 'Sharks_Rays_20220111_Mada',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
       //{
       //  uid: 'aaknL3DQQgkgZ8iay89X5P',
       //  formName: 'SHARC',
