@@ -23,18 +23,8 @@ alterState(state => {
         tableId: 'WCSPROGRAMS_SharksRaysV2',
       },
     {
-      uid: 'aStMvYShWXZsKYa7AyN6sr',
-      formName: 'Sharks_Rays_20210521_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-      formName: 'Sharks_Rays_20210627_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
-      formName: 'Sharks_Rays_20210701_Kenya',
+      uid: 'awjdb6AEFF5WgN3bYVNbof',
+      formName: 'Sharks_Rays_20220110_Kenya',
       tableId: 'WCSPROGRAMS_SharksRays',
     },
     {
@@ -52,7 +42,23 @@ alterState(state => {
       uid: 'aEQjRDMcEgLzRDQYcFqSCC',
       formName: 'SSMT GRM Intake Form Template',
       tableId: 'WCSPROGRAMS_SSMT',
-    }
+    },
+    //==== ARCHIVED FORMS ===============//
+    // {
+    //  uid: 'aStMvYShWXZsKYa7AyN6sr',
+    //  formName: 'Sharks_Rays_20210521_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    // },
+    //   {
+    //  uid: 'aQeXAtEkgg8PGwxDiCUnPW',
+    //  formName: 'Sharks_Rays_20210627_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    // },
+    //    {
+    //  uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
+    //  formName: 'Sharks_Rays_20210701_Kenya',
+    //  tableId: 'WCSPROGRAMS_SharksRays',
+    //},
     //========================//
     ].map(survey => ({
       ...survey,
