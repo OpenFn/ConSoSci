@@ -14,37 +14,37 @@ alterState(state => {
       uid: 'awjdb6AEFF5WgN3bYVNbof',
       formName: 'Sharks_Rays_20220110_Kenya',
       tableId: 'WCSPROGRAMS_SharksRays',
-    },
+    }, //Resynced on Feb21, 2022
     //  {
     //  uid: 'aStMvYShWXZsKYa7AyN6sr',
     //  formName: 'Sharks_Rays_20210521_Kenya',
     //  tableId: 'WCSPROGRAMS_SharksRays',
-    //},
+    //}, //Resynced on Feb16, 2022
     //{
     //  uid: 'aQeXAtEkgg8PGwxDiCUnPW',
     //  formName: 'Sharks_Rays_20210627_Kenya',
     //  tableId: 'WCSPROGRAMS_SharksRays',
-    //},
+    //}, //Resynced on Feb16, 2022
     //{
     //  uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
     //  formName: 'Sharks_Rays_20210701_Kenya',
     //  tableId: 'WCSPROGRAMS_SharksRays',
-    //},
-    //{
-    //  uid: 'aCp2CojjXBoazzhweWrRUr',
-    //  formName: 'Sharks_Rays_20210920_Mada',
-    //  tableId: 'WCSPROGRAMS_SharksRays',
-    //},
-    //{
-    //  uid: 'aSDqbJNRcEkvgKHJSMK2z7',
-    //  formName: 'Sharks_Rays_20220111_Mada',
-    //  tableId: 'WCSPROGRAMS_SharksRays',
-    //},
-      //{
-      //  uid: 'aaknL3DQQgkgZ8iay89X5P',
-      //  formName: 'SHARC',
-      //  tableId: 'WCSPROGRAMS_SharksRaysV2',
-      //},
+    //}, //Resynced on Feb16, 2022
+    {
+      uid: 'aCp2CojjXBoazzhweWrRUr',
+      formName: 'Sharks_Rays_20210920_Mada',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    }, //Resynced on Feb21, 2022
+    {
+      uid: 'aSDqbJNRcEkvgKHJSMK2z7',
+      formName: 'Sharks_Rays_20220111_Mada',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    }, //Resynced on Feb21, 2022
+      {
+        uid: 'aaknL3DQQgkgZ8iay89X5P',
+        formName: 'SHARC',
+        tableId: 'WCSPROGRAMS_SharksRaysV2',
+      }, //Resynced on Feb21, 2022
       // {
       // uid: 'aDgPJqN4SAYohZ4ZueEeYU',
       // formName: 'WCS Data Collection Site Survey',
