@@ -280,8 +280,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
     if (formName === 'BNS Cross River 2017-2020') {
       return state.data.body.today.split('-')[0];
     }
-    const d1 = parseInt(dataValue('body.today').substring(0, 4)); //parseInt(member[`hh_members/birth`].substring(0, 4))
-    console.log(d1);
+    console.log(year);
     return new Date().getFullYear();
     //console.log(Date().getFullYear());
   },
