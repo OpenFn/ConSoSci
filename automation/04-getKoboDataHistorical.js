@@ -30,13 +30,13 @@ alterState(state => {
     //  formName: 'Sharks_Rays_20210701_Kenya',
     //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb16, 2022
     
-    {uid: 'aCp2CojjXBoazzhweWrRUr',
-      formName: 'Sharks_Rays_20210920_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
+    //{uid: 'aCp2CojjXBoazzhweWrRUr',
+    //  formName: 'Sharks_Rays_20210920_Mada',
+    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
     
-    {uid: 'aSDqbJNRcEkvgKHJSMK2z7',
-      formName: 'Sharks_Rays_20220111_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
+    //{uid: 'aSDqbJNRcEkvgKHJSMK2z7',
+    //  formName: 'Sharks_Rays_20220111_Mada',
+    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
     
     // {uid: 'aaknL3DQQgkgZ8iay89X5P',
     //  formName: 'SHARC',
