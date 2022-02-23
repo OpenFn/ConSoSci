@@ -14,9 +14,9 @@ alterState(state => {
     //  formName: 'Moz_Sharks_Rays',
     //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
       
-     {uid: 'awjdb6AEFF5WgN3bYVNbof',
-     formName: 'Sharks_Rays_20220110_Kenya',
-     tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
+    // {uid: 'awjdb6AEFF5WgN3bYVNbof',
+    // formName: 'Sharks_Rays_20220110_Kenya',
+    // tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb21, 2022
     
     //  {uid: 'aStMvYShWXZsKYa7AyN6sr',
     //  formName: 'Sharks_Rays_20210521_Kenya',
