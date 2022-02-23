@@ -24,13 +24,13 @@ alterState(state => {
 
       //BNS
       // HH 2021 
-      { id: 'aSgFKK6Ufq7a4qXDe5yshg', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'  }, // synced Feb 2022
+      //{ id: 'aSgFKK6Ufq7a4qXDe5yshg', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'  }, // synced Feb 2022
       //{ id: 'aokQtdTGTnLW6omXRrf4ss', tag: 'bns_survey', name: 'BNS menages Lac Tele 20211115', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'  }, // resynced December 2021
       // { id: 'aLe9gkcRNXbtNHF6m8tNn8', tag: 'bns_survey', name: 'Socio-economic survey-EU', owner: 'wcs_ug_eu', instance: 'M. Nyago, P. Hatanga, H. Musabende, S. Nampindo, S. Amoko, M. Busiinge, WCS Uganda unpublished data 2021'  }, // resynced December 2021
       // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021' }, // resynced December 2021
 
       // Prices 2021
-     { id: 'arwWLVDnQkJkNV4HtzgmeX', tag: 'bns_price', name: 'BNS Prix Ituri 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'}, // synced Feb 2022
+     //{ id: 'arwWLVDnQkJkNV4HtzgmeX', tag: 'bns_price', name: 'BNS Prix Ituri 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'}, // synced Feb 2022
      // { id: 'aKZCAWsMgUkJDcYKv2Dern', tag: 'bns_price', name: 'BNS Prix Lac Télé 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'},resynced December 2021
      // { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021'}, // resynced December 2021
 
@@ -89,7 +89,7 @@ alterState(state => {
         // { id: 'axSXT4r6TkLxnr3CBggmzg', tag: 'nrgt_current', name: 'NRGT Ndoki 2020', owner: 'wcs_ndoki', instance: 'Y. Londza, WCS Congo unpublished data 2020' }, // synced Sept 07, 2021
       //2019
         // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'wcs_ituri', instance: 'B. Ntumba, A. Ohole, B. Ikati, T. Muller, WCS RDC unpublished data 2019' }, // resynced January 2022
-        // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced January 2022
+         { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced January 2022
         // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
 
       //2018
