@@ -37,6 +37,11 @@ alterState(state => {
       formName: 'Sharks_Rays_20220111_Mada',
       tableId: 'WCSPROGRAMS_SharksRays',
     },
+    {
+      uid: 'aFjJFy7fByoPQ4btGXxf4X',
+      formName: 'Moz_Sharks_Rays',
+      tableId: 'WCSPROGRAMS_SharksRays',
+    },
     //=====Asana Grievance Form=============//
     {
       uid: 'aEQjRDMcEgLzRDQYcFqSCC',
