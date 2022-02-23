@@ -282,7 +282,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
     }
     //const year = dataValue('body.today');
     //console.log(year);
-    return new Date().getFullYear();
+    return new Date().getFullYear(); // Here we don't want the date of today we want the year of the value today
     //console.log(Date(year).getFullYear());
   },
   LastSubmissionTime: dataValue('_submission_time'),
