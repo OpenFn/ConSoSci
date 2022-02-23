@@ -283,7 +283,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
     const year = dataValue('body.today');
     console.log(year);
     return new Date(year).getFullYear();
-    console.log(Date(year).getFullYear());
+    //console.log(Date(year).getFullYear());
   },
   LastSubmissionTime: dataValue('_submission_time'),
   LastCheckedTime: dataValue('_submission_time'),
