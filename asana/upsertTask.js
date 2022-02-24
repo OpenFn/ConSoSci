@@ -1,4 +1,5 @@
-fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
+fn(state => {
+  //Mapping table to map Kobo field choices to Asana custom_fields gids
   const formatMapping = {
     //ReportFormat - gid 1192836094355010
     InPerson: '1192836094355011',
@@ -11,7 +12,7 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     Suggestion: '1200603908441454',
     //Region: '1187328718760755',
     Global: '1200158315275974',
-    'Andes,Amazon,Orinoco': '1187328718760756',            
+    'Andes,Amazon,Orinoco': '1187328718760756',
     ArcticBeringia: '1187328718760757',
     Boreal: '1187328718760758',
     CentralAfricaAndGulfOfGuinea: '1187328718760759',
@@ -24,8 +25,8 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     RockyMountainsWest: '1187850790401229',
     SouthAsiaAndBayOfBengal: '1187850790401230',
     SoutheastAsiaArchipelago: '1187850790401231',
-    'Sudano-Sahel': '1187850790401232',               
-    
+    'Sudano-Sahel': '1187850790401232',
+
     //Country: '1187466717116801',
     AllCountryPrograms: '1200158353214078',
     Afghanistan: '1187466717116802',
@@ -54,7 +55,7 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     Guatemala: '1187842971453069',
     India: '1187842971453070',
     Indonesia: '1187842971453071',
-    'IslasMalvinas/FalklandIslands': '1187842971453072',       
+    'IslasMalvinas/FalklandIslands': '1187842971453072',
     Kenya: '1187842971453073',
     LaoPdr: '1187842971453074',
     Madagascar: '1187842971453075',
@@ -79,18 +80,17 @@ fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields
     UnitedStatesOfAmerica: '1187842971453096',
     Zanzibar: '1196351192285314',
     Singapore: '1201527559680033',
-    
+
     //GrievanceAgainst: '1187634487549328',
     Wcs: '1187634487549329',
     GovernmentPartner: '1187634487549330',
     PrivateSectorPartner: '1187634487549331',
     CivilSocietyPartner: '1187634487549332',
     NotWcsAndNotAWcsPartner: '1187634487549333',
-    
+
     //Confientiality or Sensitivty: '1201743216292434',
-     Yes: '1201743216292435',
-      No: '1201743216292436',
-    
+    Yes: '1201743216292435',
+    No: '1201743216292436',
   };
 
   return { ...state, formatMapping };
@@ -100,46 +100,66 @@ upsertTask(
   dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job
   //'1201382240883590', //hardcoded project id
   {
-    externalId: "name", // Asana external Id field name (e.g., 'gid')
+    externalId: 'name', // Asana external Id field name (e.g., 'gid')
     data: {
       name: state =>
-        `Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-      projects: state => `[${dataValue('projectid')(state)}]`, //to dynamically map project id, assuming it's defined in the Get job
+        `Grievance ID: ${dataValue('body.GrievanceID')(
+          state
+        )} (KoboID:${dataValue('body._id')(state)})`,
+      projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
       //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
       notes: state =>
         `DETAILS:
         WCS Staff name: ${dataValue('body.StaffName')(state)}.
         WCS Staff email address: ${dataValue('body.StaffEmail')(state)}.
-        Grievance reporter full name: ${dataValue('body.ReporterFullName')(state)}.
-        Grievance reporter contact information: ${dataValue('body.ReporterContactInformation')(state)}.
-        Authority of the Grievance reporter: ${dataValue('body.AuthorityGrievanceReporter')(state)}.
-        Where did this grievance take place: ${dataValue('body.WhereGrievance')(state)}.
-        When did this grievance take place: ${dataValue('body.WhenGrievance')(state)}.
-        Parties involved in the grievance: ${dataValue('body.PartiesInvolvedGrievance')(state)}.
-        Local authorities contacted: ${dataValue('body.LocalAuthoritiesContacted')(state)}.
-        Include a description of the grievance here: ${dataValue('body.DescriptioGrievance')(state)}.
+        Grievance reporter full name: ${dataValue('body.ReporterFullName')(
+          state
+        )}.
+        Grievance reporter contact information: ${dataValue(
+          'body.ReporterContactInformation'
+        )(state)}.
+        Authority of the Grievance reporter: ${dataValue(
+          'body.AuthorityGrievanceReporter'
+        )(state)}.
+        Where did this grievance take place: ${dataValue('body.WhereGrievance')(
+          state
+        )}.
+        When did this grievance take place: ${dataValue('body.WhenGrievance')(
+          state
+        )}.
+        Parties involved in the grievance: ${dataValue(
+          'body.PartiesInvolvedGrievance'
+        )(state)}.
+        Local authorities contacted: ${dataValue(
+          'body.LocalAuthoritiesContacted'
+        )(state)}.
+        Include a description of the grievance here: ${dataValue(
+          'body.DescriptioGrievance'
+        )(state)}.
         Harm suffered: ${dataValue('body.HarmSuffered')(state)}.
         Relief requested: ${dataValue('body.ReliefRequested')(state)}.
 
         Kobo FormID: ${dataValue('body._id')(state)}.
         Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
       custom_fields: {
-          '1201382335160247': dataValue('body.OneDriveFolder'),  //Mapped to Grievance OneDrive Folder in Asana
-          '1201382335160251': dataValue('body.DateGrievanceEntered'),  //Mapped to Submission Date in Asana
-          '1201382335160256': dataValue('body.WhenGrievance'),  //Mapped to Grievance Date in Asana
-         /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
-          1200603908440348: state =>
+        1201382335160247: dataValue('body.OneDriveFolder'), //Mapped to Grievance OneDrive Folder in Asana
+        1201382335160251: dataValue('body.DateGrievanceEntered'), //Mapped to Submission Date in Asana
+        1201382335160256: dataValue('body.WhenGrievance'), //Mapped to Grievance Date in Asana
+        /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
+        1200603908440348: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
-          1192836094355010: state =>
+        1192836094355010: state =>
           state.formatMapping[dataValue('body.ReportFormat')(state)],
-          1187328718760755: state =>
+        1187328718760755: state =>
           state.formatMapping[dataValue('body.RegionalProgram')(state)],
-          1187634487549328: state =>
+        1187634487549328: state =>
           state.formatMapping[dataValue('body.GrievanceAgainst')(state)],
-          1201743216292434: state =>
-          state.formatMapping[dataValue('body.ConfidentialitySensitivity')(state)],
-          1187466717116801: state =>
-          state.formatMapping[dataValue('body.Country')(state)],    
+        1201743216292434: state =>
+          state.formatMapping[
+            dataValue('body.ConfidentialitySensitivity')(state)
+          ],
+        1187466717116801: state =>
+          state.formatMapping[dataValue('body.Country')(state)],
       },
     },
   },
@@ -148,5 +168,3 @@ upsertTask(
     return state;
   }
 );
-
-
