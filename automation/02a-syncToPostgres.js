@@ -1,3 +1,7 @@
+// Here we set default options for the SQL adaptor. Setting execute or writeSql
+// below will set the standard behavior of all SQL functions below unless overwritten.
+fn(state => ({ ...state, execute: true, writeSql: true }));
+
 each(
   '$.tables[*]',
   fn(state => {
