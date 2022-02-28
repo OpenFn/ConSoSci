@@ -5,58 +5,80 @@ fn(state => ({ ...state, execute: true, writeSql: true }));
 each(
   '$.tables[*]',
   fn(state => {
-    const { name } = state.data;
+    const { execute, writeSql } = state;
+    const { name, defaultColumns } = state.data;
+
+    function insert(name, columns, execute, writeSql, state) {
+      return insertTable(name, state => columns, {
+        writeSql,
+        execute,
+      })(state);
+    }
+
+    function modify(name, newColumns, execute, writeSql, state) {
+      if (newColumns && newColumns.length > 0) {
+        console.log('Existing table found in mssql --- Updating.');
+        // Note: Specify options here (e.g {writeSql: false, execute: true})
+        return modifyTable(name, state => newColumns, {
+          writeSql, // Keep to true to log query (otherwise make it false).
+          execute, // keep to false to not alter DB
+        })(state);
+      } else {
+        console.log('No new columns to add.');
+        return state;
+      }
+    }
+
     if (name !== `${state.prefixes}_Untitled`) {
-      // Note: Specify options here (e.g {writeSql: false, execute: true})
+      let mergedColumns = state.data.columns;
+      if (state.data.defaultColumns)
+        mergedColumns = [...state.data.columns, ...state.data.defaultColumns];
+
       return describeTable(name.toLowerCase(), {
         writeSql: true, // Keep to true to log query.
-        execute: true, // This always needs to be true so we know if we need to insert or update
-      })(state).then(postgresColumn => {
-        const { rows } = postgresColumn.response.body;
-        let mergedColumns = state.data.columns;
-        if (state.data.defaultColumns)
-          mergedColumns = [...state.data.columns, ...state.data.defaultColumns];
-        if (postgresColumn.response.body.rowCount === 0) {
-          console.log('No matching table found in postgres --- Inserting.');
-          const columns = mergedColumns.filter(x => x.name !== undefined);
-          columns.forEach(col =>
-            col.type === 'select_one' || col.type === 'select_multiple'
-              ? (col.type = 'text')
-              : col.type
-          );
-          // Note: Specify options here (e.g {writeSql: false, execute: true})
-          return insertTable(name, state => columns, {
-            writeSql: true, // Keep to true to log query (otherwise make it false).
-            execute: true, // keep to false to not alter DB
-          })(state);
-        } else {
-          const columnNames = rows.map(x => x.column_name);
+        execute, // Keep to true to execute query.
+      })(state)
+        .then(postgresColumn => {
+          const { rows } = postgresColumn.response.body;
+          if (postgresColumn.response.body.rowCount === 0) {
+            console.log('No matching table found in postgres --- Inserting.');
 
-          console.log('----------------------');
-          const newColumns = mergedColumns.filter(
-            x =>
-              x.name !== undefined &&
-              !columnNames.includes(x.name.toLowerCase())
-          );
-          newColumns.forEach(col =>
-            col.type === 'select_one' || col.type === 'select_multiple'
-              ? (col.type = 'text')
-              : col.type
-          );
-          console.log(newColumns);
-          if (newColumns && newColumns.length > 0) {
-            console.log('Existing table found in postgres --- Updating.');
-            // Note: Specify options here (e.g {writeSql: false, execute: true})
-            return modifyTable(name, state => newColumns, {
-              writeSql: true, // Keep to true to log query (otherwise make it false).
-              execute: true, // keep to false to not alter DB
-            })(state);
+            const columns = mergedColumns.filter(x => x.name !== undefined);
+
+            columns.forEach(col =>
+              col.type === 'select_one' || col.type === 'select_multiple'
+                ? (col.type = 'text')
+                : col.type
+            );
+
+            // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
+            return insert(name, columns, execute, writeSql, state);
           } else {
-            console.log('No new columns to add.');
-            return state;
+            const columnNames = rows.map(x => x.column_name);
+
+            console.log('----------------------');
+            const newColumns = mergedColumns.filter(
+              x =>
+                x.name !== undefined &&
+                !columnNames.includes(x.name.toLowerCase())
+            );
+            newColumns.forEach(col =>
+              col.type === 'select_one' || col.type === 'select_multiple'
+                ? (col.type = 'text')
+                : col.type
+            );
+            console.log(newColumns);
+
+            // change this line to 'return modify(name, newColumns, true, writeSql, state);' to override 'execute: false' at top
+            return modify(name, newColumns, execute, writeSql, state);
           }
-        }
-      });
+        })
+        .catch(() => {
+          // If describeTable does NOT get executed because they've turned off execute,
+          // we should write the SQL for all the insert statements without executing them.
+          const columns = mergedColumns.filter(x => x.name !== undefined);
+          return insert(name, columns, execute, writeSql, state);
+        });
     }
     return state;
   })
