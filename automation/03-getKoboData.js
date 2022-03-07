@@ -16,32 +16,7 @@ alterState(state => {
       formName: 'WCS Data Collection Site Survey',
       tableId: 'WCSPROGRAMS_ProjectAnnualDataPlan',
     },
-      //==== SHARKS & RAYS ===============//
-    {
-        uid: 'aaknL3DQQgkgZ8iay89X5P',
-        formName: 'SHARC',
-        tableId: 'WCSPROGRAMS_SharksRaysV2',
-      },
-    {
-      uid: 'awjdb6AEFF5WgN3bYVNbof',
-      formName: 'Sharks_Rays_20220110_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aCp2CojjXBoazzhweWrRUr',
-      formName: 'Sharks_Rays_20210920_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aSDqbJNRcEkvgKHJSMK2z7',
-      formName: 'Sharks_Rays_20220111_Mada',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
-    {
-      uid: 'aFjJFy7fByoPQ4btGXxf4X',
-      formName: 'Moz_Sharks_Rays',
-      tableId: 'WCSPROGRAMS_SharksRays',
-    },
+
     //=====Asana Grievance Form=============//
     {
       uid: 'aEQjRDMcEgLzRDQYcFqSCC',
