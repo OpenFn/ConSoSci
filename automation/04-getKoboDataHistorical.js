@@ -5,42 +5,11 @@ alterState(state => {
   // BEFORE RUNNING THIS JOB...
   // Set this manual cursor to the earliest submission date you want fetch. 
   // Set this to a very early date if you want to fetch ALL data. 
-  const manualCursor = '2017-01-01T14:32:43.325+01:00';
+  const manualCursor = '2021-01-01T14:32:43.325+01:00';
   console.log('Fetching Kobo submissions starting at: ', manualCursor); 
   state.data = {
     surveys: [
     //--------LIST FORMS HERE THAT YOU WANT TO SYNC HIST DATA
-    // {uid: 'aFjJFy7fByoPQ4btGXxf4X',
-    //  formName: 'Moz_Sharks_Rays',
-    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-      
-    // {uid: 'awjdb6AEFF5WgN3bYVNbof',
-    // formName: 'Sharks_Rays_20220110_Kenya',
-    // tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb21, 2022
-    
-    // {uid: 'aStMvYShWXZsKYa7AyN6sr',
-    //  formName: 'Sharks_Rays_20210521_Kenya',
-    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-    
-    // {uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-    //  formName: 'Sharks_Rays_20210627_Kenya',
-    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-    
-    {uid: 'ayvuo4RnYJBvMLUdNzhYgQ',
-      formName: 'Sharks_Rays_20210701_Kenya',
-      tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-    
-    //{uid: 'aCp2CojjXBoazzhweWrRUr',
-    //  formName: 'Sharks_Rays_20210920_Mada',
-    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-    
-    //{uid: 'aSDqbJNRcEkvgKHJSMK2z7',
-    //  formName: 'Sharks_Rays_20220111_Mada',
-    //  tableId: 'WCSPROGRAMS_SharksRays',}, //Resynced on Feb23, 2022
-    
-    // {uid: 'aaknL3DQQgkgZ8iay89X5P',
-    //  formName: 'SHARC',
-    //  tableId: 'WCSPROGRAMS_SharksRaysV2',}, //Resynced on Feb21, 2022
     
      {uid: 'aDgPJqN4SAYohZ4ZueEeYU',
      formName: 'WCS Data Collection Site Survey',
