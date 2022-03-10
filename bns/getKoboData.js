@@ -12,29 +12,12 @@ alterState(state => {
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
      
        {
-        id: 'aVLz2FxFcw99cv89xNY46K',
+        id: 'aEMeCB6j4BfUVDF4FrGuKw',
         tag: 'bns_survey',
-        name: 'BNS Makira 2021',
-        owner: 'wcs_mamabaie',
+        name: 'Conso+BNS Bismarck 20210531 update',
+        owner: 'wcs_bismarck',
       },
-      {
-        id: 'aVcvLwLaG9ZCnQ9b7ACc2h',
-        tag: 'bns_price',
-        name: 'Prix Makira 2021',
-        owner: 'wcs_mamabaie',
-      },
-      {
-        id: 'aSgFKK6Ufq7a4qXDe5yshg',
-        tag: 'bns_survey',
-        name: 'BNS Ituri : Enquête Ménages 2021',
-        owner: 'wcs_ituri',
-      },
-      {
-        id: 'arwWLVDnQkJkNV4HtzgmeX',
-        tag: 'bns_price',
-        name: 'BNS Prix Ituri 2021',
-        owner: 'wcs_ituri',
-      },
+
     ].map(survey => ({
       formId: survey.id,
       tag: survey.tag,
