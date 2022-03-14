@@ -1,4 +1,4 @@
-alterState(state => {
+fn(state => {
   try {
     const { body, formName, instance } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
