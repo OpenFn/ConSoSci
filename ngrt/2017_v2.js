@@ -1,5 +1,4 @@
-// NOTE: This data cleaning operation returns state, modified as needed.
-fn(state => {
+alterState(state => {
   try {
     const { body, formName, instance } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
