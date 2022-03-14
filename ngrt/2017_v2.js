@@ -77,7 +77,6 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-  //AnswerId: dataValue('_id'),
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
   DatasetUuidId: dataValue('datasetId'),
