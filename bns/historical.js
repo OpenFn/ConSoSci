@@ -23,6 +23,11 @@ alterState(state => {
       //******* WCS HISTORICAL FORMS ******///
 
       //BNS
+      // HH 2022
+      { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
+      //Prices 2022
+      { id: 'aKTbms2Fw6fa2XS3rKMwxv', tag: 'bns_price', name: 'BNS Ndoki Prix 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
+      
       // HH 2021 
       //{ id: 'aEMeCB6j4BfUVDF4FrGuKw', tag: 'bns_survey', name: 'Conso+BNS Bismarck 20210531 update', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'  }, // synced Feb 24 2022
       //{ id: 'aSgFKK6Ufq7a4qXDe5yshg', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'  }, // synced Feb 24 2022
@@ -90,9 +95,9 @@ alterState(state => {
       //2020
         // { id: 'axSXT4r6TkLxnr3CBggmzg', tag: 'nrgt_current', name: 'NRGT Ndoki 2020', owner: 'wcs_ndoki', instance: 'Y. Londza, WCS Congo unpublished data 2020' }, // synced Sept 07, 2021
       //2019
-         { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'wcs_ituri', instance: 'B. Ntumba, A. Ohole, B. Ikati, T. Muller, WCS RDC unpublished data 2019' }, // resynced January 2022
-         { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced Feb 2022
-         { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
+        // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_historical', name: 'NRGT Ituri 2019', owner: 'wcs_ituri', instance: 'B. Ntumba, A. Ohole, B. Ikati, T. Muller, WCS RDC unpublished data 2019' }, // resynced January 2022
+        // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced Feb 2022
+        // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
 
       //2018
         // { id: 'apFFEwXk38TQ2SCkV99bFY', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2018', owner: 'wcs_mtkb', instance:'' }, // resynced Fec 2022
