@@ -11,6 +11,22 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
      
+      { 
+        id: 'aRnpV9xNVcbqLPbmoKn9sR', 
+        tag: 'bns_survey', 
+        name: 'BNS NDOKI 2022', 
+        owner: 'wcs_ndoki', 
+        instance: 'SWM Ndoki unpublished data 2022' ,
+      }, 
+      
+      { 
+        id: 'aKTbms2Fw6fa2XS3rKMwxv', 
+        tag: 'bns_price', 
+        name: 'BNS Ndoki Prix 2022', 
+        owner: 'wcs_ndoki', 
+        instance: 'SWM Ndoki unpublished data 2022' ,
+        
+      }, 
        {
         id: 'aEMeCB6j4BfUVDF4FrGuKw',
         tag: 'bns_survey',
