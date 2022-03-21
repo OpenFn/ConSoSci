@@ -53,9 +53,6 @@ fn(state => {
       LastUpdate: new Date().toISOString(),      
     }));
 
-  console.log("???");
-    console.log(scores);
-    
     return state;
   } catch (error) {
     state.connection.close();
@@ -63,7 +60,7 @@ fn(state => {
   }
 });
 
-console.log("log 5");
+console.log("log 6");
 console.log(state.scores);
 //let scores = state.data.body.group_scores;
 //console.log(scores);
