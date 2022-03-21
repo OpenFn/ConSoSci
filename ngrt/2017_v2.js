@@ -35,6 +35,10 @@ fn(state => {
     let scoreMappings = [];
     state.data.body.group_scores.map((x) => scoreMappings.push(x));
     state.scoreMappings = scoreMappings;
+
+    console.log("log 1");
+    console.log(scoreMappings);
+
     
     return state;
   } catch (error) {
@@ -42,6 +46,10 @@ fn(state => {
     throw error;
   }
 });
+
+console.log("log 2");
+console.log(state.scoreMappings);
+
 
 /*
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
@@ -98,7 +106,6 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 
 
 
-console.log(state.scoreMappings);
 
 
     
