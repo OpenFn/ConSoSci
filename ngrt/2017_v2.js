@@ -32,7 +32,7 @@ fn(state => {
     cleanedSubmission.instance = instance;
 
 /////////    
-    cleanedSubmission.scores = state.data.body.group_scores.map(x => ({
+    cleanedSubmission.group_scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       SurveyDate: x.survey_date,
       Code: x.code,
