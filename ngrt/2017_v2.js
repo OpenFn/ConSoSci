@@ -92,10 +92,19 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 */
 
 
+let x = state.data.body.group_scores || []];
+console.log(x);
+console.log(state);
 
-console.log(state.data.body.group_scores || "nothing");
     
-
+/*
+upsertMany(
+    "WCSPROGRAMS_KoboNrgtNrgtanswergs",
+    "AnswerId",
+    () => mappings
+)(state);
+*/
+  
 // test
 each(
   dataPath('data.body.group_scores[*]'),
