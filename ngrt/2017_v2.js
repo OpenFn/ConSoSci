@@ -30,9 +30,9 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
-    state.data = cleanedSubmission;
-    
-    state.scores = state.data.body.group_scores.map(x => ({
+
+/////////    
+    cleanedSubmission.scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       SurveyDate: x.survey_date,
       Code: x.code,
@@ -52,6 +52,9 @@ fn(state => {
       Diversity: x.diversity,
       LastUpdate: new Date().toISOString(),      
     }));
+////////
+
+    state.data = cleanedSubmission;
 
     return state;
   } catch (error) {
@@ -60,7 +63,7 @@ fn(state => {
   }
 });
 
-console.log("log 6");
+console.log("log 7");
 console.log(state.scores);
 //let scores = state.data.body.group_scores;
 //console.log(scores);
