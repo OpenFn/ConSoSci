@@ -33,7 +33,6 @@ fn(state => {
     state.data = cleanedSubmission;
     
     //state.data.body.group_scores.map((x) => scoreMappings.push(x));
-    state.xxx = "xxx";
 
     
     return state;
@@ -44,7 +43,7 @@ fn(state => {
 });
 
 console.log("log 2");
-console.log(state.xxx);
+console.log(state);
 
 
 /*
