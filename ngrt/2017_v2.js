@@ -88,3 +88,27 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   KoboManaged: true,
   Tags: dataValue('_tags'),
 });
+
+// test
+each(
+  dataPath('body.group_scores[*]'),
+  upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+    SurveyDate: dataValue('group_scores/survey_date'),
+    Code: dataValue('group_scores/code'),
+    Gender: dataValue('group_scores/gender'),
+    Member: dataValue('group_scores/member'),
+    Legitimacy: dataValue('group_scores/legitimacy'),
+    Accountability: dataValue('group_scores/accountability'),
+    Transparency: dataValue('group_scores/transparency'),
+    Participation: dataValue('group_scores/participation'),
+    Fairness: dataValue('group_scores/fairness'),
+    KnowledgeSkills: dataValue('group_scores/knowledge_skills'),
+    Resources: dataValue('group_scores/resources'),
+    InstutionalFramework: dataValue('group_scores/institutional_framework'),
+    Motivation: dataValue('group_scores/motivation'),
+    EnactDecision: dataValue('group_scores/enact_decision'),
+    HeldAccountable: dataValue('group_scores/held_accountable'),
+    Diversity: dataValue('group_scores/diversity'),
+    LastUpdate: new Date().toISOString(),
+  })
+);
