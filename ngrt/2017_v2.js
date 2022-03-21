@@ -31,6 +31,11 @@ fn(state => {
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
+    
+    let scoreMappings = [];
+    state.data.body.group_scores.map((x) => scoreMappings.push(x));
+    state.scoreMappings = scoreMappings;
+    
     return state;
   } catch (error) {
     state.connection.close();
@@ -92,9 +97,9 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 */
 
 
-let x = state.data.body.group_scores || [];
-console.log(x);
-console.log(state);
+
+console.log(state.scoreMappings);
+
 
     
 /*
