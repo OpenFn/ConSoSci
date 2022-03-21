@@ -42,8 +42,8 @@ fn(state => {
   }
 });
 
-console.log("log 2");
-console.log(state);
+console.log("log 3");
+console.log(state.data.body.group_scores);
 
 
 /*
