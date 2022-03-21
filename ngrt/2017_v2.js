@@ -38,7 +38,7 @@ fn(state => {
   }
 });
 
-
+/*
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   DatasetUuidId: dataValue('datasetId'),
   AnswerId: dataValue('_id'),
@@ -89,14 +89,14 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   KoboManaged: true,
   Tags: dataValue('_tags'),
 });
-
+*/
 
 
 const dataArray =
   state.data.body.group_scores ||
   [];
 
-console.log(dataArray);
+console.log(dataArray || "nothing");
     
 
 // test
