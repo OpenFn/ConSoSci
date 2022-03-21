@@ -32,7 +32,7 @@ fn(state => {
     cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
     
-    let scores = state.data.body.group_scores.map(x => ({
+    state.scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       SurveyDate: x.survey_date,
       Code: x.code,
@@ -53,7 +53,7 @@ fn(state => {
       LastUpdate: new Date().toISOString(),      
     }));
 
-  console.log("5");
+  console.log("???");
     console.log(scores);
     
     return state;
@@ -63,9 +63,10 @@ fn(state => {
   }
 });
 
-console.log("log 4");
-let scores = state.data.body.group_scores;
-console.log(scores);
+console.log("log 5");
+console.log(state.scores);
+//let scores = state.data.body.group_scores;
+//console.log(scores);
 
 
 /*
