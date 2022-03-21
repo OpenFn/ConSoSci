@@ -32,8 +32,29 @@ fn(state => {
     cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
     
-    //state.data.body.group_scores.map((x) => scoreMappings.push(x));
+    let scores = state.data.body.group_scores.map(x => ({
+      AnswerId: x._id,
+      SurveyDate: x.survey_date,
+      Code: x.code,
+      Gender: x.gender,
+      Member: x.member,
+      Legitimacy: x.legitimacy,
+      Accountability: x.accountability,
+      Transparency: x.transparency,
+      Participation: x.participation,
+      Fairness: x.fairness,
+      KnowledgeSkills: x.knowledge_skills,
+      Resources: x.resources,
+      InstutionalFramework: x.institutional_framework,
+      Motivation: x.motivation,
+      EnactDecision: x.enact_decision,
+      HeldAccountable: x.held_accountable,
+      Diversity: x.diversity,
+      LastUpdate: new Date().toISOString(),      
+    }));
 
+  console.log("5");
+    console.log(scores);
     
     return state;
   } catch (error) {
