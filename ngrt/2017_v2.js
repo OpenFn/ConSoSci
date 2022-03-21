@@ -95,7 +95,7 @@ console.log("hello?");
 
 // test
 each(
-  dataPath('body.group_scores[*]'),
+  dataPath('data.body.group_scores[*]'),
   upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
     AnswerId: state.data._id,
     SurveyDate: dataValue('group_scores/survey_date'),
