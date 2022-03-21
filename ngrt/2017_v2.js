@@ -97,6 +97,7 @@ console.log("hello?");
 each(
   dataPath('body.group_scores[*]'),
   upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+    AnswerId: state.data._id,
     SurveyDate: dataValue('group_scores/survey_date'),
     Code: dataValue('group_scores/code'),
     Gender: dataValue('group_scores/gender'),
