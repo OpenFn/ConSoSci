@@ -92,11 +92,8 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 */
 
 
-const dataArray =
-  state.data.body.group_scores ||
-  [];
 
-console.log(dataArray || "nothing");
+console.log(state.data.body.group_scores || "nothing");
     
 
 // test
