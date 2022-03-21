@@ -91,7 +91,13 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 });
 
 
-console.log("hello");
+
+const dataArray =
+  state.data.body.group_scores ||
+  [];
+
+console.log(dataArray);
+    
 
 // test
 each(
