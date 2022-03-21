@@ -92,7 +92,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 */
 
 
-let x = state.data.body.group_scores || []];
+let x = state.data.body.group_scores || [];
 console.log(x);
 console.log(state);
 
