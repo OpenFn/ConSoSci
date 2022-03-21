@@ -32,12 +32,8 @@ fn(state => {
     cleanedSubmission.instance = instance;
     state.data = cleanedSubmission;
     
-    let scoreMappings = [];
-    state.data.body.group_scores.map((x) => scoreMappings.push(x));
-    state.scoreMappings = scoreMappings;
-
-    console.log("log 1");
-    console.log(scoreMappings);
+    //state.data.body.group_scores.map((x) => scoreMappings.push(x));
+    state.xxx = "xxx";
 
     
     return state;
@@ -48,7 +44,7 @@ fn(state => {
 });
 
 console.log("log 2");
-console.log(state.scoreMappings);
+console.log(state.xxx);
 
 
 /*
