@@ -32,7 +32,7 @@ fn(state => {
     cleanedSubmission.instance = instance;
 
 /////////    
-    cleanedSubmission.scores = state.data.body.group_scores.map(x => ({
+    state.data.body.group_scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       SurveyDate: x.survey_date,
       Code: x.code,
@@ -63,8 +63,8 @@ fn(state => {
   }
 });
 
-console.log("log state");
-console.log(state);
+console.log("log group_scores");
+console.log(state.data.body.group_scores);
 
 //let scores = state.data.body.group_scores;
 //console.log(scores);
