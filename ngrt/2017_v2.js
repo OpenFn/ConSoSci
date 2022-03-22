@@ -122,7 +122,7 @@ upsertMany(
   state => state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       Id: x._id,
-      DatasetUuidId: state.data.body._uuid,
+      DatasetUuidId: x.datasetId,
       SurveyDate: x.survey_date,
       Code: x.code,
       Gender: x.gender,
