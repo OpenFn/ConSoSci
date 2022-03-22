@@ -141,9 +141,33 @@ upsertMany(
 */
   
 // test
-each(
-  dataPath('data.body.group_scores[*]'),
-  upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+upsertMany(
+  'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
+  'AnswerId', 
+  state => state.data.body.group_scores.map(x => ({
+      AnswerId: x._id,
+      SurveyDate: x.survey_date,
+      Code: x.code,
+      Gender: x.gender,
+      Member: x.member,
+      Legitimacy: x.legitimacy,
+      Accountability: x.accountability,
+      Transparency: x.transparency,
+      Participation: x.participation,
+      Fairness: x.fairness,
+      KnowledgeSkills: x.knowledge_skills,
+      Resources: x.resources,
+      InstutionalFramework: x.institutional_framework,
+      Motivation: x.motivation,
+      EnactDecision: x.enact_decision,
+      HeldAccountable: x.held_accountable,
+      Diversity: x.diversity,
+      LastUpdate: new Date().toISOString(),      
+    }))
+);
+
+/*
+ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
     AnswerId: state.data._id,
     SurveyDate: dataValue('group_scores/survey_date'),
     Code: dataValue('group_scores/code'),
@@ -163,4 +187,4 @@ each(
     Diversity: dataValue('group_scores/diversity'),
     LastUpdate: new Date().toISOString(),
   })
-);
+*/
