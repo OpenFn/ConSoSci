@@ -55,6 +55,8 @@ fn(state => {
 ////////
 
     state.data = cleanedSubmission;
+    state.x = "x";
+    state.data.x = "data.x";
 
     return state;
   } catch (error) {
@@ -63,8 +65,11 @@ fn(state => {
   }
 });
 
-console.log("log group_scores");
-console.log(state.data.body.group_scores);
+console.log("log x");
+console.log(state.x);
+console.log("log data.x");
+console.log(state.data.x);
+
 
 //let scores = state.data.body.group_scores;
 //console.log(scores);
