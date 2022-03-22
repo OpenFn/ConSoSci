@@ -30,7 +30,8 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
-   
+    cleanedSubmission.group_scores = group_scores;
+    
     state.data = cleanedSubmission;
 
     return state;
@@ -40,14 +41,14 @@ fn(state => {
   }
 });
 
-console.log("log group_scores9");
+console.log("log group_scores10");
 
 
 // test
 upsertMany(
   'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
   'AnswerId', 
-  state => state.data.body.group_scores.map(x => ({
+  state => state.data.group_scores.map(x => ({
       AnswerId: state.data.body._id,
       Id: state.data.body._id,
       DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
