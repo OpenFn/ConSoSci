@@ -63,11 +63,11 @@ fn(state => {
 });
 
 
-console.log("log group_scores4");
-console.log(state.data.durableUUID);
-console.log(state.data.datasetId);
-console.log(state.data.instance);
-console.log(state.data.group_scores);
+console.log("log group_scores5");
+console.log(dataValue('durableUUID')(state));
+console.log(dataValue('datasetId')(state));
+console.log(dataValue('instance')(state));
+console.log(dataValue('group_scores')(state));
 console.log(state.data.body.group_scores);
 
 
