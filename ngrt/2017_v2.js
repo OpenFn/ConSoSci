@@ -1,7 +1,7 @@
 fn(state => {
   try {
     const { body, formName, instance } = state.data;
-    const { _submission_time, _id, _xform_id_string, _group_scores } = body;
+    const { _submission_time, _id, _xform_id_string, group_scores } = body;
     let cleanedSubmission = {};
 
     for (const key in body) {
@@ -30,7 +30,7 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
-    cleanedSubmission.group_scores = _group_scores.map(x => ({
+    cleanedSubmission.group_scores = group_scores.map(x => ({
       AnswerId: _id,
       Id: _id,
       DatasetUuidId: cleanedSubmission.datasetId,
@@ -63,7 +63,8 @@ fn(state => {
 });
 
 
-console.log("log group_scores3");
+console.log("log group_scores4");
+console.log(state.data.group_scores);
 console.log(state.data.body.group_scores);
 
 
