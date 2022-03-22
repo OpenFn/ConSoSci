@@ -41,14 +41,12 @@ fn(state => {
   }
 });
 
-console.log("log xxxx");
-console.log(dataValue('xxxx')(state));
+console.log("log 3");
+console.log(dataValue('xxxx'));
 
 console.log("log x2");
+console.log(state.data.instance);
 console.log(state.data.xxxx);
-
-console.log("log x2");
-console.log(state.data);
 
 
 /*
