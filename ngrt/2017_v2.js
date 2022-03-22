@@ -63,9 +63,9 @@ fn(state => {
 });
 
 
-console.log("log group_scores6");
+console.log("log group_scores7");
 console.log(dataValue('durableUUID')(state));
-console.log(dataValue('datasetId')(state));
+console.log(state.data.datasetId);
 console.log(dataValue('instance')(state));
 console.log(dataValue('group_scores')(state));
 console.log(state.data.group_scores);
