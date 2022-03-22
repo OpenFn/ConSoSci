@@ -1,7 +1,7 @@
 fn(state => {
   try {
     const { body, formName, instance } = state.data;
-    const { _submission_time, _id, _xform_id_string } = body;
+    const { _submission_time, _id, _xform_id_string, _group_scores } = body;
     let cleanedSubmission = {};
 
     for (const key in body) {
@@ -30,7 +30,28 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
-    cleanedSubmission.xxxx = "xxxx";
+    cleanedSubmission.group_scores = _group_scores.map(x => ({
+      AnswerId: x._id,
+      Id: x._id,
+      DatasetUuidId: cleanedSubmission.datasetId,
+      Accountability: x["group_scores/accountability"],
+      Code: x["group_scores/code"],
+      Diversity: x["group_scores/diversity"],
+      EnactDecision: x["group_scores/enact_decision"],
+      Fairness: x["group_scores/fairness"],
+      Gender: x["group_scores/gender"],
+      HeldAccountable: x["group_scores/held_accountable"],
+      InstutionalFramework: x["group_scores/institutional_framework"],
+      KnowledgeSkills: x["group_scores/knowledge_skills"],
+      Legitimacy: x["group_scores/legitimacy"],
+      Member: x["group_scores/member"],
+      Motivation: x["group_scores/motivation"],
+      Participation: x["group_scores/participation"],
+      Resources: x["group_scores/resources"],
+      SurveyDate: x["group_scores/survey_date"],
+      Transparency: x["group_scores/transparency"],
+      LastUpdate: new Date().toISOString(),      
+    }));
 
     state.data = cleanedSubmission;
 
@@ -41,12 +62,10 @@ fn(state => {
   }
 });
 
-console.log("log 3");
-console.log(dataValue('xxxx'));
 
-console.log("log x2");
-console.log(state.data.instance);
-console.log(state.data.xxxx);
+console.log("log group_scores");
+console.log(state.data.group_scores);
+
 
 
 /*
