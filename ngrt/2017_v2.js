@@ -41,7 +41,7 @@ fn(state => {
   }
 });
 
-console.log("log group_scores12");
+console.log("log group_scores13");
 
 
 // test
@@ -62,7 +62,7 @@ upsertMany(
       InstutionalFramework: x["group_scores/institutional_framework"],
       KnowledgeSkills: x["group_scores/knowledge_skills"],
       Legitimacy: x["group_scores/legitimacy"],
-      Member: x["group_scores/member"] === "yes",
+      Member: (x["group_scores/member"] === "yes"),
       Motivation: x["group_scores/motivation"],
       Participation: x["group_scores/participation"],
       Resources: x["group_scores/resources"],
