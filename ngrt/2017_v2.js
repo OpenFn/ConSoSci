@@ -55,6 +55,7 @@ fn(state => {
 
     state.data = cleanedSubmission;
 
+    consle.log(state.data);
     return state;
   } catch (error) {
     state.connection.close();
@@ -63,7 +64,7 @@ fn(state => {
 });
 
 
-console.log("log group_scores");
+console.log("log group_scores2");
 console.log(state.data.group_scores);
 
 
