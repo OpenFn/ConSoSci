@@ -32,8 +32,7 @@ fn(state => {
     cleanedSubmission.instance = instance;
     cleanedSubmission.xxxx = "xxxx";
 
-    state.data = cleanedSubmission;
-    
+  
 /////////    
     state.scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
@@ -56,6 +55,8 @@ fn(state => {
       LastUpdate: new Date().toISOString(),      
     }));
 ////////
+
+    state.data = cleanedSubmission;
 
 
     return state;
