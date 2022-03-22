@@ -30,7 +30,10 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
+    cleanedSubmission.xxxx = "xxxx";
 
+    state.data = cleanedSubmission;
+    
 /////////    
     state.data.body.group_scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
@@ -54,7 +57,6 @@ fn(state => {
     }));
 ////////
 
-    state.data = cleanedSubmission;
     state.x = "x";
     state.data.x = "data.x";
 
@@ -65,10 +67,8 @@ fn(state => {
   }
 });
 
-console.log("log x");
-console.log(state.x);
-console.log("log data.x");
-console.log(state.data.x);
+console.log("log data");
+console.log(state.data);
 
 
 //let scores = state.data.body.group_scores;
