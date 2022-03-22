@@ -30,10 +30,27 @@ fn(state => {
     cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
-    cleanedSubmission.group_scores = group_scores.map(x => ({
-      AnswerId: _id,
-      Id: _id,
-      DatasetUuidId: cleanedSubmission.datasetId,
+   
+    state.data = cleanedSubmission;
+
+    return state;
+  } catch (error) {
+    state.connection.close();
+    throw error;
+  }
+});
+
+console.log("log group_scores9");
+
+
+// test
+upsertMany(
+  'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
+  'AnswerId', 
+  state => state.data.body.group_scores.map(x => ({
+      AnswerId: state.data.body._id,
+      Id: state.data.body._id,
+      DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
       Accountability: x["group_scores/accountability"],
       Code: x["group_scores/code"],
       Diversity: x["group_scores/diversity"],
@@ -50,20 +67,9 @@ fn(state => {
       Resources: x["group_scores/resources"],
       SurveyDate: x["group_scores/survey_date"],
       Transparency: x["group_scores/transparency"],
-      LastUpdate: new Date().toISOString(),      
-    }));
-
-    state.data = cleanedSubmission;
-
-    return state;
-  } catch (error) {
-    state.connection.close();
-    throw error;
-  }
-});
-
-
-console.log("log group_scores8");
+      LastUpdate: new Date().toISOString()
+    }))
+);
 
 
 /*
@@ -119,34 +125,6 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 });
 */
 
-
-// test
-upsertMany(
-  'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
-  'AnswerId', 
-  state => state.data.body.group_scores.map(x => ({
-      AnswerId: state.data.body._id,
-      Id: state.data.body._id,
-      DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
-      Accountability: x["group_scores/accountability"],
-      Code: x["group_scores/code"],
-      Diversity: x["group_scores/diversity"],
-      EnactDecision: x["group_scores/enact_decision"],
-      Fairness: x["group_scores/fairness"],
-      Gender: x["group_scores/gender"],
-      HeldAccountable: x["group_scores/held_accountable"],
-      InstutionalFramework: x["group_scores/institutional_framework"],
-      KnowledgeSkills: x["group_scores/knowledge_skills"],
-      Legitimacy: x["group_scores/legitimacy"],
-      Member: x["group_scores/member"],
-      Motivation: x["group_scores/motivation"],
-      Participation: x["group_scores/participation"],
-      Resources: x["group_scores/resources"],
-      SurveyDate: x["group_scores/survey_date"],
-      Transparency: x["group_scores/transparency"],
-      LastUpdate: new Date().toISOString()
-    }))
-);
 
 /*
  upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
