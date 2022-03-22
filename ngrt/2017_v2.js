@@ -66,8 +66,8 @@ fn(state => {
   }
 });
 
-console.log("log scores");
-console.log(dataValue('scores'));
+console.log("log scores2);
+console.log(dataValue('scores')(state));
 
 
 //let scores = state.data.body.group_scores;
