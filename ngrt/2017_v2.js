@@ -35,6 +35,7 @@ fn(state => {
     state.data = cleanedSubmission;
     
 /////////    
+/*
     state.data.body.group_scores = state.data.body.group_scores.map(x => ({
       AnswerId: x._id,
       SurveyDate: x.survey_date,
@@ -55,10 +56,9 @@ fn(state => {
       Diversity: x.diversity,
       LastUpdate: new Date().toISOString(),      
     }));
+    */
 ////////
 
-    state.x = "x";
-    state.data.x = "data.x";
 
     return state;
   } catch (error) {
