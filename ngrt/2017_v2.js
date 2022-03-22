@@ -55,7 +55,7 @@ fn(state => {
 
     state.data = cleanedSubmission;
 
-    consle.log(state.data);
+    console.log(state.data);
     return state;
   } catch (error) {
     state.connection.close();
