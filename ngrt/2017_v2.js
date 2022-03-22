@@ -63,13 +63,7 @@ fn(state => {
 });
 
 
-console.log("log group_scores7");
-console.log(dataValue('durableUUID')(state));
-console.log(state.data.datasetId);
-console.log(dataValue('instance')(state));
-console.log(dataValue('group_scores')(state));
-console.log(state.data.group_scores);
-
+console.log("log group_scores8");
 
 
 /*
@@ -126,47 +120,33 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
 */
 
 
-
-
-
-    
-/*
-upsertMany(
-    "WCSPROGRAMS_KoboNrgtNrgtanswergs",
-    "AnswerId",
-    () => mappings
-)(state);
-*/
-  
 // test
-/*
 upsertMany(
   'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
   'AnswerId', 
   state => state.data.body.group_scores.map(x => ({
-      AnswerId: x._id,
-      Id: x._id,
-      DatasetUuidId: x.datasetId,
-      SurveyDate: x.survey_date,
-      Code: x.code,
-      Gender: x.gender,
-      Member: x.member,
-      Legitimacy: x.legitimacy,
-      Accountability: x.accountability,
-      Transparency: x.transparency,
-      Participation: x.participation,
-      Fairness: x.fairness,
-      KnowledgeSkills: x.knowledge_skills,
-      Resources: x.resources,
-      InstutionalFramework: x.institutional_framework,
-      Motivation: x.motivation,
-      EnactDecision: x.enact_decision,
-      HeldAccountable: x.held_accountable,
-      Diversity: x.diversity,
-      LastUpdate: new Date().toISOString(),      
+      AnswerId: state.data.body._id,
+      Id: state.data.body._id,
+      DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
+      Accountability: x["group_scores/accountability"],
+      Code: x["group_scores/code"],
+      Diversity: x["group_scores/diversity"],
+      EnactDecision: x["group_scores/enact_decision"],
+      Fairness: x["group_scores/fairness"],
+      Gender: x["group_scores/gender"],
+      HeldAccountable: x["group_scores/held_accountable"],
+      InstutionalFramework: x["group_scores/institutional_framework"],
+      KnowledgeSkills: x["group_scores/knowledge_skills"],
+      Legitimacy: x["group_scores/legitimacy"],
+      Member: x["group_scores/member"],
+      Motivation: x["group_scores/motivation"],
+      Participation: x["group_scores/participation"],
+      Resources: x["group_scores/resources"],
+      SurveyDate: x["group_scores/survey_date"],
+      Transparency: x["group_scores/transparency"],
+      LastUpdate: new Date().toISOString()
     }))
 );
-*/
 
 /*
  upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
