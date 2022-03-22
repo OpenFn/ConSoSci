@@ -41,7 +41,7 @@ fn(state => {
   }
 });
 
-console.log("log group_scores11");
+console.log("log group_scores12");
 
 
 // test
@@ -51,7 +51,7 @@ upsertMany(
   state => state.data.group_scores.map(x => ({
       AnswerId: state.data._id,
       Id: state.data._id,
-      DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
+      DatasetUuidId: state.data.datasetId,
       Accountability: x["group_scores/accountability"],
       Code: x["group_scores/code"],
       Diversity: x["group_scores/diversity"],
