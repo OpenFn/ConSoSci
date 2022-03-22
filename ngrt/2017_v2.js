@@ -31,8 +31,8 @@ fn(state => {
     cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
     cleanedSubmission.instance = instance;
     cleanedSubmission.group_scores = _group_scores.map(x => ({
-      AnswerId: x._id,
-      Id: x._id,
+      AnswerId: _id,
+      Id: _id,
       DatasetUuidId: cleanedSubmission.datasetId,
       Accountability: x["group_scores/accountability"],
       Code: x["group_scores/code"],
