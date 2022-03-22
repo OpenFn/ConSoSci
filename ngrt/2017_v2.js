@@ -63,7 +63,7 @@ fn(state => {
 });
 
 
-console.log("log group_scores5");
+console.log("log group_scores6");
 console.log(dataValue('durableUUID')(state));
 console.log(dataValue('datasetId')(state));
 console.log(dataValue('instance')(state));
