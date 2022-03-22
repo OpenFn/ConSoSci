@@ -41,10 +41,47 @@ fn(state => {
   }
 });
 
-console.log("log group_scores13");
 
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+  DatasetUuidId: dataValue('datasetId'),
+  AnswerId: dataValue('_id'),
+  Landscape: state => {
+    var landscape = dataValue('landscape')(state);
+    return state.landscapeMap[landscape] || landscape;
+  },
+  GovGroup: dataValue('gov_group'),
+  Jurisdiction: dataValue('jurisdiction'),
+  Objective: dataValue('objective'),
+  Members: dataValue('members'),
+  Women: dataValue('women'),
+  LastUpdate: new Date().toISOString(),
+});
 
-// test
+/*
+upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+  DatasetUuidId: dataValue('datasetId'),
+  Id: dataValue('_id'),
+  AnswerId: dataValue('_id'),
+  SurveyDate: dataValue('today'),
+  Code: dataValue('code'),
+  Gender: dataValue('gender'),
+  Member: dataValue('member'),
+  Legitimacy: dataValue('legitimacy'),
+  Accountability: dataValue('accountability'),
+  Transparency: dataValue('transparency'),
+  Participation: dataValue('participation'),
+  Fairness: dataValue('fairness'),
+  KnowledgeSkills: dataValue('knowledge_skills'),
+  Resources: dataValue('resources'),
+  InstutionalFramework: dataValue('institutional_framework'),
+  Motivation: dataValue('motivation'),
+  EnactDecision: dataValue('enact_decision'),
+  HeldAccountable: dataValue('held_accountable'),
+  Diversity: dataValue('diversity'),
+  LastUpdate: new Date().toISOString(),
+});
+*/
+
 upsertMany(
   'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
   'AnswerId', 
@@ -73,45 +110,6 @@ upsertMany(
 );
 
 
-/*
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
-  DatasetUuidId: dataValue('datasetId'),
-  AnswerId: dataValue('_id'),
-  Landscape: state => {
-    var landscape = dataValue('landscape')(state);
-    return state.landscapeMap[landscape] || landscape;
-  },
-  GovGroup: dataValue('gov_group'),
-  Jurisdiction: dataValue('jurisdiction'),
-  Objective: dataValue('objective'),
-  Members: dataValue('members'),
-  Women: dataValue('women'),
-  LastUpdate: new Date().toISOString(),
-});
-
-upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-  DatasetUuidId: dataValue('datasetId'),
-  Id: dataValue('_id'),
-  AnswerId: dataValue('_id'),
-  SurveyDate: dataValue('today'),
-  Code: dataValue('code'),
-  Gender: dataValue('gender'),
-  Member: dataValue('member'),
-  Legitimacy: dataValue('legitimacy'),
-  Accountability: dataValue('accountability'),
-  Transparency: dataValue('transparency'),
-  Participation: dataValue('participation'),
-  Fairness: dataValue('fairness'),
-  KnowledgeSkills: dataValue('knowledge_skills'),
-  Resources: dataValue('resources'),
-  InstutionalFramework: dataValue('institutional_framework'),
-  Motivation: dataValue('motivation'),
-  EnactDecision: dataValue('enact_decision'),
-  HeldAccountable: dataValue('held_accountable'),
-  Diversity: dataValue('diversity'),
-  LastUpdate: new Date().toISOString(),
-});
-
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   DatasetName: state.data.formName,
   DatasetOwner: state.data.formOwner,
@@ -124,28 +122,6 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   KoboManaged: true,
   Tags: dataValue('_tags'),
 });
-*/
 
 
-/*
- upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-    AnswerId: state.data._id,
-    SurveyDate: dataValue('group_scores/survey_date'),
-    Code: dataValue('group_scores/code'),
-    Gender: dataValue('group_scores/gender'),
-    Member: dataValue('group_scores/member'),
-    Legitimacy: dataValue('group_scores/legitimacy'),
-    Accountability: dataValue('group_scores/accountability'),
-    Transparency: dataValue('group_scores/transparency'),
-    Participation: dataValue('group_scores/participation'),
-    Fairness: dataValue('group_scores/fairness'),
-    KnowledgeSkills: dataValue('group_scores/knowledge_skills'),
-    Resources: dataValue('group_scores/resources'),
-    InstutionalFramework: dataValue('group_scores/institutional_framework'),
-    Motivation: dataValue('group_scores/motivation'),
-    EnactDecision: dataValue('group_scores/enact_decision'),
-    HeldAccountable: dataValue('group_scores/held_accountable'),
-    Diversity: dataValue('group_scores/diversity'),
-    LastUpdate: new Date().toISOString(),
-  })
-*/
+
