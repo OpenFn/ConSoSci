@@ -66,7 +66,7 @@ fn(state => {
   }
 });
 
-console.log("log scores2);
+console.log("log scores2");
 console.log(dataValue('scores')(state));
 
 
