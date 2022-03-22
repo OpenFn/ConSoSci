@@ -66,8 +66,8 @@ fn(state => {
   }
 });
 
-console.log("log state");
-console.log(state);
+console.log("log landscapeMap");
+console.log(dataValue('landscapeMap'));
 
 
 //let scores = state.data.body.group_scores;
