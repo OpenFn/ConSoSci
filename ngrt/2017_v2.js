@@ -41,7 +41,7 @@ fn(state => {
   }
 });
 
-console.log("log group_scores10");
+console.log("log group_scores11");
 
 
 // test
@@ -49,8 +49,8 @@ upsertMany(
   'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
   'AnswerId', 
   state => state.data.group_scores.map(x => ({
-      AnswerId: state.data.body._id,
-      Id: state.data.body._id,
+      AnswerId: state.data._id,
+      Id: state.data._id,
       DatasetUuidId: `${state.data.formName}-${state.data.body._xform_id_string}`,
       Accountability: x["group_scores/accountability"],
       Code: x["group_scores/code"],
