@@ -32,7 +32,7 @@ fn(state => {
     cleanedSubmission.instance = instance;
     cleanedSubmission.xxxx = "xxxx";
 
-//    state.data = cleanedSubmission;
+    state.data = cleanedSubmission;
 
     return state;
   } catch (error) {
@@ -41,12 +41,14 @@ fn(state => {
   }
 });
 
-console.log("log scores2");
-console.log(dataValue('scores')(state));
-debugger;
+console.log("log xxxx");
+console.log(dataValue('xxxx')(state));
 
-//let scores = state.data.body.group_scores;
-//console.log(scores);
+console.log("log x2");
+console.log(state.data.xxxx);
+
+console.log("log x2");
+console.log(state.data);
 
 
 /*
@@ -116,6 +118,7 @@ upsertMany(
 */
   
 // test
+/*
 upsertMany(
   'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
   'AnswerId', 
@@ -142,6 +145,7 @@ upsertMany(
       LastUpdate: new Date().toISOString(),      
     }))
 );
+*/
 
 /*
  upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
