@@ -11,6 +11,8 @@ permalink: /kobo-automation/
 ## Quickstart
 [See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution. 
 
+[
+
 
 ## Solution overview
 The aim of the solution is to automatically integrate data from Kobo surveys collected across different partners and sites so that WCS administrators can regularly monitor and report across these data sources. 
@@ -31,6 +33,9 @@ Job `A1. Generate Jobs, DB Tables & Dictionary` that triggers the automation flo
 
 See the below diagram (or [this slide](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit#slide=id.gf855f49396_0_14)) for the envisioned data flow. 
 [![automation-flow](./kobo_flow.png)
+
+Job `A1` will trigger multiple other OpenFn jobs to execute all automation steps. See [this slide](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit#slide=id.g11f669f0702_0_34) or below diagram for a technical overview of the role of each job. 
+[![automation-flow](./wcs_automation_job_steps.png)
 
 ### Automation Assumptions
 1. OpenFn will check for new or changed forms in Kobo on a scheduled basis (i.e., every 3 hours). (This automation can also be run on-demand.)
