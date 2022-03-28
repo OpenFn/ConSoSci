@@ -9,9 +9,7 @@ permalink: /kobo-automation/
 
 
 ## Quickstart
-[See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution. 
-
-[
+**>> [See Slides](https://docs.google.com/presentation/d/1CdC0HL5PFzWPVRdz50c7FmRA1sVHxmnGKG_tRf-aP4M/edit?usp=sharing) for an overview and screenshots of this solution.**
 
 
 ## Solution overview
