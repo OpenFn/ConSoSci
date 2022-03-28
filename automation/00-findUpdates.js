@@ -14,12 +14,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       p2: '',
       tableId: 'SharksDecTest',
     },*/
-    {
-        uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-        p1: 'WCSPROGRAMS',
-        p2: 'Arcadia',
-        tableId: 'SiteSurvey'
-    },
+    //{
+    //    uid: 'aDgPJqN4SAYohZ4ZueEeYU',
+    //    p1: 'WCSPROGRAMS',
+    //    p2: 'Arcadia',
+    //    tableId: 'SiteSurvey'
+    //},
     // Trillion Trees Testing //NOTE: openfn_kobo does not have access to this form
       //     {
       // uid: 'a587nJHzyBYATXi3Nb2yc7',
@@ -28,12 +28,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
       // tableId: 'SiteRegistration'
       // },
     //=== WCS Socio Economic Database =====
-    // {
-    //     uid: 'aukhdejQU76K33caCkF4rP',
-    //     p1: 'WCSPROGRAMS',
-    //     p2: 'SocioEco',
-    //     tableId: 'SocioEcoSurvey'
-    // },
+     {
+         uid: 'aukhdejQU76K33caCkF4rP',
+         p1: 'WCSPROGRAMS',
+         p2: 'SocioEco',
+         tableId: 'SocioEcoSurvey'
+     },
     //==== SharksRays ===============//
     // {
     //   uid: 'aaknL3DQQgkgZ8iay89X5P',
