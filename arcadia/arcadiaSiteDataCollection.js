@@ -385,12 +385,11 @@ each(
         );
         const mapping = [];
         for (var dct of dataCollectionTools) {
-          let d = new Date();
-          let date = d.getFullYear().toString() + (d.getMonth() + 1).toString().padStart(2, "0") 
-              + d.getDate().toString().padStart(2, "0");
-            
-          console.log("date");
-          console.log(new Date().toISOString());
+          let d = new Date().toISOString()
+            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+
+          console.log("*date*");
+          console.log(d);
           
           mapping.push({
             DatasetUuidId: body._id + dct,
@@ -406,7 +405,7 @@ each(
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
             UserID_LM: '0',
-            LMDate: date
+            LMDate: d
           });
         }
         console.log("mapping2");
