@@ -445,9 +445,12 @@ each(
         for (var dmt of dataManagementTools) {
           let d = new Date().toISOString()
             .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+
+          console.log("dmt");
+          console.log(dmt);
           
           mappedArray.push({
-            DatasetUuidId: body.id + dmt,
+            DatasetUuidId: body.id.toString() + dmt,
             AnswerId: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
@@ -463,8 +466,6 @@ each(
             LMDate: d
           });
 
-          console.log("dmt");
-          console.log(dmt);
 
           console.log("mappedArray");
           console.log(mappedArray);
