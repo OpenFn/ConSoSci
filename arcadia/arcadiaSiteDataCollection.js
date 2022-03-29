@@ -463,6 +463,9 @@ each(
             LMDate: d
           });
 
+          console.log("dmt");
+          console.log(dmt);
+
           console.log("mappedArray");
           console.log(mappedArray);
         }
