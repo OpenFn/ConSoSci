@@ -384,10 +384,13 @@ each(
           'Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
         );
         const mapping = [];
-        for (dct of dataCollectionTools) {
+        for (var dct of dataCollectionTools) {
+          let d = new Date().toISOString()
+            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+
           mapping.push({
             DatasetUuidId: body._id + dct,
-            AnswerId: body._id,
+            AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             IsForCollect: 1,
@@ -399,9 +402,12 @@ each(
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
             UserID_LM: '0',
+            LMDate: d
           });
         }
-
+        console.log("mapping2");
+        console.log(mapping);
+          
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
