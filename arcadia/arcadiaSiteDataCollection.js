@@ -387,7 +387,7 @@ each(
         for (var dct of dataCollectionTools) {
           mapping.push({
             DatasetUuidId: body._id + dct,
-            AnswerId: body._id,
+            AnswerId: `${body._id}`,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             IsForCollect: 1,
