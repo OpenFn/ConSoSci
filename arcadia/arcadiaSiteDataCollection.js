@@ -389,7 +389,7 @@ each(
             .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
 
           mapping.push({
-            DatasetUuidId: body._id + dct,
+            DatasetUuidId: body._id.toString() + dct,
             AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
@@ -447,7 +447,7 @@ each(
             .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
 
           mappedArray.push({
-            DatasetUuidId: body._id + dmt,
+            DatasetUuidId: body._id.toString() + dmt,
             AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
@@ -462,10 +462,6 @@ each(
             UserID_LM: '0',
             LMDate: d
           });
-
-
-          console.log("*map*");
-          console.log(mappedArray);
         }
 
         return upsertMany(
@@ -504,7 +500,7 @@ each(
 
         const mappedArray = [];
 
-        for (dat of dataAnalysisTools) {
+        for (var dat of dataAnalysisTools) {
           mappedArray.push({
             DatasetUuidId: body._id + dat,
             AnswerId: body._id,
@@ -521,6 +517,10 @@ each(
             UserID_LM: '0',
           });
         }
+        
+        console.log("*tool*");
+        console.log(mappedArray);
+
 
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
