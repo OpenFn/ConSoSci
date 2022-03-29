@@ -367,14 +367,12 @@ each(
     const dataset = state.data;
     const { body } = state;
 
-    console.log('dataset[datasets/data_collection_tool]');
-    console.log(dataset['datasets/data_collection_tool']);
-    console.log('body[datasets]');
-    console.log(body.datasets);
-
     if (dataset['datasets/data_collection_tool']) {
       const dataCollectionTools =
         dataset['datasets/data_collection_tool'].split(' ');
+
+      console.log("dataCollectionTools");
+      console.log(dataCollectionTools);
 
       return sql({
         query: `
