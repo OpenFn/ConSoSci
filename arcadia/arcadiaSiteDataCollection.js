@@ -367,6 +367,9 @@ each(
     const dataset = state.data;
     const { body } = state;
 
+    console.log('[body.datasets]]');
+    console.log(body.datasets);
+
     if (dataset['datasets/data_collection_tool']) {
       const dataCollectionTools =
         dataset['datasets/data_collection_tool'].split(' ');
