@@ -406,7 +406,7 @@ each(
           });
         }
         
-        console.log("*data_collection_tool*");
+        console.log("*data_collection_tool");
         console.log(mapping);
           
         return upsertMany(
@@ -467,7 +467,7 @@ each(
           });
         }
 
-        console.log("*data_management_tool*");
+        console.log("*data_management_tool");
         console.log(mappedArray);
 
         return upsertMany(
@@ -528,7 +528,7 @@ each(
           });
         }
         
-        console.log("*data_analysis_tool*");
+        console.log("*data_analysis_tool");
         console.log(mappedArray);
 
         return upsertMany(
