@@ -390,7 +390,7 @@ each(
               + d.getDate().toString().padStart(2, "0");
             
           console.log("date");
-          console.log(date);
+          console.log(new Date().toISOString());
           
           mapping.push({
             DatasetUuidId: body._id + dct,
