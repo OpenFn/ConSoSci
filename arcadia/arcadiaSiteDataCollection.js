@@ -384,11 +384,7 @@ each(
           'Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
         );
         const mapping = [];
-        console.log("dataCollectionTools");
-        console.log(dataCollectionTools);
         for (var dct of dataCollectionTools) {
-          console.log("mapping");
-          console.log(mapping);
           mapping.push({
             DatasetUuidId: body._id + dct,
             AnswerId: body._id,
@@ -405,7 +401,9 @@ each(
             UserID_LM: '0',
           });
         }
-
+        console.log("mapping2");
+        console.log(mapping);
+          
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
