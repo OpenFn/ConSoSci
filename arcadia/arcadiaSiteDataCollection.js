@@ -385,9 +385,16 @@ each(
         );
         const mapping = [];
         for (var dct of dataCollectionTools) {
+          let d = new Date();
+          let date = d.getFullYear().toString() + (d.getMonth() + 1).toString().padStart(2, "0") 
+              + d.getDate().toString().padStart(2, "0");
+            
+          console.log("date");
+          console.log(date);
+          
           mapping.push({
             DatasetUuidId: body._id + dct,
-            AnswerId: `${body._id}`,
+            AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             IsForCollect: 1,
@@ -399,6 +406,7 @@ each(
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
             UserID_LM: '0',
+            LMDate: date
           });
         }
         console.log("mapping2");
