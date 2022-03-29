@@ -405,6 +405,9 @@ each(
             LMDate: d
           });
         }
+        
+        console.log("*data_collection_tool*");
+        console.log(mapping);
           
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -464,6 +467,9 @@ each(
           });
         }
 
+        console.log("*data_management_tool*");
+        console.log(mappedArray);
+
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
           'DatasetUuidId',
@@ -501,6 +507,9 @@ each(
         const mappedArray = [];
 
         for (var dat of dataAnalysisTools) {
+          let d = new Date().toISOString()
+            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          
           mappedArray.push({
             DatasetUuidId: body._id + dat,
             AnswerId: body._id,
@@ -515,12 +524,12 @@ each(
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
             UserID_LM: '0',
+            LMDate: d
           });
         }
         
-        console.log("*tool*");
+        console.log("*data_analysis_tool*");
         console.log(mappedArray);
-
 
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
