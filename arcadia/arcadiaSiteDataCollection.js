@@ -386,8 +386,9 @@ each(
         const mapping = [];
         console.log("dataCollectionTools");
         console.log(dataCollectionTools);
-        for (dct of dataCollectionTools) {
-          console.log(dct);
+        for (var dct of dataCollectionTools) {
+          console.log("mapping");
+          console.log(mapping);
           mapping.push({
             DatasetUuidId: body._id + dct,
             AnswerId: body._id,
