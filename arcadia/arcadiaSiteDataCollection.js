@@ -390,7 +390,7 @@ each(
 
           mapping.push({
             DatasetUuidId: body._id + dct,
-            AnswerId: body._id, //.toString(),
+            AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
             IsForCollect: 1,
@@ -405,8 +405,6 @@ each(
             LMDate: d
           });
         }
-        console.log("mapping2");
-        console.log(mapping);
           
         return upsertMany(
           'WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool',
@@ -444,7 +442,7 @@ each(
 
         const mappedArray = [];
 
-        for (dmt of dataManagementTools) {
+        for (var dmt of dataManagementTools) {
           mappedArray.push({
             DatasetUuidId: body.id + dmt,
             AnswerId: body._id,
@@ -460,6 +458,9 @@ each(
             UserID_CR: '0',
             UserID_LM: '0',
           });
+
+          console.log("mappedArray");
+          console.log(mappedArray);
         }
 
         return upsertMany(
