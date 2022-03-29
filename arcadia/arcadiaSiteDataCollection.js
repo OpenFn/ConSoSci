@@ -371,9 +371,6 @@ each(
       const dataCollectionTools =
         dataset['datasets/data_collection_tool'].split(' ');
 
-      console.log("dataCollectionTools");
-      console.log(dataCollectionTools);
-
       return sql({
         query: `
         SELECT WCSPROGRAMS_ProjectAnnualDataPlanDataSetID 
@@ -387,7 +384,10 @@ each(
           'Upserting data collection WCSPROGRAMS_ProjectAnnualDataPlanDataSetDataTool... '
         );
         const mapping = [];
+        console.log("dataCollectionTools");
+        console.log(dataCollectionTools);
         for (dct of dataCollectionTools) {
+          console.log(dct);
           mapping.push({
             DatasetUuidId: body._id + dct,
             AnswerId: body._id,
