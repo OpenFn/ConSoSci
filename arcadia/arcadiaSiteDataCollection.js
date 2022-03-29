@@ -443,6 +443,9 @@ each(
         const mappedArray = [];
 
         for (var dmt of dataManagementTools) {
+          let d = new Date().toISOString()
+            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          
           mappedArray.push({
             DatasetUuidId: body.id + dmt,
             AnswerId: body._id,
@@ -457,6 +460,7 @@ each(
             //TODO: Update UserID_CR mappings
             UserID_CR: '0',
             UserID_LM: '0',
+            LMDate: d
           });
 
           console.log("mappedArray");
