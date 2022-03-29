@@ -388,9 +388,6 @@ each(
           let d = new Date().toISOString()
             .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
 
-          console.log("*date*");
-          console.log(d);
-          
           mapping.push({
             DatasetUuidId: body._id + dct,
             AnswerId: body._id.toString(),
