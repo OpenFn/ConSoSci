@@ -385,11 +385,11 @@ each(
         );
         const mapping = [];
         for (var dct of dataCollectionTools) {
-          let d = new Date().toISOString()
-            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          const dataSetId = body._id.toString() + dct + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
 
           mapping.push({
-            DatasetUuidId: body._id.toString() + dct,
+            DatasetUuidId: dataSetId,
             AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
@@ -446,11 +446,12 @@ each(
         const mappedArray = [];
 
         for (var dmt of dataManagementTools) {
-          let d = new Date().toISOString()
-            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+
+          const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          const dataSetId = body._id.toString() + dmt + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
 
           mappedArray.push({
-            DatasetUuidId: body._id.toString() + dmt,
+            DatasetUuidId: dataSetId,
             AnswerId: body._id.toString(),
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk -> Q: Should we map to ProjectAnnualDataPlanDataSet OR ProjectDataSet?
@@ -507,11 +508,11 @@ each(
         const mappedArray = [];
 
         for (var dat of dataAnalysisTools) {
-          let d = new Date().toISOString()
-            .replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
+          const dataSetId = body._id.toString() + dat + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
           
           mappedArray.push({
-            DatasetUuidId: body._id + dat,
+            DatasetUuidId: dataSetId,
             AnswerId: body._id,
             WCSPROGRAMS_ProjectAnnualDataPlanDataSetID:
               response.body['WCSPROGRAMS_ProjectAnnualDataPlanDataSetID'], //fk
