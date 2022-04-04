@@ -393,8 +393,8 @@ each(
               where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
             })(state);
             
-          console.log("***dataToolId");
-          console.log(dataToolId);
+          console.log("***dct");
+          console.log(dct + " / " + cleanValue(dct));
             
           mapping.push({
             DatasetUuidId: dataSetId,
