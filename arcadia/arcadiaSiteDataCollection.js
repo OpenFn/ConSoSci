@@ -386,7 +386,7 @@ each(
         const mapping = [];
         for (var dct of dataCollectionTools) {
           const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
-          const dataSetId = body._id.toString() + dct + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
+          const dataSetId = body._id.toString() + dct;
 
           mapping.push({
             DatasetUuidId: dataSetId,
@@ -448,7 +448,7 @@ each(
         for (var dmt of dataManagementTools) {
 
           const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
-          const dataSetId = body._id.toString() + dmt + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
+          const dataSetId = body._id.toString() + dmt;
 
           mappedArray.push({
             DatasetUuidId: dataSetId,
@@ -509,7 +509,7 @@ each(
 
         for (var dat of dataAnalysisTools) {
           const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
-          const dataSetId = body._id.toString() + dat + dataset["datasets/dataset_name_calculated"].replace(/ /g, '');
+          const dataSetId = body._id.toString() + dat;
           
           mappedArray.push({
             DatasetUuidId: dataSetId,
