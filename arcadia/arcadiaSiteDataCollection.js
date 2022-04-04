@@ -387,7 +387,15 @@ each(
         for (var dct of dataCollectionTools) {
           const d = new Date().toISOString().replace(/-/g, '').replace(/T/g, ' ').replace(/Z/g, '');
           const dataSetId = body._id.toString() + dct;
-
+          const dataToolId = await findValue({
+              relation: 'WCSPROGRAMS_DataTool',
+              uuid: 'WCSPROGRAMS_DataToolID',
+              where: { WCSPROGRAMS_DataToolExtCode: cleanValue(dct) },
+            })(state);
+            
+          console.log("***dataToolId");
+          console.log(dataToolId);
+            
           mapping.push({
             DatasetUuidId: dataSetId,
             AnswerId: body._id.toString(),
