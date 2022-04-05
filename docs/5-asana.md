@@ -29,7 +29,7 @@ It was **very important** to first create both the KoboToolBox form (source syst
 Jobs Description: 
 1. A first OpenFn job is used to send a `getTask` request to Asana to  (using the `project gid`), to retrieve the gids of all the associated fields from the Asana project. 
 Note: the Project gid and task gid are found in the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`. 
-The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is used to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids
+The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is used to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #3).
    
 2. On a timer-basis, a second OpenFn job fetches all Kobo survey submissions where form
    `name` matches "SSMT GRM Intake Form Template" with a specific `uid`. 
@@ -50,12 +50,12 @@ This job requires a  *one-to-one mapping* i.e.
 
 For scalability, WCS also required that this integration be designed such that multiple versions of the Kobo form (with identical fields) can be mapped to their own corresponding project tasks in Asana. 
 
-There are three types of fields to be mapped:
-1. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typically Date fields or fields that accept free text input from the user. These ones are mapped as follows: 
+There are two types of fields to be mapped:
+1. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typically Date fields or fields that accept free text input from the user. The key-value pair statements needed to populate the custom fields are auto-generated in Job #1. These ones are mapped as follows: 
 
        custom_fields: {'1234567890123456': dataValue('body.OneDriveFolder')} 
 
-2. Multiple Choice / Drop-down Kobo fields. These fileds typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. These parameters are mapped as follows:
+2. Multiple Choice / Drop-down Kobo fields. These fileds typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in Job #1. These parameters are structured as follows:
 
        custom_fields: {
                     1234567890123456: state =>
@@ -69,16 +69,18 @@ Creating the tasks in the Asana project leverages our  [language-asana](https://
        upsertTask(
                    dataValue('projectid'),...
                    );
-Note: This `projectID` **must be dded** to the second OpenFn Job (the Job that fetches survey responses from Kobo) in order to make this field available to the upsert job.
 
- For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
+
+ Note: This `projectID` **must be added** to the second OpenFn Job (the Job that fetches survey responses from Kobo) in order to make this field available to the upsert job.
+ 
+For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
 
        name: state =>
          `${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`, 
 
 The `externalId : "name",` key-value pair was included as well, to create a unique reference between a task in Asana and another database, such as cross-referencing an Asana task with a customer record in a CRM.
 
-Next, a `formatMapping` method was included to map every single Kobo queston field and answer choice (obtained from Kobo `state.data` ) to a corresponding gid in Asana. For example, The *Country* field and its answer options were each mapped to gids as follows:
+Next, a `formatMapping` method was included in the First Job, to map every single Kobo queston field and answer choice (obtained from Kobo `state.data` ) to a corresponding gid in Asana. For example, The *Country* field and its answer options were each mapped to gids as follows:
 
    
     Country: '1200158353214078',
