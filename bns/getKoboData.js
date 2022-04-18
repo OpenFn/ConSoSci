@@ -12,6 +12,22 @@ alterState(state => {
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
      
       { 
+        id: 'aF9PF9YUE5yBVsUvWUr2pV', 
+        tag: 'bns_survey', 
+        name: 'BNS_Individual_Niassa_2022', 
+        owner: 'wcs_niassa', 
+        instance: 'Niassa Special Reserve unpublished data 2022' ,
+      }, 
+      
+      { 
+        id: 'aZgCs6vmSVdDMmYWoW9hfe', 
+        tag: 'bns_price', 
+        name: 'BNS_Precos_Niassa_2022', 
+        owner: 'wcs_niassa', 
+        instance: 'Niassa Special Reserve unpublished data 2022' ,
+        
+      }, 
+      { 
         id: 'aRnpV9xNVcbqLPbmoKn9sR', 
         tag: 'bns_survey', 
         name: 'BNS NDOKI 2022', 
