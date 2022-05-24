@@ -15,6 +15,20 @@ WCS uses Kobo Toolbox forms to record grievances of any kind that were reported 
 the [Kobo form template here](https://ee.kobotoolbox.org/x/ZsQtnyuY)). OpenFn automates data integration between Kobo
 Toolbox and Asana project.
 
+## Pre-requistes
+1. A [KoboToolbox Account](https://www.kobotoolbox.org/) for creating the data-collection forms. This is the source system.
+2. An [Asana Account](https://asana.com/) for creating the project in Asana. This is the destination system.
+
+WCS uses Kobo Toolbox forms to record grievances of any kind that were reported to WCS for further evaluartion and review. (see
+the [Kobo form template here](https://ee.kobotoolbox.org/x/ZsQtnyuY)). OpenFn automates data integration between Kobo
+Toolbox and Asana project.
+
+## Prep / Setup
+1. It is important to design the KoboToolBox form first, test (with field teams), iterate and finalize the form. Ensure that the Kobo `field names` are easily recognizable.
+2. The next step is to create the destination fields in the Asana project, ensuring that the **Kobo _source field_ names exactly match the corresponding _destination fields_ in Asana**. This is necessary for the seamless mapping of these fields in the OpenFn job script.
+
+**Note:** Not all Kobo fields need to map to Asana fields. Only the desired / relevant fields need to be mapped. Secondly, you may have _additional desitnation fields_ in Asana that have no corresponding source fields in Kobo. Such fields may be used by the Asana admin for project management purposes.
+
 It was **very important** to first create both the KoboToolBox form (source system) and the corresponding desired destination fields within Asana, based on the source fields in Kobo. Using a `getTask` language-asana request, we established the properties of destination fields in Asana.
 
 **Asana Field Properties:**
