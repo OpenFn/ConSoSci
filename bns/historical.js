@@ -39,7 +39,7 @@ alterState(state => {
       //{ id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021' }, // synced Feb 24 2022
 
       // Prices 2021
-     { id: 'a6c9ZFyxqafvERK5eMeH7E', tag: 'bns_price', name: 'BNS Price Bismarck 20210531', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'}, // synced Feb 24 2022
+     //{ id: 'a6c9ZFyxqafvERK5eMeH7E', tag: 'bns_price', name: 'BNS Price Bismarck 20210531', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'}, // synced Feb 24 2022
      //{ id: 'arwWLVDnQkJkNV4HtzgmeX', tag: 'bns_price', name: 'BNS Prix Ituri 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'}, // synced Feb 24 2022
      //  { id: 'aKZCAWsMgUkJDcYKv2Dern', tag: 'bns_price', name: 'BNS Prix Lac Télé 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'},//rsynced Feb 24 2022
      //  { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021'}, // synced Feb 24 2022
