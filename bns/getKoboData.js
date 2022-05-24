@@ -49,6 +49,12 @@ alterState(state => {
         name: 'Conso+BNS Bismarck 20210531 update',
         owner: 'wcs_bismarck',
       },
+      {
+        id: 'a6c9ZFyxqafvERK5eMeH7E',
+        tag: 'bns_price',
+        name: 'BNS Price Bismarck 20210531',
+        owner: 'wcs_bismarck',
+      },
 
     ].map(survey => ({
       formId: survey.id,
