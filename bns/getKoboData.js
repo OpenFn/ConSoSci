@@ -11,6 +11,13 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
      
+       { 
+        id: 'aDvmfKGNq6H2yhcMTbP5tB', 
+        tag: 'bns_survey', 
+        name: 'BNS ménage Kahuzi 2022', 
+        owner: 'wcs_mtkb', 
+        instance: 'Kahuzi Biega National Park unpublished data 2022' ,
+      }, 
       { 
         id: 'aF9PF9YUE5yBVsUvWUr2pV', 
         tag: 'bns_survey', 
