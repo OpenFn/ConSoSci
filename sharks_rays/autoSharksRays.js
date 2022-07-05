@@ -463,7 +463,7 @@ each(
       const path = state.data['boat/catch_details/gear_type']
         ? 'boat/catch_details'
         : 'boat/catch/catch_details';
-      const dataArray = state.data[`${path}/gear_type`].split(' ') || [];
+      const dataArray = state.data[`${path}/gear_type`] ? state.data[`${path}/gear_type`].split(' ') : [];
 
       const mappingGear = []; // DD added Gear
 
@@ -822,7 +822,7 @@ each(
       const path = state.data['market_details/vendor/sales/s_gear_type']
         ? 'market_details/vendor/sales'
         : 'market_details/market_001/vendor/sales';
-      const dataArray = state.data[`${path}/s_gear_type`].split(' ') || [];
+      const dataArray = state.data[`${path}/s_gear_type`] ? state.data[`${path}/s_gear_type`].split(' ') : [];
 
       const mappingSGear = []; // DD added SGear
 
