@@ -9,40 +9,48 @@ permalink: /asana/
 
 See the `asana` directory in this repo for these jobs. 
 
-## Project Overview
+## Project Overview & Prerequisites
 
-WCS uses Kobo Toolbox forms to record grievances of any kind that were reported to WCS for further evaluartion and review. (see
-the [Kobo form template here](https://ee.kobotoolbox.org/x/ZsQtnyuY)). OpenFn automates data integration between Kobo
-Toolbox and Asana project.
+WCS uses Kobo Toolbox forms to record grievances of any kind that were reported to WCS for further evaluartion and review.  OpenFn automates data integration between Kobo
+Toolbox (_the Source System_) and Asana (_the Destination system_).
 
-It was **very important** to first create both the KoboToolBox form (source system) and the corresponding desired destination fields within Asana, based on the source fields in Kobo. Using a `getTask` language-asana request, we established the properties of destination fields in Asana.
+**KoboToolBox**
+the KoboToolbox form must first be setup with the relevan questions. (see the [Kobo form template here](https://ee.kobotoolbox.org/x/ZsQtnyuY)).
+
 
 **Asana Field Properties:**
+ The next step is to create the Asana project, using an email address that would be used to setup the OpenFN job. 
+It was **very important** that the name of  destination fields within Asana match the `name` values of the Kobo fields.
+
  The [Asana API documentation](https://developers.asana.com/docs) explains how Asana assigns a unique identifier called, `gid` to each question field, as well as its associated answer options (if any). This is crucial for writing the actual job for creating the task in Asana.
 
+Using a `getTask` language-asana request, we established the properties of destination fields in Asana.
+
+**Data Flows**
+
+*[See this data flow diagram](https://lucid.app/documents/view/6221fa37-411d-49d2-93e7-b889c4f06511).* The following jobs are configured on OpenFn.org to run automatically.
 
 
-### (1) Data Flows & OpenFn Jobs
 
-**[See this data flow diagram](https://lucid.app/documents/view/6221fa37-411d-49d2-93e7-b889c4f06511).** The following jobs are configured on OpenFn.org to run automatically.
+### OpenFn Jobs Setup
+ 
+1. A first OpenFn job (GID Retrieval Job) is written to retrieve the gids of all the associated fields from the Asana project. Note: the Project gid is found in the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`. 
 
-Jobs Description: 
-1. A first OpenFn job is used to send a `getTask` request to Asana to  (using the `project gid`), to retrieve the gids of all the associated fields from the Asana project. 
-Note: the Project gid and task gid are found in the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`. 
-The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is used to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #3).
+The key is to create a dummy task in Asana using the " +Add task" button in the Asana UI. Click to view the Asana task details and take note of the UI structure in the browser. It should look like this:. 
+
+       https://app.asana.com/0/<Project_gid>/< Task_gid>  (Note: We use the TaskID in the getTask request, and not the _ProjectID_)
+
+This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is then modified to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #3).
+
+This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can be switched off or archived afterwards.
    
-2. On a timer-basis, a second OpenFn job fetches all Kobo survey submissions where form
-   `name` matches "SSMT GRM Intake Form Template" with a specific `uid`. 
+2. On a timer-basis, a second OpenFn job (A Fetch Job) is written to fetches all Kobo survey submissions where form  `name` matches "SSMT GRM Intake Form Template" with a specific `uid`. 
    
-   The data is fetched via OpenFn's language-http adaptor and important metadata such as `formName`, `formType` are appended to the Kobo form submission data.
+   The data is fetched via OpenFn's [language-asana adaptor](https://github.com/OpenFn/language-asana) and important metadata such as `formName`, `formType` and `projectID` are appended to the Kobo form request. This returns a json object that includes these fields above (to be used for filtering responses).
   Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
    OpenFn.org and automatically triggers the next (third) job.
    
-3. A third job is triggerd in OpenFn by the arrival of New Kobo Form data in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received.
-
-### (2) Data Element Mappings
-
-[See here](https://docs.google.com/spreadsheets/d/18AXoD-ABl8gAGDpJHiBkK8oDP6YrEsF4/edit?usp=drive_web&ouid=102832098624169374758&rtpof=true) for the integration mapping specifications. 
+3. A third job (An Upsert Job)  is written and gets triggered by the arrival of New Kobo Form data  (with a specific formName) in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received.
 
 This job requires a  *one-to-one mapping* i.e. 
 
@@ -51,29 +59,18 @@ This job requires a  *one-to-one mapping* i.e.
 For scalability, WCS also required that this integration be designed such that multiple versions of the Kobo form (with identical fields) can be mapped to their own corresponding project tasks in Asana. 
 
 There are two types of fields to be mapped:
-1. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typically Date fields or fields that accept free text input from the user. The key-value pair statements needed to populate the custom fields are auto-generated in Job #1. These ones are mapped as follows: 
+i. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typically Date fields or fields that accept free text input from the user. The key-value pair statements needed to populate the custom fields are auto-generated in Job #1. These ones are mapped as follows: 
 
        custom_fields: {'1234567890123456': dataValue('body.OneDriveFolder')} 
 
-2. Multiple Choice / Drop-down Kobo fields. These fileds typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in Job #1. These parameters are structured as follows:
+ii. Multiple Choice / Drop-down Kobo fields. These fileds typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in Job #1. These parameters are structured as follows:
 
        custom_fields: {
                     1234567890123456: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
                 }  
 
-
-### (3) Job-writing
-Creating the tasks in the Asana project leverages our  [language-asana](https://github.com/OpenFn/language-asana) to perform `upsert()` operations in the Asana project, as follows:
-
-       upsertTask(
-                   dataValue('projectid'),...
-                   );
-
-
- Note: This `projectID` **must be added** to the second OpenFn Job (the Job that fetches survey responses from Kobo) in order to make this field available to the upsert job.
- 
-For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
+iii. For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
 
        name: state =>
          `${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`, 
@@ -88,11 +85,20 @@ Next, a `formatMapping` method was included in the First Job, to map every singl
       Argentina: '1187466717116803',
       Bangladesh: '1187466717116804', 
    
-It was helpful to note that customizing a field name in Asana *does not change* its `gid` value. Hence a change in an **existing** field name in Asana does not require any modifications to the mapping tables. 
 
 
+iv.Upsert the data into the Asana project, as follows:
 
-### (4) Assumptions
+       upsertTask(
+                   dataValue('projectid'),...
+                   );
+
+### Data Element Mappings
+
+[See here](https://docs.google.com/spreadsheets/d/18AXoD-ABl8gAGDpJHiBkK8oDP6YrEsF4/edit?usp=drive_web&ouid=102832098624169374758&rtpof=true) for the integration mapping specifications. 
+
+
+### Assumptions
 
 1. The jobs and mapping design are based on this [KoboToolBox to Asana Integration Requirement](https://docs.google.com/document/d/1blAjAyZ1UfDI-3zDdf38sXYqevroGQVHxOkFWseNTS4/edit#) of WCS.
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is
@@ -100,7 +106,7 @@ It was helpful to note that customizing a field name in Asana *does not change* 
 3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. The combination of `GrievanceID` and Kobo `_id_` creates a unique identifier for each form across various systems that would interact wit this data. **Note:** `uuid` may vary, and hence not a reliable unique identifier.
 
 
-### (4) Administration & Support
+### Administration & Support
 #### Provisioning, Hosting, & Maintenance
 This integration is hosted on OpenFn.org with hosted SaaS. The KoboToolBox Forms managed by WCS (email: ddetoeuf@wcs.org).
 
