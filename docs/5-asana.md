@@ -13,7 +13,7 @@ See the `asana` directory in this repo for these jobs.
 
 WCS uses Kobo Toolbox forms to record grievances of any kind that were reported to WCS for further evaluartion and review. (see
 the [Kobo form template here](https://ee.kobotoolbox.org/x/ZsQtnyuY)). OpenFn automates data integration between Kobo
-Toolbox and Asana project.
+Toolbox (_the Source System_) and Asana (_the Destination system_).
 
 It was **very important** to first create both the KoboToolBox form (source system) and the corresponding desired destination fields within Asana, based on the source fields in Kobo. Using a `getTask` language-asana request, we established the properties of destination fields in Asana.
 
@@ -22,7 +22,7 @@ It was **very important** to first create both the KoboToolBox form (source syst
 
 
 
-### (1) Data Flows & OpenFn Jobs
+### Data Flows & OpenFn Jobs
 
 **[See this data flow diagram](https://lucid.app/documents/view/6221fa37-411d-49d2-93e7-b889c4f06511).** The following jobs are configured on OpenFn.org to run automatically.
 
