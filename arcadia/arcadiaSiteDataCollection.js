@@ -194,7 +194,7 @@ fn(state => {
       const { response } = state;
 
       const mapping = [];
-      for (metric of metricGroupArray) {
+      for (var metric of metricGroupArray) {
         mapping.push({
           WCSPROGRAMS_ProjectAnnualDataPlanID:
             response.body['WCSPROGRAMS_ProjectAnnualDataPlanID'],
@@ -240,7 +240,7 @@ fn(state => {
       const { response } = state;
       //2.1 Upsert records to create m:m relationships with WCSPROGRAMS_CameraTrapSetting
       const mapping = [];
-      for (estimation of estimationGroupArray) {
+      for (var estimation of estimationGroupArray) {
         mapping.push({
           WCSPROGRAMS_ProjectAnnualDataPlanID:
             response.body['WCSPROGRAMS_ProjectAnnualDataPlanID'],
@@ -295,8 +295,7 @@ each(
             response.body['WCSPROGRAMS_ProjectAnnualDataPlanID'], //FK to WCSPROGRAMS_ProjectAnnualDataPlanID
           AnswerId: body._id,
           TypeOfDataSet:
-            dataset['datasets/survey_type'] === 'other'
-              ? dataset['datasets/survey_type']
+            dataset['datasets/survey_type'] === 'other' ? dataset['datasets/survey_type']
               : dataset['datasets/survey_type_other'],
           WCSPROGRAMS_DataSetSurveyTypeID: await findValue({
             uuid: 'WCSPROGRAMS_DataSetSurveyTypeID',
