@@ -15,7 +15,7 @@ alterState(state => {
         
       {uid: 'aaknL3DQQgkgZ8iay89X5P',
       formName: 'SHARC',
-      tableId: 'WCSPROGRAMS_SharksRaysV2',}, //Resynced on Feb21, 2022
+      tableId: 'WCSPROGRAMS_SharksRaysV2',}, //Resynced on August 8, 2022
     
           //==== Kenya  Sharks & Rays ===============//
           
