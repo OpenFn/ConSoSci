@@ -31,8 +31,8 @@ alterState(state => {
       //Prices 2022
     //  { id: 'aKTbms2Fw6fa2XS3rKMwxv', tag: 'bns_price', name: 'BNS Ndoki Prix 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
     //  { id: 'aZgCs6vmSVdDMmYWoW9hfe', tag: 'bns_price', name: 'BNS_Precos_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022' }, // synced 18 April 2022 
-      { id: 'aaCTf3buZnjjQDu9wmyACF', tag: 'bns_price', name: 'BNS Prix Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' , //resynced August 2022
-      }, 
+      { id: 'aaCTf3buZnjjQDu9wmyACF', tag: 'bns_price', name: 'BNS Prix Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' }, //resynced August 2022 
+      
       // HH 2021 
     //  { id: 'aEMeCB6j4BfUVDF4FrGuKw', tag: 'bns_survey', name: 'Conso+BNS Bismarck 2021', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'  }, // synced August 2022
     //  { id: 'aSgFKK6Ufq7a4qXDe5yshg', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'  }, // synced Feb 24 2022
