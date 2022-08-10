@@ -5,35 +5,41 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
 
   // ===========================================================================
   // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//
+
   const manualFormList = [
-    //=================================
-    // Test forms
-    /*{
-      uid: 'aaknL3DQQgkgZ8iay89X5P',
-      p1: 'WCSPROGRAMS',
-      p2: '',
-      tableId: 'SharksDecTest',
-    },*/
-    //{
-    //    uid: 'aDgPJqN4SAYohZ4ZueEeYU',
-    //    p1: 'WCSPROGRAMS',
-    //    p2: 'Arcadia',
-    //    tableId: 'SiteSurvey'
-    //},
-    // Trillion Trees Testing //NOTE: openfn_kobo does not have access to this form
-      //     {
-      // uid: 'a587nJHzyBYATXi3Nb2yc7',
-      // p1: 'TT',
-      // p2: '',
-      // tableId: 'SiteRegistration'
-      // },
-    //=== WCS Socio Economic Database =====
-     {
-         uid: 'aukhdejQU76K33caCkF4rP',
+    //==================== Forms must be shared with the account openfn_kobo====================//
+    //=== WCS Camera trap metadata =====
+    {
+         uid: 'axDXRTMWEkhrQDYQ9K3YdT', // Form name: 1. Project and cameras
          p1: 'WCSPROGRAMS',
-         p2: 'SocioEco',
-         tableId: 'SocioEcoSurvey'
+         p2: 'CameraKobo',
+         tableId: 'Project'
      },
+    {
+         uid: 'axfD6ntJyhfD2mxAGuVRSE', // Form name: 2. Deployments
+         p1: 'WCSPROGRAMS',
+         p2: 'CameraKobo',
+         tableId: 'Deployment'
+     },
+     {
+         uid: 'a4yYjawjdbpHcckBx8m8AP', // Form name: 3. Retrieval
+         p1: 'WCSPROGRAMS',
+         p2: 'CameraKobo',
+         tableId: 'Retrieval'
+     },
+     {
+         uid: 'a9F5e7wMMopSm85Abw3LTN', // Form name: 4. Images
+         p1: 'WCSPROGRAMS',
+         p2: 'CameraKobo',
+         tableId: 'Image'
+     },
+    //=== WCS Socio Economic Database =====
+    // {
+    //     uid: 'aukhdejQU76K33caCkF4rP',
+    //     p1: 'WCSPROGRAMS',
+    //     p2: 'SocioEco',
+    //     tableId: 'SocioEcoSurvey'
+    // },
     //==== SharksRays ===============//
     // {
     //   uid: 'aaknL3DQQgkgZ8iay89X5P',
