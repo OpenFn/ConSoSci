@@ -19,6 +19,13 @@ alterState(state => {
         instance: 'Kahuzi Biega National Park unpublished data 2022' ,
       }, 
       { 
+        id: 'aaCTf3buZnjjQDu9wmyACF', 
+        tag: 'bns_price', 
+        name: 'BNS Prix Kahuzi 2022', 
+        owner: 'wcs_mtkb', 
+        instance: 'Kahuzi Biega National Park unpublished data 2022' ,
+      }, 
+      { 
         id: 'aF9PF9YUE5yBVsUvWUr2pV', 
         tag: 'bns_survey', 
         name: 'BNS_Individual_Niassa_2022', 
@@ -50,18 +57,7 @@ alterState(state => {
         instance: 'SWM Ndoki unpublished data 2022' ,
         
       }, 
-       {
-        id: 'aEMeCB6j4BfUVDF4FrGuKw',
-        tag: 'bns_survey',
-        name: 'Conso+BNS Bismarck 20210531 update',
-        owner: 'wcs_bismarck',
-      },
-      {
-        id: 'a6c9ZFyxqafvERK5eMeH7E',
-        tag: 'bns_price',
-        name: 'BNS Price Bismarck 20210531',
-        owner: 'wcs_bismarck',
-      },
+
 
     ].map(survey => ({
       formId: survey.id,
