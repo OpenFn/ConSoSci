@@ -1,6 +1,6 @@
 // Here we set default options for the SQL adaptor. Setting execute or writeSql
 // below will set the standard behavior of all SQL functions below unless overwritten.
-fn(state => ({ ...state, execute: true, writeSql: true }));
+fn(state => ({ ...state, execute: false, writeSql: true }));
 
 // Creates tables in the db.
 each(
