@@ -1,5 +1,8 @@
 // Here we set default options for the SQL adaptor. Setting execute or writeSql
 // below will set the standard behavior of all SQL functions below unless overwritten.
+
+//SET execute: true  if you want to SQL script to be auto-executed in the DB linked to this job 
+//SET execute: false if you do NOT want to execure the SQL script, and only wnat to generate the script (see "writeSql")
 fn(state => ({ ...state, execute: false, writeSql: true }));
 
 // Creates tables in the db.
