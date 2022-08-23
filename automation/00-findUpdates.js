@@ -15,12 +15,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
         p2: 'CameraKobo',
         tableId: 'Project' // Result is Run 062f3e43-46fe-7332-99e3-07cce87ddbdf
     },
-    //{
-    //    uid: 'axfD6ntJyhfD2mxAGuVRSE', // Form name: 2. Deployments
-    //    p1: 'WCSPROGRAMS',
-    //    p2: 'CameraKobo',
-    //    tableId: 'Deployment' // Result is Run 062f3e47-ed7f-7fc5-b367-4c0f9b530053
-    //},
+    {
+        uid: 'axfD6ntJyhfD2mxAGuVRSE', // Form name: 2. Deployments
+        p1: 'WCSPROGRAMS',
+        p2: 'CameraKobo',
+        tableId: 'Deployment' // Result is Run 062f3e47-ed7f-7fc5-b367-4c0f9b530053
+    },
     //{
     //    uid: 'a4yYjawjdbpHcckBx8m8AP', // Form name: 3. Retrieval
     //    p1: 'WCSPROGRAMS',
