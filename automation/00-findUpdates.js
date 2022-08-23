@@ -9,12 +9,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
   const manualFormList = [
     //==================== Forms must be shared with the account openfn_kobo====================//
     //=== WCS Camera trap metadata =====
-    //{
-    //    uid: 'axDXRTMWEkhrQDYQ9K3YdT', // Form name: 1. Project and cameras
-    //    p1: 'WCSPROGRAMS',
-    //    p2: 'CameraKobo',
-    //    tableId: 'Project' // Result is Run 062f3e43-46fe-7332-99e3-07cce87ddbdf
-    //},
+    {
+        uid: 'axDXRTMWEkhrQDYQ9K3YdT', // Form name: 1. Project and cameras
+        p1: 'WCSPROGRAMS',
+        p2: 'CameraKobo',
+        tableId: 'Project' // Result is Run 062f3e43-46fe-7332-99e3-07cce87ddbdf
+    },
     //{
     //    uid: 'axfD6ntJyhfD2mxAGuVRSE', // Form name: 2. Deployments
     //    p1: 'WCSPROGRAMS',
