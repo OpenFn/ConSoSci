@@ -27,12 +27,12 @@ get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
         p2: 'CameraKobo',
         tableId: 'Retrieval' // Result is Run 062f3e43-10bc-7697-9417-11c931b14c8f
     },
-     {
-         uid: 'a9F5e7wMMopSm85Abw3LTN', // Form name: 4. Images
-         p1: 'WCSPROGRAMS',
-         p2: 'CameraKobo',
-         tableId: 'Image'
-     },
+    // {
+    //     uid: 'a9F5e7wMMopSm85Abw3LTN', // Form name: 4. Images
+    //     p1: 'WCSPROGRAMS',
+    //     p2: 'CameraKobo',
+    //     tableId: 'Image'
+    // },
     //=== WCS Socio Economic Database =====
     // {
     //     uid: 'aukhdejQU76K33caCkF4rP',
