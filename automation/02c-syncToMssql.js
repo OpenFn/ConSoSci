@@ -104,7 +104,6 @@ each(
           const { rows } = resp.response.body;
           if (resp.response.body.rowCount === 0) {
             console.log('No matching table found in mssql --- Inserting.');
-
             const columns = mergedColumns.filter(x => x.name !== undefined);
 
             // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
