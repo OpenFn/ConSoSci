@@ -38,7 +38,7 @@ upsertTask(
       projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
       //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
       notes: state =>
-        `KOBO DETAILS:
+        `DETAILS:
         WCS Staff name: ${dataValue('body.StaffName')(state)}.
         WCS Staff email address: ${dataValue('body.StaffEmail')(state)}.
         Grievance reporter full name: ${dataValue('body.ReporterFullName')(state)}.
@@ -52,19 +52,16 @@ upsertTask(
         Include a description of the grievance here: ${dataValue('body.DescriptioGrievance')(state)}.
         Harm suffered: ${dataValue('body.HarmSuffered')(state)}.
         Relief requested: ${dataValue('body.ReliefRequested')(state)}.
-        
 
         Kobo FormID: ${dataValue('body._id')(state)}.
         Grievance ID: ${dataValue('body.GrievanceID')(state)}.`,
       custom_fields: {
-         //Open-ended questions
           '1201382335160247': dataValue('body.OneDriveFolder'),
           '1201382335160251': dataValue('body.DateGrievanceEntered'),
           '1201382335160256': dataValue('body.WhenGrievance'),
         /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
-         
-         //Multiple choice questions 
           
+          1187328718760774: state =>  state.formatMapping[dataValue('body.GrievanceStatus ')(state)],
           1187634487549315: state =>  state.formatMapping[dataValue('body.GrievanceType')(state)],
           1192836094355010: state =>  state.formatMapping[dataValue('body.ReportFormat')(state)],
           1201743216292434: state =>  state.formatMapping[dataValue('body.ConfidentialitySensitivity')(state)],
@@ -78,3 +75,4 @@ upsertTask(
     return state;
   }
 );
+
