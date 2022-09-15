@@ -1,4 +1,4 @@
-/ {
+// {
 //   ...state,
 //   tableId, // this is unique per form and used to identify the main "submissions table" for the form
 //   tables, // this is a list of tables (main table, lookup tables, junction tables, etc.) to create in the db
