@@ -42,11 +42,19 @@ alterState(state => {
         
       }, 
       { 
+        id: 'aMBGNEH6BzFVjxSZ2zHegc', 
+        tag: 'nrgt_current', 
+        name: 'BNS_Precos_Niassa_2022', 
+        owner: 'wcs_niassa', 
+        instance: 'Niassa Special Reserve unpublished data 2022' ,
+        
+      }, 
+      { 
         id: 'aRnpV9xNVcbqLPbmoKn9sR', 
         tag: 'bns_survey', 
-        name: 'BNS NDOKI 2022', 
-        owner: 'wcs_ndoki', 
-        instance: 'SWM Ndoki unpublished data 2022' ,
+        name: 'NRGT_Niassa_2022', 
+        owner: 'wcs_niassa', 
+        instance: 'WCS Niassa unpublished data 2022' ,
       }, 
       
       { 
