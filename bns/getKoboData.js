@@ -11,6 +11,21 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
      
+        { 
+        id: 'aLJLeHSYsN7DCLQmmYJR8w', 
+        tag: 'bns_survey', 
+        name: 'BNS EPP Poulet 2022', 
+        owner: 'wcs_poultry', 
+        instance: 'WCS Congo - Environmental Partnership Program, Livelihood diversification and poultry production - unpublished data 2022' ,
+      }, 
+      { 
+        id: 'aPH34CUc7zGbzeowRALdTu', 
+        tag: 'bns_survey', 
+        name: 'Basic Necessity Survey Cross River', 
+        owner: 'cemogor', 
+        instance: 'C. Emogor unpublished data 2020' ,
+      }, 
+      
        { 
         id: 'aDvmfKGNq6H2yhcMTbP5tB', 
         tag: 'bns_survey', 
