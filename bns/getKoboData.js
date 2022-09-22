@@ -59,15 +59,15 @@ alterState(state => {
       { 
         id: 'aMBGNEH6BzFVjxSZ2zHegc', 
         tag: 'nrgt_current', 
-        name: 'BNS_Precos_Niassa_2022', 
+        name: 'NRGT_Niassa_2022', 
         owner: 'wcs_niassa', 
         instance: 'Niassa Special Reserve unpublished data 2022' ,
         
       }, 
       { 
-        id: 'aRnpV9xNVcbqLPbmoKn9sR', 
+        id: 'aF9PF9YUE5yBVsUvWUr2pV', 
         tag: 'bns_survey', 
-        name: 'NRGT_Niassa_2022', 
+        name: 'BNS_Individual_Niassa_2022', 
         owner: 'wcs_niassa', 
         instance: 'WCS Niassa unpublished data 2022' ,
       }, 
