@@ -8,14 +8,14 @@ Integration solutions for the Conservation Social Science (ConSoSci) partnership
 happening here.
 - For authorized users, see the `ConSoSci` project on OpenFn.org to view the job configuration settings and activity history for live implementations. 
 
-## Making Chanegs
+## Making Changes
 **N.B. commits to the `master` branch will automatically deploy to OpenFn.org**
 
 To propose changes, make a branch, test your work using
 [devtools](https://openfn.github.io/devtools/) and then submit a PR against
 master.
 
-## About the Orgs
+## About the Implementers
 Head to https://www.wcs.org/ if you're curious about Wildlife Conservation Society or 
 learn more about [ConSoSci](https://programs.wcs.org/consosci).
 
