@@ -24,6 +24,7 @@ alterState(state => {
 
       //BNS
       // HH 2022
+    { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Sept 28 2022
     //  { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
     //  { id: 'aF9PF9YUE5yBVsUvWUr2pV', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022' }, // synced 18 April 2022 
     //  { id: 'aDvmfKGNq6H2yhcMTbP5tB', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' }, //resynced August 2022
