@@ -101,7 +101,7 @@ alterState(state => {
       //2022
       // {  id: 'aMBGNEH6BzFVjxSZ2zHegc', tag: 'nrgt_current', name: 'NRGT_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022'}, // synced Sept 21, 2022,
       //2021
-         { id: 'atB3SwmsxjhoYppdTiCxEw', tag: 'nrgt_current', name: 'NRGT Makira 2021', owner: 'wcs_mamabaie', instance:'WCS Madagascar unpublished data 2021'}, // synced Sept 23, 2022
+      //   { id: 'atB3SwmsxjhoYppdTiCxEw', tag: 'nrgt_current', name: 'NRGT Makira 2021', owner: 'wcs_mamabaie', instance:'WCS Madagascar unpublished data 2021'}, // synced Sept 23, 2022
 
       //2020
         // { id: 'axSXT4r6TkLxnr3CBggmzg', tag: 'nrgt_current', name: 'NRGT Ndoki 2020', owner: 'wcs_ndoki', instance: 'Y. Londza, WCS Congo unpublished data 2020' }, // synced Sept 07, 2021
