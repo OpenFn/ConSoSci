@@ -11,6 +11,13 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
       { 
+        id: 'aBfgRPninKvZEtfpMMqchu', 
+        tag: 'nrgt_current', 
+        name: 'NRGT Ituri 2022', 
+        owner: 'wcs_ituri', 
+        instance: 'WCS Ituri unpublished data 2022' ,
+      }, 
+      { 
         id: 'aXc8nMwPbqrKMDqrBPu4LW', 
         tag: 'bns_survey', 
         name: 'hunter BNS', 
