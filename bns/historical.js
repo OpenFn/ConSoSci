@@ -99,7 +99,8 @@ alterState(state => {
 
       //NRGT
       //2022
-        {  id: 'aBfgRPninKvZEtfpMMqchu', tag: 'nrgt_current', name: 'NRGT Ituri 2022', owner: 'wcs_ituri', instance: 'B. Ikati, D. Bilua, S. Ahasa, WCS Ituri unpublished data 2022' }, 
+      {  id: 'aXFnVax8EugC22oRJAnWoV', tag: 'nrgt_current', name: 'NRGT Kahuzi 2022', owner: 'wcs_mtkb', instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' }, // synced Oct 2022
+      //  {  id: 'aBfgRPninKvZEtfpMMqchu', tag: 'nrgt_current', name: 'NRGT Ituri 2022', owner: 'wcs_ituri', instance: 'B. Ikati, D. Bilua, S. Ahasa, WCS Ituri unpublished data 2022' }, // synced Oct 2022
       // {  id: 'aMBGNEH6BzFVjxSZ2zHegc', tag: 'nrgt_current', name: 'NRGT_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022'}, // synced Sept 21, 2022,
       //2021
       //   { id: 'atB3SwmsxjhoYppdTiCxEw', tag: 'nrgt_current', name: 'NRGT Makira 2021', owner: 'wcs_mamabaie', instance:'WCS Madagascar unpublished data 2021'}, // synced Sept 23, 2022
@@ -117,7 +118,7 @@ alterState(state => {
         // { id: 'awR6CQTvEqiL9PYvMic7dE', tag: 'nrgt_historical', name: 'NRGT Bateke 2018', owner: 'wcs_bateke', instance:'' }, // resynced January 2022
 
       //2017
-         { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical', name: 'NRGT Crossriver 2017', owner: 'wcs_crossriver', instance:'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017' }, // resynced Oct 2022
+        // { id: 'apnzrb2RuoKu8Uxy2svwF6', tag: 'nrgt_historical', name: 'NRGT Crossriver 2017', owner: 'wcs_crossriver', instance:'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017' }, // resynced Oct 2022
         // { id: 'aeWW3VLbdMDgUHHdoRCUH9', tag: 'nrgt_historical', name: 'NRGT Ituri 2017', owner: 'wcs_ituri', instance:'B. Ntumba, A. Ngomba, A. Walanga, I. Liengola, WCS RDC unpublished data 2017' }, // resynced January 2022
         // { id: 'aU6gbhMjfHyGekAma8wHhG', tag: 'nrgt_historical', name: 'NRGT Lac Télé 2017', owner: 'wcs_lactele', instance:'G. Bondeko, N. Loundou, R. Mouanda, R. Mossaba, M. Boboto, D. Detoeuf, WCS Congo unpublished data 2017' }, // resynced January 2022
         // { id: 'asRbCJuyX3KJMFkB2p9Hh7', tag: 'nrgt_historical', name: 'NRGT Makira 2017', owner: 'wcs_mamabaie', instance:'N. Dokolahy, M. Ravelona, D. Detoeuf, WCS Madagascar unpublished data 2017' }, // resynced January 2022
