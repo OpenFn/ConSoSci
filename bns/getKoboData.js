@@ -11,6 +11,13 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
       { 
+        id: 'aXFnVax8EugC22oRJAnWoV', 
+        tag: 'nrgt_current', 
+        name: 'NRGT Kahuzi 2022', 
+        owner: 'wcs_mtkb', 
+        instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' ,
+      }, 
+      { 
         id: 'aBfgRPninKvZEtfpMMqchu', 
         tag: 'nrgt_current', 
         name: 'NRGT Ituri 2022', 
