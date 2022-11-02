@@ -99,7 +99,7 @@ alterState(state => {
 
       //NRGT
       //2022
-      {  id: 'aXFnVax8EugC22oRJAnWoV', tag: 'nrgt_current', name: 'NRGT Kahuzi 2022', owner: 'wcs_mtkb', instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' }, // synced Oct 2022
+      {  id: 'aXFnVax8EugC22oRJAnWoV', tag: 'nrgt_current', name: 'NRGT Kahuzi 2022', owner: 'wcs_mtkb', instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' }, // resynced 2nd Nov 2022
       //  {  id: 'aBfgRPninKvZEtfpMMqchu', tag: 'nrgt_current', name: 'NRGT Ituri 2022', owner: 'wcs_ituri', instance: 'B. Ikati, D. Bilua, S. Ahasa, WCS Ituri unpublished data 2022' }, // synced Oct 2022
       // {  id: 'aMBGNEH6BzFVjxSZ2zHegc', tag: 'nrgt_current', name: 'NRGT_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022'}, // synced Sept 21, 2022,
       //2021
