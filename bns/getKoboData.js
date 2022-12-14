@@ -11,6 +11,48 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
       { 
+        id: 'aLa2L2dNrkhceAsp2AWD4A', 
+        tag: 'bns_price', 
+        name: 'Prix_BNS_ABS_2022', 
+        owner: 'wcs_antongil', 
+        instance: 'WCS Madagascar Marine program unpublished data 20222' ,
+      }, 
+      { 
+        id: 'aGT9DSs6zf6q54okHR6UxY', 
+        tag: 'bns_survey', 
+        name: 'BNS_ABS_2022', 
+        owner: 'wcs_antongil', 
+        instance: 'WCS Madagascar Marine program unpublished data 2022' ,
+      }, 
+      { 
+        id: 'aSuJPLgRj4vTA8gMmDyKJK', 
+        tag: 'bns_price', 
+        name: 'Prix_BNS_Ankarea/Ankivony_2022', 
+        owner: 'wcs_soariake', 
+        instance: 'WCS Madagascar Marine program unpublished data 20222' ,
+      }, 
+      { 
+        id: 'aGKL3jhaGpvfCP7ekPNyr4', 
+        tag: 'bns_survey', 
+        name: 'BNS_Ankarea/Ankivonjy_2022', 
+        owner: 'wcs_soariake', 
+        instance: 'WCS Madagascar Marine program unpublished data 2022' ,
+      }, 
+      { 
+        id: 'a4pMJRa3jn264kvVSv3vm7', 
+        tag: 'bns_price', 
+        name: 'Prix_BNS_Soariake_2022', 
+        owner: 'wcs_soariake', 
+        instance: 'WCS Madagascar Marine program unpublished data 20222' ,
+      }, 
+      { 
+        id: 'a5MyeTAhZ5WHadabcNVMcU', 
+        tag: 'bns_survey', 
+        name: 'BNS_Soariake_2022_FINAL', 
+        owner: 'wcs_soariake', 
+        instance: 'WCS Madagascar Marine program unpublished data 2022' ,
+      }, 
+      { 
         id: 'aXFnVax8EugC22oRJAnWoV', 
         tag: 'nrgt_current', 
         name: 'NRGT Kahuzi 2022', 
