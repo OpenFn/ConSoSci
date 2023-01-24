@@ -28,7 +28,7 @@ alterState(state => {
     // { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'WCS Madagascar Marine program unpublished data 2022'}, 
     // { id: 'a5MyeTAhZ5WHadabcNVMcU', tag: 'bns_survey',name: 'BNS_Soariake_2022_FINAL', owner: 'wcs_soariake', instance: 'WCS Madagascar Marine program unpublished data 2022' }, 
    
-    // { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Sept 28 2022
+     { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Jan 2023
     //  { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
     //  { id: 'aF9PF9YUE5yBVsUvWUr2pV', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022' }, // synced 18 April 2022 
     //  { id: 'aDvmfKGNq6H2yhcMTbP5tB', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' }, //resynced August 2022
@@ -107,7 +107,7 @@ alterState(state => {
 
       //NRGT
       //2022
-      {  id: 'aXFnVax8EugC22oRJAnWoV', tag: 'nrgt_current', name: 'NRGT Kahuzi 2022', owner: 'wcs_mtkb', instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' }, // resynced 2nd Nov 2022
+      //{  id: 'aXFnVax8EugC22oRJAnWoV', tag: 'nrgt_current', name: 'NRGT Kahuzi 2022', owner: 'wcs_mtkb', instance: 'A. Twendilonge, F. Kavuba, WCS Kahuzi unpublished data 2022' }, // resynced 2nd Nov 2022
       //  {  id: 'aBfgRPninKvZEtfpMMqchu', tag: 'nrgt_current', name: 'NRGT Ituri 2022', owner: 'wcs_ituri', instance: 'B. Ikati, D. Bilua, S. Ahasa, WCS Ituri unpublished data 2022' }, // synced Oct 2022
       // {  id: 'aMBGNEH6BzFVjxSZ2zHegc', tag: 'nrgt_current', name: 'NRGT_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022'}, // synced Sept 21, 2022,
       //2021
