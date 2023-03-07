@@ -127,22 +127,27 @@ alterState(state => {
         
       }, 
       { 
-        id: 'aF9PF9YUE5yBVsUvWUr2pV', 
+        id: 'aAGC9q7nwXPnVLP6bFNAEw', 
         tag: 'bns_survey', 
-        name: 'BNS_Individual_Niassa_2022', 
+        name: 'BNS_Individual_Niassa_2023', 
         owner: 'wcs_niassa', 
-        instance: 'WCS Niassa unpublished data 2022' ,
+        instance: 'WCS Niassa unpublished data 2023' ,
       }, 
       
       { 
-        id: 'aKTbms2Fw6fa2XS3rKMwxv', 
+        id: 'aAKdquWgPSLjzB3UgGBcsW', 
         tag: 'bns_price', 
-        name: 'BNS Ndoki Prix 2022', 
+        name: 'BNS_Precos_Niassa_2023', 
         owner: 'wcs_ndoki', 
-        instance: 'SWM Ndoki unpublished data 2022' ,
-        
+        instance: 'WCS Niassa unpublished data 2023' ,
       }, 
-
+     { 
+        id: 'a8KBiBL44hEpNfkS4RmxeN', 
+        tag: 'nrgt_current', 
+        name: 'NRGT_Niassa_2023', 
+        owner: 'wcs_niassa', 
+        instance: 'WCS Niassa unpublished data 2023' ,
+      }, 
 
     ].map(survey => ({
       formId: survey.id,
