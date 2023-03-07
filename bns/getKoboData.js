@@ -28,7 +28,7 @@ alterState(state => {
         
       }, 
       { 
-        id: 'amaXEkoh4eNcKyjjys8jGGc', 
+        id: 'amaXEkoh4eNcKyjjys8jGG', 
         tag: 'nrgt_current', 
         name: 'NRGT Crossriver 2022', 
         owner: 'wcs_crossriver', 
