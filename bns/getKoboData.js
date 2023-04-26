@@ -15,7 +15,7 @@ alterState(state => {
         id: 'a9SgR3L9Vzn8CC5UPAa2ou', 
         tag: 'bns_survey', 
         name: 'BNS EPP 2e/3e cohortes 2023', 
-        owner: 'wcs_crossriver', 
+        owner: 'wcs_poultry', 
         instance: 'WCS Congo unpublished data 2023' ,
       }, 
       { 
