@@ -34,7 +34,7 @@ Using a `getTask` language-asana request, we established the properties of desti
 
 ### OpenFn Jobs Setup
  
-1. A first OpenFn job (GID Retrieval Job) is written to retrieve the gids of all the associated fields from the Asana project. Note: the Project gid is found in the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`. 
+1. A first OpenFn job (A. GIDs and Mappings for Updsert) is written to retrieve the gids of all the associated fields from the Asana project. Note: the Project gid is found in the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`. 
 
 The key is to create a dummy task in Asana using the " +Add task" button in the Asana UI. Click to view the Asana task details and take note of the UI structure in the browser. It should look like this:. 
 
@@ -44,13 +44,13 @@ This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The ou
 
 This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can be switched off or archived afterwards.
    
-2. On a timer-basis, a second OpenFn job (A Fetch Job) is written to fetches all Kobo survey submissions where form  `name` matches "SSMT GRM Intake Form Template" with a specific `uid`. 
+2. On a timer-basis, a second OpenFn job (B. Fetch Kobo Grievance Data) is written to fetches Kobo survey submissions from different forms. For each Kobo form to pull, the administrator should specify the form Name, it's unique identifier (`uid`), and the identifier of the Asana project where the data should be sent (projectid). 
    
    The data is fetched via OpenFn's [language-asana adaptor](https://github.com/OpenFn/language-asana) and important metadata such as `formName`, `formType` and `projectID` are appended to the Kobo form request. This returns a json object that includes these fields above (to be used for filtering responses).
   Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
    OpenFn.org and automatically triggers the next (third) job.
    
-3. A third job (An Upsert Job)  is written and gets triggered by the arrival of New Kobo Form data  (with a specific formName) in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received.
+3. A third job (Upsert Jobs) is written and gets triggered by the arrival of New Kobo Form data  (with a specific formName) in the inbox. This job automatically cleans, maps, & loads the Kobo survey data into a specified Asana project by creating a New Task for every Kobo submission received. Each new form to be fetched requires a new Upsert Job to be created.
 
 This job requires a  *one-to-one mapping* i.e. 
 
