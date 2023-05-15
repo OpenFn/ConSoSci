@@ -44,9 +44,10 @@ alterState(state => {
       
       //Prices 2022
     //{ id: 'aGBARLZxAd9zYZ37S8DZwj', tag: 'bns_price', name: 'BNS Prices Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022' }, 
-    // { id: 'aLa2L2dNrkhceAsp2AWD4A', tag: 'bns_price', name: 'Prix_BNS_ABS_2022', owner: 'wcs_antongil', instance: 'WCS Madagascar Marine program unpublished data 20222'}, 
-    // { id: 'aSuJPLgRj4vTA8gMmDyKJK', tag: 'bns_price', name: 'Prix_BNS_Ankarea/Ankivony_2022', owner: 'wcs_soariake', instance: 'WCS Madagascar Marine program unpublished data 20222'}, 
-    // { id: 'a4pMJRa3jn264kvVSv3vm7', tag: 'bns_price', name: 'Prix_BNS_Soariake_2022', owner: 'wcs_soariake', instance: 'WCS Madagascar Marine program unpublished data 20222' }, 
+     { id: 'aBEqtVJto8GjzfgBzJBAis', tag: 'bns_price', name: 'Prix_BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+     { id: 'aLa2L2dNrkhceAsp2AWD4A', tag: 'bns_price', name: 'Prix_BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+     { id: 'aSuJPLgRj4vTA8gMmDyKJK', tag: 'bns_price', name: 'Prix_BNS_Ankarea/Ankivony_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+     { id: 'a4pMJRa3jn264kvVSv3vm7', tag: 'bns_price', name: 'Prix_BNS_Soariake_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022' }, 
     //  { id: 'aKTbms2Fw6fa2XS3rKMwxv', tag: 'bns_price', name: 'BNS Ndoki Prix 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
     //  { id: 'aZgCs6vmSVdDMmYWoW9hfe', tag: 'bns_price', name: 'BNS_Precos_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022' }, // synced 18 April 2022 
     //  { id: 'aaCTf3buZnjjQDu9wmyACF', tag: 'bns_price', name: 'BNS Prix Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' }, //resynced August 2022 
