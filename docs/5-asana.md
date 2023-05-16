@@ -45,7 +45,7 @@ This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The ou
 This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can be switched off or archived afterwards.
 
 ⚠ *Notes for developers:*
-- This `A. GIDs and Mappings for Updsert` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/WCS-ConsTech/OpenFn-GrievanceRedressMechanism/blob/master/asana/getTaskGID.js)
+- An example of this `A. GIDs and Mappings for Updsert` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
 - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
 - See below for a screenshot of how it might look configured on the platform.  
 
@@ -59,7 +59,7 @@ This job is run *only once* as the Asana field gids for a given project are uniq
    OpenFn.org and automatically triggers the next (third) job.
 
 ⚠ *Notes for developers:*
-- This `B. Fetch Kobo Grievance Data` job is linked to the Github file [`/asana/PullKoboGrievanceData.js`](https://github.com/WCS-ConsTech/OpenFn-GrievanceRedressMechanism/blob/master/asana/PullKoboGrievanceData.js)
+- An example of this `B. Fetch Kobo Grievance Data` job is linked to the Github file [`/asana/PullKoboGrievanceData.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/PullKoboGrievanceData.js).
 - On OpenFn.org this job is configured with the `http` adaptor and a `cron` trigger. 
 - See below for a screenshot of how it might look configured on the platform.  
 
@@ -109,7 +109,7 @@ iv.Upsert the data into the Asana project, as follows:
                    );
 
 ⚠ *Notes for developers:*
-- An example of this `Upsert Job`  is linked to the Github file [`/asana/upsert_wcs_global.js`](https://github.com/WCS-ConsTech/OpenFn-GrievanceRedressMechanism/blob/master/asana/upsert_wcs_global.js)
+- An example of this `Upsert Job`  is linked to the Github file [`/asana/upsertTask.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/upsertTask.js).
 - On OpenFn.org this job is configured with the `asana` adaptor, and a `message filter` trigger which is activated every time a Kobo form is fetched with a matching name (e.g., `{"formName":"WCS Global Grievances"}`). 
 
 
