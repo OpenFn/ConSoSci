@@ -12,6 +12,13 @@ alterState(state => {
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
 
       { 
+        id: 'a33XvMuPQLpeygLURuNUBP', 
+        tag: 'nrgt_current', 
+        name: 'NRGT SWM 2023', 
+        owner: 'wcs_ndoki', 
+        instance: 'WCS Congo unpublished data 2023' ,
+      }, 
+      { 
         id: 'a9SgR3L9Vzn8CC5UPAa2ou', 
         tag: 'bns_survey', 
         name: 'BNS EPP 2e/3e cohortes 2023', 
