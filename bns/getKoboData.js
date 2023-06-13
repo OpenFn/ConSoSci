@@ -18,13 +18,14 @@ alterState(state => {
         owner: 'wcs_ndoki', 
         instance: 'WCS Congo unpublished data 2023' ,
       }, 
-      { 
-        id: 'a9SgR3L9Vzn8CC5UPAa2ou', 
-        tag: 'bns_survey', 
-        name: 'BNS EPP 2e/3e cohortes 2023', 
-        owner: 'wcs_poultry', 
-        instance: 'WCS Congo unpublished data 2023' ,
-      }, 
+      // Poultry form removed from DB because of sampling issues
+      // { 
+      //   id: 'a9SgR3L9Vzn8CC5UPAa2ou', 
+      //   tag: 'bns_survey', 
+      //   name: 'BNS EPP 2e/3e cohortes 2023', 
+      //   owner: 'wcs_poultry', 
+      //   instance: 'WCS Congo unpublished data 2023' ,
+      // }, 
       { 
         id: 'aXf5DPR25YsB8f3mXS7LDh', 
         tag: 'bns_survey', 
