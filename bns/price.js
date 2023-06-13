@@ -1,7 +1,7 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   //try {
-  const { body, formName, instance } = state.data;
+  const { body, formName, instance, formOwner} = state.data;
   const { _submission_time, _id, _xform_id_string } = body;
   let cleanedSubmission = {};
 
@@ -88,6 +88,12 @@ alterState(state => {
   return insertMany('WCSPROGRAMS_KoboBnsPrice', state => data)(state);
 });
 
+alterState(state => {
+  console.log('formOwner ::', state.data.formOwner)
+  console.log('data to upload ::', state.data);
+  return state;
+});
+
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
   DatasetName: state.data.formName,
@@ -102,7 +108,3 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   Citation: dataValue('instance'),
 });
 
-alterState(state => {
-  console.log('data uploaded', state.data);
-  return state;
-});
