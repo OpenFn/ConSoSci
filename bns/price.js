@@ -44,13 +44,14 @@ alterState(state => {
   return {
     ...state,
     landscapeMap,
+    formName, 
+    formOwner,
     data: {
       ...cleanedSubmission,
       durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
       datasetId: `${formName}-${_xform_id_string}`,
       end: cleanedSubmission.end.slice(0, 10),
     },
-    formName,
   };
   /* } catch (error) {
     state.connection.close();
@@ -89,15 +90,15 @@ alterState(state => {
 });
 
 alterState(state => {
-  console.log('DatasetName ::', dataValue('formName'));
-  console.log('DatasetOwner ::', dataValue('formOwner'));
+  console.log('DatasetName ::', state.formName);
+  console.log('DatasetOwner ::', state.formOwner);
   console.log('data to upload ::', state.data);
   return state;
 });
 
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
-  DatasetName: state.data.formName,
+  DatasetName: state.formName,
   DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
