@@ -89,7 +89,8 @@ alterState(state => {
 });
 
 alterState(state => {
-  console.log('formOwner ::', state.data.formOwner)
+  console.log('DatasetName ::', dataValue('formName'));
+  console.log('DatasetOwner ::', dataValue('formOwner'));
   console.log('data to upload ::', state.data);
   return state;
 });
@@ -97,7 +98,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
   DatasetName: state.data.formName,
-  DatasetOwner: state.data.formOwner,
+  DatasetOwner: dataValue('formOwner'),
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
