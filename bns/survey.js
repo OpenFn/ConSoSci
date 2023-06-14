@@ -2,7 +2,7 @@
 
 fn(state => {
   try {
-    const { body, formName, instance } = state.data;
+    const { body, formName, formOwner, instance } = state.data;
     const { _submission_time, _id, _xform_id_string } = body;
 
     let cleanedSubmission = {};
@@ -268,11 +268,21 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
 });
 
+alterState(state => {
+  console.log('DatasetName ::', state.formName);
+  console.log('DatasetOwner ::', state.formOwner);
+  console.log('form submission id ::', state.data['_id']);
+  console.log('DatasetUuidId ::', state.data['datasetId']);
+  //console.log('data to upload ::', state.data);
+  return state;
+})
+
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //renamed from DatasetUuid
   //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
-  DatasetName: dataValue('formName'),
-  DatasetOwner: dataValue('formOwner'),
+  DatasetName: state => state.formName,
+  DatasetOwner: state => state.formOwner,
+  Landscape: dataValue('landscape'),
   DatasetUuidId: dataValue('datasetId'),
   Citation: dataValue('instance'),
   DatasetYear: state => {
