@@ -102,6 +102,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
   DatasetName: state => state.formName,
   DatasetOwner: state => state.formOwner,
+  Landscape: dataValue('landscape'),
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
