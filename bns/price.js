@@ -111,3 +111,8 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   Citation: dataValue('instance'),
 });
 
+alterState(state => {
+  console.log('data uploaded ::', state.data);
+  return state;
+});
+
