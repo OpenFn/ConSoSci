@@ -154,7 +154,7 @@ alterState(state => {
       name: survey.name,
       owner: survey.owner,
       instance: survey.instance,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=2`,
     })),
   };
   console.log(`Fetching data for ${state.data.surveys.length} surveys.`);
@@ -179,7 +179,7 @@ each(dataPath('surveys[*]'), state => {
     console.log(`Fetched ${count} submissions from ${formId} (${tag || ''}).`);
     //Once we fetch the data, we want to post each individual Kobo survey
     //back to the OpenFn inbox to run through the jobs =========================
-    return each(dataPath('submissions[*]'), state => {
+    return each(dataPath('submissions[0]'), state => {
       console.log(`Posting ${state.data.i + 1} of ${count}...`);
       return post(state.configuration.openfnInboxUrl, { body: state => state.data })(state);
     })(state);
