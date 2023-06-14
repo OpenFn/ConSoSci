@@ -101,7 +101,7 @@ alterState(state => {
 upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   //AnswerId: dataValue('durableUUID'),
   DatasetName: state.formName,
-  DatasetOwner: state.formOwner,
+  DatasetOwner: state => state.formOwner,
   DatasetUuidId: dataValue('datasetId'),
   DatasetYear: new Date().getFullYear(),
   LastSubmissionTime: dataValue('_submission_time'),
