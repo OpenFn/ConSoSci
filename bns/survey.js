@@ -268,7 +268,7 @@ upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
   LastUpdate: new Date().toISOString(),
 });
 
-alterState(state => {
+fn(state => {
   console.log('DatasetName ::', state.formName);
   console.log('DatasetOwner ::', state.formOwner);
   console.log('form submission id ::', state.data['_id']);
