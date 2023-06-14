@@ -1,7 +1,7 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
 alterState(state => {
   //try {
-  const { body, formName, instance, formOwner} = state.data;
+  const { body, formName, instance, formOwner } = state.data;
   const { _submission_time, _id, _xform_id_string } = body;
   let cleanedSubmission = {};
 
@@ -20,7 +20,7 @@ alterState(state => {
         break;
     }
   }
-  
+
   cleanedSubmission.instance = instance;
 
   const landscapeMap = {
@@ -44,7 +44,7 @@ alterState(state => {
   return {
     ...state,
     landscapeMap,
-    formName, 
+    formName,
     formOwner,
     data: {
       ...cleanedSubmission,
@@ -67,7 +67,11 @@ sql({
 });
 
 alterState(state => {
-  const data = state.data.good.map((g, i) => ({
+  const { good } = state.data;
+  if (!good || good.length === 0) {
+    return state;
+  }
+  const data = good.map((g, i) => ({
     // Id: state.data._id,
     Id: i + 1,
     AnswerId: state.data._id,
@@ -117,4 +121,3 @@ alterState(state => {
   console.log('data uploaded ::', state.data);
   return state;
 });
-
