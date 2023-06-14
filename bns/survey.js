@@ -119,8 +119,8 @@ fn(state => {
     //   JSON.stringify(state.matrix, null, 2),
     //   `contains ${state.matrix.length} items.`
     // );
-    console.log(instance);
-    return state;
+    console.log('instance: ', instance);
+    return {...state, formOwner, formName};
   } catch (error) {
     state.connection.close();
     throw error;
