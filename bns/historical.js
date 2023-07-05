@@ -25,10 +25,10 @@ alterState(state => {
       //BNS
       // HH 2023
     // { id: 'a9SgR3L9Vzn8CC5UPAa2ou', tag: 'bns_survey', name: 'BNS EPP 2e/3e cohortes 2023', owner: 'wcs_poultry', instance: 'WCS Congo unpublished data 2023' }, 
-    { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
+    //{ id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
       
        //Prices 2023
-     { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_ndoki', instance: 'WCS Niassa unpublished data 2023'}, 
+    // { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_ndoki', instance: 'WCS Niassa unpublished data 2023'}, 
       
       // HH 2022
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
@@ -57,7 +57,7 @@ alterState(state => {
      // { id: 'aSgFKK6Ufq7a4qXDe5yshg', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'  }, // synced Feb 24 2022
     //  { id: 'aokQtdTGTnLW6omXRrf4ss', tag: 'bns_survey', name: 'BNS menages Lac Tele 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'  }, // synced August 2022
     //  { id: 'aLe9gkcRNXbtNHF6m8tNn8', tag: 'bns_survey', name: 'Socio-economic survey-EU', owner: 'wcs_ug_eu', instance: 'M. Nyago, P. Hatanga, H. Musabende, S. Nampindo, S. Amoko, M. Busiinge, WCS Uganda unpublished data 2021'  }, // synced Feb 24 2022
-    //  { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021' }, // synced Feb 24 2022
+      { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021' }, // synced Feb 24 2022
 
       // Prices 2021
      // { id: 'a6c9ZFyxqafvERK5eMeH7E', tag: 'bns_price', name: 'BNS Price Bismarck 2021', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'}, // synced August 2022
