@@ -62,7 +62,7 @@ alterState(state => {
         id: 'aAKdquWgPSLjzB3UgGBcsW', 
         tag: 'bns_price', 
         name: 'BNS_Precos_Niassa_2023', 
-        owner: 'wcs_ndoki', 
+        owner: 'wcs_niassa', 
         instance: 'WCS Niassa unpublished data 2023' ,
       }, 
      { 
