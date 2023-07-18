@@ -32,9 +32,9 @@ alterState(state => {
       
     //   // HH 2022
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
-    // { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
+     { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
     // { id: 'aGT9DSs6zf6q54okHR6UxY', tag: 'bns_survey', name: 'BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
-     { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+  //   { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'a5MyeTAhZ5WHadabcNVMcU', tag: 'bns_survey',name: 'BNS_Soariake_2022_FINAL', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022' }, 
     // { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Jan 2023
     // { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
@@ -154,7 +154,7 @@ alterState(state => {
       name: survey.name,
       owner: survey.owner,
       instance: survey.instance,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=1`,
     })),
   };
   console.log(`Fetching data for ${state.data.surveys.length} surveys.`);
