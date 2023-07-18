@@ -155,7 +155,7 @@ alterState(state => {
       owner: survey.owner,
       instance: survey.instance,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
-      //* USE THE BELOW URL to sync only 1 submision for each form; see "limit=1" *//
+      //* REPLACE L157 w/ the below URL to sync only 1 submision for each form; see "limit=1" *//
       //url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=1`,
     })),
   };
