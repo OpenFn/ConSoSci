@@ -80,7 +80,7 @@ alterState(state => {
       // { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS SWM Ndoki 2019', owner: 'wcs_ndoki', instance: 'G. Mavah, B. Avelino, G. Ngohouani, R. Mouanda, F. Mossoula, B. Ngampamou' }, // resynced December 2021
       // { id: 'acK4WZ2ueqk8NvUdwctxz8', tag: 'bns_survey', name: 'BNS_Soariake_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced December 2021
       // { id: 'auPGpyWbn4PhTuWFBfKYES', tag: 'bns_survey', name: 'BNS_ABS_2019_FINAL', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced December 2021
-      // { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced August 2022
+      { id: 'azepksQ62i8vETEzUfz8jj', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced August 2022
       // { id: 'ahz5DN45juUzp7eUfGS5QA', tag: 'bns_survey', name: 'BNS Ndoki 2019', owner: 'wcs_ndoki', instance: 'G. Mavah, B. Avelino, G. Ngohouani, R. Mouanda, F. Mossoula, B. Ngampamou, WCS Congo unpublished data 2019' }, // resynced December 2021
       // { id: 'aCShrrKNApccvaAPzxzbxK', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2019', owner: 'wcs_mtkb', instance: 'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019' }, // resynced December 2021
       // { id: 'arJkDGmkhhCiJ2eYwRcCit', tag: 'bns_survey', name: 'BNS Makira 2019', owner: 'wcs_mamabay', instance: 'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019' }, // resynced December 2021
@@ -154,7 +154,7 @@ alterState(state => {
       name: survey.name,
       owner: survey.owner,
       instance: survey.instance,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=1`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
     })),
   };
   console.log(`Fetching data for ${state.data.surveys.length} surveys.`);
