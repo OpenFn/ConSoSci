@@ -103,11 +103,11 @@ alterState(state => {
       //   { id: 'ao52kp6BgLgooE3MRsdy4B', tag: 'bns_price', name: 'BNS Prix Ndoki 2018', owner: 'wcs_ndoki', instance: 'Y. Londza, F. Sellat, D. Detoeuf, WCS Congo unpublished data 2018'  }, //  resynced January 2022
 
       // HH 2017
-        { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2018-2019', owner: 'wcs_mtkb', instance: 'C. Spira, A. Kirkby, F. Kavuba, D. Detoeuf, A. Twendilonge, WCS RDC unpublished data 2017' }, // resynced August 2022
-        { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'wcs_mamabaie', instance: 'M. Ravelona, WCS Madagascar unpublished data 2017' }, // resynced January 2022
-        { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'wcs_lactele', instance: 'G. Bondeko, N. Loundou, R. Mouanda, R. Mossaba, M. Boboto, D. Detoeuf, WCS Congo unpublished data 2017' }, // resynced January 2022
-        { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'wcs_ituri', instance: 'M. Enduyi, A. Tsongo, J. Maneno, O. Angauko, A. Ohole, WCS RDC unpublished data 2017'}, // resynced January 2022
-        { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017'}, // resynced January 2022
+        // { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2018-2019', owner: 'wcs_mtkb', instance: 'C. Spira, A. Kirkby, F. Kavuba, D. Detoeuf, A. Twendilonge, WCS RDC unpublished data 2017' }, // resynced August 2022
+        // { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'wcs_mamabaie', instance: 'M. Ravelona, WCS Madagascar unpublished data 2017' }, // resynced January 2022
+        // { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'wcs_lactele', instance: 'G. Bondeko, N. Loundou, R. Mouanda, R. Mossaba, M. Boboto, D. Detoeuf, WCS Congo unpublished data 2017' }, // resynced January 2022
+        // { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'wcs_ituri', instance: 'M. Enduyi, A. Tsongo, J. Maneno, O. Angauko, A. Ohole, WCS RDC unpublished data 2017'}, // resynced January 2022
+        // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017'}, // resynced January 2022
 
       // Prices 2017
         // { id: 'aqwNyk7ikXxU9x4u77YfnS', tag: 'bns_price', name: 'Prices Crossriver 2017 ', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017'}, // resynced January 2022
