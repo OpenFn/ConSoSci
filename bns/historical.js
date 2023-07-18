@@ -154,7 +154,7 @@ alterState(state => {
       name: survey.name,
       owner: survey.owner,
       instance: survey.instance,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=1`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
     })),
   };
   console.log(`Fetching data for ${state.data.surveys.length} surveys.`);
