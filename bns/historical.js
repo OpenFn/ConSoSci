@@ -34,7 +34,7 @@ alterState(state => {
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
     // { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
     // { id: 'aGT9DSs6zf6q54okHR6UxY', tag: 'bns_survey', name: 'BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
-    // { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+     { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'a5MyeTAhZ5WHadabcNVMcU', tag: 'bns_survey',name: 'BNS_Soariake_2022_FINAL', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022' }, 
     // { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Jan 2023
     // { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
@@ -69,8 +69,8 @@ alterState(state => {
       // { id: 'ad7S4hPBN7qM4Ac3mpEdwZ', tag: 'bns_survey', name: 'BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // resynced December 2021
       // { id: 'atyo55YdBdfxzXiaBdrbvr', tag: 'bns_survey', name: 'BNS Ndoki Parc 2020', owner: 'wcs_ndoki', instance: 'Y. Londza & Nouabalé-Ndoki National Park team' }, // resynced December 2021
      // { id: 'ar9wXnLW2sdaamGgJsUrjP', tag: 'bns_survey', name: 'Socio-Eco Uganda 2020', owner: 'wcs_uganda_carbon', instance: 'M. Nyago, H. Musabende & WCS Uganda Carbon team'}, // resynced December 2021
-      { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017-2020'}, // resynced December 2021
-      { id: 'aPH34CUc7zGbzeowRALdTu', tag: 'bns_survey', name: 'Basic Necessity Survey Cross River', owner: 'cemogor', instance: 'C. Emogor unpublished data 2020'}, // Synced Sept 22, 2022
+      // { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Cross River 2017 - 2020 ', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017-2020'}, // resynced December 2021
+      // { id: 'aPH34CUc7zGbzeowRALdTu', tag: 'bns_survey', name: 'Basic Necessity Survey Cross River', owner: 'cemogor', instance: 'C. Emogor unpublished data 2020'}, // Synced Sept 22, 2022
       
       // // Prices 2020
       //   { id: 'aj67aaDZa52oLBFPVGWWwu', tag: 'bns_price', name: 'Prix_BNS_Nosy Be_2020', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2020' }, // resynced December 2021 
