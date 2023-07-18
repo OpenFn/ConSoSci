@@ -28,7 +28,7 @@ alterState(state => {
     //{ id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
       
        //Prices 2023
-     { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
+    // { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
       
       // HH 2022
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
@@ -106,7 +106,7 @@ alterState(state => {
        //  { id: 'aEypYtcfNGvDtpkSUPXrJN', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2018-2019', owner: 'wcs_mtkb', instance: 'C. Spira, A. Kirkby, F. Kavuba, D. Detoeuf, A. Twendilonge, WCS RDC unpublished data 2017' }, // resynced August 2022
        //  { id: 'a9R68Er4oeDx6quZre2DM7', tag: 'bns_survey', name: 'BNS Makira 2017', owner: 'wcs_mamabaie', instance: 'M. Ravelona, WCS Madagascar unpublished data 2017' }, // resynced January 2022
        //  { id: 'auqBASwJMLvkqtAJnZ8SXx', tag: 'bns_survey', name: 'BNS Lac Télé 2017', owner: 'wcs_lactele', instance: 'G. Bondeko, N. Loundou, R. Mouanda, R. Mossaba, M. Boboto, D. Detoeuf, WCS Congo unpublished data 2017' }, // resynced January 2022
-       //  { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'wcs_ituri', instance: 'M. Enduyi, A. Tsongo, J. Maneno, O. Angauko, A. Ohole, WCS RDC unpublished data 2017'}, // resynced January 2022
+        { id: 'a2m5Hp4BoN956CBxfKHdJY', tag: 'bns_survey', name: 'BNS Ituri: Enquête Ménages 2017', owner: 'wcs_ituri', instance: 'M. Enduyi, A. Tsongo, J. Maneno, O. Angauko, A. Ohole, WCS RDC unpublished data 2017'}, // resynced January 2022
        //  { id: 'amD3cUsR4Jurj3ZSUyQdBH', tag: 'bns_survey', name: 'BNS Crossriver 2017', owner: 'wcs_crossriver', instance: 'I. Imong, J. Ntui, O. Okagbare, S. Ova, L. Nkonyu, WCS Nigeria unpublished data 2017'}, // resynced January 2022
 
       // Prices 2017
