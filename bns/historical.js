@@ -32,7 +32,7 @@ alterState(state => {
       
     //   // HH 2022
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
-    // { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
+    { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
     // { id: 'aGT9DSs6zf6q54okHR6UxY', tag: 'bns_survey', name: 'BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'a5MyeTAhZ5WHadabcNVMcU', tag: 'bns_survey',name: 'BNS_Soariake_2022_FINAL', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022' }, 
@@ -60,7 +60,7 @@ alterState(state => {
       // { id: 'aVLz2FxFcw99cv89xNY46K', tag: 'bns_survey', name: 'BNS Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021' }, // synced Feb 24 2022
 
       // // Prices 2021
-        { id: 'atKMA7EXQWRKYTUVAi3JgZ', tag: 'bns_price', name: 'BNS Price Bismarck 2021', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'}, // synced August 2023
+      //  { id: 'atKMA7EXQWRKYTUVAi3JgZ', tag: 'bns_price', name: 'BNS Price Bismarck 2021', owner: 'wcs_bismarck', instance: 'WCS Bismarck unpublished data 2021'}, // synced August 2023
       // { id: 'arwWLVDnQkJkNV4HtzgmeX', tag: 'bns_price', name: 'BNS Prix Ituri 2021', owner: 'wcs_ituri', instance: 'WCS Ituri unpublished data 2021'}, // synced Feb 24 2022
       // { id: 'aKZCAWsMgUkJDcYKv2Dern', tag: 'bns_price', name: 'BNS Prix Lac Télé 2021', owner: 'wcs_lactele', instance: 'G. Bondeko, O. Mbala, L. Molouagna, R. Silaho. , WCS Lac Télé unpublished data 2021'},//rsynced Feb 24 2022
       // { id: 'aVcvLwLaG9ZCnQ9b7ACc2h', tag: 'bns_price', name: 'Prix Makira 2021', owner: 'wcs_mamabaie', instance: 'C. Spira, C. Milina, WCS Madagascar unpublished data 2021'}, // synced Feb 24 2022
@@ -154,9 +154,9 @@ alterState(state => {
       name: survey.name,
       owner: survey.owner,
       instance: survey.instance,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      //url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
       //* REPLACE L157 w/ the below URL to sync only 1 submision for each form; see "limit=1" *//
-      //url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=1`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json&limit=5`,
     })),
   };
   console.log(`Fetching data for ${state.data.surveys.length} surveys.`);
