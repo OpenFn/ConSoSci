@@ -11,6 +11,48 @@ alterState(state => {
       //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
 
+{ 
+        id: 'a4oeehbiGuXrEWK7rkUv82', 
+        tag: 'bns_price', 
+        name: 'BNS Prix Ituri 2023', 
+        owner: 'wcs_ituri', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
+      { 
+        id: 'aK3MS8ATY53KXsKCm7xzpY', 
+        tag: 'bns_survey', 
+        name: 'BNS Ituri : Enquête Ménages 2023', 
+        owner: 'wcs_ituri', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
+      { 
+        id: 'a3kbAt2freW3q8Ht48V3q2', 
+        tag: 'bns_price', 
+        name: 'BNS Prix Kahuzi 2023', 
+        owner: 'wcs_mtkb', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
+      { 
+        id: 'aJVZmRRfj442Li5F6r6M8y', 
+        tag: 'bns_survey', 
+        name: 'BNS ménage Kahuzi 2023', 
+        owner: 'wcs_mtkb', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
+      { 
+        id: 'aH2dvuU2G8wiVZQ3k4fiRE', 
+        tag: 'bns_price', 
+        name: 'BNS Prix Kabobo 2023', 
+        owner: 'wcs_pcbk', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
+      { 
+        id: 'a5s3aXxviNV3GhMANSSaGk', 
+        tag: 'bns_survey', 
+        name: 'BNS ménage Kabobo 2023', 
+        owner: 'wcs_pcbk', 
+        instance: 'WCS DRC unpublished data 2023' ,
+      }, 
       { 
         id: 'a33XvMuPQLpeygLURuNUBP', 
         tag: 'nrgt_current', 
