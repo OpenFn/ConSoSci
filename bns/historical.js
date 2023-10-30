@@ -24,6 +24,7 @@ alterState(state => {
 
       //BNS
       // HH 2023
+       { id: 'aK3MS8ATY53KXsKCm7xzpY', tag: 'bns_survey',  name: 'BNS Ituri : Enquête Ménages 2023', owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023' }, 
     // { id: 'a9SgR3L9Vzn8CC5UPAa2ou', tag: 'bns_survey', name: 'BNS EPP 2e/3e cohortes 2023', owner: 'wcs_poultry', instance: 'WCS Congo unpublished data 2023' }, 
     // { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
       
@@ -33,7 +34,7 @@ alterState(state => {
     //   // HH 2022
     // { id: 'aXf5DPR25YsB8f3mXS7LDh', tag: 'bns_survey', name: 'BNS household Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022'}, 
     // { id: 'aH2cMdEFcpwjmtBpz7TnyH', tag: 'bns_survey', name: 'BNS_Nosy Be_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'},
-     { id: 'aGT9DSs6zf6q54okHR6UxY', tag: 'bns_survey', name: 'BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
+    // { id: 'aGT9DSs6zf6q54okHR6UxY', tag: 'bns_survey', name: 'BNS_ABS_2022', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'aGKL3jhaGpvfCP7ekPNyr4', tag: 'bns_survey', name: 'BNS_Ankarea/Ankivonjy_2022', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022'}, 
     // { id: 'a5MyeTAhZ5WHadabcNVMcU', tag: 'bns_survey', name: 'BNS_Soariake_2022_FINAL', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, WCS Madagascar 2022' }, 
     // { id: 'aXc8nMwPbqrKMDqrBPu4LW', tag: 'bns_survey', name: 'hunter BNS', owner: 'cemogor', instance: 'C. Emogor unpublished data 2022' },  // synced Jan 2023
