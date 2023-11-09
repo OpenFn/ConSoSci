@@ -45,7 +45,7 @@ alterState(state => {
     // { id: 'aRnpV9xNVcbqLPbmoKn9sR', tag: 'bns_survey', name: 'BNS NDOKI 2022', owner: 'wcs_ndoki', instance: 'SWM Ndoki unpublished data 2022' }, // synced 18 March 2022
     // { id: 'aF9PF9YUE5yBVsUvWUr2pV', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2022', owner: 'wcs_niassa', instance: 'Niassa Special Reserve unpublished data 2022' }, // synced 18 April 2022 
     // { id: 'aDvmfKGNq6H2yhcMTbP5tB', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2022', owner: 'wcs_mtkb', instance: 'Kahuzi Biega National Park unpublished data 2022' }, //resynced August 2022
-     { id: 'aLJLeHSYsN7DCLQmmYJR8w', tag: 'bns_survey', name: 'BNS EPP Poulet 2022', owner: 'wcs_poultry', instance: 'WCS Congo - Environmental Partnership Program, Livelihood diversification and poultry production - unpublished data 2022' }, // Synced Sept 22, 2022
+    // { id: 'aLJLeHSYsN7DCLQmmYJR8w', tag: 'bns_survey', name: 'BNS EPP Poulet 2022', owner: 'wcs_poultry', instance: 'WCS Congo - Environmental Partnership Program, Livelihood diversification and poultry production - unpublished data 2022' }, // Synced Sept 22, 2022
       
       //Prices 2022
     // { id: 'aGBARLZxAd9zYZ37S8DZwj', tag: 'bns_price', name: 'BNS Prices Crossriver 2022', owner: 'wcs_crossriver', instance: 'WCS Cross River unpublished data 2022' }, 
