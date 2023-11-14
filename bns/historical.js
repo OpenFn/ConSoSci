@@ -26,13 +26,13 @@ alterState(state => {
      // { id: 'aJVZmRRfj442Li5F6r6M8y', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'aK3MS8ATY53KXsKCm7xzpY', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2023', owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'a9SgR3L9Vzn8CC5UPAa2ou', tag: 'bns_survey', name: 'BNS EPP 2e/3e cohortes 2023', owner: 'wcs_poultry', instance: 'WCS Congo unpublished data 2023' }, 
-      { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
+     // { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
       
   // BNS Prices 2023
      // { id: 'a4oeehbiGuXrEWK7rkUv82', tag: 'bns_price', name: 'BNS Prix Ituri 2023', owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'aH2dvuU2G8wiVZQ3k4fiRE', tag: 'bns_price', name: 'BNS Prix Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'a3kbAt2freW3q8Ht48V3q2', tag: 'bns_price', name: 'BNS Prix Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
-      { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
+     // { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
   
   // NRGT 2023
      // { id: 'aqDKwe8AD3ykFeNEDuLSnv',  tag: 'nrgt_current', name: 'Nosy Be NRGT 2023', owner: 'wcs_library', instance: 'WCS Madagascar unpublished data 2023' }, 
@@ -121,9 +121,9 @@ alterState(state => {
      // { id: 'aZZV4KikgRKz79LqqQR5Ma', tag: 'nrgt_current', name: 'NRGT Ituri 2019', owner: 'wcs_ituri', instance: 'B. Ntumba, A. Ohole, B. Ikati, T. Muller, WCS RDC unpublished data 2019' }, // resynced January 2022
      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced Feb 2022
      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
-      { id: 'aotHau7krdjj2NFBNAJpZC', tag: 'nrgt_current', name: 'NRGT_ABS_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
-      { id: 'a8yPcus6ggWBXK5iK8LpC7', tag: 'nrgt_current', name: 'NRGT_SW_2019_V1', owner: 'rchristelle', instance:'WCS Madagascar unpublished data 2019'}, 
-      { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
+     // { id: 'aotHau7krdjj2NFBNAJpZC', tag: 'nrgt_current', name: 'NRGT_ABS_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
+     // { id: 'a8yPcus6ggWBXK5iK8LpC7', tag: 'nrgt_current', name: 'NRGT_SW_2019_V1', owner: 'rchristelle', instance:'WCS Madagascar unpublished data 2019'}, 
+     // { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
 
   // BNS HH 2018
      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey', name: 'BNS Ndoki 2018', owner: 'wcs_ndoki', instance: 'Y. Londza, F. Sellat, D. Detoeuf, WCS Congo unpublished data 2018' }, // resynced January 2022
