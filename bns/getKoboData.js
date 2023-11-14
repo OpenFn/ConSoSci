@@ -14,71 +14,20 @@ alterState(state => {
 // ONGOING BNS household forms
   { id: 'aK3MS8ATY53KXsKCm7xzpY', tag: 'bns_survey', name: 'BNS Ituri : Enquête Ménages 2023', owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023' }, 
   { id: 'aJVZmRRfj442Li5F6r6M8y', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023'}, 
-  { id: 'a5s3aXxviNV3GhMANSSaGk', tag: 'bns_survey', name: 'BNS ménage Kabobo 2023',  owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023' }, 
+  { id: 'a5s3aXxviNV3GhMANSSaGk', tag: 'bns_survey', name: 'BNS ménage Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
+  { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
+  { id: 'a9SgR3L9Vzn8CC5UPAa2ou', tag: 'bns_survey', name: 'BNS EPP 2e/3e cohortes 2023', owner: 'wcs_poultry', instance: 'WCS Congo unpublished data 2023' },// New landscape: NdokiPeriphery
 
 // ONGOING BNS prices forms
   { id: 'a4oeehbiGuXrEWK7rkUv82', tag: 'bns_price', name: 'BNS Prix Ituri 2023',  owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023'  }, 
   { id: 'a3kbAt2freW3q8Ht48V3q2', tag: 'bns_price', name: 'BNS Prix Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
   { id: 'aH2dvuU2G8wiVZQ3k4fiRE', tag: 'bns_price', name: 'BNS Prix Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
+  { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'},  
       
 // ONGOING NRGT forms
-  { id: 'a33XvMuPQLpeygLURuNUBP',  tag: 'nrgt_current',  name: 'NRGT SWM 2023', owner: 'wcs_ndoki', instance: 'WCS Congo unpublished data 2023' }, 
-  { id: 'aqDKwe8AD3ykFeNEDuLSnv',  tag: 'nrgt_current',  name: 'Nosy Be NRGT 2023', owner: 'wcs_library', instance: 'WCS Madagascar unpublished data 2023' }, 
-
-      // Poultry form removed from DB because of sampling issues
-      // { 
-      //   id: 'a9SgR3L9Vzn8CC5UPAa2ou', 
-      //   tag: 'bns_survey', 
-      //   name: 'BNS EPP 2e/3e cohortes 2023', 
-      //   owner: 'wcs_poultry', 
-      //   instance: 'WCS Congo unpublished data 2023' ,
-      // }, 
-      { 
-        id: 'aXf5DPR25YsB8f3mXS7LDh', 
-        tag: 'bns_survey', 
-        name: 'BNS household Crossriver 2022', 
-        owner: 'wcs_crossriver', 
-        instance: 'WCS Cross River unpublished data 2022' ,
-      }, 
-      
-      { 
-        id: 'aGBARLZxAd9zYZ37S8DZwj', 
-        tag: 'bns_price', 
-        name: 'BNS Prices Crossriver 2022', 
-        owner: 'wcs_crossriver', 
-        instance: 'WCS Cross River unpublished data 2022' ,
-        
-      }, 
-      { 
-        id: 'amaXEkoh4eNcKyjjys8jGG', 
-        tag: 'nrgt_current', 
-        name: 'NRGT Crossriver 2022', 
-        owner: 'wcs_crossriver', 
-        instance: 'WCS Cross River unpublished data 2022' ,
-        
-      }, 
-      { 
-        id: 'aAGC9q7nwXPnVLP6bFNAEw', 
-        tag: 'bns_survey', 
-        name: 'BNS_Individual_Niassa_2023', 
-        owner: 'wcs_niassa', 
-        instance: 'WCS Niassa unpublished data 2023' ,
-      }, 
-      
-      { 
-        id: 'aAKdquWgPSLjzB3UgGBcsW', 
-        tag: 'bns_price', 
-        name: 'BNS_Precos_Niassa_2023', 
-        owner: 'wcs_niassa', 
-        instance: 'WCS Niassa unpublished data 2023' ,
-      }, 
-     { 
-        id: 'a8KBiBL44hEpNfkS4RmxeN', 
-        tag: 'nrgt_current', 
-        name: 'NRGT_Niassa_2023', 
-        owner: 'wcs_niassa', 
-        instance: 'WCS Niassa unpublished data 2023' ,
-      }, 
+  { id: 'a33XvMuPQLpeygLURuNUBP', tag: 'nrgt_current', name: 'NRGT SWM 2023', owner: 'wcs_ndoki', instance: 'WCS Congo unpublished data 2023' }, 
+  { id: 'aqDKwe8AD3ykFeNEDuLSnv', tag: 'nrgt_current', name: 'Nosy Be NRGT 2023', owner: 'wcs_library', instance: 'WCS Madagascar unpublished data 2023' }, 
+  { id: 'a8KBiBL44hEpNfkS4RmxeN', tag: 'nrgt_current', name: 'NRGT_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
 
     ].map(survey => ({
       formId: survey.id,
