@@ -30,7 +30,7 @@ alterState(state => {
      // { id: 'aAGC9q7nwXPnVLP6bFNAEw', tag: 'bns_survey', name: 'BNS_Individual_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023' }, 
       
   // BNS Prices 2023
-     //  { id: 'aKVvMRrvTTCc8j7d3EDh7a', tag: 'bns_price', name: 'BNS Prix PNMD 2023',  owner: 'wcs_paapnmd', instance: 'WCS Cameroon unpublished data 2023' }, 
+       { id: 'aKVvMRrvTTCc8j7d3EDh7a', tag: 'bns_price', name: 'BNS Prix PNMD 2023',  owner: 'wcs_paapnmd', instance: 'WCS Cameroon unpublished data 2023' }, 
      // { id: 'a4oeehbiGuXrEWK7rkUv82', tag: 'bns_price', name: 'BNS Prix Ituri 2023', owner: 'wcs_ituri', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'aH2dvuU2G8wiVZQ3k4fiRE', tag: 'bns_price', name: 'BNS Prix Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023' }, 
      // { id: 'a3kbAt2freW3q8Ht48V3q2', tag: 'bns_price', name: 'BNS Prix Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
