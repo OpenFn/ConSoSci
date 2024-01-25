@@ -36,6 +36,7 @@ alterState(state => {
     'Nosy Be': 'tandavandriva',
     Makira: 'makira',
     'BNS Ndoki Prix 2020': 'ndoki',
+    PNMD: 'pnmb',
 
     //formName: landscapeValue,
     //other values
