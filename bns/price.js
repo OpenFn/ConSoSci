@@ -1,5 +1,5 @@
 // NOTE: This data cleaning operation returns state, modified as needed.
-alterState(state => {
+fn(state => {
   //try {
   const { body, formName, instance, formOwner } = state.data;
   const { _submission_time, _id, _xform_id_string } = body;
@@ -36,6 +36,7 @@ alterState(state => {
     'Nosy Be': 'tandavandriva',
     Makira: 'makira',
     'BNS Ndoki Prix 2020': 'ndoki',
+    PNMD: 'pnmd',
 
     //formName: landscapeValue,
     //other values
@@ -66,11 +67,12 @@ sql({
     `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
 });
 
-alterState(state => {
+fn(state => {
   const { good } = state.data;
   if (!good || good.length === 0) {
     return state;
   }
+
   const data = good.map((g, i) => ({
     // Id: state.data._id,
     Id: i + 1,
@@ -82,7 +84,7 @@ alterState(state => {
     Price: g[`good/price`],
     LastUpdate: new Date().toISOString(),
     //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value
-    Landscape: state => {
+    Landscape: () => {
       for (let val in state.landscapeMap)
         if (state.formName.includes(val)) return state.landscapeMap[val];
       return '';
@@ -90,10 +92,10 @@ alterState(state => {
     SurveyDate: state.data.today,
   }));
   // console.log('data', data);
-  return insertMany('WCSPROGRAMS_KoboBnsPrice', state => data)(state);
+  return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);
 });
 
-alterState(state => {
+fn(state => {
   console.log('DatasetName ::', state.formName);
   console.log('DatasetOwner ::', state.formOwner);
   console.log('form submission id ::', state.data['_id']);
@@ -117,7 +119,7 @@ upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
   Citation: dataValue('instance'),
 });
 
-alterState(state => {
+fn(state => {
   console.log('data uploaded ::', state.data);
   return state;
 });
