@@ -27,6 +27,7 @@ alterState(state => {
   { id: 'aAKdquWgPSLjzB3UgGBcsW', tag: 'bns_price', name: 'BNS_Precos_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'},  
       
 // ONGOING NRGT forms
+  { id: 'aKYgSnUiLd8KkevPV2ty6e', tag: 'nrgt_current', name: 'NRGT NW Janvier 2024', owner: 'bemahafaly_wcs', instance: 'WCS Madagascar unpublished data 2024'}, 
   { id: 'aDEEXL9fXQhZXpdaKPnrcJ', tag: 'nrgt_current', name: 'NRGT_Makira_2023_revisé', owner: 'wcs_mamabaie', instance: 'WCS Madagascar unpublished data 2023'}, 
   { id: 'a33XvMuPQLpeygLURuNUBP', tag: 'nrgt_current', name: 'NRGT SWM 2023', owner: 'wcs_ndoki', instance: 'WCS Congo unpublished data 2023' }, 
   { id: 'aqDKwe8AD3ykFeNEDuLSnv', tag: 'nrgt_current', name: 'Nosy Be NRGT 2023', owner: 'wcs_library', instance: 'WCS Madagascar unpublished data 2023' }, 
