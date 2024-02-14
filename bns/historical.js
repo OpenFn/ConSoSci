@@ -28,6 +28,7 @@ alterState(state => {
   // BNS Prices 2024
 
   // NRGT 2024
+  { id: 'aKYgSnUiLd8KkevPV2ty6e', tag: 'nrgt_current', name: 'NRGT NW Janvier 2024', owner: 'bemahafaly_wcs', instance: 'WCS Madagascar unpublished data 2024'}, 
 
 
   // BNS HH 2023
