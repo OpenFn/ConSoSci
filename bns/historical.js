@@ -134,8 +134,8 @@ alterState(state => {
      // { id: 'anAcQ9on4inNnmtqFVpabh', tag: 'nrgt_historical', name: 'NRGT Kahuzi Biega 2019', owner: 'wcs_mtkb', instance:'F. Kavuba, A. Twendilonge, R. Cito, WCS RDC unpublished data 2019'}, // resynced Feb 2022
      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
      // { id: 'aotHau7krdjj2NFBNAJpZC', tag: 'nrgt_current', name: 'NRGT_ABS_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
-      { id: 'a8yPcus6ggWBXK5iK8LpC7', tag: 'nrgt_current', name: 'NRGT_SW_2019_V1', owner: 'rchristelle', instance:'WCS Madagascar unpublished data 2019'}, 
-     // { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
+     // { id: 'a8yPcus6ggWBXK5iK8LpC7', tag: 'nrgt_current', name: 'NRGT_SW_2019_V1', owner: 'rchristelle', instance:'WCS Madagascar unpublished data 2019'}, 
+      { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
 
   // BNS HH 2018
      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey', name: 'BNS Ndoki 2018', owner: 'wcs_ndoki', instance: 'Y. Londza, F. Sellat, D. Detoeuf, WCS Congo unpublished data 2018' }, // resynced January 2022
