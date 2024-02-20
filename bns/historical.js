@@ -23,6 +23,7 @@ alterState(state => {
       //******* WCS HISTORICAL FORMS ******///
 
   // BNS HH 2024
+   { id: 'aGfcUnks7JLms4YCGbHgwX', tag: 'bns_survey', name: 'BNS intervention Cross River 2024', owner: 'cemogor', instance: 'C. Emogor, 2024' },// 
   //{ id: 'aJrXKdPgXfwSnam5iwaRHq', tag: 'bns_survey', name: 'BNS Ciblage 4e cohorte 2024', owner: 'wcs_poultry', instance: 'A. M. Boucka, A. Nkounkou, WCS Congo unpublished data 2024' },// New landscape: NdokiPeriphery
 
   // BNS Prices 2024
@@ -135,7 +136,7 @@ alterState(state => {
      // { id: 'ajDeQVDrz2AZxvxLLWjiBE', tag: 'nrgt_current', name: 'NRGT Makira 2019', owner: 'wcs_mamabaie', instance:'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'}, // resynced January 2022
      // { id: 'aotHau7krdjj2NFBNAJpZC', tag: 'nrgt_current', name: 'NRGT_ABS_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
      // { id: 'a8yPcus6ggWBXK5iK8LpC7', tag: 'nrgt_current', name: 'NRGT_SW_2019_V1', owner: 'rchristelle', instance:'WCS Madagascar unpublished data 2019'}, 
-      { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
+     // { id: 'aGYzFZPUFfvCvnKG8gyfjG', tag: 'nrgt_current', name: 'NRGT_NW_2019_V1', owner: 'nrgtmada', instance:'WCS Madagascar unpublished data 2019'}, 
 
   // BNS HH 2018
      // { id: 'aQbjGLfvPTEUjdTmsdTu46', tag: 'bns_survey', name: 'BNS Ndoki 2018', owner: 'wcs_ndoki', instance: 'Y. Londza, F. Sellat, D. Detoeuf, WCS Congo unpublished data 2018' }, // resynced January 2022
