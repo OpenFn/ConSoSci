@@ -27,7 +27,7 @@ fn(s => {
 each('$.tasksWithStories[*]', async state => {
   const { taskId, stories } = state.data;
   for (const story of stories) {
-    await createStoryForTask(taskId, { story })(state);
+    await createTaskStory(taskId, { story })(state);
   }
   return state;
 });
@@ -35,7 +35,7 @@ each('$.tasksWithStories[*]', async state => {
 each('$.tasksWithStories[*]', async state => {
   const { taskId, stories } = state.data;
   for (const story of stories) {
-    await sendRequest(`tasks/${taskId}/stories`, {
+    await request(`tasks/${taskId}/stories`, {
       query: { opt_fields: [] },
       body: {
         data: story,
