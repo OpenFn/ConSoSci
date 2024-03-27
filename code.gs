@@ -16,7 +16,7 @@ function onEdit(e) {
 
   Logger.log('Edited Row Values: ' + editedRowValues);
 
-  const task_id = editedRowValues[0];
+  const uniqueId = editedRowValues[0];
   const columnName = headers[editedColumn - 1];
 
   Logger.log(
@@ -30,21 +30,35 @@ function onEdit(e) {
     PropertiesService.getScriptProperties().getProperty('changes');
   storedChanges = storedChanges ? JSON.parse(storedChanges) : {};
 
+  if (!storedChanges[uniqueId]) {
+    storedChanges[uniqueId] = [];
+  }
+
+  const comment =
+    user.nickname +
+    ' updated ' +
+    columnName +
+    ' for ' +
+    uniqueId +
+    ' from ' +
+    oldValue +
+    ' to ' +
+    newValue;
   // Store the change in the storedChanges object
   storedChanges['headers'] = headers;
-  storedChanges[task_id] = [
-    {
-      values: editedRowValues,
-      activity: {
-        row: editedRow,
-        column: editedColumn,
-        columnName,
-        user,
-        oldValue,
-        newValue,
-      },
+  storedChanges[uniqueId].push({
+    values: editedRowValues,
+    activity: {
+      row: editedRow,
+      column: editedColumn,
+      columnName,
+      user,
+      oldValue,
+      newValue,
     },
-  ];
+    comment,
+    modified: new Date(),
+  });
 
   Logger.log('Updates' + JSON.stringify(storedChanges));
 
