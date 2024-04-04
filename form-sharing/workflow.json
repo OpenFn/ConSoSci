@@ -1,0 +1,29 @@
+{
+  "options": {
+    "start": "getNewKoboForms"
+  },
+  "workflow": {
+    "steps": [
+      {
+        "id": "getNewKoboForms",
+        "configuration": "tmp/kobo-creds.json",
+        "adaptor": "kobotoolbox",
+        "expression": "1-getNewKoboForms.js",
+        "next": {
+          "getSheetsList": "!state.error && state.data.length !== 0"
+        }
+      },
+      {
+        "id": "getSheetsList",
+        "configuration": "tmp/google-sheets-creds.json",
+        "expression": "2-getSheetsList.js",
+        "adaptor": "googlesheets",
+        "next": {
+          "updateSheetList": "!state.error"
+        }
+      }
+      
+   
+    ]
+  }
+}
