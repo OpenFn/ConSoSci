@@ -18,8 +18,8 @@
         "configuration": "tmp/google-sheets-creds.json",
         "expression": "2-getSheetsList.js",
         "adaptor": "googlesheets",
-        "next": {
-          "updateSheetList": "!state.error"
+        "_next": {
+          "updateSheetList": "!state.error && state.data.length !== 0"
         }
       }
       
