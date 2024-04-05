@@ -27,7 +27,7 @@
         "configuration": "tmp/google-sheets-creds.json",
         "expression": "3-updateSheetsList.js",
         "adaptor": "googlesheets",
-        "_next": {
+        "next": {
           "upsertAsanaTask": "!state.error && state.googleSheetsAppendData.length !== 0"
         }
       },
@@ -36,10 +36,7 @@
         "configuration": "tmp/asana-creds.json",
         "expression": "4-upsertAsanaTask.js",
         "adaptor": "asana"
-      
       }
-      
-   
     ]
   }
 }
