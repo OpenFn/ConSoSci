@@ -5,6 +5,6 @@ getForms({}, state => {
     return keywords.some(keyword => name.toLowerCase().includes(keyword));
   };
 
-  state.data = state.data.results.filter(form => checkForKeyWords(form.name));
+  state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name));
   return state;
 });

@@ -3,10 +3,10 @@ getValues(
   'sheetsList of kobo forms!A:K'
 );
 fn(state => {
-  const koboFormsData = state.references[1];
+  const koboFormsData = state.koboForms;
   const googleSheetsData = state.data.values.map(row => row[0]);
 
-  state.data = koboFormsData.filter(
+  state.filteredKoboFormsData = koboFormsData.filter(
     form => !googleSheetsData.includes(form.uid)
   );
 
