@@ -28,8 +28,15 @@
         "expression": "3-updateSheetsList.js",
         "adaptor": "googlesheets",
         "_next": {
-          "upsertAsanaTask": "!state.error"
+          "upsertAsanaTask": "!state.error && state.googleSheetsAppendData.length !== 0"
         }
+      },
+      {
+        "id": "upsertAsanaTask",
+        "configuration": "tmp/asana-creds.json",
+        "expression": "4-upsertAsanaTask.js",
+        "adaptor": "asana"
+      
       }
       
    

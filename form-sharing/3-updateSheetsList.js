@@ -1,5 +1,5 @@
 fn(state => {
-  const koboFormsData = state.filteredKoboFormsData;
+  const { filteredKoboFormsData } = state;
   const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
 
   const tagMapping = {
@@ -23,67 +23,42 @@ fn(state => {
     return tag;
   };
 
-  const createInstance = name => {
-    if (name.toLowerCase().includes('grm', 'feedback')) {
-      return '';
-    } else {
-      return 'Add manually';
-    }
-  };
+  const containsGRMFeedback = name =>
+    name.toLowerCase().includes('grm', 'feedback');
 
-  const createProjectId = name => {
-    if (name.toLowerCase().includes('grm', 'feedback')) {
-      return 'Add manually';
-    } else {
-      return '';
-    }
-  };
+  const instance = name =>
+    containsGRMFeedback(name) ? '' : 'Add manually';
 
-  const createGRMiD = name => {
-    if (name.toLowerCase().includes('grm', 'feedback')) {
-      return 'GRM ID. XX';
-    } else {
-      return '';
-    }
-  };
+  const projectId = name =>
+    containsGRMFeedback(name) ? 'Add manually' : '';
 
-  const createWorkspaceName = name => {
-    if (name.toLowerCase().includes('grm', 'feedback')) {
-      return 'Grievances';
-    } else {
-      return 'ConSoSci';
-    }
-  };
+  const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
 
-  const googleSheetsAppendData = [];
+  const workspaceName = name =>
+    containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
 
-  koboFormsData.forEach(form => {
+  state.sheetsData = filteredKoboFormsData.map(form => {
     const formName = form.name;
-    const data = [
+    return [
       form.uid,
       form.name,
       createTagName(formName),
       form.owner__username,
-      createInstance(formName),
-      createProjectId(formName),
-      createGRMiD(formName),
-      createWorkspaceName(formName),
+      instance(formName),
+      projectId(formName),
+      grmID(formName),
+      workspaceName(formName),
       form.url,
       form.date_modified,
       form.date_created,
     ];
-  
-    googleSheetsAppendData.push(data);
   });
 
-  state.googleSheetsAppendData = googleSheetsAppendData
   return state;
 });
 
-appendValues(
-    {
-        spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-        range: 'sheetsList of kobo forms!A:K',
-        values: state.googleSheetsAppendData,
-      }
-)
+appendValues({
+  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+  range: 'sheetsList of kobo forms!A:K',
+  values: state => state.sheetsData,
+});
