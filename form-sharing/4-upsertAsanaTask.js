@@ -1,9 +1,7 @@
 fn(state => {
-  const today = new Date();
-
-  const futureDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
-
-  const dueDate = futureDate.toISOString().split('T')[0];
+  const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
 
   state.asanaTasks = state.filteredKoboFormsData.map(form => {
     return {
