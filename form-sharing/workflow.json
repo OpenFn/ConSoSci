@@ -28,7 +28,7 @@
         "expression": "3-updateSheetsList.js",
         "adaptor": "googlesheets",
         "next": {
-          "upsertAsanaTask": "!state.error && state.googleSheetsAppendData.length !== 0"
+          "upsertAsanaTask": "!state.error && state.sheetsData.length !== 0"
         }
       },
       {
