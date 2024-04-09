@@ -1,5 +1,8 @@
 //== Job to be used for fetching data from Kobo on repeated, timer basis  ==//
 // This can be run on-demand at any time by clicking "run" //
+getValues('1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', 'sheetsList of Kobo forms!A:L', state => {
+  console.log(state);
+})
 
 alterState(state => {
   console.log('Current cursor value:', state.lastEnd);
