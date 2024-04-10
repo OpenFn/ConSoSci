@@ -1,4 +1,3 @@
-import { http } from '@openfn/language-googlesheets';
 //== Job to be used for fetching data from Kobo on repeated, timer basis  ==//
 // This can be run on-demand at any time by clicking "run" //
 getValues(
@@ -7,27 +6,25 @@ getValues(
   state => {
     const [headers, ...values] = state.data.values;
 
-    const filteredSheetsData = values.filter(item => {
-      if (
-        item.includes('TRUE') &&
-        item.includes('bns_survey', 'nrgt_current')
-      ) {
-        return item;
-      }
-    });
-
-    state.sheetsData = filteredSheetsData.map(item => {
+    const mapHeaderToValue = value => {
       return headers.reduce((obj, header) => {
-        obj[header] = item[headers.indexOf(header)];
+        obj[header] = value[headers.indexOf(header)];
         return obj;
       }, {});
-    });
+    };
+
+    state.sheetsData = values
+      .filter(
+        item =>
+          item.includes('TRUE') && item.includes('bns_survey', 'nrgt_current')
+      )
+      .map(item => mapHeaderToValue(item));
 
     return state;
   }
 );
 
-alterState(state => {
+fn(state => {
   const { sheetsData } = state;
 
   console.log('Current cursor value:', state.lastEnd);
@@ -73,7 +70,7 @@ each(dataPath('surveys[*]'), state => {
   })(state);
 });
 
-alterState(state => {
+fn(state => {
   const lastEnd = state.references
     .filter(item => item.body)
     .map(s => s.body.end)
