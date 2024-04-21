@@ -1,3 +1,4 @@
+//Check Kobo account for forms with these matching keywords
 getForms({}, state => {
   const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
 
