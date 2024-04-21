@@ -1,3 +1,4 @@
+//This job will add a task to Asana if a new Kobo form was shared
 fn(state => {
   const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
     .toISOString()
@@ -17,6 +18,8 @@ fn(state => {
 
   return state;
 });
+
+//upsert Asana task if new form shared notification needed
 each(
   '$.asanaTasks[*]',
   upsertTask('1198901998266253', {
