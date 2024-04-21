@@ -1,3 +1,4 @@
+//Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
 fn(state => {
   const { filteredKoboFormsData } = state;
   const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
@@ -57,6 +58,7 @@ fn(state => {
   return state;
 });
 
+//if new Kobo form shared, adding to the Google Sheet... 
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
   range: 'sheetsList of kobo forms!A:K',
