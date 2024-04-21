@@ -1,0 +1,42 @@
+{
+  "options": {
+    "start": "getNewKoboForms"
+  },
+  "workflow": {
+    "steps": [
+      {
+        "id": "getNewKoboForms",
+        "configuration": "tmp/kobo-creds.json",
+        "adaptor": "kobotoolbox",
+        "expression": "1-getNewKoboForms.js",
+        "next": {
+          "getSheetsList": "!state.error && state.data.length !== 0"
+        }
+      },
+      {
+        "id": "getSheetsList",
+        "configuration": "tmp/google-sheets-creds.json",
+        "expression": "2-getSheetsList.js",
+        "adaptor": "googlesheets",
+        "next": {
+          "updateSheetsList": "!state.error && state.data.length !== 0"
+        }
+      },
+      {
+        "id": "updateSheetsList",
+        "configuration": "tmp/google-sheets-creds.json",
+        "expression": "3-updateSheetsList.js",
+        "adaptor": "googlesheets",
+        "next": {
+          "upsertAsanaTask": "!state.error && state.sheetsData.length !== 0"
+        }
+      },
+      {
+        "id": "upsertAsanaTask",
+        "configuration": "tmp/asana-creds.json",
+        "expression": "4-upsertAsanaTask.js",
+        "adaptor": "asana"
+      }
+    ]
+  }
+}
