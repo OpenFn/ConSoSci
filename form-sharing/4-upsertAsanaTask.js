@@ -12,7 +12,7 @@ fn(state => {
       assignee_section: '1203181218738601',
       assignee: '473999120764595',
       due_on: dueDate,
-      notes: `New form added to OpenFn: ${form.name}. Please review the Google Sheet and add the manual values missing: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=0`,
+      notes: `New form added to OpenFn: ${form.name}. Please review the Google Sheet and add the manual values missing: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
   });
 
@@ -22,7 +22,7 @@ fn(state => {
 //upsert Asana task if new form shared notification needed
 each(
   '$.asanaTasks[*]',
-  upsertTask('1198901998266253', {
+  upsertTask('1198901998266253', { //project_id
     externalId: 'name',
     data: state => state.data,
   })
