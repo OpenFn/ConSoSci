@@ -60,7 +60,7 @@ fn(state => {
 
 //if new Kobo form shared, adding to the Google Sheet... 
 appendValues({
-  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-  range: 'sheetsList of kobo forms!A:K',
+  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+  range: 'sheetsList of kobo forms!A:L',
   values: state => state.sheetsData,
 });
