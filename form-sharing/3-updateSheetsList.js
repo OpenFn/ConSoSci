@@ -28,10 +28,10 @@ fn(state => {
     name.toLowerCase().includes('grm', 'feedback');
 
   const instance = name =>
-    containsGRMFeedback(name) ? '' : 'Add manually';
+    containsGRMFeedback(name) ? '' : 'ADD MANUALLY @Admin!';
 
   const projectId = name =>
-    containsGRMFeedback(name) ? 'Add manually' : '';
+    containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
 
   const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
 
