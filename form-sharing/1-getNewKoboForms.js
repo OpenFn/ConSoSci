@@ -7,5 +7,6 @@ getForms({}, state => {
   // };
 
   // state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name));
+  console.log(state.data.result); 
   return state;
 });
