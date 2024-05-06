@@ -15,7 +15,9 @@ fn(state => {
       notes: `New form added to OpenFn: ${form.name}. Please review the Google Sheet and add the manual values missing: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
   });
-
+  
+  console.log('# of Asana Tasks to add:: ', state.asanaTasks.length); 
+  console.log('Tasks to upsert:: ', state.asanaTasks); 
   return state;
 });
 
