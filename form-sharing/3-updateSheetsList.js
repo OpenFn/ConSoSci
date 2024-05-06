@@ -61,6 +61,6 @@ fn(state => {
 //if new Kobo form shared, adding to the Google Sheet... 
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-  range: 'sheetsList of kobo forms!A:L',
+  range: 'wcs-bns-test!A:L', //range of columns in sheet
   values: state => state.sheetsData,
 });
