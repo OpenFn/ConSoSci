@@ -1,6 +1,6 @@
 getValues(
   "1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY", //googlesheet id
-  "sheetsList of kobo forms!A:L" //range of columns in sheet
+  "wcs-bns-test!A:L" //range of columns in sheet
 );
 
 fn((state) => {
