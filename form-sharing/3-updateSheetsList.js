@@ -54,7 +54,8 @@ fn(state => {
       form.date_created,
     ];
   });
-
+  
+  console.log('sheetsData to append:: ', state.sheetsData); 
   return state;
 });
 
