@@ -55,7 +55,8 @@ fn(state => {
     ];
   });
   
-  console.log('sheetsData to append:: ', state.sheetsData); 
+  console.log('# of new forms detected:: ', state.sheetsData.length); 
+  console.log('Forms to add to the master sheet:: ', state.sheetsData); 
   return state;
 });
 
