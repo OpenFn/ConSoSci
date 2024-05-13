@@ -11,7 +11,8 @@ getForms({}, state => {
   };
 
   state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name));
-  // console.log('data::', state.data); 
-  // console.log('results::', state.data.results); 
+  state.data={};
+  state.references = [];
   return state;
 });
+

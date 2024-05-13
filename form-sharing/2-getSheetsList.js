@@ -12,6 +12,7 @@ fn((state) => {
   state.filteredKoboFormsData = koboForms.filter(
     (form) => !sheetsUids.includes(form.uid)
   );
-
+  state.data = {};
+  state.references = [];
   return state;
 });
