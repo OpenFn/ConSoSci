@@ -14,7 +14,6 @@ fn(state => {
       notes: `New form added to OpenFn: ${form.name}. Please review the Google Sheet and add the manual values missing: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=0`,
     };
   });
-
   return state;
 });
 each(
