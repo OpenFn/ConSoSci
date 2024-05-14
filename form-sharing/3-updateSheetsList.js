@@ -40,6 +40,10 @@ fn(state => {
 
   const status = 'deployed'; //if we assume only deployed forms will be fetched
 
+  const currentDateTime = new Date().toISOString();
+
+  const autoSync = true; 
+
   state.sheetsData = filteredKoboFormsData.map(form => {
     const formName = form.name;
     return [
@@ -50,11 +54,13 @@ fn(state => {
       instance(formName),
       //projectId(formName), //for GRM only
       //grmID(formName), //for GRM only
-      status, 
-      workspaceName(formName),
+      status, //deployment status
+      workspaceName(formName), //openfn project space
       form.url,
-      form.date_modified,
-      form.date_created,
+      form.date_modified, //kobo_form_date_modified
+      form.date_created, //kobo_form_date_created
+      currentDateTime, //row_date_modified
+      autoSync, //auto_sync checkbox
     ];
   });
   
