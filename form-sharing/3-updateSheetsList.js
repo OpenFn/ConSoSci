@@ -42,7 +42,7 @@ fn(state => {
 
   const currentDateTime = new Date().toISOString();
 
-  const autoSync = true; 
+  const autoSync = false; 
 
   state.sheetsData = filteredKoboFormsData.map(form => {
     const formName = form.name;
