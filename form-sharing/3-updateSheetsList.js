@@ -48,8 +48,8 @@ fn(state => {
       createTagName(formName),
       form.owner__username,
       instance(formName),
-      projectId(formName),
-      grmID(formName),
+      //projectId(formName), //for GRM only
+      //grmID(formName), //for GRM only
       status, 
       workspaceName(formName),
       form.url,
