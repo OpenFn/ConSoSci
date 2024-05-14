@@ -1,8 +1,8 @@
 //Check Kobo account for forms with these matching keywords
 getForms({}, state => {
-  //ALL KEYWORDS: 
+  //ALL KEYWORDS:
   //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-  
+
   //BNS KEYWORDS ONLY
   const keywords = ['price', 'prix', 'bns', 'nrgt'];
 
@@ -10,9 +10,10 @@ getForms({}, state => {
     return keywords.some(keyword => name.toLowerCase().includes(keyword));
   };
 
-  state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name)).filter(form => form.deployment__active);
-  state.data={};
+  state.koboForms = state.data.results
+    .filter(form => checkForKeyWords(form.name))
+    .filter(form => form.deployment__active);
+  state.data = {};
   state.references = [];
   return state;
 });
-
