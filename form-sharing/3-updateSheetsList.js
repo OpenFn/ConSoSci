@@ -38,6 +38,8 @@ fn(state => {
   const workspaceName = name =>
     containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
 
+  const status = 'deployed'; //if we assume only deployed forms will be fetched
+
   state.sheetsData = filteredKoboFormsData.map(form => {
     const formName = form.name;
     return [
@@ -48,6 +50,7 @@ fn(state => {
       instance(formName),
       projectId(formName),
       grmID(formName),
+      status, 
       workspaceName(formName),
       form.url,
       form.date_modified,
