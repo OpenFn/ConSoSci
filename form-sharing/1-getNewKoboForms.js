@@ -10,7 +10,7 @@ getForms({}, state => {
     return keywords.some(keyword => name.toLowerCase().includes(keyword));
   };
 
-  state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name));
+  state.koboForms = state.data.results.filter(form => checkForKeyWords(form.name)).filter(form => form.deployment__active);
   state.data={};
   state.references = [];
   return state;
