@@ -10,7 +10,7 @@
         "adaptor": "kobotoolbox",
         "expression": "1-getNewKoboForms.js",
         "next": {
-          "getSheetsList": "!state.error && state.data.length !== 0"
+          "getSheetsList": "!state.errors"
         }
       },
       {
@@ -19,7 +19,7 @@
         "expression": "2-getSheetsList.js",
         "adaptor": "googlesheets",
         "next": {
-          "updateSheetsList": "!state.error && state.data.length !== 0"
+          "updateSheetsList": "!state.errors"
         }
       },
       {
@@ -28,7 +28,7 @@
         "expression": "3-updateSheetsList.js",
         "adaptor": "googlesheets",
         "next": {
-          "upsertAsanaTask": "!state.error && state.sheetsData.length !== 0"
+          "upsertAsanaTask": "!state.errors"
         }
       },
       {
