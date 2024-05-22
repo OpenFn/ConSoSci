@@ -57,7 +57,7 @@ fn(state => {
 
   state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
   state.rowValuesToUpdate = formsToUpdate.map(form => ({
-    range: `mtuchi-testing!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+    range: `wcs-bns-test!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
     values: [sheetRowMap(form)],
   }));
 
@@ -69,7 +69,7 @@ fn(state => {
 //if new Kobo form shared, adding to the Google Sheet...
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-  range: 'mtuchi-testing!A:N', //range of columns in sheet
+  range: 'wcs-bns-test!A:N', //range of columns in sheet
   values: state => state.rowValuesToCreate,
 });
 
