@@ -1,6 +1,6 @@
 //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
 fn(state => {
-  const { filteredKoboFormsData } = state;
+  const { formsToCreate, formsToUpdate } = state;
   const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
 
   const tagMapping = {
@@ -25,10 +25,10 @@ fn(state => {
   };
 
   const containsGRMFeedback = name =>
-    name.toLowerCase().includes('grm', 'feedback');
+    !name.toLowerCase().includes('grm', 'feedback');
 
   const instance = name =>
-    containsGRMFeedback(name) ? '' : 'ADD MANUALLY @Admin!';
+    containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
 
   const projectId = name =>
     containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
@@ -38,40 +38,46 @@ fn(state => {
   const workspaceName = name =>
     containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
 
-  const status = 'deployed'; //if we assume only deployed forms will be fetched
+  const sheetRowMap = form => [
+    form.uid,
+    form.name,
+    createTagName(form.name),
+    form.owner__username,
+    instance(form.name),
+    //projectId(form.name), //for GRM only
+    //grmID(form.name), //for GRM only
+    form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
+    workspaceName(form.name), //openfn project space
+    form.url,
+    form.date_modified, //kobo_form_date_modified
+    form.date_created, //kobo_form_date_created
+    new Date().toISOString(), //row_date_modified
+    false, //auto_sync checkbox
+  ];
 
-  const currentDateTime = new Date().toISOString();
+  state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
+  state.rowValuesToUpdate = formsToUpdate.map(form => ({
+    range: `wcs-bns-test!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+    values: [sheetRowMap(form)],
+  }));
 
-  const autoSync = false; 
-
-  state.sheetsData = filteredKoboFormsData.map(form => {
-    const formName = form.name;
-    return [
-      form.uid,
-      form.name,
-      createTagName(formName),
-      form.owner__username,
-      instance(formName),
-      //projectId(formName), //for GRM only
-      //grmID(formName), //for GRM only
-      status, //deployment status
-      workspaceName(formName), //openfn project space
-      form.url,
-      form.date_modified, //kobo_form_date_modified
-      form.date_created, //kobo_form_date_created
-      currentDateTime, //row_date_modified
-      autoSync, //auto_sync checkbox
-    ];
-  });
-  
-  console.log('# of new forms detected:: ', state.sheetsData.length); 
-  console.log('Forms to add to the master sheet:: ', state.sheetsData); 
+  console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
+  console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
   return state;
 });
 
-//if new Kobo form shared, adding to the Google Sheet... 
+//if new Kobo form shared, adding to the Google Sheet...
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-  range: 'wcs-bns-test!A:L', //range of columns in sheet
-  values: state => state.sheetsData,
+  range: 'wcs-bns-test!A:N', //range of columns in sheet
+  values: state => state.rowValuesToCreate,
 });
+
+each(
+  '$.rowValuesToUpdate[*]',
+  batchUpdateValues({
+    spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+    range: state => state.data.range, //range of columns in sheet
+    values: state => state.data.values,
+  })
+);

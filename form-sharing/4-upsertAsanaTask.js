@@ -4,7 +4,7 @@ fn(state => {
     .toISOString()
     .split('T')[0];
 
-  state.asanaTasks = state.filteredKoboFormsData.map(form => {
+  state.asanaTasks = state.activeForms.map(form => {
     return {
       name: `New form added to OpenFn: ${form.name}`,
       approval_status: 'pending',
@@ -15,16 +15,17 @@ fn(state => {
       notes: `New form added to OpenFn: ${form.name}. Please review the Google Sheet and look for cells where it says "ADD MANUALLY" to add any values missing (e.g., "Instance" the form belongs to): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
   });
-  
-  console.log('# of Asana Tasks to add:: ', state.asanaTasks.length); 
-  console.log('Tasks to upsert:: ', state.asanaTasks); 
+
+  console.log('# of Asana Tasks to add:: ', state.asanaTasks.length);
+  console.log('Tasks to upsert:: ', state.asanaTasks);
   return state;
 });
 
 //upsert Asana task if new form shared notification needed
 each(
   '$.asanaTasks[*]',
-  upsertTask('1198901998266253', { //project_id
+  upsertTask('1198901998266253', {
+    //project_id
     externalId: 'name',
     data: state => state.data,
   })
