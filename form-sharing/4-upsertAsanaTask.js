@@ -16,6 +16,17 @@ fn(state => {
     };
   });
 
+  state.archivedFormsTasks = state.archivedForms.map(form => {
+    return {
+      name: `Form archived: ${form.name}`,
+      projects: ['1198901998266253'],
+      assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+      assignee: '473999120764595',
+      due_on: dueDate,
+      notes: `Kobo form was archived: ${form.name}. Please review the Google Sheet to confirm this is correct & consider if you want to remove from the OpenFn Sync: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+    };
+  });
+
   console.log('# of Asana Tasks to add:: ', state.asanaTasks.length);
   console.log('Tasks to upsert:: ', state.asanaTasks);
   return state;
@@ -24,6 +35,15 @@ fn(state => {
 //upsert Asana task if new form shared notification needed
 each(
   '$.asanaTasks[*]',
+  upsertTask('1198901998266253', {
+    //project_id
+    externalId: 'name',
+    data: state => state.data,
+  })
+);
+
+each(
+  '$.archivedFormsTasks[*]',
   upsertTask('1198901998266253', {
     //project_id
     externalId: 'name',
