@@ -58,6 +58,8 @@ This job is run *only once* as the Asana field gids for a given project are uniq
   Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
    OpenFn.org and automatically triggers the next (third) job.
 
+   **Note: this job will not fetch Kobo submissions that are over 1 week old. If an undefined cursor or a cursor over 1 week old is used, the job will throw an error and ask the user to use a more recent cursor. This logic was implemented in July 2024 to prevent overwriting Asana tasks with Kobo data.**
+
 ⚠ *Notes for developers:*
 - An example of this `B. Fetch Kobo Grievance Data` job is linked to the Github file [`/asana/PullKoboGrievanceData.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/PullKoboGrievanceData.js).
 - On OpenFn.org this job is configured with the `http` adaptor and a `cron` trigger. 
