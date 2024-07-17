@@ -146,7 +146,7 @@ OpenFn will sync Kobo data to this [GoogleSheet](https://docs.google.com/spreads
 
 **Data Flows** 
 
-*[See this data flow diagram]([https://lucid.app/documents/view/6221fa37-411d-49d2-93e7-b889c4f06511](https://lucid.app/lucidchart/3f6e91d6-feac-4c12-9602-60a0f9029943/edit?invitationId=inv_6fe97638-7d35-4930-9e00-ca2e538688eb&page=OQGlZYTqVO5E#)).* 
+*[See this data flow diagram](https://lucid.app/lucidchart/3f6e91d6-feac-4c12-9602-60a0f9029943/edit?invitationId=inv_6fe97638-7d35-4930-9e00-ca2e538688eb&page=OQGlZYTqVO5E#).* 
 
 
 ### Jobs Configured 
