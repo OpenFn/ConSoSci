@@ -177,8 +177,9 @@ The `Update Asana Task` job will find the existing task in Asana using the `Asan
 ### Assumptions
 
 1. Only the GoogleSheets document owner and the OpenFn GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
-2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the OpenFn user and the document owner would have the privileges to update the ID the GoogleSheet. 
-3. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
+2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the OpenFn user and the document owner would have the privileges to update the ID the GoogleSheet.
+3. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
+4. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
 
 
 
