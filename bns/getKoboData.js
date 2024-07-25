@@ -15,10 +15,12 @@ alterState(state => {
   { id: 'aJrXKdPgXfwSnam5iwaRHq', tag: 'bns_survey', name: 'BNS Ciblage 4e cohorte 2024', owner: 'wcs_poultry', instance: 'A. M. Boucka, A. Nkounkou, WCS Congo unpublished data 2024' },// New landscape: NdokiPeriphery
   { id: 'aJVZmRRfj442Li5F6r6M8y', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023'}, 
   { id: 'a5s3aXxviNV3GhMANSSaGk', tag: 'bns_survey', name: 'BNS ménage Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
+  { id: 'aNznavxK7BXXgtvLVY6wm2', tag: 'bns_survey', name: 'BNS household Crossriver 2023', owner: 'wcs_crossriver', instance: 'WCS Nigeria unpublished data 2023' }, 
 
 // ONGOING BNS prices forms
   { id: 'a3kbAt2freW3q8Ht48V3q2', tag: 'bns_price', name: 'BNS Prix Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
   { id: 'aH2dvuU2G8wiVZQ3k4fiRE', tag: 'bns_price', name: 'BNS Prix Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
+  { id: 'aQ5Q6iarRWtKp2dY2okbDe', tag: 'bns_price', name: 'BNS Prices Crossriver 2023',  owner: 'wcs_crossriver', instance: 'WCS Nigeria unpublished data 2023' }, 
 
 // ONGOING NRGT forms
   { id: 'aKYgSnUiLd8KkevPV2ty6e', tag: 'nrgt_current', name: 'NRGT NW Janvier 2024', owner: 'bemahafaly_wcs', instance: 'WCS Madagascar unpublished data 2024'}, 
