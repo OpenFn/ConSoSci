@@ -12,7 +12,6 @@ alterState(state => {
       //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
 
 // ONGOING BNS household forms
-  { id: 'aGfcUnks7JLms4YCGbHgwX', tag: 'bns_survey', name: 'BNS intervention Cross River 2024', owner: 'cemogor', instance: 'C. Emogor, 2023' },// 
   { id: 'aJrXKdPgXfwSnam5iwaRHq', tag: 'bns_survey', name: 'BNS Ciblage 4e cohorte 2024', owner: 'wcs_poultry', instance: 'A. M. Boucka, A. Nkounkou, WCS Congo unpublished data 2024' },// New landscape: NdokiPeriphery
   { id: 'aJVZmRRfj442Li5F6r6M8y', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023'}, 
   { id: 'a5s3aXxviNV3GhMANSSaGk', tag: 'bns_survey', name: 'BNS ménage Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
