@@ -141,7 +141,8 @@ iv.Upsert the data into the Asana project, as follows:
 
 **GoogleSheets**
 
-OpenFn will sync Kobo data to this [GoogleSheet](https://docs.google.com/spreadsheets/d/14xOFZ-iUgOizvtyDul52LhwWqFq8MUTmy2xLMEU3SRw/edit?gid=165048308#gid=165048308). Review the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for details on how to use the GoogleSheet.
+OpenFn will sync Kobo data to this [GoogleSheet](https://docs.google.com/spreadsheets/d/1WxZ8En1SX-g0UkvLnutZicmIEyZodwI4nGPFEvrxKE0/edit?gid=216423581#gid=216423581). Review the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for details on how to use the GoogleSheet.
+
 
 
 **Data Flows** 
@@ -176,10 +177,11 @@ The `Update Asana Task` job will find the existing task in Asana using the `Asan
 
 ### Assumptions
 
-1. Only the GoogleSheets document owner and the OpenFn GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
-2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the OpenFn user and the document owner would have the privileges to update the ID the GoogleSheet.
+1. Only the GoogleSheets document owner and the WCS GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
+2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the WCS user and the document owner would have the privileges to update the ID the GoogleSheet.
 3. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
 4. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
+
 
 
 
