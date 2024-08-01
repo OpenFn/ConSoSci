@@ -58,6 +58,12 @@ This job is run *only once* as the Asana field gids for a given project are uniq
   Upon retrieving the data, OpenFn posts each individual Kobo survey data into the OpenFn inbox, to be processed by other jobs.
    OpenFn.org and automatically triggers the next (third) job.
 
+   **Troubleshooting updates made in July 2024:**
+
+   1. This job will not fetch Kobo submissions that are over 1 week old. If an undefined cursor or a cursor over 1 week old is used, the job will throw an error and ask the user to use a more recent cursor. This logic was implemented in July 2024 to prevent overwriting Asana tasks with Kobo data.
+   2. This job logs the `_id` for each Kobo submission sent to the OpenFn Inbox.
+   3. If for some reason an empty message is sent to the Inbox, the job will throw an error with the form id for further investigation. 
+
 ⚠ *Notes for developers:*
 - An example of this `B. Fetch Kobo Grievance Data` job is linked to the Github file [`/asana/PullKoboGrievanceData.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/PullKoboGrievanceData.js).
 - On OpenFn.org this job is configured with the `http` adaptor and a `cron` trigger. 
@@ -124,6 +130,59 @@ iv.Upsert the data into the Asana project, as follows:
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is
    received, OpenFn first checks for a matching task record in Asana, If a match is found, the Task is updated with new details. If a matching task is not found, a new Task is created in Asana with the data fields populated.
 3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. The combination of `GrievanceID` and Kobo `_id_` creates a unique identifier for each form across various systems that would interact wit this data. **Note:** `uuid` may vary, and hence not a reliable unique identifier.
+
+
+## Q2 2024 GoogleSheets Integration
+
+### Project Overview
+
+In some cases, after grievances are entered into the KoboToolbox form, the team will need to add updates on investigation and resolution in a Google Spreadsheet rather than in Asana. If they do that, we still need the data to be synced and updated with Asana. The objective of the project is to allow data entered in Kobo to be synced automatically in Google Sheet then manually updated by the team in Google Sheet, with all the updates being synced with Asana so that Asana contains the complete information on the grievance.
+
+
+**GoogleSheets**
+
+OpenFn will sync Kobo data to this [GoogleSheet](https://docs.google.com/spreadsheets/d/1WxZ8En1SX-g0UkvLnutZicmIEyZodwI4nGPFEvrxKE0/edit?gid=216423581#gid=216423581). Review the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for details on how to use the GoogleSheet.
+
+
+
+**Data Flows** 
+
+*[See this data flow diagram](https://lucid.app/lucidchart/3f6e91d6-feac-4c12-9602-60a0f9029943/edit?invitationId=inv_6fe97638-7d35-4930-9e00-ca2e538688eb&page=OQGlZYTqVO5E#).* 
+
+
+### Jobs Configured 
+
+The following jobs are configured on OpenFn.org to run automatically.
+
+
+**1. Sync to GoogleSheets**
+
+After the tasks are upserted in Asana via the `GRM02. Upsert Aceh Grievances in Asana` job, the `Sync to GoogleSheets` job will run automatically. This job automatically cleans, maps, & loads the Kobo survey data into the specified GoogleSheet. This job stores the `Asana Task ID` returned from Asana in the Google sheet and uses it as the UUID for each row.
+This job employs a  *one-to-one mapping* i.e. 
+
+       1 Kobo form submission => 1 row in GoogleSheets 
+
+After OpenFn syncs the Kobo data to GoogleSheets, the Indonesia team addresses the grievances and leaves updates directly in the sheet. OpenFn has created protected ranges in the Sheet so that the users will only be able to update certain rows and cannot delete any rows. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details on these protected ranges. 
+
+**2. Update Asana Task**
+
+This job is triggered by a message that is sent to the OpenFn project inbox. The message is automatically sent to OpenFn daily at midnight UTC by a Google Apps Script that was developed by the OpenFn team. Please notify the OpenFn team if any changes need to be made to this script. The message the script pushes to OpenFn will contain the rows and columns that have been updated since the last sync. Note: it is possible to send this message manually (instead of waiting until midnight) by clicking the "OpenFn Sync" button. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details. 
+
+The `Update Asana Task` job will find the existing task in Asana using the `Asana Task ID` and map and load the GoogleSheet data to Asana. Only the fields in the `MAP 2: GoogleSheets -> Asana` tab in the [mapping specifications](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) will be synced from GoogleSheets to Asana. 
+
+### Data Element Mappings
+
+[See here](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) for the integration mapping specifications. 
+
+
+### Assumptions
+
+1. Only the GoogleSheets document owner and the WCS GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
+2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the WCS user and the document owner would have the privileges to update the ID the GoogleSheet.
+3. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
+4. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
+
+
 
 
 ### Administration & Support
