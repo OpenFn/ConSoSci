@@ -136,7 +136,7 @@ iv.Upsert the data into the Asana project, as follows:
 
 ### Project Overview
 
-{TO-DO: Add Background information about why the Indonesia form needs to use GoogleSheets to record updates instead of recording them directly in Asana}
+In some cases, after grievances are entered into the KoboToolbox form, the team will need to add updates on investigation and resolution in a Google Spreadsheet rather than in Asana. If they do that, we still need the data to be synced and updated with Asana. The objective of the project is to allow data entered in Kobo to be synced automatically in Google Sheet then manually updated by the team in Google Sheet, with all the updates being synced with Asana so that Asana contains the complete information on the grievance.
 
 
 **GoogleSheets**
