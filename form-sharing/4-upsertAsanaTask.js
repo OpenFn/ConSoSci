@@ -1,4 +1,4 @@
-//This job will add a task to Asana if a new Kobo form was shared
+//This job will add a task to Asana if a new Kobo form was shared 
 fn(state => {
   const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
     .toISOString()
