@@ -1,6 +1,6 @@
 getValues(
   '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
-  'wcs-bns-test!A:N' //range of columns in sheet
+  'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
 );
 
 fn(state => {
