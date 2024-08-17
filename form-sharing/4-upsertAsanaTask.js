@@ -35,20 +35,20 @@ fn(state => {
 });
 
 //upsert Asana task if new form shared notification needed
-// each(
-//   '$.asanaTasks[*]',
-//   upsertTask('1198901998266253', {
-//     //project_id
-//     externalId: 'name',
-//     data: state => state.data,
-//   })
-// );
+each(
+  '$.asanaTasks[*]',
+  upsertTask('1198901998266253', {
+    //project_id
+    externalId: 'name',
+    data: state => state.data,
+  })
+);
 
-// each(
-//   '$.archivedFormsTasks[*]',
-//   upsertTask('1198901998266253', {
-//     //project_id
-//     externalId: 'name',
-//     data: state => state.data,
-//   })
-// );
+each(
+  '$.archivedFormsTasks[*]',
+  upsertTask('1198901998266253', {
+    //project_id
+    externalId: 'name',
+    data: state => state.data,
+  })
+);
