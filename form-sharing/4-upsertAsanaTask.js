@@ -27,8 +27,10 @@ fn(state => {
     };
   });
 
-  console.log('# of Asana Tasks to add:: ', state.asanaTasks.length);
-  console.log('Tasks to upsert:: ', state.asanaTasks);
+  console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
+  console.log('New form alert tasks to upsert:: ', state.asanaTasks);
+  console.log('# of Archibed Form Asana Tasks to add:: ', state.archivedFormsTasks.length);
+  console.log('Archived form alert tasks to upsert:: ', state.archivedFormsTasks);
   return state;
 });
 
