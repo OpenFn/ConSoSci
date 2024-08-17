@@ -92,5 +92,5 @@ each(
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
   range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
-  values: state => state.rowValuesToUpdate,
+  values: state => state.rowValuesToArchive,
 });
