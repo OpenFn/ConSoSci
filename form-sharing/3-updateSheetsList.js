@@ -47,17 +47,21 @@ fn(state => {
     //projectId(form.name), //for GRM only
     //grmID(form.name), //for GRM only
     form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
-    workspaceName(form.name), //openfn project space
-    form.url,
+    'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
+    `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
     form.date_modified, //kobo_form_date_modified
     form.date_created, //kobo_form_date_created
     new Date().toISOString(), //row_date_modified
     false, //auto_sync checkbox
+    //job code template
+    `{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+      form.name
+    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},`,
   ];
 
   state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
   state.rowValuesToUpdate = formsToUpdate.map(form => ({
-    range: `wcs-bns-test!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+    range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
     values: [sheetRowMap(form)],
   }));
 
@@ -66,13 +70,14 @@ fn(state => {
   return state;
 });
 
-//if new Kobo form shared, adding to the Google Sheet...
+//if new Kobo form shared, adding to the "Deployed"" Sheet...
 appendValues({
   spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-  range: 'wcs-bns-test!A:N', //range of columns in sheet
+  range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
   values: state => state.rowValuesToCreate,
 });
 
+//updating rows in Sheet where forms are archived
 each(
   '$.rowValuesToUpdate[*]',
   batchUpdateValues({
@@ -81,3 +86,10 @@ each(
     values: state => state.data.values,
   })
 );
+
+//also adding archived rows to "Archived" Sheet...
+appendValues({
+  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+  range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
+  values: state => state.rowValuesToUpdate,
+});
