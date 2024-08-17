@@ -54,9 +54,9 @@ fn(state => {
     new Date().toISOString(), //row_date_modified
     false, //auto_sync checkbox
     //job code template
-    // `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
-    //   form.name
-    // }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
+    `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+      form.name
+    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
   ];
 
   state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
@@ -64,6 +64,7 @@ fn(state => {
     range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
     values: [sheetRowMap(form)],
   }));
+  state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
 
   console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
   console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
