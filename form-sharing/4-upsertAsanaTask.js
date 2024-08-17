@@ -23,7 +23,7 @@ fn(state => {
       assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
       assignee: '473999120764595',
       due_on: dueDate,
-      notes: `Kobo form was archived: ${form.name}. Please review the Google Sheet to confirm this is correct & consider if you want to remove from the OpenFn Sync: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+      notes: `Kobo form was archived: ${form.name}. Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
   });
 
