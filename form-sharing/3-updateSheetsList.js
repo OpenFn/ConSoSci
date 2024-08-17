@@ -54,9 +54,9 @@ fn(state => {
     new Date().toISOString(), //row_date_modified
     false, //auto_sync checkbox
     //job code template
-    `{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+    `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
       form.name
-    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},`,
+    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
   ];
 
   state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
