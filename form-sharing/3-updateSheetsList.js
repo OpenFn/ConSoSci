@@ -47,7 +47,7 @@ fn(state => {
     //projectId(form.name), //for GRM only
     //grmID(form.name), //for GRM only
     form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
-    workspaceName(form.name), //openfn project space
+    'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
     `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
     form.date_modified, //kobo_form_date_modified
     form.date_created, //kobo_form_date_created
