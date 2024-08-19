@@ -129,7 +129,6 @@ alterState(state => {
      // { id: 'aJZxvpgS73vJu4NUxTtvwJ', tag: 'bns_price', name: 'Prix_BNS_ABS_2019', owner: 'wcs_antongil', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced January 2022
      // { id: 'av3SpGmYTBP9A6dLMbzhZR', tag: 'bns_price', name: 'Prix_BNS_Soariake_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced January 2022
      // { id: 'awAV28ebngN7GTV2nqmyKU', tag: 'bns_price', name: 'Price Makira 2019', owner: 'wcs_mamabaie', instance: 'C. Spira, N. Dokolahy, J. Ranariniaina, M. Cournarie, L. Andriamampianina,  D. Detoeuf, WCS Madagascar unpublished data 2019'  }, // resynced January 2022
-     // { id: 'aq5r9cKQYBRDT9SBqYanUP', tag: 'bns_price', name: 'BNS Prix Ndoki 2019', owner: 'wcs_ndoki', instance: 'G. Mavah, B. Avelino, G. Ngohouani, R. Mouanda, F. Mossoula, B. Ngampamou' }, //  resynced January 2022
      // { id: 'awQmCEf63g5KN2G4kcBWrc', tag: 'bns_price', name: 'BNS Prix Ituri 2019', owner: 'wcs_ituri', instance: 'B. Ntumba, A. Ohole, B. Ikati, T. Muller, WCS RDC unpublished data 2019' }, // resynced January 2022
      // { id: 'a2bwTreEbymbWD3JGJ2qXT', tag: 'bns_price', name: 'Prix_BNS_Ankarea/Ankivony_2019', owner: 'wcs_soariake', instance: 'S. Rakotoharimalala, R. Ranaivoson, C. Razafindrakoto, D. Detoeuf, C. Spira, WCS Madagascar unpublished data 2019' }, // resynced August 2022
 
