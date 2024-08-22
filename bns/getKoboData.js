@@ -37,8 +37,9 @@ fn(state => {
       tag: survey.tag,
       name: survey.name 
   })); 
-
-  console.log('Active forms from Sheet to sync:: ', JSON.stringify(formsList, null, 2)); 
+  
+  console.log('# of deployed forms detected in Sheet:: ', formsList.length);
+  console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); 
 
   state.data = {
     surveys: sheetsData.map(survey => ({
