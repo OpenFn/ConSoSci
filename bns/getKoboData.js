@@ -28,9 +28,22 @@ getValues(
 fn(state => {
   const { sheetsData } = state;
 
-  console.log('Current cursor value:', state.lastEnd);
-  // Set a manual cursor if you'd like to only fetch data after this date.
+  //console.log('Current cursor value:', state.lastEnd);
+  // Set a manual cursor if you'd like to only fetch data after this date...
   const manualCursor = '2023-01-01T23:51:45.491+01:00';
+  
+  //...otherwise the job will use this dynamicCursor
+  const dynamicCursor = getTodayISODate(); 
+  console.log('Dynamic cursor value:', dynamicCursor);
+  
+  function getTodayISODate() {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+    return today.toISOString(); // Convert to ISO string
+  }
+  
+  const cursorValue = manualCursor || dynamicCursor; 
+  console.log('Cursor value to use in query:', cursorValue);
 
   const formsList = sheetsData.map(survey => ({
       formId: survey.uid,
@@ -48,7 +61,7 @@ fn(state => {
       name: survey.name,
       owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
+      query: `&query={"end":{"$gte":"${cursorValue}"}}`,
     })),
   };
   return state;
