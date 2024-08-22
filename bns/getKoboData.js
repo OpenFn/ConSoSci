@@ -1,39 +1,52 @@
 //== Job to be used for fetching data from Kobo on repeated, timer basis  ==//
 // This can be run on-demand at any time by clicking "run" //
+getValues(
+  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+  'wcs-bns-DEPLOYED!A:L',
+  state => {
+    const [headers, ...values] = state.data.values;
 
-alterState(state => {
+    const mapHeaderToValue = value => {
+      return headers.reduce((obj, header) => {
+        obj[header] = value[headers.indexOf(header)];
+        return obj;
+      }, {});
+    };
+
+    state.sheetsData = values
+      .filter(
+        item =>
+          item.includes('TRUE') 
+          //&& item.includes('bns_survey', 'nrgt_current') 
+      )
+      .map(item => mapHeaderToValue(item));
+
+    return state;
+  }
+);
+
+fn(state => {
+  const { sheetsData } = state;
+
   console.log('Current cursor value:', state.lastEnd);
   // Set a manual cursor if you'd like to only fetch data after this date.
   const manualCursor = '2023-01-01T23:51:45.491+01:00';
+
+  const formsList = sheetsData.map(survey => ({
+      formId: survey.uid,
+      tag: survey.tag,
+      name: survey.name 
+  })); 
+
+  console.log('Active forms to sync:: ', JSON.stringify(formsList, null, 2)); 
+
   state.data = {
-    surveys: [
-      //** Specify new forms to fetch here **//
-      //** Tag options: bns_survey, bns_price, nrgt_current, nrgt_historical  **//
-      //{ id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'Form Project Name', owner: 'wcs'},
-
-// ONGOING BNS household forms
-  { id: 'aJrXKdPgXfwSnam5iwaRHq', tag: 'bns_survey', name: 'BNS Ciblage 4e cohorte 2024', owner: 'wcs_poultry', instance: 'A. M. Boucka, A. Nkounkou, WCS Congo unpublished data 2024' },// New landscape: NdokiPeriphery
-  { id: 'aJVZmRRfj442Li5F6r6M8y', tag: 'bns_survey', name: 'BNS ménage Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023'}, 
-  { id: 'a5s3aXxviNV3GhMANSSaGk', tag: 'bns_survey', name: 'BNS ménage Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
-  { id: 'aNznavxK7BXXgtvLVY6wm2', tag: 'bns_survey', name: 'BNS household Crossriver 2023', owner: 'wcs_crossriver', instance: 'WCS Nigeria unpublished data 2023' }, 
-
-// ONGOING BNS prices forms
-  { id: 'a3kbAt2freW3q8Ht48V3q2', tag: 'bns_price', name: 'BNS Prix Kahuzi 2023', owner: 'wcs_mtkb', instance: 'WCS DRC unpublished data 2023' }, 
-  { id: 'aH2dvuU2G8wiVZQ3k4fiRE', tag: 'bns_price', name: 'BNS Prix Kabobo 2023', owner: 'wcs_pcbk', instance: 'WCS DRC unpublished data 2023'}, 
-  { id: 'aQ5Q6iarRWtKp2dY2okbDe', tag: 'bns_price', name: 'BNS Prices Crossriver 2023',  owner: 'wcs_crossriver', instance: 'WCS Nigeria unpublished data 2023' }, 
-
-// ONGOING NRGT forms
-  { id: 'aKYgSnUiLd8KkevPV2ty6e', tag: 'nrgt_current', name: 'NRGT NW Janvier 2024', owner: 'bemahafaly_wcs', instance: 'WCS Madagascar unpublished data 2024'}, 
-  { id: 'a33XvMuPQLpeygLURuNUBP', tag: 'nrgt_current', name: 'NRGT SWM 2023', owner: 'wcs_ndoki', instance: 'WCS Congo unpublished data 2023' }, 
-  { id: 'aqDKwe8AD3ykFeNEDuLSnv', tag: 'nrgt_current', name: 'Nosy Be NRGT 2023', owner: 'wcs_library', instance: 'WCS Madagascar unpublished data 2023' }, 
-  { id: 'a8KBiBL44hEpNfkS4RmxeN', tag: 'nrgt_current', name: 'NRGT_Niassa_2023', owner: 'wcs_niassa', instance: 'WCS Niassa unpublished data 2023'}, 
-
-    ].map(survey => ({
-      formId: survey.id,
+    surveys: sheetsData.map(survey => ({
+      formId: survey.uid,
       tag: survey.tag,
       name: survey.name,
       owner: survey.owner,
-      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.id}/data/?format=json`,
+      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
       query: `&query={"end":{"$gte":"${state.lastEnd || manualCursor}"}}`,
     })),
   };
@@ -42,7 +55,7 @@ alterState(state => {
 
 each(dataPath('surveys[*]'), state => {
   const { url, query, tag, formId, name, owner } = state.data;
-  return get(`${url}${query}`, {}, state => {
+  return http.get(`${url}${query}`, {}, state => {
     state.data.submissions = state.data.results.map((submission, i) => {
       return {
         i,
@@ -59,15 +72,14 @@ each(dataPath('surveys[*]'), state => {
     //back to the OpenFn inbox to run through the jobs =========================
     return each(dataPath('submissions[*]'), state => {
       console.log(`Posting ${state.data.i + 1} of ${count}...`);
-      return post(state.configuration.openfnInboxUrl, {
+      return http.post(state.configuration.openfnInboxUrl, {
         body: state => state.data,
       })(state);
     })(state);
-    // =========================================================================
   })(state);
 });
 
-alterState(state => {
+fn(state => {
   const lastEnd = state.references
     .filter(item => item.body)
     .map(s => s.body.end)
