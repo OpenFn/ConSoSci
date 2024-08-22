@@ -16,7 +16,7 @@ getValues(
     state.sheetsData = values
       .filter(
         item =>
-          item.includes('TRUE') 
+          item.includes('TRUE') //return forms where auto-sync = TRUE
           //&& item.includes('bns_survey', 'nrgt_current') 
       )
       .map(item => mapHeaderToValue(item));
