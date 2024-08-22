@@ -1,7 +1,7 @@
 ---
 layout: home
 title: Training
-nav_order: 7
+nav_order: 9
 permalink: /training/
 ---
 

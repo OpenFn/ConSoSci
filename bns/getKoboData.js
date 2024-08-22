@@ -76,7 +76,6 @@ each(dataPath('surveys[*]'), state => {
         body: state => state.data,
       })(state);
     })(state);
-    // =========================================================================
   })(state);
 });
 
