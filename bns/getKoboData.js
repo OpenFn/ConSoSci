@@ -38,7 +38,7 @@ fn(state => {
       name: survey.name 
   })); 
 
-  console.log('Active forms to sync:: ', JSON.stringify(formsList, null, 2)); 
+  console.log('Active forms from Sheet to sync:: ', JSON.stringify(formsList, null, 2)); 
 
   state.data = {
     surveys: sheetsData.map(survey => ({
@@ -53,40 +53,40 @@ fn(state => {
   return state;
 });
 
-each(dataPath('surveys[*]'), state => {
-  const { url, query, tag, formId, name, owner } = state.data;
-  return http.get(`${url}${query}`, {}, state => {
-    state.data.submissions = state.data.results.map((submission, i) => {
-      return {
-        i,
-        // Here we append the tags defined above to the Kobo form submission data
-        form: tag,
-        formName: name,
-        formOwner: owner,
-        body: submission,
-      };
-    });
-    const count = state.data.submissions.length;
-    console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-    //Once we fetch the data, we want to post each individual Kobo survey
-    //back to the OpenFn inbox to run through the jobs =========================
-    return each(dataPath('submissions[*]'), state => {
-      console.log(`Posting ${state.data.i + 1} of ${count}...`);
-      return http.post(state.configuration.openfnInboxUrl, {
-        body: state => state.data,
-      })(state);
-    })(state);
-  })(state);
-});
+// each(dataPath('surveys[*]'), state => {
+//   const { url, query, tag, formId, name, owner } = state.data;
+//   return http.get(`${url}${query}`, {}, state => {
+//     state.data.submissions = state.data.results.map((submission, i) => {
+//       return {
+//         i,
+//         // Here we append the tags defined above to the Kobo form submission data
+//         form: tag,
+//         formName: name,
+//         formOwner: owner,
+//         body: submission,
+//       };
+//     });
+//     const count = state.data.submissions.length;
+//     console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+//     //Once we fetch the data, we want to post each individual Kobo survey
+//     //back to the OpenFn inbox to run through the jobs =========================
+//     return each(dataPath('submissions[*]'), state => {
+//       console.log(`Posting ${state.data.i + 1} of ${count}...`);
+//       return http.post(state.configuration.openfnInboxUrl, {
+//         body: state => state.data,
+//       })(state);
+//     })(state);
+//   })(state);
+// });
 
-fn(state => {
-  const lastEnd = state.references
-    .filter(item => item.body)
-    .map(s => s.body.end)
-    .filter(s => s)
-    .sort()
-    .reverse()[0];
+// fn(state => {
+//   const lastEnd = state.references
+//     .filter(item => item.body)
+//     .map(s => s.body.end)
+//     .filter(s => s)
+//     .sort()
+//     .reverse()[0];
 
-  console.log('New cursor value:', lastEnd);
-  return { ...state, data: {}, references: [], lastEnd };
-});
+//   console.log('New cursor value:', lastEnd);
+//   return { ...state, data: {}, references: [], lastEnd };
+// });
