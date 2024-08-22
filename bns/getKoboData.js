@@ -28,15 +28,14 @@ getValues(
 fn(state => {
   const { sheetsData } = state;
 
-  //console.log('Current cursor value:', state.lastEnd);
   // Set a manual cursor if you'd like to only fetch data after this date...
-  const manualCursor = ''; 
   //e.g., '2023-01-01T23:51:45.491+01:00'
+  const manualCursor = ''; 
+  console.log('manualCursor defined?', manualCursor);
   
   //...otherwise the job will use this dynamicCursor
   const dynamicCursor = getTodayISODate(); 
-  console.log('Dynamic cursor value:', dynamicCursor);
-  
+
   function getTodayISODate() {
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
