@@ -2,7 +2,7 @@
 // This can be run on-demand at any time by clicking "run" //
 getValues(
   '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-  'sheetsList of Kobo forms!A:L',
+  'wcs-bns-DEPLOYED!A:L',
   state => {
     const [headers, ...values] = state.data.values;
 
@@ -16,7 +16,8 @@ getValues(
     state.sheetsData = values
       .filter(
         item =>
-          item.includes('TRUE') && item.includes('bns_survey', 'nrgt_current')
+          item.includes('TRUE') 
+          //&& item.includes('bns_survey', 'nrgt_current') 
       )
       .map(item => mapHeaderToValue(item));
 
@@ -30,6 +31,15 @@ fn(state => {
   console.log('Current cursor value:', state.lastEnd);
   // Set a manual cursor if you'd like to only fetch data after this date.
   const manualCursor = '2023-01-01T23:51:45.491+01:00';
+
+  const formsList = sheetsData.map(survey => ({
+      formId: survey.uid,
+      tag: survey.tag,
+      name: survey.name 
+  })); 
+
+  console.log('Active forms to sync:: ', JSON.stringify(formsList, null, 2)); 
+
   state.data = {
     surveys: sheetsData.map(survey => ({
       formId: survey.uid,
