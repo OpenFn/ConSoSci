@@ -1,5 +1,6 @@
 // Here we fetch submissions for all "Deployed" forms in GoogleSheet 
-// See linked job "[BNS] Get Forms from Sheet" for GoogleSheet query logic
+// NOTE: See linked job "[BNS-1A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
+//**********************************************************//
 each(dataPath('surveys[*]'), state => {
   const { url, query, tag, formId, name, owner } = state.data;
   return get(`${url}${query}`, {}, state => {
