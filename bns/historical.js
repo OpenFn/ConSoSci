@@ -18,17 +18,18 @@ alterState(state => {
       // { id: 'aMpW7wwRBRbtCfidtK2rRn', tag: 'bns_survey', name: 'BNS Ndoki 2019 - OpenFn Test', owner: 'bns' }, // TEST
 
       //****** Ongoing Forms to Rerun ****//
-
+      {id: 'aJn5HK9fFFQt2BMUo5GW2s', tag: 'bns_survey', name: 'BNS menages Lac Tele 2024', owner: 'wcs_lactele', instance: 'WCS Congo unpublished data 2024' },
+     
 
       //******* WCS HISTORICAL FORMS ******///
 
   // BNS HH 2024
-    { id: 'aEjwpqLhg4CQbPRuFQMCFj', tag: 'bns_survey', name: 'BNS household Yankari 2024', owner: 'wcs_yankari', instance: 'WCS Nigeria unpublished data 2024' }, // Added manually by DD on Aug 21, 2024
+  ////  { id: 'aEjwpqLhg4CQbPRuFQMCFj', tag: 'bns_survey', name: 'BNS household Yankari 2024', owner: 'wcs_yankari', instance: 'WCS Nigeria unpublished data 2024' }, // Added manually by DD on Aug 21, 2024
      // { id: 'aGfcUnks7JLms4YCGbHgwX', tag: 'bns_survey', name: 'BNS intervention Cross River 2023', owner: 'cemogor', instance: 'C. Emogor, 2024' },// 
      // { id: 'aJrXKdPgXfwSnam5iwaRHq', tag: 'bns_survey', name: 'BNS Ciblage 4e cohorte 2024', owner: 'wcs_poultry', instance: 'A. M. Boucka, A. Nkounkou, WCS Congo unpublished data 2024' },// New landscape: NdokiPeriphery
 
   // BNS Prices 2024
-    { id: 'aKh9KWTrqwXsjVfHeJG9sL', tag: 'bns_price', name: 'BNS Prices Yankari 2024', owner: 'wcs_yankari', instance: 'WCS Nigeria unpublished data 2024' }, // Added manually by DD on Aug 21, 2024
+  ////  { id: 'aKh9KWTrqwXsjVfHeJG9sL', tag: 'bns_price', name: 'BNS Prices Yankari 2024', owner: 'wcs_yankari', instance: 'WCS Nigeria unpublished data 2024' }, // Added manually by DD on Aug 21, 2024
 
   // NRGT 2024
   //{ id: 'aKYgSnUiLd8KkevPV2ty6e', tag: 'nrgt_current', name: 'NRGT NW Janvier 2024', owner: 'bemahafaly_wcs', instance: 'WCS Madagascar unpublished data 2024'}, 
