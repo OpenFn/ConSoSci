@@ -1,5 +1,4 @@
-//== Job to be used for fetching data from Kobo for historical, once-off migrations  ==//
-// This can be run on-demand at any time by clicking "run" //
+//== Run this job on-demand to get ALL submissions for any Kobo form ==//
 
 alterState(state => {
   console.log(`Started at: ${new Date().toISOString()}`);
