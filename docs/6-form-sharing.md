@@ -36,7 +36,7 @@ Now with this [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3k
 
 2. **Historical sync**: The `[BNS1-B]` jobs will sync "archived" Kobo forms (where `automate_sync: true` in the [archived forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1965562058#gid=1965562058)). 
 
-![bns-1b](./bns-1-historical.png)
+![bns-1b](./bns-2-historical.png)
 
 3. **On-demand sync**: The `[BNS3]` job will sync all submissions for _any_ Kobo form manually entered into this job. (This is in case you want to run syncs on-demand, but do not want to update the forms lists in the Google Sheet.)
 
