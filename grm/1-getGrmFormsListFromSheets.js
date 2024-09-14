@@ -27,21 +27,31 @@ getValues(
 fn(state => {
   const { sheetsData } = state;
 
-  // Set a manual cursor if you'd like to only fetch data after this date...
-  //e.g., '2023-01-01T23:51:45.491+01:00'
-  //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
-  //   console.log('manualCursor defined?', manualCursor);
-  //...otherwise the job will use this dynamicCursor
-  // const dynamicCursor = getTodayISODate();
+  // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
+  const isMoreThanAWeekOld = dateString => {
+    const currentDate = new Date();
+    const inputDate = new Date(dateString);
+    // Calculate the difference in time (in milliseconds) and convert to days
+    const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
 
-  //   function getTodayISODate() {
-  //     const today = new Date();
-  //     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-  //     return today.toISOString(); // Convert to ISO string
-  //   }
+    return daysDifference > 7;
+  };
+  // IF YOU CLEAR STATE...
+  // Set this manual cursor to the earliest submission date you want fetch.
+  const manualCursor = '2024-07-16T06:01:18.729Z';
 
-  //   const cursorValue = manualCursor || dynamicCursor;
-  //   console.log('Cursor value to use in query:', cursorValue);
+  state.cursor = state.lastEnd || manualCursor;
+
+  if (!state.cursor)
+    throw new Error(
+      'Please define a cursor date no greater than 1 week ago and try again'
+    );
+  if (isMoreThanAWeekOld(state.cursor))
+    throw new Error(
+      `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
+    );
+
+  console.log('Current cursor value:', state.cursor);
 
   const formsList = sheetsData.map(survey => ({
     formId: survey.uid,
@@ -49,7 +59,7 @@ fn(state => {
     name: survey.name,
   }));
 
-  console.log('# of archived forms detected in Sheet:: ', formsList.length);
+  console.log('# of GRM forms detected in Sheet:: ', formsList.length);
   console.log(
     'List of forms to re-sync:: ',
     JSON.stringify(formsList, null, 2)
@@ -62,8 +72,20 @@ fn(state => {
       name: survey.name,
       owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
+      query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
     })),
   };
   return state;
+});
+
+fn(state => {
+  let lastEnd = state.references
+    .filter(item => item.body)
+    .map(s => s.body.end)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+  lastEnd = new Date(lastEnd) > new Date() ? lastEnd : new Date().toISOString();
+
+  console.log('New cursor value:', lastEnd);
+  return { ...state, data: {}, references: [], lastEnd };
 });
