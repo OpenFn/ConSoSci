@@ -47,6 +47,15 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
   },
   Surveyor: dataValue('surveyor'),
   GovGroup: dataValue('gov_group'),
+  SurveyDate: state => {
+    const date = state.data.today || state.data._submission_time
+    if (Number(date.split('-')[0]) >= 2014 ) {
+      return date
+    } 
+    return 2019 
+    // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+    // With the code above we are replacing any 2000 by 2019:
+  },
   LastUpdate: new Date().toISOString(),
 });
 upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
@@ -60,6 +69,8 @@ upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
       return date
     } 
     return 2019
+    // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+    // With the code above we are replacing any 2000 by 2019:
   },
   Gender: dataValue('gender'),
   Member: dataValue('member'),
