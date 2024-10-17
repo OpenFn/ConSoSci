@@ -42,6 +42,12 @@ Now with this [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3k
 
 ![bns-3](./bns-3.png)
 
+## Syncing Kobo metadata for GRM forms
+
+An additional workflow has been set up to fetch deployed GRM form data from the [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602), get metadata (submission count, last submission date) from Kobo for those forms, and then update the WCS Programs Database KoboData table with the metadata.
+
+![grm-kobodata](./grm-kobodata.png)
+
 
 ## Specifications
 - Original [Github technical specification](https://github.com/OpenFn/ConSoSci/issues/206) and the [workflow diagram (v2)](https://lucid.app/lucidchart/346b8e5c-6fb6-4a33-9d02-53e5059bd698/edit?invitationId=inv_d1431bce-05ae-4005-9b6a-9c279141a3a3&page=0_0#)
