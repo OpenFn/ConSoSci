@@ -170,8 +170,6 @@ This job is triggered by a message that is sent to the OpenFn project inbox. The
 
 The `Update Asana Task` job will find the existing task in Asana using the `Asana Task ID` and map and load the GoogleSheet data to Asana. Only the fields in the `MAP 2: GoogleSheets -> Asana` tab in the [mapping specifications](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) will be synced from GoogleSheets to Asana. 
 
-
-
 ### Data Element Mappings
 
 [See here](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) for the integration mapping specifications. 
