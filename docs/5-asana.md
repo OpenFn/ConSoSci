@@ -166,9 +166,11 @@ After OpenFn syncs the Kobo data to GoogleSheets, the Indonesia team addresses t
 
 **2. Update Asana Task**
 
-This job is triggered by a message that is sent to the OpenFn project inbox. The message is automatically sent to OpenFn daily at midnight UTC by a Google Apps Script that was developed by the OpenFn team. Please notify the OpenFn team if any changes need to be made to this script. The message the script pushes to OpenFn will contain the rows and columns that have been updated since the last sync. Note: it is possible to send this message manually (instead of waiting until midnight) by clicking the "OpenFn Sync" button. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details. 
+This job is triggered by a message that is sent to the OpenFn project inbox. The message is automatically sent to OpenFn daily at midnight UTC by a [Google Apps Script](https://github.com/WCS-ConsTech/OpenFn-GrievanceRedressMechanism/blob/master/asana/syncChangesToOpenFn.gs) that was developed by the OpenFn team. Please notify the OpenFn team if any changes need to be made to this script. The message the script pushes to OpenFn will contain the rows and columns that have been updated since the last sync. Note: it is possible to send this message manually (instead of waiting until midnight) by clicking the "OpenFn Sync" button. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details. 
 
 The `Update Asana Task` job will find the existing task in Asana using the `Asana Task ID` and map and load the GoogleSheet data to Asana. Only the fields in the `MAP 2: GoogleSheets -> Asana` tab in the [mapping specifications](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) will be synced from GoogleSheets to Asana. 
+
+
 
 ### Data Element Mappings
 
