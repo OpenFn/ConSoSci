@@ -3,6 +3,7 @@
 //**********************************************************//
 each(dataPath('surveys[*]'), state => {
   const { url, query, tag, formId, name, owner } = state.data;
+  console.log('url + query ::', `${url}${query}`); 
   return get(`${url}${query}`, {}, state => {
     state.data.submissions = state.data.results.map((submission, i) => {
       return {
