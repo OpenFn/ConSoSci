@@ -17,6 +17,9 @@ getForms({}, state => {
   state.archivedForms = state.data.results
     .filter(form => checkForKeyWords(form.name))
     .filter(form => !form.deployment__active);
+    
+  console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );
+  console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );
 
   state.data = {};
   state.references = [];
