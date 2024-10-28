@@ -30,7 +30,7 @@ fn(state => {
 
   // Set a manual cursor if you'd like to only fetch data after this date...
   //e.g., '2023-01-01T23:51:45.491+01:00'
-  const manualCursor = '';  //lastUsed: 2024-04-01T00:00:00.000Z
+  const manualCursor = '2024-10-15T00:00:00.000Z';  //lastUsed: 2024-04-01T00:00:00.000Z
   console.log('manualCursor defined?', manualCursor);
   
   //...otherwise the job will use this dynamicCursor
