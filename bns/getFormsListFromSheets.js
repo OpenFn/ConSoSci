@@ -42,7 +42,7 @@ fn(state => {
     return today.toISOString(); // Convert to ISO string
   }
   
-  const cursorValue = manualCursor || dynamicCursor; 
+  const cursorValue = dynamicCursor || manualCursor ; 
   console.log('Cursor value to use in query:', cursorValue);
 
   const formsList = sheetsData.map(survey => ({
