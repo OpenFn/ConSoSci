@@ -10,7 +10,7 @@ fn(state => {
       approval_status: 'pending',
       projects: ['1198901998266253'],
       assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-      assignee: '473999120764595',
+      assignee: '1208302456826465',
       due_on: dueDate,
       notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
@@ -21,7 +21,7 @@ fn(state => {
       name: `Form archived: ${form.name}`,
       projects: ['1198901998266253'],
       assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-      assignee: '473999120764595',
+      assignee: '1208302456826465',
       due_on: dueDate,
       notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
     };
