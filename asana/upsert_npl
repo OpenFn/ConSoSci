@@ -1,0 +1,111 @@
+fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
+  const formatMapping = {
+  ReportFormat_Email: '1202330347502485',
+  ReportFormat_FocalPoint: '1207724960884497',
+  ReportFormat_Hotline: '1202330347501419',
+  ReportFormat_InPerson: '1202330347493011',
+  ReportFormat_Letter: '1202330347503544',
+  ReportFormat_OnlineForm: '1207934414764297',
+  ReportFormat_Other: '1203830536105154',
+  ReportFormat_ProjectMeeting: '1208936305975370',
+  ReportFormat_Prospecting: '1208419056473280',
+  ReportFormat_SuggestionBox: '1202330347499327',
+  ReportFormat_TextMessage: '1202330347498273',
+  ReportFormat_VoiceCall: '1202330347494027',
+  SubmissionType_Grievance: '1202329899911646',
+  SubmissionType_Suggestion: '1202329899911647',
+  SubmissionType_Request: '1202329899911648',
+  SubmissionType_Feedback: '1202329899911649',
+  TypeOfGrievance_ReportIllegalAtivities: '1208936168537764',
+  TypeOfGrievance_ProjectGrievance: '1208936168537765',
+  CaseType_Boundary: '1205638979644656',
+  CaseType_CashForCommunities: '1205638979644657',
+  CaseType_CommunityPatrols: '1205638979644658',
+  CaseType_Governance: '1205638979644659',
+  CaseType_HumanWildlifeConflict: '1205638979644660',
+  CaseType_IllegalLogging: '1205638982100772',
+  CaseType_LandClearance: '1205638982100773',
+  CaseType_LandGrabbing: '1205638982100774',
+  CaseType_LawEnforcement: '1205638982100775',
+  CaseType_LeMemberThreat: '1205638982100776',
+  CaseType_LogsTransportation: '1205638982100777',
+  CaseType_NestProtection: '1205638982100778',
+  CaseType_PermissionLetterLogging: '1205638982100779',
+  CaseType_Poaching: '1205638982100780',
+  CaseType_ProjectImplementation: '1205638982100781',
+  CaseType_SignBoard: '1205638982100782',
+  CaseType_Threats: '1205638982100783',
+  CaseType_VillageFocalPerson: '1205638982100784',
+  CaseType_WcsStaffFraud: '1205638982100785',
+  ResponseNeeded_Yes: '1205638982100788',
+  ResponseNeeded_No: '1205638982100789',
+  ResponseNeeded_NotSure: '1205638982100790'
+  };
+
+  return { ...state, formatMapping };
+});
+
+upsertTask(
+  dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
+  //'1201382240883590', //hardcoded project id
+
+  {
+    externalId: "name", // Asana external Id field name (e.g., 'gid')
+    data: {
+      name: state =>
+        //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+          `${dataValue('body.CaseID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+      projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
+      //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
+      notes: state =>
+`Complaint in Khmer: ${dataValue('body.ComplaintKhmer')(state)}.
+Complaint English: ${dataValue('body.ComplaintEnglish')(state)}.`,
+      custom_fields: {
+          //This tells Asana what fields to update and how to locate them.
+          
+          //The statements below apply to Asana Fields that are for OPEN ENDED
+          //i.e. They accept FREE TEXT INPUT from the Kobo Form
+'1202329899911595': dataValue('body.CaseID'),
+'1202329899911599': dataValue('body.SubmissionDate'),
+'1208936137293167': dataValue('body.SubmissionTime'),
+'1208908109568167': dataValue('body.Location'),
+'1203712060006636': dataValue('body.ReporterContactInformation'),
+'1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
+'1202329899911623': dataValue('body.GrievanceDate'),
+'1202329899911619': dataValue('body.WhereGrievance'),
+'1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
+'1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
+'1203712150593482': dataValue('body.HarmSuffered'),
+'1203712149463009': dataValue('body.ReliefRequested'),
+'1202329899911635': dataValue('body.OnlineFolder'),
+'1205638664544009': dataValue('body.ActionTaken'),
+'1205638664555699': dataValue('body.ResponseGiven'),
+'1205638664544013': dataValue('body.ResultAction'),
+'1205638664544017': dataValue('body.Evidence'),
+          
+          //The statements below apply to Asana Fields that have multiplechoice / DropDown options
+          //i.e. They require that the user selects specific options from the Kobo Form dropdown list.
+          // These are the questions that require the MAPPING TABLES at the top of this page.
+          //The mapping key-value pairs are obtained using a console.log tht runs in the Fetch GID Job
+
+'1202593715272940': state => state.formatMapping["Grade_" + dataValue('body.Grade')(state)],
+'1204269608862901': state => state.formatMapping["Classification_" + dataValue('body.Classification')(state)],
+'1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+'1202329899911645': state => state.formatMapping["SubmissionType_" + dataValue('body.SubmissionType')(state)],
+'1208936168537763': state => state.formatMapping["TypeOfGrievance_" + dataValue('body.TypeOfGrievance')(state)],
+'1205638979644655': state => state.formatMapping["CaseType_" + dataValue('body.CaseType')(state)],
+'1202330737362426': state => state.formatMapping["Gender_" + dataValue('body.Gender')(state)],
+'1202330755979944': state => state.formatMapping["IndigenousPeople_" + dataValue('body.IndigenousPeople')(state)],
+'1202330714895606': state => state.formatMapping["Age_" + dataValue('body.Age')(state)],
+'1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
+'1202330815421247': state => state.formatMapping["DatePrecision_" + dataValue('body.DatePrecision')(state)],
+'1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
+'1205638982100787': state => state.formatMapping["ResponseNeeded_" + dataValue('body.ResponseNeeded')(state)],
+      },
+    },
+  },
+  state => {
+    console.log(JSON.stringify(state.data, null, 2)); //log data
+    return state;
+  }
+);
