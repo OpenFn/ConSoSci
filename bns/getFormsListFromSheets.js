@@ -1,5 +1,7 @@
 //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
 // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
+fn(state => { console.log(state.configuration); return state; })
+ 
 getValues(
   '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
   'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet
