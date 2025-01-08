@@ -1,7 +1,8 @@
 //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
 // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
 getValues(
-   '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+   //'1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+   '1a6j0vOyBmOWgNMp3tgWfA0Mp-yAF2O7n_k0QK5fJX-Q',
   'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet
   state => {
     const [headers, ...values] = state.data.values;
@@ -42,7 +43,8 @@ fn(state => {
     return today.toISOString(); // Convert to ISO string
   }
   
-  const cursorValue = dynamicCursor || manualCursor ; 
+//  const cursorValue = dynamicCursor || manualCursor ; 
+  const cursorValue = manualCursor ; 
   console.log('Cursor value to use in query:', cursorValue);
 
   const formsList = sheetsData.map(survey => ({
