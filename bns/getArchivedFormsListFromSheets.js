@@ -66,7 +66,7 @@ fn(state => {
     name: survey.name,
   }));
 
-  console.log('# of archived forms detected in Sheet:: ', formsList.length);
+  console.log('# of forms detected in Sheet:: ', formsList.length);
   console.log(
     'List of forms to re-sync:: ',
     JSON.stringify(formsList, null, 2)
