@@ -3,8 +3,9 @@
 //**********************************************************//
 
 fn(state => {
-  state.surveySubmissions = state.surveySubmissions || [];
-  state.errors = state.errors || [];
+  state.surveySubmissions = [];
+  state.errors = [];
+  state.count = 0
   console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));
   return state;
 });
@@ -12,6 +13,7 @@ fn(state => {
 each('$.data.surveys[*]', state => {
   const { url, query, tag, formId, name, owner } = state.data;
   console.log('Sending GET to ::', `${url}${query}`);
+
   return get(`${url}${query}`, {}, state => {
     const results = state.data.results.map((submission, i) => {
       return {
@@ -24,31 +26,33 @@ each('$.data.surveys[*]', state => {
       };
     });
 
-    state.surveySubmissions = state.surveySubmissions || [];
     state.surveySubmissions.push(...results);
     const count = results.length;
     console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
     //Once we fetch the data, we want to post each individual Kobo survey
     //back to the OpenFn inbox to run through the jobs =========================
-  })(state).catch(err => {
-    state.errors = state.errors || [];
-    state.errors.push({
-      formId,
-      message: err.message,
+  })(state)
+    .then(() => {
+      return state;
+    })
+    .catch(err => {
+      state.errors = state.errors || [];
+      state.errors.push({
+        formId,
+        message: err.message,
+      });
+      console.log(`Error fetching submissions from  ${formId}::`, err.message);
+      return state;
     });
-    console.log(`Error fetching submissions from  ${formId}::`, err.message);
-    return state;
-  });
 });
 
 each(
   '$.surveySubmissions[*]',
   post(state => state.configuration.openfnInboxUrl, {
     body: state => {
-      const { i } = state.data;
       const count = state.surveySubmissions.length;
-      console.log(`Posting ${i + 1} of ${count}...`);
-
+      console.log(`Posting ${state.count} of ${count}...`);
+      state.count = state.count++      
       return state.data;
     },
   })
