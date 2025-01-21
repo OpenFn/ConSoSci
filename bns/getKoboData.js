@@ -5,7 +5,6 @@
 fn(state => {
   state.surveySubmissions = [];
   state.errors = [];
-  state.count = 0
   console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));
   return state;
 });
@@ -14,29 +13,27 @@ each('$.data.surveys[*]', state => {
   const { url, query, tag, formId, name, owner } = state.data;
   console.log('Sending GET to ::', `${url}${query}`);
 
-  return get(`${url}${query}`, {}, state => {
-    const results = state.data.results.map((submission, i) => {
-      return {
-        i,
-        // Here we append the tags defined above to the Kobo form submission data
-        form: tag,
-        formName: name,
-        formOwner: owner,
-        body: submission,
-      };
-    });
+  return get(`${url}${query}`)(state)
+    .then(state => {
+      const results = state.data.results.map((submission, i) => {
+        return {
+          i,
+          // Here we append the tags defined above to the Kobo form submission data
+          form: tag,
+          formName: name,
+          formOwner: owner,
+          body: submission,
+        };
+      });
 
-    state.surveySubmissions.push(...results);
-    const count = results.length;
-    console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-    //Once we fetch the data, we want to post each individual Kobo survey
-    //back to the OpenFn inbox to run through the jobs =========================
-  })(state)
-    .then(() => {
+      state.surveySubmissions.push(...results);
+      const count = results.length;
+      console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+      //Once we fetch the data, we want to post each individual Kobo survey
+      //back to the OpenFn inbox to run through the jobs =========================
       return state;
     })
     .catch(err => {
-      state.errors = state.errors || [];
       state.errors.push({
         formId,
         message: err.message,
@@ -46,14 +43,12 @@ each('$.data.surveys[*]', state => {
     });
 });
 
-each(
-  '$.surveySubmissions[*]',
-  post(state => state.configuration.openfnInboxUrl, {
+each('$.surveySubmissions[*]', state => {
+  return post(state => state.configuration.openfnInboxUrl, {
     body: state => {
       const count = state.surveySubmissions.length;
-      console.log(`Posting ${state.count} of ${count}...`);
-      state.count = state.count++      
+      console.log(`Posting ${state.data.i} of ${count}...`);
       return state.data;
     },
-  })
-);
+  })(state);
+});
