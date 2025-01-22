@@ -50,9 +50,9 @@ each(
   post(
     state => state.configuration.openfnInboxUrl,
     state => {
-      const subCount = state.data.i;
-      const formName = state.data.formName;
-      console.log(`Posting ${subCount} of ${formName}...`);
+      const {i, formName} = state.data;
+      const count = state.surveySubmissions.length;
+      console.log(`Posting ${i} of ${count} from ${formName}`);
       return { body: state.data };
     }
   )
