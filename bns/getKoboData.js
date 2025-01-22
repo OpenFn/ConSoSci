@@ -5,6 +5,7 @@
 fn(state => {
   state.surveySubmissions = [];
   state.errors = [];
+  state.globalIndex = 0;
   console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));
   return state;
 });
@@ -15,9 +16,10 @@ each('$.data.surveys[*]', state => {
 
   return get(`${url}${query}`)(state)
     .then(state => {
-      const results = state.data.results.map((submission, i) => {
+      const results = state.data.results.map(submission => {
+        const uniqueIndex = state.globalIndex++;
         return {
-          i,
+          i: uniqueIndex,
           // Here we append the tags defined above to the Kobo form submission data
           form: tag,
           formName: name,
@@ -43,12 +45,15 @@ each('$.data.surveys[*]', state => {
     });
 });
 
-each('$.surveySubmissions[*]', state => {
-  return post(state => state.configuration.openfnInboxUrl, {
-    body: state => {
-      const count = state.surveySubmissions.length;
-      console.log(`Posting ${state.data.i} of ${count}...`);
-      return state.data;
-    },
-  })(state);
-});
+each(
+  '$.surveySubmissions[*]',
+  post(
+    state => state.configuration.openfnInboxUrl,
+    state => {
+      const subCount = state.data.i;
+      const formName = state.data.formName;
+      console.log(`Posting ${subCount} of ${formName}...`);
+      return { body: state.data };
+    }
+  )
+);
