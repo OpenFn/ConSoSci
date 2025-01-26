@@ -36,7 +36,7 @@ Now with this [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3k
 
 2. **Historical sync**: The `[BNS1-B]` jobs will sync ALL historical submissions for Kobo forms (where `historical_sync: true` in EITHER the [deployed forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) or the [archived forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1965562058#gid=1965562058)). 
 
-![bns-1b](./bns-2-historical.png)
+![bns-1b](./historical-sync-bns.png)
 
 
 ## Syncing Kobo metadata for GRM forms
