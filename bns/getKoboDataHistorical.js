@@ -2,8 +2,8 @@
 // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
 //**********************************************************//
 each(dataPath('surveys[*]'), state => {
-  const { url, query, tag, formId, name, owner } = state.data;
-  return get(`${url}${query}`, {}, state => {
+  const { url, tag, formId, name, owner } = state.data;
+  return get(`${url}`, {}, state => {
     state.data.submissions = state.data.results.map((submission, i) => {
       return {
         i,
