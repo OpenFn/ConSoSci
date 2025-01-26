@@ -62,7 +62,7 @@ fn(state => {
       name: survey.name,
       owner: survey.owner,
       url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-      query: `&query={"end":{"$gte":"${cursorValue}"}}`,
+      query: `&query={"start":{"$gte":"${cursorValue}"}}`,
     })),
   };
   return state;
