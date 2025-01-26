@@ -23,24 +23,21 @@ When the workflow runs, it will:
 ![form-sharing](./form-sharing.png)
 
 ## Managing the Forms Lists in Google Sheets
-[This Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) is now the source of truth for what Kobo forms should or should not be synced to the ConSoSci database. Update the column `automate_sync` to true/false to specify whether these forms should be included when either the [BNS-1A Ongoing]() or [BNS-1B Historical] "Get forms" jobs run.
+[This Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) is now the source of truth for what Kobo forms should or should not be synced to the ConSoSci database. Update the column `automate_sync` to true/false to specify whether these forms should be included when either the [BNS-1A Ongoing](https://v1.openfn.org/projects/consosci/jobs/E7cauG) or [BNS-1B Historical](https://v1.openfn.org/projects/consosci/jobs/gNALVP) "Get forms" jobs run.
 
 ## Syncing BNS/NRGT Kobo Form Submissions
 Now with this [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) set up, there are 3 workflows configured to sync BNS and NRGT forms on an ongoing and historical basis in the `ConSoSci` project. 
 
-🎥 **[See this video](https://www.loom.com/share/1cf1021e73f945e8a13e792df8d3afe3?sid=29269619-3b3f-485f-998b-3c65aeb03bff) for how to manage ongoing and historical syncing of Kobo forms.**
+🎥 **[See this video](https://www.loom.com/share/1cf1021e73f945e8a13e792df8d3afe3?sid=29269619-3b3f-485f-998b-3c65aeb03bff) for how to manage _ongoing_ data syncing of deployed Kobo forms.**
 
 1. **Ongoing sync**: The `[BNS1-A]` jobs will sync "deployed" Kobo forms (where `automate_sync: true` in the [deployed forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602)). 
 
 ![bns-1a](./bns-1-ongoing.png)
 
-2. **Historical sync**: The `[BNS1-B]` jobs will sync "archived" Kobo forms (where `automate_sync: true` in the [archived forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1965562058#gid=1965562058)). 
+2. **Historical sync**: The `[BNS1-B]` jobs will sync ALL historical submissions for Kobo forms (where `historical_sync: true` in EITHER the [deployed forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) or the [archived forms sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1965562058#gid=1965562058)). 
 
 ![bns-1b](./bns-2-historical.png)
 
-3. **On-demand sync**: The `[BNS3]` job will sync all submissions for _any_ Kobo form manually entered into this job. (This is in case you want to run syncs on-demand, but do not want to update the forms lists in the Google Sheet.)
-
-![bns-3](./bns-3.png)
 
 ## Syncing Kobo metadata for GRM forms
 
@@ -54,8 +51,7 @@ An additional workflow has been set up to fetch deployed GRM form data from the 
 - [Change request](https://github.com/OpenFn/ConSoSci/issues/224) for how archived forms are managed 
 
 ## How to re-process Kobo form submissions & re-sync historical data
-You can either: 
-1. add the form to the [archived forms list](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1965562058#gid=1965562058), set the column L `automate-sync: true` and run the historical job to re-sync _all_ submissions for that form, or 
-2. specify a manual cursor in the [Get FormsList Ongoing job](https://v1.openfn.org/projects/consosci/jobs/E7cauG). 
+1. Go to the [Master Forms Sheet](https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602) and update the column `historical_sync: true` for ANY deployed or archived form that you want to sync. 
+2. In the ConSoSci project space, run the job **[`[BNS-1B] 1.Get FormsList (Historical sync)`](https://v1.openfn.org/projects/consosci/jobs/gNALVP)**.
 
-🎥 **[See this video](https://www.loom.com/share/1cf1021e73f945e8a13e792df8d3afe3?sid=29269619-3b3f-485f-998b-3c65aeb03bff)** (minute 1:19) for guidance!
+🎥 **See this [Historical Sync video](https://www.loom.com/share/e92d337784db44b58485421515d2a36b?sid=67e4a117-df45-451f-a5a4-3de80fb9e8d1)** for guidance on bulk syncing historical submissions for any form–deployed or historical.
