@@ -1,3 +1,4 @@
+//App script used in template GRM Google Sheet
 function onEdit(e) {
   const { range, value: newValue, oldValue, user } = e;
   const sheet = range.getSheet();
@@ -102,7 +103,7 @@ function syncChangesToOpenFn() {
 
     try {
       const response = UrlFetchApp.fetch(
-        "https://v1.openfn.org/inbox/93ededf9-5096-4848-ada1-9ae333f4f9c5",
+        "https://v1.openfn.org/inbox/{url-id},
         options
       );
       Logger.log("Data synced successfully:", response.getContentText());
