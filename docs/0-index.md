@@ -20,6 +20,8 @@ This repo includes OpenFn-powered integration solutions for ConSoSci partners to
 - Project 1: BNS and NGRT Kobo survey integrations for centralized data management & analysis
 - Project 2: Automated Kobo integration to autogenerate database tables & OpenFn jobs for data integration
 - Project 3: Wildmeat Kobo surveys integration to track consumption data
+- Project 4: KoboToolbox to Asana integration to track grievance data
+- Project 5: Form Sharing Notifications, to notify the database administrator when new Kobo forms are shared with the aggregating account, so that they can be incuded in the integration workflow 
 
 ## OpenFn Projects
 
