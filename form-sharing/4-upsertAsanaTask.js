@@ -1,5 +1,6 @@
 //This job will add a task to Asana if a new Kobo form was shared
 fn(state => {
+  console.log('formLastModifiedDate:: ', state.formLastModified); 
   const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
     .toISOString()
     .split('T')[0];
