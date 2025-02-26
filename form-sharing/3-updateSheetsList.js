@@ -37,6 +37,8 @@ fn(state => {
 
   const workspaceName = name =>
     containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
+    
+  state.formLastModified = form => form.date_modified; 
 
   const sheetRowMap = form => [
     form.uid,
