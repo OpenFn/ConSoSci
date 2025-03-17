@@ -18,7 +18,13 @@ fn(state => {
     };
   }) : [];
 
-  state.archivedFormsTasks = state.archivedForms.map(form => {
+  const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday
+
+  state.archivedFormsTasks = state.archivedForms
+  .filter(form => new Date(form.date_modified) > yesterday)
+  .map(form => {
     const dateModified = new Date(form.date_modified);
     const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
       .toISOString()
