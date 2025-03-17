@@ -1,5 +1,5 @@
 # ConSoSci on OpenFn [(Docs)](https://openfn.github.io/ConSoSci/)
-_Leveraging Social Science to Strengthen Conservation Outcomes_
+_Leveraging Social Science to Strengthen Conservation Outcomes_ 
 
 Integration solutions for the Conservation Social Science (ConSoSci) partnership to connect data sources, including `Kobo Toolbox`, `PostgreSQL` and `MySQL` databases. 
 
