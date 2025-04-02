@@ -106,7 +106,7 @@ workflows:
 
       BNS-1A-Get-BNS-NRGT-Forms-Ongoing:
         name: BNS 1A Get BNS NRGT Forms Ongoing
-        adaptor: '@openfn/language-http@6.1.0'
+        adaptor: '@openfn/language-http@3.1.11'
         credential: rediet@openfn.org-WCS-Kobo-Raw
         body: |
           // Here we fetch submissions for all "Deployed" forms in GoogleSheet
@@ -156,30 +156,10 @@ workflows:
               });
           });
 
-          // each(
-          //   '$.surveySubmissions[*]',
-          //   post(
-          //     state => state.configuration.openfnInboxUrl,
-          //     state => {
-          //       const {i, formName} = state.data;
-          //       const count = state.surveySubmissions.length;
-          //       console.log(`Posting ${i} of ${count} from ${formName}`);
-          //       return { body: state.data };
-          //     }
-          //   )
-          // );  
-
-      Trigger-WF-Inbox:
-        name: Trigger WF Inbox
-        adaptor: '@openfn/language-http@latest'
-        credential: null
-        body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
           each(
             '$.surveySubmissions[*]',
             post(
-             "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",
+              "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",
               state => {
                 const {i, formName} = state.data;
                 const count = state.surveySubmissions.length;
@@ -188,6 +168,7 @@ workflows:
               }
             )
           );  
+
     triggers:
       cron:
         type: cron
@@ -202,11 +183,6 @@ workflows:
       BNS-1A-1-Get-FormsList-Ongoing->BNS-1A-Get-BNS-NRGT-Forms-Ongoing:
         source_job: BNS-1A-1-Get-FormsList-Ongoing
         target_job: BNS-1A-Get-BNS-NRGT-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-      BNS-1A-Get-BNS-NRGT-Forms-Ongoing->Trigger-WF-Inbox:
-        source_job: BNS-1A-Get-BNS-NRGT-Forms-Ongoing
-        target_job: Trigger-WF-Inbox
         condition_type: on_job_success
         enabled: true
   1B.-Get-BNS-FormsList-Historical-sync:
@@ -3530,7 +3506,7 @@ workflows:
         condition_label: 'auto/WCSPROGRAMS_CameraKoboDeployment'
         condition_expression: |
           state.data.tableId == "WCSPROGRAMS_CameraKoboDeployment"
-        enabled: false
+        enabled: true
   "z[Archive]-Get-Kobo-Forms-Template":
     name: 'z[Archive] Get Kobo Forms Template'
     jobs:
@@ -3626,7 +3602,7 @@ workflows:
         source_trigger: cron
         target_job: Get-Kobo-Forms-Template
         condition_type: always
-        enabled: false
+        enabled: true
   "z[Archive]-Get-kobo-form---test":
     name: 'z[Archive] Get kobo form - test'
     jobs:
