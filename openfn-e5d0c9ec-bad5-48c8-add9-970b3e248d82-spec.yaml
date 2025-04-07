@@ -2970,9 +2970,8 @@ workflows:
           });
 
     triggers:
-      cron:
-        type: cron
-        cron_expression: '0 22 1 * *'
+      webhook:
+        type: webhook
         enabled: false
     edges:
       Get-FormsList->Get-Forms:
@@ -2980,8 +2979,8 @@ workflows:
         target_job: Get-Forms
         condition_type: on_job_success
         enabled: true
-      cron->Get-FormsList:
-        source_trigger: cron
+      webhook->Get-FormsList:
+        source_trigger: webhook
         target_job: Get-FormsList
         condition_type: always
         enabled: true
@@ -3146,125 +3145,6 @@ workflows:
         source_job: Get-Forms-List
         target_job: Get-BNS-NRGT-Forms
         condition_type: on_job_success
-        enabled: true
-  auto--WCSPROGRAMS-CameraKoboDeployment:
-    name: auto  WCSPROGRAMS CameraKoboDeployment
-    jobs:
-      auto-WCSPROGRAMS-CameraKoboDeployment:
-        name: auto WCSPROGRAMS CameraKoboDeployment
-        adaptor: '@openfn/language-mssql@v2.6.11'
-        credential: null
-        body: |
-          fn(state => {
-              const multiSelectIds = [""];
-
-              function generateUuid(body, uuid) {
-                for (const property in body) {
-                  if (Array.isArray(body[property]) && body !== null) {
-                    body['__generatedUuid'] = uuid;
-                    body[property].forEach((thing, i, arr) => {
-                      if (thing !== null) {
-                        thing['__parentUuid'] = uuid;
-                        let newUuid = uuid + '-' + (i + 1);
-                        thing['__generatedUuid'] = newUuid;
-                        for (const property in thing) {
-                          if (Array.isArray(thing[property])) {
-                            generateUuid(thing, newUuid);
-                          }
-                        }
-                      }
-                    });
-                  }
-                }
-              }
-
-              generateUuid(
-                state.data.body,
-                state.data.body._id+'-'+state.data.body._xform_id_string
-              );
-
-              const { body } = state.data;
-              const { _id, _xform_id_string } = body;
-              state.data = { ...state.data, ...body };
-
-              return { ...state, _id, _xform_id_string };
-            }); 
-          fn(async state => {
-           const mapping = {
-            FormName: dataValue('formName'),
-            DatasetId: dataValue('_xform_id_string'),
-            LastUpdated: new Date().toISOString()
-          } 
-           return upsert('WCSPROGRAMS_KoboDataset', "DatasetId", mapping, {setNull: ["''", "'undefined'"]})(state); 
-          }) 
-          fn(async state => {
-           const mapping = {
-            Note: dataValue('note'),
-            Battery: dataValue('battery'),
-            WCSPROGRAMS_CameraKoboYesNoID_KeyRetrieved: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('key_retrieved') }})(state),
-            WCSPROGRAMS_CameraKoboYesNoID_MotionTest: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('motion_test') }})(state),
-            WCSPROGRAMS_CameraKoboYesNoID_CameraOn: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('camera_on') }})(state),
-            WCSPROGRAMS_CameraKoboYesNoID_SdInsert: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_insert') }})(state),
-            WCSPROGRAMS_CameraKoboYesNoID_SdUnlock: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_unlock') }})(state),
-            NoKey: dataValue('no_key'),
-            SdCard: dataValue('sd_card'),
-            DetectionDistance: dataValue('detection_distance'),
-            PlotTreatmentDescription: dataValue('plot_treatment_description'),
-            PlotTreatment: dataValue('plot_treatment'),
-            RecordedBy: dataValue('recorded_by'),
-            OrientationOther: dataValue('orientation_other'),
-            Direction: dataValue('direction'),
-            WCSPROGRAMS_CameraKoboAngleID_SensorOrientation: await findValue({uuid: 'wcsprograms_camerakoboangleid', relation: 'WCSPROGRAMS_CameraKoboAngle', where: { WCSPROGRAMS_CameraKoboAngleExtCode: dataValue('sensor_orientation') }})(state),
-            HeightOther: dataValue('height_other'),
-            CmHeight: dataValue('cm_height'),
-            WCSPROGRAMS_CameraKoboHeightID_SensorHeight: await findValue({uuid: 'wcsprograms_camerakoboheightid', relation: 'WCSPROGRAMS_CameraKoboHeight', where: { WCSPROGRAMS_CameraKoboHeightExtCode: dataValue('sensor_height') }})(state),
-            QuietPeriod: dataValue('quiet_period'),
-            FeatureTypeMethodology: dataValue('feature_type_methodology'),
-            WCSPROGRAMS_CameraKoboFeatureID_FeatureType: await findValue({uuid: 'wcsprograms_camerakobofeatureid', relation: 'WCSPROGRAMS_CameraKoboFeature', where: { WCSPROGRAMS_CameraKoboFeatureExtCode: dataValue('feature_type') }})(state),
-            BaitDescription: dataValue('bait_description'),
-            WCSPROGRAMS_CameraKoboBaitID_BaitType: await findValue({uuid: 'wcsprograms_camerakobobaitid', relation: 'WCSPROGRAMS_CameraKoboBait', where: { WCSPROGRAMS_CameraKoboBaitExtCode: dataValue('bait_type') }})(state),
-            WCSPROGRAMS_CameraKoboEventID_EventType: await findValue({uuid: 'wcsprograms_camerakoboeventid', relation: 'WCSPROGRAMS_CameraKoboEvent', where: { WCSPROGRAMS_CameraKoboEventExtCode: dataValue('event_type') }})(state),
-            EventDescription: dataValue('event_description'),
-            EventName: dataValue('event_name'),
-            StartDate: dataValue('start_date'),
-            WCSPROGRAMS_CameraKoboCanopyID_Canopy: await findValue({uuid: 'wcsprograms_camerakobocanopyid', relation: 'WCSPROGRAMS_CameraKoboCanopy', where: { WCSPROGRAMS_CameraKoboCanopyExtCode: dataValue('canopy') }})(state),
-            WCSPROGRAMS_CameraKoboVisibilityID_Visibility: await findValue({uuid: 'wcsprograms_camerakobovisibilityid', relation: 'WCSPROGRAMS_CameraKoboVisibility', where: { WCSPROGRAMS_CameraKoboVisibilityExtCode: dataValue('visibility') }})(state),
-            WCSPROGRAMS_CameraKoboUnderwoodID_Underwood: await findValue({uuid: 'wcsprograms_camerakobounderwoodid', relation: 'WCSPROGRAMS_CameraKoboUnderwood', where: { WCSPROGRAMS_CameraKoboUnderwoodExtCode: dataValue('underwood') }})(state),
-            WCSPROGRAMS_CameraKoboSlopeID_Slope: await findValue({uuid: 'wcsprograms_camerakoboslopeid', relation: 'WCSPROGRAMS_CameraKoboSlope', where: { WCSPROGRAMS_CameraKoboSlopeExtCode: dataValue('slope') }})(state),
-            WCSPROGRAMS_CameraKoboVegID_Veg: await findValue({uuid: 'wcsprograms_camerakobovegid', relation: 'WCSPROGRAMS_CameraKoboVeg', where: { WCSPROGRAMS_CameraKoboVegExtCode: dataValue('veg') }})(state),
-            Latitude: state => state.data.gps.split(' ')[0],
-            Longitude: state => state.data.gps.split(' ')[1],
-            WCSPROGRAMS_CameraKoboCameraID_CameraId: await findValue({uuid: 'wcsprograms_camerakobocameraid', relation: 'WCSPROGRAMS_CameraKoboCamera', where: { WCSPROGRAMS_CameraKoboCameraExtCode: dataValue('camera_id') }})(state),
-            PointTransect: dataValue('point_transect'),
-            TeamLead: dataValue('team_lead'),
-            Placename: dataValue('placename'),
-            SubprojectDesign: dataValue('subproject_design'),
-            SubprojectName: dataValue('subproject_name'),
-            ProjectId: dataValue('project_id'),
-            DeploymentId: dataValue('deployment_id'),
-            Deviceid: dataValue('deviceid'),
-            Today: dataValue('today'),
-            FormDateEnd: dataValue('end'),
-            Start: dataValue('start'),
-            AnswerId: state._id,
-            GeneratedUuid: dataValue('__generatedUuid'),
-            Payload: state.data.body
-          } 
-           return upsert('WCSPROGRAMS_CameraKoboDeployment', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
-          }) 
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->auto-WCSPROGRAMS-CameraKoboDeployment:
-        source_trigger: webhook
-        target_job: auto-WCSPROGRAMS-CameraKoboDeployment
-        condition_type: js_expression
-        condition_label: 'auto/WCSPROGRAMS_CameraKoboDeployment'
-        condition_expression: |
-          state.data.tableId == "WCSPROGRAMS_CameraKoboDeployment"
         enabled: true
   "z[Archive]-Get-Kobo-Forms-Template":
     name: 'z[Archive] Get Kobo Forms Template'
@@ -3444,4 +3324,123 @@ workflows:
         source_trigger: cron
         target_job: asana-test
         condition_type: always
+        enabled: true
+  zauto--WCSPROGRAMS-CameraKoboDeployment:
+    name: zauto  WCSPROGRAMS CameraKoboDeployment
+    jobs:
+      auto-WCSPROGRAMS-CameraKoboDeployment:
+        name: auto WCSPROGRAMS CameraKoboDeployment
+        adaptor: '@openfn/language-mssql@v2.6.11'
+        credential: null
+        body: |
+          fn(state => {
+              const multiSelectIds = [""];
+
+              function generateUuid(body, uuid) {
+                for (const property in body) {
+                  if (Array.isArray(body[property]) && body !== null) {
+                    body['__generatedUuid'] = uuid;
+                    body[property].forEach((thing, i, arr) => {
+                      if (thing !== null) {
+                        thing['__parentUuid'] = uuid;
+                        let newUuid = uuid + '-' + (i + 1);
+                        thing['__generatedUuid'] = newUuid;
+                        for (const property in thing) {
+                          if (Array.isArray(thing[property])) {
+                            generateUuid(thing, newUuid);
+                          }
+                        }
+                      }
+                    });
+                  }
+                }
+              }
+
+              generateUuid(
+                state.data.body,
+                state.data.body._id+'-'+state.data.body._xform_id_string
+              );
+
+              const { body } = state.data;
+              const { _id, _xform_id_string } = body;
+              state.data = { ...state.data, ...body };
+
+              return { ...state, _id, _xform_id_string };
+            }); 
+          fn(async state => {
+           const mapping = {
+            FormName: dataValue('formName'),
+            DatasetId: dataValue('_xform_id_string'),
+            LastUpdated: new Date().toISOString()
+          } 
+           return upsert('WCSPROGRAMS_KoboDataset', "DatasetId", mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+          fn(async state => {
+           const mapping = {
+            Note: dataValue('note'),
+            Battery: dataValue('battery'),
+            WCSPROGRAMS_CameraKoboYesNoID_KeyRetrieved: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('key_retrieved') }})(state),
+            WCSPROGRAMS_CameraKoboYesNoID_MotionTest: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('motion_test') }})(state),
+            WCSPROGRAMS_CameraKoboYesNoID_CameraOn: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('camera_on') }})(state),
+            WCSPROGRAMS_CameraKoboYesNoID_SdInsert: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_insert') }})(state),
+            WCSPROGRAMS_CameraKoboYesNoID_SdUnlock: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_unlock') }})(state),
+            NoKey: dataValue('no_key'),
+            SdCard: dataValue('sd_card'),
+            DetectionDistance: dataValue('detection_distance'),
+            PlotTreatmentDescription: dataValue('plot_treatment_description'),
+            PlotTreatment: dataValue('plot_treatment'),
+            RecordedBy: dataValue('recorded_by'),
+            OrientationOther: dataValue('orientation_other'),
+            Direction: dataValue('direction'),
+            WCSPROGRAMS_CameraKoboAngleID_SensorOrientation: await findValue({uuid: 'wcsprograms_camerakoboangleid', relation: 'WCSPROGRAMS_CameraKoboAngle', where: { WCSPROGRAMS_CameraKoboAngleExtCode: dataValue('sensor_orientation') }})(state),
+            HeightOther: dataValue('height_other'),
+            CmHeight: dataValue('cm_height'),
+            WCSPROGRAMS_CameraKoboHeightID_SensorHeight: await findValue({uuid: 'wcsprograms_camerakoboheightid', relation: 'WCSPROGRAMS_CameraKoboHeight', where: { WCSPROGRAMS_CameraKoboHeightExtCode: dataValue('sensor_height') }})(state),
+            QuietPeriod: dataValue('quiet_period'),
+            FeatureTypeMethodology: dataValue('feature_type_methodology'),
+            WCSPROGRAMS_CameraKoboFeatureID_FeatureType: await findValue({uuid: 'wcsprograms_camerakobofeatureid', relation: 'WCSPROGRAMS_CameraKoboFeature', where: { WCSPROGRAMS_CameraKoboFeatureExtCode: dataValue('feature_type') }})(state),
+            BaitDescription: dataValue('bait_description'),
+            WCSPROGRAMS_CameraKoboBaitID_BaitType: await findValue({uuid: 'wcsprograms_camerakobobaitid', relation: 'WCSPROGRAMS_CameraKoboBait', where: { WCSPROGRAMS_CameraKoboBaitExtCode: dataValue('bait_type') }})(state),
+            WCSPROGRAMS_CameraKoboEventID_EventType: await findValue({uuid: 'wcsprograms_camerakoboeventid', relation: 'WCSPROGRAMS_CameraKoboEvent', where: { WCSPROGRAMS_CameraKoboEventExtCode: dataValue('event_type') }})(state),
+            EventDescription: dataValue('event_description'),
+            EventName: dataValue('event_name'),
+            StartDate: dataValue('start_date'),
+            WCSPROGRAMS_CameraKoboCanopyID_Canopy: await findValue({uuid: 'wcsprograms_camerakobocanopyid', relation: 'WCSPROGRAMS_CameraKoboCanopy', where: { WCSPROGRAMS_CameraKoboCanopyExtCode: dataValue('canopy') }})(state),
+            WCSPROGRAMS_CameraKoboVisibilityID_Visibility: await findValue({uuid: 'wcsprograms_camerakobovisibilityid', relation: 'WCSPROGRAMS_CameraKoboVisibility', where: { WCSPROGRAMS_CameraKoboVisibilityExtCode: dataValue('visibility') }})(state),
+            WCSPROGRAMS_CameraKoboUnderwoodID_Underwood: await findValue({uuid: 'wcsprograms_camerakobounderwoodid', relation: 'WCSPROGRAMS_CameraKoboUnderwood', where: { WCSPROGRAMS_CameraKoboUnderwoodExtCode: dataValue('underwood') }})(state),
+            WCSPROGRAMS_CameraKoboSlopeID_Slope: await findValue({uuid: 'wcsprograms_camerakoboslopeid', relation: 'WCSPROGRAMS_CameraKoboSlope', where: { WCSPROGRAMS_CameraKoboSlopeExtCode: dataValue('slope') }})(state),
+            WCSPROGRAMS_CameraKoboVegID_Veg: await findValue({uuid: 'wcsprograms_camerakobovegid', relation: 'WCSPROGRAMS_CameraKoboVeg', where: { WCSPROGRAMS_CameraKoboVegExtCode: dataValue('veg') }})(state),
+            Latitude: state => state.data.gps.split(' ')[0],
+            Longitude: state => state.data.gps.split(' ')[1],
+            WCSPROGRAMS_CameraKoboCameraID_CameraId: await findValue({uuid: 'wcsprograms_camerakobocameraid', relation: 'WCSPROGRAMS_CameraKoboCamera', where: { WCSPROGRAMS_CameraKoboCameraExtCode: dataValue('camera_id') }})(state),
+            PointTransect: dataValue('point_transect'),
+            TeamLead: dataValue('team_lead'),
+            Placename: dataValue('placename'),
+            SubprojectDesign: dataValue('subproject_design'),
+            SubprojectName: dataValue('subproject_name'),
+            ProjectId: dataValue('project_id'),
+            DeploymentId: dataValue('deployment_id'),
+            Deviceid: dataValue('deviceid'),
+            Today: dataValue('today'),
+            FormDateEnd: dataValue('end'),
+            Start: dataValue('start'),
+            AnswerId: state._id,
+            GeneratedUuid: dataValue('__generatedUuid'),
+            Payload: state.data.body
+          } 
+           return upsert('WCSPROGRAMS_CameraKoboDeployment', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      webhook->auto-WCSPROGRAMS-CameraKoboDeployment:
+        source_trigger: webhook
+        target_job: auto-WCSPROGRAMS-CameraKoboDeployment
+        condition_type: js_expression
+        condition_label: 'auto/WCSPROGRAMS_CameraKoboDeployment'
+        condition_expression: |
+          state.data.tableId == "WCSPROGRAMS_CameraKoboDeployment"
         enabled: true

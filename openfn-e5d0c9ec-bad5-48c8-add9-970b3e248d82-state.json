@@ -5,6 +5,10 @@
   "concurrency": null,
   "inserted_at": "2025-03-10T07:28:21Z",
   "updated_at": "2025-03-30T16:54:01Z",
+  "scheduled_deletion": null,
+  "history_retention_period": 7,
+  "dataclip_retention_period": null,
+  "retention_policy": "retain_all",
   "project_credentials": {
     "rediet@openfn.org-Rediet-Googlesheet": {
       "id": "8f098581-1fba-449e-b7e5-49d7e8edc66b",
@@ -42,11 +46,8 @@
       "owner": "ddetoeuf@wcs.org"
     }
   },
-  "scheduled_deletion": null,
-  "history_retention_period": 7,
-  "dataclip_retention_period": null,
-  "retention_policy": "retain_all",
   "collections": {},
+  "requires_mfa": false,
   "workflows": {
     "z[Archive]-Workflow-asana-test": {
       "id": "ceda6f64-bdbc-4a42-a7c8-408675b317f0",
@@ -325,39 +326,6 @@
         }
       }
     },
-    "auto-WCSPROGRAMS-CameraKoboDeployment": {
-      "id": "cee12916-442b-4de6-8ae6-bbf71864808e",
-      "name": "auto  WCSPROGRAMS CameraKoboDeployment",
-      "inserted_at": "2025-03-20T03:44:07.469321Z",
-      "lock_version": 7,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "01b1fb36-9cea-406f-9e6d-8127af9122e2",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "auto-WCSPROGRAMS-CameraKoboDeployment": {
-          "id": "0a39810b-56fe-4d99-a30a-65ca94309e16",
-          "name": "auto WCSPROGRAMS CameraKoboDeployment",
-          "body": "fn(state => {\n    const multiSelectIds = [\"\"];\n\n    function generateUuid(body, uuid) {\n      for (const property in body) {\n        if (Array.isArray(body[property]) && body !== null) {\n          body['__generatedUuid'] = uuid;\n          body[property].forEach((thing, i, arr) => {\n            if (thing !== null) {\n              thing['__parentUuid'] = uuid;\n              let newUuid = uuid + '-' + (i + 1);\n              thing['__generatedUuid'] = newUuid;\n              for (const property in thing) {\n                if (Array.isArray(thing[property])) {\n                  generateUuid(thing, newUuid);\n                }\n              }\n            }\n          });\n        }\n      }\n    }\n\n    generateUuid(\n      state.data.body,\n      state.data.body._id+'-'+state.data.body._xform_id_string\n    );\n\n    const { body } = state.data;\n    const { _id, _xform_id_string } = body;\n    state.data = { ...state.data, ...body };\n\n    return { ...state, _id, _xform_id_string };\n  }); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('WCSPROGRAMS_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  Note: dataValue('note'),\n  Battery: dataValue('battery'),\n  WCSPROGRAMS_CameraKoboYesNoID_KeyRetrieved: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('key_retrieved') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_MotionTest: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('motion_test') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_CameraOn: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('camera_on') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_SdInsert: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_insert') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_SdUnlock: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_unlock') }})(state),\n  NoKey: dataValue('no_key'),\n  SdCard: dataValue('sd_card'),\n  DetectionDistance: dataValue('detection_distance'),\n  PlotTreatmentDescription: dataValue('plot_treatment_description'),\n  PlotTreatment: dataValue('plot_treatment'),\n  RecordedBy: dataValue('recorded_by'),\n  OrientationOther: dataValue('orientation_other'),\n  Direction: dataValue('direction'),\n  WCSPROGRAMS_CameraKoboAngleID_SensorOrientation: await findValue({uuid: 'wcsprograms_camerakoboangleid', relation: 'WCSPROGRAMS_CameraKoboAngle', where: { WCSPROGRAMS_CameraKoboAngleExtCode: dataValue('sensor_orientation') }})(state),\n  HeightOther: dataValue('height_other'),\n  CmHeight: dataValue('cm_height'),\n  WCSPROGRAMS_CameraKoboHeightID_SensorHeight: await findValue({uuid: 'wcsprograms_camerakoboheightid', relation: 'WCSPROGRAMS_CameraKoboHeight', where: { WCSPROGRAMS_CameraKoboHeightExtCode: dataValue('sensor_height') }})(state),\n  QuietPeriod: dataValue('quiet_period'),\n  FeatureTypeMethodology: dataValue('feature_type_methodology'),\n  WCSPROGRAMS_CameraKoboFeatureID_FeatureType: await findValue({uuid: 'wcsprograms_camerakobofeatureid', relation: 'WCSPROGRAMS_CameraKoboFeature', where: { WCSPROGRAMS_CameraKoboFeatureExtCode: dataValue('feature_type') }})(state),\n  BaitDescription: dataValue('bait_description'),\n  WCSPROGRAMS_CameraKoboBaitID_BaitType: await findValue({uuid: 'wcsprograms_camerakobobaitid', relation: 'WCSPROGRAMS_CameraKoboBait', where: { WCSPROGRAMS_CameraKoboBaitExtCode: dataValue('bait_type') }})(state),\n  WCSPROGRAMS_CameraKoboEventID_EventType: await findValue({uuid: 'wcsprograms_camerakoboeventid', relation: 'WCSPROGRAMS_CameraKoboEvent', where: { WCSPROGRAMS_CameraKoboEventExtCode: dataValue('event_type') }})(state),\n  EventDescription: dataValue('event_description'),\n  EventName: dataValue('event_name'),\n  StartDate: dataValue('start_date'),\n  WCSPROGRAMS_CameraKoboCanopyID_Canopy: await findValue({uuid: 'wcsprograms_camerakobocanopyid', relation: 'WCSPROGRAMS_CameraKoboCanopy', where: { WCSPROGRAMS_CameraKoboCanopyExtCode: dataValue('canopy') }})(state),\n  WCSPROGRAMS_CameraKoboVisibilityID_Visibility: await findValue({uuid: 'wcsprograms_camerakobovisibilityid', relation: 'WCSPROGRAMS_CameraKoboVisibility', where: { WCSPROGRAMS_CameraKoboVisibilityExtCode: dataValue('visibility') }})(state),\n  WCSPROGRAMS_CameraKoboUnderwoodID_Underwood: await findValue({uuid: 'wcsprograms_camerakobounderwoodid', relation: 'WCSPROGRAMS_CameraKoboUnderwood', where: { WCSPROGRAMS_CameraKoboUnderwoodExtCode: dataValue('underwood') }})(state),\n  WCSPROGRAMS_CameraKoboSlopeID_Slope: await findValue({uuid: 'wcsprograms_camerakoboslopeid', relation: 'WCSPROGRAMS_CameraKoboSlope', where: { WCSPROGRAMS_CameraKoboSlopeExtCode: dataValue('slope') }})(state),\n  WCSPROGRAMS_CameraKoboVegID_Veg: await findValue({uuid: 'wcsprograms_camerakobovegid', relation: 'WCSPROGRAMS_CameraKoboVeg', where: { WCSPROGRAMS_CameraKoboVegExtCode: dataValue('veg') }})(state),\n  Latitude: state => state.data.gps.split(' ')[0],\n  Longitude: state => state.data.gps.split(' ')[1],\n  WCSPROGRAMS_CameraKoboCameraID_CameraId: await findValue({uuid: 'wcsprograms_camerakobocameraid', relation: 'WCSPROGRAMS_CameraKoboCamera', where: { WCSPROGRAMS_CameraKoboCameraExtCode: dataValue('camera_id') }})(state),\n  PointTransect: dataValue('point_transect'),\n  TeamLead: dataValue('team_lead'),\n  Placename: dataValue('placename'),\n  SubprojectDesign: dataValue('subproject_design'),\n  SubprojectName: dataValue('subproject_name'),\n  ProjectId: dataValue('project_id'),\n  DeploymentId: dataValue('deployment_id'),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('WCSPROGRAMS_CameraKoboDeployment', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
-          "adaptor": "@openfn/language-mssql@v2.6.11",
-          "project_credential_id": null
-        }
-      },
-      "edges": {
-        "webhook->auto-WCSPROGRAMS-CameraKoboDeployment": {
-          "enabled": true,
-          "id": "89c8c45b-12d2-4a22-86ff-74043de6447d",
-          "target_job_id": "0a39810b-56fe-4d99-a30a-65ca94309e16",
-          "source_trigger_id": "01b1fb36-9cea-406f-9e6d-8127af9122e2",
-          "condition_type": "js_expression",
-          "condition_label": "auto/WCSPROGRAMS_CameraKoboDeployment",
-          "condition_expression": "state.data.tableId == \"WCSPROGRAMS_CameraKoboDeployment\""
-        }
-      }
-    },
     "z[Archive]-Get-Kobo-Forms-Template": {
       "id": "03a44f85-242f-4cdf-b210-27ae88c8c2fc",
       "name": "z[Archive] Get Kobo Forms Template",
@@ -547,17 +515,49 @@
         }
       }
     },
+    "zauto-WCSPROGRAMS-CameraKoboDeployment": {
+      "id": "cee12916-442b-4de6-8ae6-bbf71864808e",
+      "name": "zauto  WCSPROGRAMS CameraKoboDeployment",
+      "inserted_at": "2025-04-07T10:23:17.437467Z",
+      "lock_version": 8,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "01b1fb36-9cea-406f-9e6d-8127af9122e2",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "auto-WCSPROGRAMS-CameraKoboDeployment": {
+          "id": "0a39810b-56fe-4d99-a30a-65ca94309e16",
+          "name": "auto WCSPROGRAMS CameraKoboDeployment",
+          "body": "fn(state => {\n    const multiSelectIds = [\"\"];\n\n    function generateUuid(body, uuid) {\n      for (const property in body) {\n        if (Array.isArray(body[property]) && body !== null) {\n          body['__generatedUuid'] = uuid;\n          body[property].forEach((thing, i, arr) => {\n            if (thing !== null) {\n              thing['__parentUuid'] = uuid;\n              let newUuid = uuid + '-' + (i + 1);\n              thing['__generatedUuid'] = newUuid;\n              for (const property in thing) {\n                if (Array.isArray(thing[property])) {\n                  generateUuid(thing, newUuid);\n                }\n              }\n            }\n          });\n        }\n      }\n    }\n\n    generateUuid(\n      state.data.body,\n      state.data.body._id+'-'+state.data.body._xform_id_string\n    );\n\n    const { body } = state.data;\n    const { _id, _xform_id_string } = body;\n    state.data = { ...state.data, ...body };\n\n    return { ...state, _id, _xform_id_string };\n  }); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('WCSPROGRAMS_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  Note: dataValue('note'),\n  Battery: dataValue('battery'),\n  WCSPROGRAMS_CameraKoboYesNoID_KeyRetrieved: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('key_retrieved') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_MotionTest: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('motion_test') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_CameraOn: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('camera_on') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_SdInsert: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_insert') }})(state),\n  WCSPROGRAMS_CameraKoboYesNoID_SdUnlock: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesNo', where: { WCSPROGRAMS_CameraKoboYesNoExtCode: dataValue('sd_unlock') }})(state),\n  NoKey: dataValue('no_key'),\n  SdCard: dataValue('sd_card'),\n  DetectionDistance: dataValue('detection_distance'),\n  PlotTreatmentDescription: dataValue('plot_treatment_description'),\n  PlotTreatment: dataValue('plot_treatment'),\n  RecordedBy: dataValue('recorded_by'),\n  OrientationOther: dataValue('orientation_other'),\n  Direction: dataValue('direction'),\n  WCSPROGRAMS_CameraKoboAngleID_SensorOrientation: await findValue({uuid: 'wcsprograms_camerakoboangleid', relation: 'WCSPROGRAMS_CameraKoboAngle', where: { WCSPROGRAMS_CameraKoboAngleExtCode: dataValue('sensor_orientation') }})(state),\n  HeightOther: dataValue('height_other'),\n  CmHeight: dataValue('cm_height'),\n  WCSPROGRAMS_CameraKoboHeightID_SensorHeight: await findValue({uuid: 'wcsprograms_camerakoboheightid', relation: 'WCSPROGRAMS_CameraKoboHeight', where: { WCSPROGRAMS_CameraKoboHeightExtCode: dataValue('sensor_height') }})(state),\n  QuietPeriod: dataValue('quiet_period'),\n  FeatureTypeMethodology: dataValue('feature_type_methodology'),\n  WCSPROGRAMS_CameraKoboFeatureID_FeatureType: await findValue({uuid: 'wcsprograms_camerakobofeatureid', relation: 'WCSPROGRAMS_CameraKoboFeature', where: { WCSPROGRAMS_CameraKoboFeatureExtCode: dataValue('feature_type') }})(state),\n  BaitDescription: dataValue('bait_description'),\n  WCSPROGRAMS_CameraKoboBaitID_BaitType: await findValue({uuid: 'wcsprograms_camerakobobaitid', relation: 'WCSPROGRAMS_CameraKoboBait', where: { WCSPROGRAMS_CameraKoboBaitExtCode: dataValue('bait_type') }})(state),\n  WCSPROGRAMS_CameraKoboEventID_EventType: await findValue({uuid: 'wcsprograms_camerakoboeventid', relation: 'WCSPROGRAMS_CameraKoboEvent', where: { WCSPROGRAMS_CameraKoboEventExtCode: dataValue('event_type') }})(state),\n  EventDescription: dataValue('event_description'),\n  EventName: dataValue('event_name'),\n  StartDate: dataValue('start_date'),\n  WCSPROGRAMS_CameraKoboCanopyID_Canopy: await findValue({uuid: 'wcsprograms_camerakobocanopyid', relation: 'WCSPROGRAMS_CameraKoboCanopy', where: { WCSPROGRAMS_CameraKoboCanopyExtCode: dataValue('canopy') }})(state),\n  WCSPROGRAMS_CameraKoboVisibilityID_Visibility: await findValue({uuid: 'wcsprograms_camerakobovisibilityid', relation: 'WCSPROGRAMS_CameraKoboVisibility', where: { WCSPROGRAMS_CameraKoboVisibilityExtCode: dataValue('visibility') }})(state),\n  WCSPROGRAMS_CameraKoboUnderwoodID_Underwood: await findValue({uuid: 'wcsprograms_camerakobounderwoodid', relation: 'WCSPROGRAMS_CameraKoboUnderwood', where: { WCSPROGRAMS_CameraKoboUnderwoodExtCode: dataValue('underwood') }})(state),\n  WCSPROGRAMS_CameraKoboSlopeID_Slope: await findValue({uuid: 'wcsprograms_camerakoboslopeid', relation: 'WCSPROGRAMS_CameraKoboSlope', where: { WCSPROGRAMS_CameraKoboSlopeExtCode: dataValue('slope') }})(state),\n  WCSPROGRAMS_CameraKoboVegID_Veg: await findValue({uuid: 'wcsprograms_camerakobovegid', relation: 'WCSPROGRAMS_CameraKoboVeg', where: { WCSPROGRAMS_CameraKoboVegExtCode: dataValue('veg') }})(state),\n  Latitude: state => state.data.gps.split(' ')[0],\n  Longitude: state => state.data.gps.split(' ')[1],\n  WCSPROGRAMS_CameraKoboCameraID_CameraId: await findValue({uuid: 'wcsprograms_camerakobocameraid', relation: 'WCSPROGRAMS_CameraKoboCamera', where: { WCSPROGRAMS_CameraKoboCameraExtCode: dataValue('camera_id') }})(state),\n  PointTransect: dataValue('point_transect'),\n  TeamLead: dataValue('team_lead'),\n  Placename: dataValue('placename'),\n  SubprojectDesign: dataValue('subproject_design'),\n  SubprojectName: dataValue('subproject_name'),\n  ProjectId: dataValue('project_id'),\n  DeploymentId: dataValue('deployment_id'),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('WCSPROGRAMS_CameraKoboDeployment', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
+          "adaptor": "@openfn/language-mssql@v2.6.11",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "webhook->auto-WCSPROGRAMS-CameraKoboDeployment": {
+          "enabled": true,
+          "id": "89c8c45b-12d2-4a22-86ff-74043de6447d",
+          "target_job_id": "0a39810b-56fe-4d99-a30a-65ca94309e16",
+          "source_trigger_id": "01b1fb36-9cea-406f-9e6d-8127af9122e2",
+          "condition_type": "js_expression",
+          "condition_label": "auto/WCSPROGRAMS_CameraKoboDeployment",
+          "condition_expression": "state.data.tableId == \"WCSPROGRAMS_CameraKoboDeployment\""
+        }
+      }
+    },
     "Get-BNS-FormsList-(Historical)": {
       "id": "d064ad3d-f301-4071-9af3-77ede0dab5f6",
       "name": "Get BNS FormsList (Historical)",
-      "inserted_at": "2025-04-07T10:22:41.050472Z",
-      "lock_version": 32,
+      "inserted_at": "2025-04-07T10:23:42.969687Z",
+      "lock_version": 33,
       "triggers": {
-        "cron": {
+        "webhook": {
           "enabled": false,
           "id": "8c2a16dd-f19c-4e71-8ef6-3f06e9806b43",
-          "type": "cron",
-          "cron_expression": "0 22 1 * *"
+          "type": "webhook"
         }
       },
       "jobs": {
@@ -584,7 +584,7 @@
           "source_job_id": "31883ef6-acc3-4cc3-bfca-647c18897496",
           "condition_type": "on_job_success"
         },
-        "cron->Get-FormsList": {
+        "webhook->Get-FormsList": {
           "enabled": true,
           "id": "c9db77c0-2540-40d5-8709-60899c6b4780",
           "target_job_id": "31883ef6-acc3-4cc3-bfca-647c18897496",
@@ -593,6 +593,5 @@
         }
       }
     }
-  },
-  "requires_mfa": false
+  }
 }
