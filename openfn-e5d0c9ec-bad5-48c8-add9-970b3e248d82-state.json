@@ -5,6 +5,10 @@
   "concurrency": null,
   "inserted_at": "2025-03-10T07:28:21Z",
   "updated_at": "2025-03-30T16:54:01Z",
+  "scheduled_deletion": null,
+  "history_retention_period": 7,
+  "dataclip_retention_period": null,
+  "retention_policy": "retain_all",
   "project_credentials": {
     "rediet@openfn.org-Rediet-Googlesheet": {
       "id": "8f098581-1fba-449e-b7e5-49d7e8edc66b",
@@ -35,13 +39,15 @@
       "id": "950c9c55-fb89-4d8c-ab24-e2ca04a38ba7",
       "name": "WCS Kobo Raw with URL",
       "owner": "rediet@openfn.org"
+    },
+    "ddetoeuf@wcs.org-WCS-Kobo-account": {
+      "id": "89b65a0e-e01d-4760-b021-1778799e9b2e",
+      "name": "WCS Kobo account",
+      "owner": "ddetoeuf@wcs.org"
     }
   },
-  "scheduled_deletion": null,
-  "history_retention_period": 7,
-  "dataclip_retention_period": null,
-  "retention_policy": "retain_all",
   "collections": {},
+  "requires_mfa": false,
   "workflows": {
     "1B.-Get-BNS-FormsList-Historical-sync": {
       "id": "d064ad3d-f301-4071-9af3-77ede0dab5f6",
@@ -463,60 +469,14 @@
         }
       }
     },
-    "1A.-Get-BNS-FormsList-(Ongoing)": {
-      "id": "89b68b57-226e-4696-819f-ab79dc382280",
-      "name": "1A. Get BNS FormsList (Ongoing)",
-      "inserted_at": "2025-04-02T16:31:00.605841Z",
-      "lock_version": 20,
-      "triggers": {
-        "cron": {
-          "enabled": false,
-          "id": "b6c56639-4b31-4812-91fe-f327bbf219c1",
-          "type": "cron",
-          "cron_expression": "0 */3 * * *"
-        }
-      },
-      "jobs": {
-        "BNS-1A-1-Get-FormsList-Ongoing": {
-          "id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
-          "name": "BNS 1A 1 Get FormsList Ongoing",
-          "body": "//== Job to be used for getting a list of \"deployed\" Kobo forms from sheets to auto-sync  ==//\n// This can be run on-demand at any time by clicking \"run\" or modify manualCursor below //\ngetValues(\n   '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',\n  'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item =>\n          item.includes('TRUE') //return forms where auto-sync = TRUE\n          //&& item.includes('bns_survey', 'nrgt_current') \n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData } = state;\n\n  // Set a manual cursor if you'd like to only fetch data after this date...\n  //e.g., '2023-01-01T23:51:45.491+01:00'\n  const manualCursor = '2024-12-06T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z\n  console.log('manualCursor defined?', manualCursor);\n  \n  //...otherwise the job will use this dynamicCursor\n  const dynamicCursor = getTodayISODate(); \n\n  function getTodayISODate() {\n    const today = new Date();\n    today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0\n    return today.toISOString(); // Convert to ISO string\n  }\n  \n  //UNCOMMENT FOR FUTURE\n // const cursorValue = dynamicCursor || manualCursor ; \n  const cursorValue = manualCursor ; \n \n  // const cursorValue = manualCursor ; \n  console.log('Cursor value to use in query:', cursorValue);\n\n  const formsList = sheetsData.map(survey => ({\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name \n  })); \n  \n  console.log('# of deployed forms detected in Sheet:: ', formsList.length);\n  console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); \n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: `&query={\"start\":{\"$gte\":\"${cursorValue}\"}}`,\n    })),\n  };\n  return state;\n});\n",
-          "adaptor": "@openfn/language-googlesheets@2.3.0",
-          "project_credential_id": "8f098581-1fba-449e-b7e5-49d7e8edc66b"
-        },
-        "BNS-1A-Get-BNS-NRGT-Forms-Ongoing": {
-          "id": "6a095185-628e-4e8f-bee4-e39c601c2b30",
-          "name": "BNS 1A Get BNS NRGT Forms Ongoing",
-          "body": "// Here we fetch submissions for all \"Deployed\" forms in GoogleSheet\n// NOTE: See linked job \"[BNS-1A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\n\nfn(state => {\n  state.surveySubmissions = [];\n  state.errors = [];\n  state.globalIndex = 0;\n  console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));\n  return state;\n});\n\neach('$.data.surveys[*]', state => {\n  const { url, query, tag, formId, name, owner } = state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n\n  return get(`${url}${query}`)(state)\n    .then(state => {\n      const results = state.data.results.map(submission => {\n        const uniqueIndex = state.globalIndex++;\n        return {\n          i: uniqueIndex,\n          // Here we append the tags defined above to the Kobo form submission data\n          form: tag,\n          formName: name,\n          formOwner: owner,\n          body: submission,\n        };\n      });\n\n      state.surveySubmissions.push(...results);\n      const count = results.length;\n      console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);\n      //Once we fetch the data, we want to post each individual Kobo survey\n      //back to the OpenFn inbox to run through the jobs =========================\n      return state;\n    })\n    .catch(err => {\n      state.errors.push({\n        formId,\n        message: err.message,\n      });\n      console.log(`Error fetching submissions from  ${formId}::`, err.message);\n      return state;\n    });\n});\n\neach(\n  '$.surveySubmissions[*]',\n  post(\n    \"https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4\",\n    state => {\n      const {i, formName} = state.data;\n      const count = state.surveySubmissions.length;\n      console.log(`Posting ${i} of ${count} from ${formName}`);\n      return { body: state.data };\n    }\n  )\n);  \n",
-          "adaptor": "@openfn/language-http@3.1.11",
-          "project_credential_id": "50000511-d991-4efd-b41e-030dc4d9373a"
-        }
-      },
-      "edges": {
-        "cron->BNS-1A-1-Get-FormsList-Ongoing": {
-          "enabled": true,
-          "id": "c3fd057e-7257-4ba3-924f-7e90170a0d10",
-          "target_job_id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
-          "source_trigger_id": "b6c56639-4b31-4812-91fe-f327bbf219c1",
-          "condition_type": "always"
-        },
-        "BNS-1A-1-Get-FormsList-Ongoing->BNS-1A-Get-BNS-NRGT-Forms-Ongoing": {
-          "enabled": true,
-          "id": "900d23a9-5f96-447d-8d45-444ebff8b56b",
-          "target_job_id": "6a095185-628e-4e8f-bee4-e39c601c2b30",
-          "source_job_id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "2.-Sync-BNS-and-NRGT-Forms": {
       "id": "83fd9ae8-4dc6-4dd9-bc9b-f5940c5d8ef5",
       "name": "2. Sync BNS and NRGT Forms",
-      "inserted_at": "2025-04-02T16:35:03.459154Z",
-      "lock_version": 37,
+      "inserted_at": "2025-04-02T16:35:53.295206Z",
+      "lock_version": 38,
       "triggers": {
         "webhook": {
-          "enabled": true,
+          "enabled": false,
           "id": "b3f86593-f37e-4139-80b8-852b9d3c49f4",
           "type": "webhook"
         }
@@ -619,7 +579,52 @@
           "condition_expression": "state.data.form == \"nrgt_historical\" && state.data.formName == \"NRGT Kahuzi Biega 2019\""
         }
       }
+    },
+    "1A.-Get-BNS-FormsList-(Ongoing)": {
+      "id": "89b68b57-226e-4696-819f-ab79dc382280",
+      "name": "1A. Get BNS FormsList (Ongoing)",
+      "inserted_at": "2025-04-03T14:22:34.831112Z",
+      "lock_version": 21,
+      "triggers": {
+        "cron": {
+          "enabled": false,
+          "id": "b6c56639-4b31-4812-91fe-f327bbf219c1",
+          "type": "cron",
+          "cron_expression": "0 */3 * * *"
+        }
+      },
+      "jobs": {
+        "BNS-1A-1-Get-FormsList-Ongoing": {
+          "id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
+          "name": "BNS 1A 1 Get FormsList Ongoing",
+          "body": "//== Job to be used for getting a list of \"deployed\" Kobo forms from sheets to auto-sync  ==//\n// This can be run on-demand at any time by clicking \"run\" or modify manualCursor below //\ngetValues(\n   '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',\n  'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item =>\n          item.includes('TRUE') //return forms where auto-sync = TRUE\n          //&& item.includes('bns_survey', 'nrgt_current') \n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData } = state;\n\n  // Set a manual cursor if you'd like to only fetch data after this date...\n  //e.g., '2023-01-01T23:51:45.491+01:00'\n  const manualCursor = '2024-12-06T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z\n  console.log('manualCursor defined?', manualCursor);\n  \n  //...otherwise the job will use this dynamicCursor\n  const dynamicCursor = getTodayISODate(); \n\n  function getTodayISODate() {\n    const today = new Date();\n    today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0\n    return today.toISOString(); // Convert to ISO string\n  }\n  \n  //UNCOMMENT FOR FUTURE\n // const cursorValue = dynamicCursor || manualCursor ; \n  const cursorValue = manualCursor ; \n \n  // const cursorValue = manualCursor ; \n  console.log('Cursor value to use in query:', cursorValue);\n\n  const formsList = sheetsData.map(survey => ({\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name \n  })); \n  \n  console.log('# of deployed forms detected in Sheet:: ', formsList.length);\n  console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); \n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: `&query={\"start\":{\"$gte\":\"${cursorValue}\"}}`,\n    })),\n  };\n  return state;\n});\n",
+          "adaptor": "@openfn/language-googlesheets@2.3.0",
+          "project_credential_id": "8f098581-1fba-449e-b7e5-49d7e8edc66b"
+        },
+        "BNS-1A-Get-BNS-NRGT-Forms-Ongoing": {
+          "id": "6a095185-628e-4e8f-bee4-e39c601c2b30",
+          "name": "BNS 1A Get BNS NRGT Forms Ongoing",
+          "body": "// Here we fetch submissions for all \"Deployed\" forms in GoogleSheet\n// NOTE: See linked job \"[BNS-1A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\n\nfn(state => {\n  state.surveySubmissions = [];\n  state.errors = [];\n  state.globalIndex = 0;\n  console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));\n  return state;\n});\n\neach('$.data.surveys[*]', state => {\n  const { url, query, tag, formId, name, owner } = state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n\n  return get(`${url}${query}`)(state)\n    .then(state => {\n      const results = state.data.results.map(submission => {\n        const uniqueIndex = state.globalIndex++;\n        return {\n          i: uniqueIndex,\n          // Here we append the tags defined above to the Kobo form submission data\n          form: tag,\n          formName: name,\n          formOwner: owner,\n          body: submission,\n        };\n      });\n\n      state.surveySubmissions.push(...results);\n      const count = results.length;\n      console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);\n      //Once we fetch the data, we want to post each individual Kobo survey\n      //back to the OpenFn inbox to run through the jobs =========================\n      return state;\n    })\n    .catch(err => {\n      state.errors.push({\n        formId,\n        message: err.message,\n      });\n      console.log(`Error fetching submissions from  ${formId}::`, err.message);\n      return state;\n    });\n});\n\neach(\n  '$.surveySubmissions[*]',\n  post(\n    \"https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4\",\n    state => {\n      const {i, formName} = state.data;\n      const count = state.surveySubmissions.length;\n      console.log(`Posting ${i} of ${count} from ${formName}`);\n      return { body: state.data };\n    }\n  )\n);  \n",
+          "adaptor": "@openfn/language-http@3.1.11",
+          "project_credential_id": "89b65a0e-e01d-4760-b021-1778799e9b2e"
+        }
+      },
+      "edges": {
+        "cron->BNS-1A-1-Get-FormsList-Ongoing": {
+          "enabled": true,
+          "id": "c3fd057e-7257-4ba3-924f-7e90170a0d10",
+          "target_job_id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
+          "source_trigger_id": "b6c56639-4b31-4812-91fe-f327bbf219c1",
+          "condition_type": "always"
+        },
+        "BNS-1A-1-Get-FormsList-Ongoing->BNS-1A-Get-BNS-NRGT-Forms-Ongoing": {
+          "enabled": true,
+          "id": "900d23a9-5f96-447d-8d45-444ebff8b56b",
+          "target_job_id": "6a095185-628e-4e8f-bee4-e39c601c2b30",
+          "source_job_id": "3936a1b5-88ca-4dda-9021-d1f8d4803dd6",
+          "condition_type": "on_job_success"
+        }
+      }
     }
-  },
-  "requires_mfa": false
+  }
 }

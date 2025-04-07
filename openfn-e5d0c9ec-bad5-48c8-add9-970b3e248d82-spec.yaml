@@ -7,6 +7,9 @@ credentials:
   aisha@openfn.org-AK-Asana:
     name: AK Asana
     owner: aisha@openfn.org
+  ddetoeuf@wcs.org-WCS-Kobo-account:
+    name: WCS Kobo account
+    owner: ddetoeuf@wcs.org
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
@@ -107,7 +110,7 @@ workflows:
       BNS-1A-Get-BNS-NRGT-Forms-Ongoing:
         name: BNS 1A Get BNS NRGT Forms Ongoing
         adaptor: '@openfn/language-http@3.1.11'
-        credential: rediet@openfn.org-WCS-Kobo-Raw
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           // Here we fetch submissions for all "Deployed" forms in GoogleSheet
           // NOTE: See linked job "[BNS-1A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
@@ -1141,7 +1144,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: true
+        enabled: false
     edges:
       webhook->Triage-jobs:
         source_trigger: webhook
