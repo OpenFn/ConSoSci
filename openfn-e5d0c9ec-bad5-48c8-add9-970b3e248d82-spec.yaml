@@ -26,163 +26,6 @@ credentials:
     name: WCS MSSQL Test DB
     owner: rediet@openfn.org
 workflows:
-  1B.-Get-BNS-FormsList-Historical-sync:
-    name: 1B. Get BNS FormsList Historical sync
-    jobs:
-      BNS-1B-1-Get-FormsList-Historical-sync:
-        name: BNS-1B 1 Get FormsList Historical sync
-        adaptor: '@openfn/language-googlesheets@2.3.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
-        body: |
-          getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
-            'wcs-bns-DEPLOYED!A:O', //get Deployed forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-          console.log("deployedData", values);
-
-              state.deployedData = values
-                .map(item => mapHeaderToValue(item))
-                .filter(item => item['historical_sync'] === 'TRUE');
-              return state;
-            }
-          );
-          //== Job to be used for getting a list of "archived" Kobo forms from sheets to auto-sync  ==//
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
-            'wcs-bns-ARCHIVED!A:O', //get Deployed forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-          console.log("archivedData", values);
-
-
-              state.archivedData = values
-                .map(item => mapHeaderToValue(item))
-                .filter(item => item['historical_sync'] === 'TRUE');
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { archivedData, deployedData } = state;
-
-            // Set a manual cursor if you'd like to only fetch data after this date...
-            //e.g., '2023-01-01T23:51:45.491+01:00'
-            //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
-            //   console.log('manualCursor defined?', manualCursor);
-            //...otherwise the job will use this dynamicCursor
-            // const dynamicCursor = getTodayISODate();
-
-            //   function getTodayISODate() {
-            //     const today = new Date();
-            //     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-            //     return today.toISOString(); // Convert to ISO string
-            //   }
-
-            //   const cursorValue = manualCursor || dynamicCursor;
-            //   console.log('Cursor value to use in query:', cursorValue);
-            const combinedData = [...deployedData, ...archivedData];
-            const formsList = combinedData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-            }));
-
-            console.log('# of forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: combinedData.map(survey => ({
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
-              })),
-            };
-            return state;
-          });
-
-          //Clear final state
-          fn(state => {
-            delete state.references;
-            delete state.response;
-            return state;
-          });     
-
-      Get-BNS-NRGT-Forms-Historical:
-        name: Get BNS NRGT Forms Historical
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: rediet@openfn.org-WCS-Kobo-Raw
-        body: |
-          // Here we fetch submissions for all "Archived" forms in GoogleSheet
-          // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
-          //**********************************************************//
-          each(dataPath('surveys[*]'), state => {
-            const { url, tag, formId, name, owner } = state.data;
-            const query = "&query={\"start\":{\"$gte\":\"2021-10-29T00:00:00.000Z\"}}"
-            return get(`${url}${query}`, {}, state => {
-              console.log(state.data.result)
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  form: tag,
-                  formName: name,
-                  formOwner: owner,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log('Finding historical forms to resync...');
-              console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                return post("https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state)
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 22 1 * *'
-        enabled: false
-    edges:
-      BNS-1B-1-Get-FormsList-Historical-sync->Get-BNS-NRGT-Forms-Historical:
-        source_job: BNS-1B-1-Get-FormsList-Historical-sync
-        target_job: Get-BNS-NRGT-Forms-Historical
-        condition_type: on_job_success
-        enabled: true
-      cron->BNS-1B-1-Get-FormsList-Historical-sync:
-        source_trigger: cron
-        target_job: BNS-1B-1-Get-FormsList-Historical-sync
-        condition_type: always
-        enabled: true
   2.-Sync-BNS-and-NRGT-Forms:
     name: 2. Sync BNS and NRGT Forms
     jobs:
@@ -2984,6 +2827,163 @@ workflows:
         source_job: A2-Process-Forms-AUTO
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
+        enabled: true
+  "Get-BNS-FormsList-(Historical)":
+    name: 'Get BNS FormsList (Historical)'
+    jobs:
+      Get-FormsList:
+        name: Get FormsList
+        adaptor: '@openfn/language-googlesheets@2.3.0'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          getValues(
+            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+            'wcs-bns-DEPLOYED!A:O', //get Deployed forms list from Sheet
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+          console.log("deployedData", values);
+
+              state.deployedData = values
+                .map(item => mapHeaderToValue(item))
+                .filter(item => item['historical_sync'] === 'TRUE');
+              return state;
+            }
+          );
+          //== Job to be used for getting a list of "archived" Kobo forms from sheets to auto-sync  ==//
+          // This can be run on-demand at any time by clicking "run" //
+          getValues(
+            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+            'wcs-bns-ARCHIVED!A:O', //get Deployed forms list from Sheet
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+          console.log("archivedData", values);
+
+
+              state.archivedData = values
+                .map(item => mapHeaderToValue(item))
+                .filter(item => item['historical_sync'] === 'TRUE');
+
+              return state;
+            }
+          );
+
+          fn(state => {
+            const { archivedData, deployedData } = state;
+
+            // Set a manual cursor if you'd like to only fetch data after this date...
+            //e.g., '2023-01-01T23:51:45.491+01:00'
+            //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
+            //   console.log('manualCursor defined?', manualCursor);
+            //...otherwise the job will use this dynamicCursor
+            // const dynamicCursor = getTodayISODate();
+
+            //   function getTodayISODate() {
+            //     const today = new Date();
+            //     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+            //     return today.toISOString(); // Convert to ISO string
+            //   }
+
+            //   const cursorValue = manualCursor || dynamicCursor;
+            //   console.log('Cursor value to use in query:', cursorValue);
+            const combinedData = [...deployedData, ...archivedData];
+            const formsList = combinedData.map(survey => ({
+              formId: survey.uid,
+              tag: survey.tag,
+              name: survey.name,
+            }));
+
+            console.log('# of forms detected in Sheet:: ', formsList.length);
+            console.log(
+              'List of forms to re-sync:: ',
+              JSON.stringify(formsList, null, 2)
+            );
+
+            state.data = {
+              surveys: combinedData.map(survey => ({
+                formId: survey.uid,
+                tag: survey.tag,
+                name: survey.name,
+                owner: survey.owner,
+                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
+                //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
+              })),
+            };
+            return state;
+          });
+
+          //Clear final state
+          fn(state => {
+            delete state.references;
+            delete state.response;
+            return state;
+          });     
+
+      Get-Forms:
+        name: Get Forms
+        adaptor: '@openfn/language-http@3.1.11'
+        credential: rediet@openfn.org-WCS-Kobo-Raw
+        body: |
+          // Here we fetch submissions for all "Archived" forms in GoogleSheet
+          // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
+          //**********************************************************//
+          each(dataPath('surveys[*]'), state => {
+            const { url, tag, formId, name, owner } = state.data;
+            const query = "&query={\"start\":{\"$gte\":\"2021-10-29T00:00:00.000Z\"}}"
+            return get(`${url}${query}`, {}, state => {
+              console.log(state.data.result)
+              state.data.submissions = state.data.results.map((submission, i) => {
+                return {
+                  i,
+                  // Here we append the tags defined above to the Kobo form submission data
+                  form: tag,
+                  formName: name,
+                  formOwner: owner,
+                  body: submission,
+                };
+              });
+              const count = state.data.submissions.length;
+              console.log('Finding historical forms to resync...');
+              console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+              //Once we fetch the data, we want to post each individual Kobo survey
+              //back to the OpenFn inbox to run through the jobs =========================
+              return each(dataPath('submissions[*]'), state => {
+                console.log(`Posting ${state.data.i + 1} of ${count}...`);
+                return post("https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4", {
+                  body: state => state.data,
+                })(state);
+              })(state);
+            })(state)
+          });
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 22 1 * *'
+        enabled: false
+    edges:
+      Get-FormsList->Get-Forms:
+        source_job: Get-FormsList
+        target_job: Get-Forms
+        condition_type: on_job_success
+        enabled: true
+      cron->Get-FormsList:
+        source_trigger: cron
+        target_job: Get-FormsList
+        condition_type: always
         enabled: true
   "Get-BNS-FormsList-(Ongoing)":
     name: 'Get BNS FormsList (Ongoing)'
