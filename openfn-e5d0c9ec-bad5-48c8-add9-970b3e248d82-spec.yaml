@@ -7,6 +7,9 @@ credentials:
   aisha@openfn.org-AK-Asana:
     name: AK Asana
     owner: aisha@openfn.org
+  aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances:
+    name: Asana API Token - AK WCS Grievances
+    owner: aleksa@openfn.org
   ddetoeuf@wcs.org-WCS-Kobo-account:
     name: WCS Kobo account
     owner: ddetoeuf@wcs.org
@@ -1892,7 +1895,7 @@ workflows:
       FS4---Notify-in-Asana:
         name: FS4 - Notify in Asana
         adaptor: '@openfn/language-asana@latest'
-        credential: aisha@openfn.org-AK-Asana
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
           //This job will add a task to Asana if a new Kobo form was shared
           fn(state => {
@@ -2089,7 +2092,7 @@ workflows:
       Get-Forms:
         name: Get Forms
         adaptor: '@openfn/language-http@3.1.11'
-        credential: rediet@openfn.org-WCS-Kobo-Raw
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           // Here we fetch submissions for all "Archived" forms in GoogleSheet
           // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
