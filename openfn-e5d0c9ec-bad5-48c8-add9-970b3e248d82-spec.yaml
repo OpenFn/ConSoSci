@@ -13,6 +13,9 @@ credentials:
   ddetoeuf@wcs.org-WCS-Kobo-account:
     name: WCS Kobo account
     owner: ddetoeuf@wcs.org
+  rediet@openfn.org-Invalid-WCS-MSSQL-Test-DB:
+    name: Invalid WCS MSSQL Test DB
+    owner: rediet@openfn.org
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
@@ -1712,8 +1715,8 @@ workflows:
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
         enabled: true
-  FS1---Get-Forms:
-    name: FS1 - Get Forms
+  Form-Sharing---Get-Forms:
+    name: Form Sharing - Get Forms
     jobs:
       FS1---Get-Forms:
         name: FS1 - Get Forms
@@ -1894,7 +1897,7 @@ workflows:
 
       FS4---Notify-in-Asana:
         name: FS4 - Notify in Asana
-        adaptor: '@openfn/language-asana@latest'
+        adaptor: '@openfn/language-asana@4.0.9'
         credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
           //This job will add a task to Asana if a new Kobo form was shared
@@ -1960,13 +1963,12 @@ workflows:
           );
 
     triggers:
-      cron:
-        type: cron
-        cron_expression: '0 2 * * *'
+      webhook:
+        type: webhook
         enabled: false
     edges:
-      cron->FS1---Get-Forms:
-        source_trigger: cron
+      webhook->FS1---Get-Forms:
+        source_trigger: webhook
         target_job: FS1---Get-Forms
         condition_type: always
         enabled: true
@@ -1994,7 +1996,7 @@ workflows:
         credential: rediet@openfn.org-Rediet-Googlesheet
         body: |
           getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY2',
             'wcs-bns-DEPLOYED!A:O', //get Deployed forms list from Sheet
             state => {
               const [headers, ...values] = state.data.values;
@@ -2016,7 +2018,7 @@ workflows:
           //== Job to be used for getting a list of "archived" Kobo forms from sheets to auto-sync  ==//
           // This can be run on-demand at any time by clicking "run" //
           getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY2',
             'wcs-bns-ARCHIVED!A:O', //get Deployed forms list from Sheet
             state => {
               const [headers, ...values] = state.data.values;
@@ -2308,8 +2310,8 @@ workflows:
     jobs:
       Triage-jobs:
         name: Triage jobs
-        adaptor: '@openfn/language-common@latest'
-        credential: null
+        adaptor: '@openfn/language-common@2.3.1'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
         body: |
           // Check out the Job Writing Guide for help getting started:
           // https://docs.openfn.org/documentation/jobs/job-writing-guide
@@ -3102,7 +3104,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: false
+        enabled: true
     edges:
       webhook->Triage-jobs:
         source_trigger: webhook
@@ -3123,7 +3125,7 @@ workflows:
         condition_type: js_expression
         condition_label: BNS Survey
         condition_expression: |
-          state.data.body.form == "bns_survey" && state.data.body.body.survey_type != "practice"
+          state.data.form == "bns_survey"
         enabled: true
       Triage-jobs->BNS-2C-NRGT---Historical-Version:
         source_job: Triage-jobs
