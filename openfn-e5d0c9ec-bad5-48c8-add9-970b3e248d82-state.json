@@ -4,7 +4,7 @@
   "description": "Workflows for WCS & Partners in Social Sciences\n",
   "concurrency": null,
   "inserted_at": "2025-03-10T07:28:21Z",
-  "updated_at": "2025-04-14T12:30:43Z",
+  "updated_at": "2025-04-15T12:10:45Z",
   "project_credentials": {
     "rediet@openfn.org-Rediet-Googlesheet": {
       "id": "8f098581-1fba-449e-b7e5-49d7e8edc66b",
@@ -56,7 +56,12 @@
   "history_retention_period": 7,
   "dataclip_retention_period": null,
   "retention_policy": "retain_all",
-  "collections": {},
+  "collections": {
+    "mydata": {
+      "id": "18cc32b8-cb96-40d9-83cb-1d940b63b725",
+      "name": "mydata"
+    }
+  },
   "workflows": {
     "x_A2-Process-Forms-AUTO": {
       "id": "32090694-7fd3-4131-b68c-f2372fa9623b",

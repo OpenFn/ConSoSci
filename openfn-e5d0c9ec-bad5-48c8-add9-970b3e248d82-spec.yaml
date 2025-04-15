@@ -2,7 +2,9 @@ name: social-sciences
 description: |
   Workflows for WCS & Partners in Social Sciences
 
-collections: null
+collections:
+  mydata:
+    name: mydata
 credentials:
   aisha@openfn.org-AK-Asana:
     name: AK Asana
