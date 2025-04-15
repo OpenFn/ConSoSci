@@ -32,12 +32,1449 @@ credentials:
     name: WCS MSSQL Test DB
     owner: rediet@openfn.org
 workflows:
-  A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
-    name: A1 Generate Jobs DB Tables and Dictionary AUTO
+  "1.1-Get-BNS-FormsList-(Ongoing)":
+    name: '1.1 Get BNS FormsList (Ongoing)'
+    jobs:
+      Get-Forms-List:
+        name: Get Forms List
+        adaptor: '@openfn/language-googlesheets@2.3.0'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
+          // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
+          getValues(
+             '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+            'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+
+              state.sheetsData = values
+                .filter(
+                  item =>
+                    item.includes('TRUE') //return forms where auto-sync = TRUE
+                    //&& item.includes('bns_survey', 'nrgt_current') 
+                )
+                .map(item => mapHeaderToValue(item));
+
+              return state;
+            }
+          );
+
+          fn(state => {
+            const { sheetsData } = state;
+
+            // Set a manual cursor if you'd like to only fetch data after this date...
+            //e.g., '2023-01-01T23:51:45.491+01:00'
+            const manualCursor = '2024-12-06T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
+            console.log('manualCursor defined?', manualCursor);
+            
+            //...otherwise the job will use this dynamicCursor
+            const dynamicCursor = getTodayISODate(); 
+
+            function getTodayISODate() {
+              const today = new Date();
+              today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+              return today.toISOString(); // Convert to ISO string
+            }
+            
+            //UNCOMMENT FOR FUTURE
+           // const cursorValue = dynamicCursor || manualCursor ; 
+            const cursorValue = manualCursor ; 
+           
+            // const cursorValue = manualCursor ; 
+            console.log('Cursor value to use in query:', cursorValue);
+
+            const formsList = sheetsData.map(survey => ({
+                formId: survey.uid,
+                tag: survey.tag,
+                name: survey.name 
+            })); 
+            
+            console.log('# of deployed forms detected in Sheet:: ', formsList.length);
+            console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); 
+
+            state.data = {
+              surveys: sheetsData.map(survey => ({
+                formId: survey.uid,
+                tag: survey.tag,
+                name: survey.name,
+                owner: survey.owner,
+                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
+                query: `&query={"start":{"$gte":"${cursorValue}"}}`,
+              })),
+            };
+            return state;
+          });
+
+      Get-BNS-NRGT-Forms:
+        name: Get BNS NRGT Forms
+        adaptor: '@openfn/language-http@3.1.11'
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
+        body: |
+          // Here we fetch submissions for all "Deployed" forms in GoogleSheet
+          // NOTE: See linked job "[BNS-1A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
+          //**********************************************************//
+
+          fn(state => {
+            state.surveySubmissions = [];
+            state.errors = [];
+            state.globalIndex = 0;
+            console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));
+            return state;
+          });
+
+          each('$.data.surveys[*]', state => {
+            const { url, query, tag, formId, name, owner } = state.data;
+            console.log('Sending GET to ::', `${url}${query}`);
+
+            return get(`${url}${query}`)(state)
+              .then(state => {
+                const results = state.data.results.map(submission => {
+                  const uniqueIndex = state.globalIndex++;
+                  return {
+                    i: uniqueIndex,
+                    // Here we append the tags defined above to the Kobo form submission data
+                    form: tag,
+                    formName: name,
+                    formOwner: owner,
+                    body: submission,
+                  };
+                });
+
+                state.surveySubmissions.push(...results);
+                const count = results.length;
+                console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+                //Once we fetch the data, we want to post each individual Kobo survey
+                //back to the OpenFn inbox to run through the jobs =========================
+                return state;
+              })
+              .catch(err => {
+                state.errors.push({
+                  formId,
+                  message: err.message,
+                });
+                console.log(`Error fetching submissions from  ${formId}::`, err.message);
+                return state;
+              });
+          });
+
+          each(
+            '$.surveySubmissions[*]',
+            post(
+              "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",
+              state => {
+                const {i, formName} = state.data;
+                const count = state.surveySubmissions.length;
+                console.log(`Posting ${i} of ${count} from ${formName}`);
+                return { body: state.data };
+              }
+            )
+          );  
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 */3 * * *'
+        enabled: false
+    edges:
+      cron->Get-Forms-List:
+        source_trigger: cron
+        target_job: Get-Forms-List
+        condition_type: always
+        enabled: true
+      Get-Forms-List->Get-BNS-NRGT-Forms:
+        source_job: Get-Forms-List
+        target_job: Get-BNS-NRGT-Forms
+        condition_type: on_job_success
+        enabled: true
+  "1.2-Get-BNS-FormsList-(Historical)":
+    name: '1.2 Get BNS FormsList (Historical)'
+    jobs:
+      Get-FormsList:
+        name: Get FormsList
+        adaptor: '@openfn/language-googlesheets@2.3.0'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'wcs-bns-DEPLOYED!A:O', //get Deployed forms list from Sheet
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+          console.log("deployedData", values);
+
+              state.deployedData = values
+                .map(item => mapHeaderToValue(item))
+                .filter(item => item['historical_sync'] === 'TRUE');
+              return state;
+            }
+          );
+          //== Job to be used for getting a list of "archived" Kobo forms from sheets to auto-sync  ==//
+          // This can be run on-demand at any time by clicking "run" //
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'wcs-bns-ARCHIVED!A:O', //get Deployed forms list from Sheet
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+          console.log("archivedData", values);
+
+
+              state.archivedData = values
+                .map(item => mapHeaderToValue(item))
+                .filter(item => item['historical_sync'] === 'TRUE');
+
+              return state;
+            }
+          );
+
+          fn(state => {
+            const { archivedData, deployedData } = state;
+
+            // Set a manual cursor if you'd like to only fetch data after this date...
+            //e.g., '2023-01-01T23:51:45.491+01:00'
+            //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
+            //   console.log('manualCursor defined?', manualCursor);
+            //...otherwise the job will use this dynamicCursor
+            // const dynamicCursor = getTodayISODate();
+
+            //   function getTodayISODate() {
+            //     const today = new Date();
+            //     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+            //     return today.toISOString(); // Convert to ISO string
+            //   }
+
+            //   const cursorValue = manualCursor || dynamicCursor;
+            //   console.log('Cursor value to use in query:', cursorValue);
+            const combinedData = [...deployedData, ...archivedData];
+            const formsList = combinedData.map(survey => ({
+              formId: survey.uid,
+              tag: survey.tag,
+              name: survey.name,
+            }));
+
+            console.log('# of forms detected in Sheet:: ', formsList.length);
+            console.log(
+              'List of forms to re-sync:: ',
+              JSON.stringify(formsList, null, 2)
+            );
+
+            state.data = {
+              surveys: combinedData.map(survey => ({
+                formId: survey.uid,
+                tag: survey.tag,
+                name: survey.name,
+                owner: survey.owner,
+                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
+                //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
+              })),
+            };
+            return state;
+          });
+
+          //Clear final state
+          fn(state => {
+            delete state.references;
+            delete state.response;
+            return state;
+          });     
+
+      Get-Forms:
+        name: Get Forms
+        adaptor: '@openfn/language-http@3.1.11'
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
+        body: |
+          // Here we fetch submissions for all "Archived" forms in GoogleSheet
+          // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
+          //**********************************************************//
+          each(dataPath('surveys[*]'), state => {
+            const { url, tag, formId, name, owner } = state.data;
+            const query = "&query={\"start\":{\"$gte\":\"2021-10-29T00:00:00.000Z\"}}"
+            return get(`${url}${query}`, {}, state => {
+              console.log(state.data.result)
+              state.data.submissions = state.data.results.map((submission, i) => {
+                return {
+                  i,
+                  // Here we append the tags defined above to the Kobo form submission data
+                  form: tag,
+                  formName: name,
+                  formOwner: owner,
+                  body: submission,
+                };
+              });
+              const count = state.data.submissions.length;
+              console.log('Finding historical forms to resync...');
+              console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
+              //Once we fetch the data, we want to post each individual Kobo survey
+              //back to the OpenFn inbox to run through the jobs =========================
+              return each(dataPath('submissions[*]'), state => {
+                console.log(`Posting ${state.data.i + 1} of ${count}...`);
+                return post("https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4", {
+                  body: state => state.data,
+                })(state);
+              })(state);
+            })(state)
+          });
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      Get-FormsList->Get-Forms:
+        source_job: Get-FormsList
+        target_job: Get-Forms
+        condition_type: on_job_success
+        enabled: true
+      webhook->Get-FormsList:
+        source_trigger: webhook
+        target_job: Get-FormsList
+        condition_type: always
+        enabled: true
+  2.-Sync-BNS-and-NRGT-Forms:
+    name: 2. Sync BNS and NRGT Forms
+    jobs:
+      Triage-jobs:
+        name: Triage jobs
+        adaptor: '@openfn/language-common@2.3.1'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
+
+      BNS-2A-BNS-Price:
+        name: BNS-2A BNS Price
+        adaptor: '@openfn/language-mssql@3.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          // NOTE: This data cleaning operation returns state, modified as needed.
+          fn(state => {
+            //try {
+            const { body, formName, instance, formOwner } = state.data;
+            const { _submission_time, _id, _xform_id_string } = body;
+            let cleanedSubmission = {};
+
+            for (const key in body) {
+              switch (body[key]) {
+                case 'yes':
+                  cleanedSubmission[key] = 1;
+                  break;
+
+                case 'no':
+                  cleanedSubmission[key] = 0;
+                  break;
+
+                default:
+                  cleanedSubmission[key] = body[key];
+                  break;
+              }
+            }
+
+            cleanedSubmission.instance = instance;
+
+            const landscapeMap = {
+              Ndoki: 'ndoki',
+              'Lac Télé': 'lac_tele',
+              Ituri: 'ituri',
+              Kahuzi: 'kahuzi',
+              MTKB: 'kahuzi',
+              'Cross River': 'crossriver',
+              Soariake: 'soariake',
+              Ankarea: 'ankarea',
+              ABS: 'baie_antongil',
+              'Nosy Be': 'tandavandriva',
+              Makira: 'makira',
+              'BNS Ndoki Prix 2020': 'ndoki',
+              PNMD: 'pnmd',
+
+              //formName: landscapeValue,
+              //other values
+            };
+
+            return {
+              ...state,
+              landscapeMap,
+              formName,
+              formOwner,
+              data: {
+                ...cleanedSubmission,
+                durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
+                datasetId: `${formName}-${_xform_id_string}`,
+                end: cleanedSubmission.end.slice(0, 10),
+              },
+            };
+            /* } catch (error) {
+              state.connection.close();
+              throw error;
+            }*/
+          });
+
+          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
+          // Maybe check result of previous op, then only delete if it was an update.
+          sql({
+            query: state =>
+              `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
+          });
+
+          fn(state => {
+            const { good } = state.data;
+            if (!good || good.length === 0) {
+              return state;
+            }
+
+            const data = good.map((g, i) => ({
+              // Id: state.data._id,
+              Id: i + 1,
+              AnswerId: state.data._id,
+              DatasetUuidId: state.data.datasetId,
+              Surveyor: state.data.surveyor,
+              Village: state.data.village,
+              Gs: g[`good/name`],
+              Price: g[`good/price`],
+              LastUpdate: new Date().toISOString(),
+              //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value
+              Landscape: () => {
+                for (let val in state.landscapeMap)
+                  if (state.formName.includes(val)) return state.landscapeMap[val];
+                return '';
+              },
+              SurveyDate: state.data.today,
+            }));
+            // console.log('data', data);
+            return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);
+          });
+
+          fn(state => {
+            console.log('DatasetName ::', state.formName);
+            console.log('DatasetOwner ::', state.formOwner);
+            console.log('form submission id ::', state.data['_id']);
+            console.log('DatasetUuidId ::', state.data['datasetId']);
+            //console.log('data to upload ::', state.data);
+            return state;
+          });
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            //AnswerId: dataValue('durableUUID'),
+            DatasetName: state => state.formName,
+            DatasetOwner: state => state.formOwner,
+            Landscape: dataValue('landscape'),
+            DatasetUuidId: dataValue('datasetId'),
+            DatasetYear: new Date().getFullYear(),
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+            Citation: dataValue('instance'),
+          });
+
+          fn(state => {
+            console.log('data uploaded ::', state.data);
+            return state;
+          });
+
+      BNS-2B-BNS-Survey:
+        name: BNS 2B BNS Survey
+        adaptor: '@openfn/language-mssql@2.6.1'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          // NOTE: This data cleaning operation returns state, modified as needed.
+
+          fn(state => {
+            try {
+              const { body, formName, formOwner, instance } = state.data;
+              const { _submission_time, _id, _xform_id_string } = body;
+
+              let cleanedSubmission = {};
+
+              for (const key in body) {
+                switch (body[key]) {
+                  case 'yes':
+                    cleanedSubmission[key] = 1;
+                    break;
+
+                  case 'no':
+                    cleanedSubmission[key] = 0;
+                    break;
+
+                  default:
+                    cleanedSubmission[key] = body[key];
+                    break;
+                }
+              }
+
+              // NOTE: This assumes all device-collected geo data follows specific lat, log data format
+              if (cleanedSubmission.gps_method === 'device') {
+                cleanedSubmission['gps/lat'] =
+                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
+                cleanedSubmission['gps/long'] =
+                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
+              } else if (
+                Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
+                Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
+              ) {
+                console.log(
+                  `WARNING: Discarding invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`
+                );
+                delete cleanedSubmission['gps/lat'];
+                delete cleanedSubmission['gps/long'];
+              }
+
+              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
+              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
+              cleanedSubmission.instance = instance;
+              state.data = cleanedSubmission;
+
+              state.landscapeMap = {
+                tns: 'ndoki',
+                ltlt: 'lac_tele',
+                mamabay: 'makira',
+                mtkb: 'kahuzi',
+              };
+
+              // Cleaning datasetId if formName is 'BNS Cross River 2017-2020'==============
+              if (formName.replace(/\s/g, '') === 'BNSCrossRiver2017-2020') {
+                state.data.datasetId = `${state.data.datasetId}${
+                  body.today.split('-')[0]
+                }`;
+              }
+
+              // ===========================================================================
+
+              // ===========================================================================
+              //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
+              //  'NR' and 'BNS matrix' questions should follow the naming conventions below
+              //  See Docs to learn more about the assumptions made here.
+              // ===========================================================================
+              // If a partner creates a form with slightly different field names, this
+              // section will need to be updated by WCS. If future forms are being designed,
+              // we'd recommend using a repeat group that allows the partner to select the
+              // type of 'nr' or 'matrix' they're reporting on. The current approach treats
+              // the form field names in Kobo _AS_ data themselves.
+              state.nr = Object.keys(state.data)
+                .filter(key => key.startsWith('nr/'))
+                .map(key => ({
+                  DatasetUuidId: state.data.datasetId,
+                  AnswerId: state.data._id,
+                  Id: state.data._id,
+                  LastUpdate: new Date().toISOString(),
+                  Nr: key.substring(3),
+                  NrCollect: state.data[key],
+                }));
+
+              const matrix = Object.keys(state.data)
+                .filter(key => key.includes('bns_matrix_'))
+                .map(key => {
+                  const item = key.substring(
+                    key.lastIndexOf('bns_matrix_') + 'bns_matrix_'.length,
+                    key.lastIndexOf('_')
+                  );
+                  return {
+                    Dataset_Id: state.data.datasetId, //DatasetUuidId
+                    DatasetUuidId: state.data.datasetId,
+                    //Id: state.data._id,
+                    AnswerId: state.data._id,
+                    gs: item.replace(/_/g, ' '),
+                    have:
+                      state.data[
+                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
+                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
+                    necessary:
+                      state.data[
+                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
+                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
+                    quantity:
+                      state.data[
+                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
+                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
+                  };
+                });
+
+              state.matrix = matrix.filter(
+                (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
+              );
+              // ===========================================================================
+              // console.log(
+              //   'The bns_matrix',
+              //   JSON.stringify(state.matrix, null, 2),
+              //   `contains ${state.matrix.length} items.`
+              // );
+              console.log('instance: ', instance);
+              return {...state, formOwner, formName};
+            } catch (error) {
+              state.connection.close();
+              throw error;
+            }
+          });
+
+          upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
+            SubmissionUuid: dataValue('_uuid'),
+            AnswerId: dataValue('_id'),
+            LastUpdate: new Date().toISOString(),
+            SurveyDate: state => {
+              const date = state.data.today || state.data._submission_time;
+              const year = Number(date.trim().split('-')[0]);
+              const formName = dataValue('formName');
+              if (year <= 2010) return Number(formName.trim().split(' ').at(-1));
+              return year;
+            },
+            Landscape: state => {
+              var landscape = dataValue('landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            Surveyor: dataValue('surveyor'),
+            Participant: dataValue('participant'),
+            Arrival: dataValue('arrival'),
+            District: dataValue('district'),
+            Village: dataValue('village'),
+            HhId: dataValue('hh_id'),
+            BenefProject: dataValue('benef_project'),
+            HhTypeControl: state => (state.data.hh_type === 'control' ? 1 : 0),
+            HhTypeOrgBenef: state => (state.data.hh_type === 'wcs_benef' ? 1 : 0),
+            HhTypeOtherBenef: state => (state.data.hh_type === 'other_benef' ? 1 : 0),
+            ExplainProject: dataValue('explain_project'),
+            KnowPa: dataValue('know_PA'),
+            BenefPa: dataValue('benef_PA'),
+            ExplainBenefPa: dataValue('explain_benef_PA'),
+            Livelihood1: dataValue('livelihoods/l1'),
+            Livelihood2: dataValue('livelihoods/l2'),
+            Livelihood3: dataValue('livelihoods/l3'),
+            Livelihood4: dataValue('livelihoods/l4'),
+            BnsPlus: dataValue('bns_plus'),
+          });
+
+          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
+          // Maybe check result of previous op, then only delete if it was an update.
+          sql({
+            query: state =>
+              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = '${state.data._id}'`,
+          });
+
+          insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
+            //insert hh head first
+            DatasetUuidId: dataValue('datasetId'),
+            Id: '0',
+            //Id: state => state.data.hh_members.length,
+            AnswerId: dataValue('_id'),
+            Head: dataValue('gender_head') ? '1' : '0',
+            Gender: dataValue('gender_head'),
+            Ethnicity: dataValue('ethnicity_head'),
+            Birth: state => {
+              var birth = dataValue('birth_head')(state);
+              return birth ? parseInt(birth.substring(0, 4)) : null;
+            },
+            LastUpdate: new Date().toISOString(),
+          });
+
+          fn(state => {
+            if (state.data.hh_members) {
+              return insertMany(
+                'WCSPROGRAMS_KoboBnsAnswerhhmembers',
+                (
+                  state //then insert other members
+                ) =>
+                  state.data.hh_members.map((member, i) => ({
+                    DatasetUuidId: state.data.datasetId,
+                    // Id: state.data._id,
+                    Id: i + 1,
+                    AnswerId: state.data._id,
+                    Head: '0',
+                    Gender:
+                      member[`hh_members/gender`] || member[`hh_members/gender_001`],
+                    Ethnicity: member[`hh_members/ethnicity`],
+                    Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
+                    LastUpdate: new Date().toISOString(),
+                  }))
+              )(state);
+            }
+
+            console.log('No household members found.');
+            return state;
+          });
+
+          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
+          // Maybe check result of previous op, then only delete if it was an update.
+          sql({
+            query: state =>
+              `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'`,
+          });
+
+          fn(state => {
+            if (state.nr && state.nr.length > 0) {
+              return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
+            }
+
+            console.log('No natural resource found.');
+            return state;
+          });
+
+          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
+          // Maybe check result of previous op, then only delete if it was an update.
+          //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
+          sql({
+            query: state =>
+              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where AnswerId = '${state.data._id}'`,
+          });
+
+          fn(state => {
+            if (state.matrix && state.matrix.length > 0) {
+              return insertMany(
+                'WCSPROGRAMS_KoboBnsAnswerGS',
+                state => state.matrix
+              )(state);
+            }
+
+            console.log('No matrix found.');
+            return state;
+          });
+
+          upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'), //Q: Add new column
+            AnswerId: dataValue('_id'),
+            Id: dataValue('_id'),
+            Geom: dataValue('_geolocation'),
+            Lat: state => {
+              return dataValue('gps/lat')(state)
+                ? dataValue('gps/lat')(state)
+                : state.data._geolocation[0] || undefined;
+            },
+            Long: state => {
+              return dataValue('gps/long')(state)
+                ? dataValue('gps/long')(state)
+                : state.data._geolocation[1] || undefined;
+            },
+            LastUpdate: new Date().toISOString(),
+          });
+
+          fn(state => {
+            console.log('DatasetName ::', state.formName);
+            console.log('DatasetOwner ::', state.formOwner);
+            console.log('form submission id ::', state.data['_id']);
+            console.log('DatasetUuidId ::', state.data['datasetId']);
+            //console.log('data to upload ::', state.data);
+            return state;
+          })
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            //renamed from DatasetUuid
+            //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
+            DatasetName: state => state.formName,
+            DatasetOwner: state => state.formOwner,
+            Landscape: dataValue('landscape'),
+            DatasetUuidId: dataValue('datasetId'),
+            Citation: dataValue('instance'),
+            DatasetYear: state => {
+              const date = state.data.today || state.data._submission_time;
+              const year = Number(date.trim().split('-')[0]);
+              const formName = dataValue('formName')(state);
+              const yearToReturn = year;
+              if (year <= 2010) yearToReturn = Number(formName.trim().split(' ').at(-1));
+              console.log(yearToReturn);
+              return yearToReturn;
+              // const formName = dataValue('formName')(state);
+              // if (formName === 'BNS Cross River 2017-2020') {
+              return state.data.body.today.split('-')[0];
+              // }
+              //const year = dataValue('body.today');
+              //console.log(year);
+              return new Date().getFullYear(); // Here we don't want the date of today we want the year of the value today
+              //console.log(Date(year).getFullYear());
+            },
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+          });
+
+      BNS-2C-NRGT---Historical-Version:
+        name: BNS-2C NRGT - Historical Version
+        adaptor: '@openfn/language-mssql@3.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          // NOTE: This data cleaning operation returns state, modified as needed.
+          alterState(state => {
+            try {
+              const { body, formName, instance } = state.data;
+              const { _submission_time, _id, _xform_id_string } = body;
+              let cleanedSubmission = {};
+
+              for (const key in body) {
+                switch (body[key]) {
+                  case 'yes':
+                    cleanedSubmission[key] = 1;
+                    break;
+
+                  case 'no':
+                    cleanedSubmission[key] = 0;
+                    break;
+
+                  default:
+                    cleanedSubmission[key] = body[key];
+                    break;
+                }
+              }
+
+              state.landscapeMap = {
+                tns: 'ndoki',
+                mamabay: 'makira',
+                mtkb: 'kahuzi',
+                lactele: 'lac_tele',
+              };
+
+              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
+              cleanedSubmission.instance = instance;
+              state.data = cleanedSubmission;
+              return state;
+            } catch (error) {
+              state.connection.close();
+              throw error;
+            }
+          });
+
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            AnswerId: dataValue('_id'),
+            Landscape: state => {
+              var landscape = dataValue('landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            GovGroup: dataValue('gov_group'),
+            Jurisdiction: dataValue('jurisdiction'),
+            Objective: dataValue('objective'),
+            Members: dataValue('members'),
+            Women: dataValue('women'),
+            LastUpdate: new Date().toISOString(),
+          });
+
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            Id: dataValue('_id'),
+            AnswerId: dataValue('_id'),
+            SurveyDate: dataValue('today'),
+            Code: dataValue('code'),
+            Gender: dataValue('gender'),
+            Member: dataValue('member'),
+            Legitimacy: dataValue('legitimacy'),
+            Accountability: dataValue('accountability'),
+            Transparency: dataValue('transparency'),
+            Participation: dataValue('participation'),
+            Fairness: dataValue('fairness'),
+            KnowledgeSkills: dataValue('knowledge_skills'),
+            Resources: dataValue('resources'),
+            InstutionalFramework: dataValue('institutional_framework'),
+            Motivation: dataValue('motivation'),
+            EnactDecision: dataValue('enact_decision'),
+            HeldAccountable: dataValue('held_accountable'),
+            Diversity: dataValue('diversity'),
+            LastUpdate: new Date().toISOString(),
+          });
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            //AnswerId: dataValue('_id'),
+            DatasetName: state.data.formName,
+            DatasetOwner: state.data.formOwner,
+            DatasetUuidId: dataValue('datasetId'),
+            Citation: dataValue('instance'),
+            DatasetYear: new Date().getFullYear(),
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+          });
+
+      BNS-2D-NRGT-2019:
+        name: BNS-2D NRGT 2019
+        adaptor: '@openfn/language-mssql@3.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          // NOTE: This data cleaning operation returns state, modified as needed.
+          alterState(state => {
+            try {
+              const { body, formName, instance } = state.data;
+              const { _submission_time, _id, _xform_id_string } = body;
+              let cleanedSubmission = {};
+
+              for (const key in body) {
+                switch (body[key]) {
+                  case 'yes':
+                    cleanedSubmission[key] = 1;
+                    break;
+
+                  case 'no':
+                    cleanedSubmission[key] = 0;
+                    break;
+
+                  default:
+                    cleanedSubmission[key] = body[key];
+                    break;
+                }
+              }
+
+              state.landscapeMap = {
+                tns: 'ndoki',
+                mamabay: 'makira',
+                mtkb: 'kahuzi',
+              };
+
+              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
+              cleanedSubmission.instance = instance;
+              state.data = cleanedSubmission;
+              return state;
+            } catch (error) {
+              state.connection.close();
+              throw error;
+            }
+          });
+
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            AnswerId: dataValue('_id'),
+            Landscape: state => {
+              var landscape = dataValue('landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            Surveyor: dataValue('surveyor'),
+            GovGroup: dataValue('gov_group'),
+            SurveyDate: state => {
+              const date = state.data.today || state.data._submission_time
+              if (Number(date.split('-')[0]) >= 2014 ) {
+                return date
+              } 
+              return 2019 
+              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+              // With the code above we are replacing any 2000 by 2019:
+            },
+            LastUpdate: new Date().toISOString(),
+          });
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+            // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
+            DatasetUuidId: dataValue('datasetId'),
+            Id: dataValue('_id'),
+            AnswerId: dataValue('_id'),
+            SurveyDate: state => {
+              const date = state.data.today || state.data._submission_time
+              if (Number(date.split('-')[0]) >= 2014 ) {
+                return date
+              } 
+              return 2019
+              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+              // With the code above we are replacing any 2000 by 2019:
+            },
+            Gender: dataValue('gender'),
+            Member: dataValue('member'),
+            Objective: dataValue('objective'),
+            Legitimacy: dataValue('legitimacy'),
+            Accountability: dataValue('accountability'),
+            Transparency: dataValue('transparency'),
+            Participation: dataValue('participation'),
+            Fairness: dataValue('fairness'),
+            Diversity: dataValue('diversity'),
+            KnowledgeSkills: dataValue('knowledge_skills'),
+            Resources: dataValue('resources'),
+            InstutionalFramework: dataValue('framework'),
+            Motivation: dataValue('motivation'),
+            Power: dataValue('power'),
+            LastUpdate: new Date().toISOString(),
+          });
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            //AnswerId: dataValue('_id'),
+            DatasetName: state.data.formName,
+            DatasetOwner: state.data.formOwner,
+            DatasetUuidId: dataValue('datasetId'),
+            Citation: dataValue('instance'),
+            DatasetYear: new Date().getFullYear(),
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+          });
+
+      BNS-2E-NRGT---Historical-Version-2-2022:
+        name: BNS-2E NRGT - Historical Version 2 2022
+        adaptor: '@openfn/language-mssql@3.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        body: |
+          fn(state => {
+            try {
+              const { body, formName, instance } = state.data;
+              const { _submission_time, _id, _xform_id_string, group_scores } = body;
+              let cleanedSubmission = {};
+
+              for (const key in body) {
+                switch (body[key]) {
+                  case 'yes':
+                    cleanedSubmission[key] = 1;
+                    break;
+
+                  case 'no':
+                    cleanedSubmission[key] = 0;
+                    break;
+
+                  default:
+                    cleanedSubmission[key] = body[key];
+                    break;
+                }
+              }
+
+              state.landscapeMap = {
+                tns: 'ndoki',
+                mamabay: 'makira',
+                mtkb: 'kahuzi',
+                lactele: 'lac_tele',
+              };
+
+              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
+              cleanedSubmission.instance = instance;
+              cleanedSubmission.group_scores = group_scores;
+              
+              state.data = cleanedSubmission;
+
+              return state;
+            } catch (error) {
+              state.connection.close();
+              throw error;
+            }
+          });
+
+
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            AnswerId: dataValue('_id'),
+            Landscape: state => {
+              var landscape = dataValue('landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            GovGroup: dataValue('gov_group'),
+            Jurisdiction: dataValue('jurisdiction'),
+            Objective: dataValue('objective'),
+            Members: dataValue('members'),
+            Women: dataValue('women'),
+            LastUpdate: new Date().toISOString(),
+          });
+
+          /*
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            Id: dataValue('_id'),
+            AnswerId: dataValue('_id'),
+            SurveyDate: dataValue('today'),
+            Code: dataValue('code'),
+            Gender: dataValue('gender'),
+            Member: dataValue('member'),
+            Legitimacy: dataValue('legitimacy'),
+            Accountability: dataValue('accountability'),
+            Transparency: dataValue('transparency'),
+            Participation: dataValue('participation'),
+            Fairness: dataValue('fairness'),
+            KnowledgeSkills: dataValue('knowledge_skills'),
+            Resources: dataValue('resources'),
+            InstutionalFramework: dataValue('institutional_framework'),
+            Motivation: dataValue('motivation'),
+            EnactDecision: dataValue('enact_decision'),
+            HeldAccountable: dataValue('held_accountable'),
+            Diversity: dataValue('diversity'),
+            LastUpdate: new Date().toISOString(),
+          });
+          */
+
+          upsertMany(
+            'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
+            'AnswerId', 
+            state => state.data.group_scores.map(x => ({
+                AnswerId: state.data._id,
+                Id: state.data._id,
+                DatasetUuidId: state.data.datasetId,
+                Accountability: x["group_scores/accountability"],
+                Code: x["group_scores/code"],
+                Diversity: x["group_scores/diversity"],
+                EnactDecision: x["group_scores/enact_decision"],
+                Fairness: x["group_scores/fairness"],
+                Gender: x["group_scores/gender"],
+                HeldAccountable: x["group_scores/held_accountable"],
+                InstutionalFramework: x["group_scores/institutional_framework"],
+                KnowledgeSkills: x["group_scores/knowledge_skills"],
+                Legitimacy: x["group_scores/legitimacy"],
+                Member: (x["group_scores/member"] === "yes"),
+                Motivation: x["group_scores/motivation"],
+                Participation: x["group_scores/participation"],
+                Resources: x["group_scores/resources"],
+                SurveyDate: x["group_scores/survey_date"],
+                Transparency: x["group_scores/transparency"],
+                LastUpdate: new Date().toISOString()
+              }))
+          );
+
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            DatasetName: state.data.formName,
+            DatasetOwner: state.data.formOwner,
+            DatasetUuidId: dataValue('datasetId'),
+            Citation: dataValue('instance'),
+            DatasetYear: new Date().getFullYear(),
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+          });
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: true
+    edges:
+      webhook->Triage-jobs:
+        source_trigger: webhook
+        target_job: Triage-jobs
+        condition_type: always
+        enabled: true
+      Triage-jobs->BNS-2A-BNS-Price:
+        source_job: Triage-jobs
+        target_job: BNS-2A-BNS-Price
+        condition_type: js_expression
+        condition_label: BNS Price
+        condition_expression: |
+          state.data.form == "bns_price"
+        enabled: true
+      Triage-jobs->BNS-2B-BNS-Survey:
+        source_job: Triage-jobs
+        target_job: BNS-2B-BNS-Survey
+        condition_type: js_expression
+        condition_label: BNS Survey
+        condition_expression: |
+          state.data.form == "bns_survey"
+        enabled: true
+      Triage-jobs->BNS-2C-NRGT---Historical-Version:
+        source_job: Triage-jobs
+        target_job: BNS-2C-NRGT---Historical-Version
+        condition_type: js_expression
+        condition_label: NRGT Historical
+        condition_expression: |
+          state.data.form == "nrgt_historical" && state.data.formName != "NRGT Kahuzi Biega 2019"
+        enabled: true
+      Triage-jobs->BNS-2D-NRGT-2019:
+        source_job: Triage-jobs
+        target_job: BNS-2D-NRGT-2019
+        condition_type: js_expression
+        condition_label: NRGT Current
+        condition_expression: |
+          state.data.form == "nrgt_current"
+        enabled: true
+      Triage-jobs->BNS-2E-NRGT---Historical-Version-2-2022:
+        source_job: Triage-jobs
+        target_job: BNS-2E-NRGT---Historical-Version-2-2022
+        condition_type: js_expression
+        condition_label: NGRT Historical
+        condition_expression: |
+          state.data.form == "nrgt_historical" && state.data.formName == "NRGT Kahuzi Biega 2019"
+        enabled: true
+  Monitor-Forms-Shared:
+    name: Monitor Forms Shared
+    jobs:
+      FS1---Get-Forms:
+        name: FS1 - Get Forms
+        adaptor: '@openfn/language-kobotoolbox@2.1.0'
+        credential: rediet@openfn.org-WCS-Kobo-Raw-with-URL
+        body: |
+          //Check Kobo account for forms with these matching keywords
+          getForms({}, state => {
+            //ALL KEYWORDS:
+            //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
+
+            //BNS KEYWORDS ONLY
+            const keywords = ['price', 'prix', 'bns', 'nrgt'];
+
+            const checkForKeyWords = name => {
+              return keywords.some(keyword => name.toLowerCase().includes(keyword));
+            };
+
+            state.activeForms = state.data.results
+              .filter(form => checkForKeyWords(form.name))
+              .filter(form => form.deployment__active);
+
+            state.archivedForms = state.data.results
+              .filter(form => checkForKeyWords(form.name))
+              .filter(form => !form.deployment__active);
+              
+            console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );
+            console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );
+
+            state.data = {};
+            state.references = [];
+            return state;
+          });
+
+      FS2---Get-List-from-Sheets:
+        name: FS2 - Get List from Sheets
+        adaptor: '@openfn/language-googlesheets@2.4.0'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          getValues(
+            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE', //googlesheet id
+            'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
+          );
+          fn(state => {
+            const { activeForms, archivedForms, data } = state;
+            const [headers, ...sheetsData] = data.values;
+            const sheetsUids = sheetsData.map(row => row[0]);
+            console.log('Ignoring headers', headers);
+
+            state.formsToCreate = activeForms.filter(
+              form => !sheetsUids.includes(form.uid)
+            );
+
+            state.formsToUpdate = archivedForms
+              .filter(form => sheetsUids.includes(form.uid))
+              .map(form => {
+                const rowIndex = sheetsData.findIndex(row => {
+                  return row[0] === form.uid;
+                });
+                if (rowIndex !== -1) {
+                  return { ...form, rowIndex };
+                }
+                console.log(form.uid, 'Could not be found in google sheet');
+              });
+
+            return state;
+          });
+
+          fn(state => {
+            const { data, references, response, ...remainingState } = state;
+
+            return remainingState;
+          });
+
+      FS3---Update-Spreadsheet-with-New-Forms-Shared:
+        name: FS3 - Update Spreadsheet with New Forms Shared
+        adaptor: '@openfn/language-googlesheets@2.4.0'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
+          fn(state => {
+            const { formsToCreate, formsToUpdate } = state;
+            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
+
+            const tagMapping = {
+              price: 'bns_price',
+              prix: 'bns_price',
+              bns: 'bns_survey',
+              nrgt: 'nrgt_current',
+              grm: 'grm',
+              feedback: 'grm',
+            };
+
+            const createTagName = name => {
+              let tag = '';
+              const keyword = keywords.find(keyword =>
+                name.toLowerCase().includes(keyword)
+              );
+
+              if (keyword) {
+                tag = tagMapping[keyword] || keyword;
+              }
+              return tag;
+            };
+
+            const containsGRMFeedback = name =>
+              !name.toLowerCase().includes('grm', 'feedback');
+
+            const instance = name =>
+              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
+
+            const projectId = name =>
+              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
+
+            const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
+
+            const workspaceName = name =>
+              containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
+              
+            state.formLastModified = form => form.date_modified; 
+
+            const sheetRowMap = form => [
+              form.uid,
+              form.name,
+              createTagName(form.name),
+              form.owner__username,
+              instance(form.name),
+              //projectId(form.name), //for GRM only
+              //grmID(form.name), //for GRM only
+              form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
+              'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
+              `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
+              form.date_modified, //kobo_form_date_modified
+              form.date_created, //kobo_form_date_created
+              new Date().toISOString(), //row_date_modified
+              false, //auto_sync checkbox
+              //job code template
+              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+                form.name
+              }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
+            ];
+
+            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
+            state.rowValuesToUpdate = formsToUpdate.map(form => ({
+              range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+              values: [sheetRowMap(form)],
+            }));
+            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
+
+            console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
+            console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
+            return state;
+          });
+
+          //if new Kobo form shared, adding to the "Deployed"" Sheet...
+          appendValues({
+            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+            range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
+            values: state => state.rowValuesToCreate,
+          });
+
+          //updating rows in Sheet where forms are archived
+          each(
+            '$.rowValuesToUpdate[*]',
+            batchUpdateValues({
+              spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+              range: state => state.data.range, //range of columns in sheet
+              values: state => state.data.values,
+            })
+          );
+
+          //also adding archived rows to "Archived" Sheet...
+          appendValues({
+            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+            range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
+            values: state => state.rowValuesToArchive,
+          });
+
+      FS4---Notify-in-Asana:
+        name: FS4 - Notify in Asana
+        adaptor: '@openfn/language-asana@4.0.9'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        body: |
+          //This job will add a task to Asana if a new Kobo form was shared
+          fn(state => {
+            console.log('formLastModifiedDate:: ', state.formLastModified); 
+            const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
+              .toISOString()
+              .split('T')[0];
+
+            state.asanaTasks = state.activeForms.map(form => {
+              return {
+                name: `New form added to OpenFn: ${form.name}`,
+                approval_status: 'pending',
+                projects: ['1198901998266253'],
+                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+                assignee: '1208302456826465',
+                due_on: dueDate,
+                notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+              };
+            });
+
+            state.archivedFormsTasks = state.archivedForms.map(form => {
+              return {
+                name: `Form archived: ${form.name}`,
+                projects: ['1198901998266253'],
+                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+                assignee: '1208302456826465',
+                due_on: dueDate,
+                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+              };
+            });
+
+            console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
+            console.log('New form alert tasks to upsert:: ', state.asanaTasks);
+            console.log(
+              '# of Archibed Form Asana Tasks to add:: ',
+              state.archivedFormsTasks.length
+            );
+            console.log(
+              'Archived form alert tasks to upsert:: ',
+              state.archivedFormsTasks
+            );
+            return state;
+          });
+
+          //upsert Asana task if new form shared notification needed
+          each(
+            '$.asanaTasks[*]',
+            upsertTask('1198901998266253', {
+              //project_id
+              externalId: 'name',
+              data: state => state.data,
+            })
+          );
+
+          each(
+            '$.archivedFormsTasks[*]',
+            upsertTask('1198901998266253', {
+              //project_id
+              externalId: 'name',
+              data: state => state.data,
+            })
+          );
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 0 * * *'
+        enabled: false
+    edges:
+      cron->FS1---Get-Forms:
+        source_trigger: cron
+        target_job: FS1---Get-Forms
+        condition_type: always
+        enabled: true
+      FS1---Get-Forms->FS2---Get-List-from-Sheets:
+        source_job: FS1---Get-Forms
+        target_job: FS2---Get-List-from-Sheets
+        condition_type: on_job_success
+        enabled: true
+      FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared:
+        source_job: FS2---Get-List-from-Sheets
+        target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        condition_type: on_job_success
+        enabled: true
+      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
+        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        target_job: FS4---Notify-in-Asana
+        condition_type: on_job_success
+        enabled: false
+  x_A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
+    name: x_A1 Generate Jobs DB Tables and Dictionary AUTO
     jobs:
       A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
         name: A1 Generate Jobs DB Tables and Dictionary AUTO
-        adaptor: '@openfn/language-http@v4.0.0'
+        adaptor: '@openfn/language-http@6.5.4'
         credential: null
         body: |
           get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
@@ -211,8 +1648,8 @@ workflows:
         target_job: A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO
         condition_type: always
         enabled: true
-  A2-Process-Forms-AUTO:
-    name: A2 Process Forms AUTO
+  x_A2-Process-Forms-AUTO:
+    name: x_A2 Process Forms AUTO
     jobs:
       A2-Process-Forms-AUTO:
         name: A2 Process Forms AUTO
@@ -1714,1440 +3151,4 @@ workflows:
         source_job: A2-Process-Forms-AUTO
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
-        enabled: true
-  Form-Sharing---Get-Forms:
-    name: Form Sharing - Get Forms
-    jobs:
-      FS1---Get-Forms:
-        name: FS1 - Get Forms
-        adaptor: '@openfn/language-kobotoolbox@2.1.0'
-        credential: rediet@openfn.org-WCS-Kobo-Raw-with-URL
-        body: |
-          //Check Kobo account for forms with these matching keywords
-          getForms({}, state => {
-            //ALL KEYWORDS:
-            //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            //BNS KEYWORDS ONLY
-            const keywords = ['price', 'prix', 'bns', 'nrgt'];
-
-            const checkForKeyWords = name => {
-              return keywords.some(keyword => name.toLowerCase().includes(keyword));
-            };
-
-            state.activeForms = state.data.results
-              .filter(form => checkForKeyWords(form.name))
-              .filter(form => form.deployment__active);
-
-            state.archivedForms = state.data.results
-              .filter(form => checkForKeyWords(form.name))
-              .filter(form => !form.deployment__active);
-              
-            console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );
-            console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );
-
-            state.data = {};
-            state.references = [];
-            return state;
-          });
-
-      FS2---Get-List-from-Sheets:
-        name: FS2 - Get List from Sheets
-        adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
-        body: |
-          getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE', //googlesheet id
-            'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
-          );
-          fn(state => {
-            const { activeForms, archivedForms, data } = state;
-            const [headers, ...sheetsData] = data.values;
-            const sheetsUids = sheetsData.map(row => row[0]);
-            console.log('Ignoring headers', headers);
-
-            state.formsToCreate = activeForms.filter(
-              form => !sheetsUids.includes(form.uid)
-            );
-
-            state.formsToUpdate = archivedForms
-              .filter(form => sheetsUids.includes(form.uid))
-              .map(form => {
-                const rowIndex = sheetsData.findIndex(row => {
-                  return row[0] === form.uid;
-                });
-                if (rowIndex !== -1) {
-                  return { ...form, rowIndex };
-                }
-                console.log(form.uid, 'Could not be found in google sheet');
-              });
-
-            return state;
-          });
-
-          fn(state => {
-            const { data, references, response, ...remainingState } = state;
-
-            return remainingState;
-          });
-
-      FS3---Find-New-Forms-Shared:
-        name: FS3 - Find New Forms Shared
-        adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
-        body: |
-          //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
-          fn(state => {
-            const { formsToCreate, formsToUpdate } = state;
-            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            const tagMapping = {
-              price: 'bns_price',
-              prix: 'bns_price',
-              bns: 'bns_survey',
-              nrgt: 'nrgt_current',
-              grm: 'grm',
-              feedback: 'grm',
-            };
-
-            const createTagName = name => {
-              let tag = '';
-              const keyword = keywords.find(keyword =>
-                name.toLowerCase().includes(keyword)
-              );
-
-              if (keyword) {
-                tag = tagMapping[keyword] || keyword;
-              }
-              return tag;
-            };
-
-            const containsGRMFeedback = name =>
-              !name.toLowerCase().includes('grm', 'feedback');
-
-            const instance = name =>
-              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
-
-            const projectId = name =>
-              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
-
-            const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
-
-            const workspaceName = name =>
-              containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
-              
-            state.formLastModified = form => form.date_modified; 
-
-            const sheetRowMap = form => [
-              form.uid,
-              form.name,
-              createTagName(form.name),
-              form.owner__username,
-              instance(form.name),
-              //projectId(form.name), //for GRM only
-              //grmID(form.name), //for GRM only
-              form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
-              'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
-              `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
-              form.date_modified, //kobo_form_date_modified
-              form.date_created, //kobo_form_date_created
-              new Date().toISOString(), //row_date_modified
-              false, //auto_sync checkbox
-              //job code template
-              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
-                form.name
-              }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
-            ];
-
-            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
-            state.rowValuesToUpdate = formsToUpdate.map(form => ({
-              range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
-              values: [sheetRowMap(form)],
-            }));
-            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
-
-            console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
-            console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
-            return state;
-          });
-
-          //if new Kobo form shared, adding to the "Deployed"" Sheet...
-          appendValues({
-            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
-            values: state => state.rowValuesToCreate,
-          });
-
-          //updating rows in Sheet where forms are archived
-          each(
-            '$.rowValuesToUpdate[*]',
-            batchUpdateValues({
-              spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-              range: state => state.data.range, //range of columns in sheet
-              values: state => state.data.values,
-            })
-          );
-
-          //also adding archived rows to "Archived" Sheet...
-          appendValues({
-            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
-            values: state => state.rowValuesToArchive,
-          });
-
-      FS4---Notify-in-Asana:
-        name: FS4 - Notify in Asana
-        adaptor: '@openfn/language-asana@4.0.9'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
-        body: |
-          //This job will add a task to Asana if a new Kobo form was shared
-          fn(state => {
-            console.log('formLastModifiedDate:: ', state.formLastModified); 
-            const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split('T')[0];
-
-            state.asanaTasks = state.activeForms.map(form => {
-              return {
-                name: `New form added to OpenFn: ${form.name}`,
-                approval_status: 'pending',
-                projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
-                due_on: dueDate,
-                notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
-              };
-            });
-
-            state.archivedFormsTasks = state.archivedForms.map(form => {
-              return {
-                name: `Form archived: ${form.name}`,
-                projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
-                due_on: dueDate,
-                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
-              };
-            });
-
-            console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
-            console.log('New form alert tasks to upsert:: ', state.asanaTasks);
-            console.log(
-              '# of Archibed Form Asana Tasks to add:: ',
-              state.archivedFormsTasks.length
-            );
-            console.log(
-              'Archived form alert tasks to upsert:: ',
-              state.archivedFormsTasks
-            );
-            return state;
-          });
-
-          //upsert Asana task if new form shared notification needed
-          each(
-            '$.asanaTasks[*]',
-            upsertTask('1198901998266253', {
-              //project_id
-              externalId: 'name',
-              data: state => state.data,
-            })
-          );
-
-          each(
-            '$.archivedFormsTasks[*]',
-            upsertTask('1198901998266253', {
-              //project_id
-              externalId: 'name',
-              data: state => state.data,
-            })
-          );
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->FS1---Get-Forms:
-        source_trigger: webhook
-        target_job: FS1---Get-Forms
-        condition_type: always
-        enabled: true
-      FS1---Get-Forms->FS2---Get-List-from-Sheets:
-        source_job: FS1---Get-Forms
-        target_job: FS2---Get-List-from-Sheets
-        condition_type: on_job_success
-        enabled: true
-      FS2---Get-List-from-Sheets->FS3---Find-New-Forms-Shared:
-        source_job: FS2---Get-List-from-Sheets
-        target_job: FS3---Find-New-Forms-Shared
-        condition_type: on_job_success
-        enabled: true
-      FS3---Find-New-Forms-Shared->FS4---Notify-in-Asana:
-        source_job: FS3---Find-New-Forms-Shared
-        target_job: FS4---Notify-in-Asana
-        condition_type: on_job_success
-        enabled: false
-  "Get-BNS-FormsList-(Historical)":
-    name: 'Get BNS FormsList (Historical)'
-    jobs:
-      Get-FormsList:
-        name: Get FormsList
-        adaptor: '@openfn/language-googlesheets@2.3.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
-        body: |
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY2',
-            'wcs-bns-DEPLOYED!A:O', //get Deployed forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-          console.log("deployedData", values);
-
-              state.deployedData = values
-                .map(item => mapHeaderToValue(item))
-                .filter(item => item['historical_sync'] === 'TRUE');
-              return state;
-            }
-          );
-          //== Job to be used for getting a list of "archived" Kobo forms from sheets to auto-sync  ==//
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY2',
-            'wcs-bns-ARCHIVED!A:O', //get Deployed forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-          console.log("archivedData", values);
-
-
-              state.archivedData = values
-                .map(item => mapHeaderToValue(item))
-                .filter(item => item['historical_sync'] === 'TRUE');
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { archivedData, deployedData } = state;
-
-            // Set a manual cursor if you'd like to only fetch data after this date...
-            //e.g., '2023-01-01T23:51:45.491+01:00'
-            //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
-            //   console.log('manualCursor defined?', manualCursor);
-            //...otherwise the job will use this dynamicCursor
-            // const dynamicCursor = getTodayISODate();
-
-            //   function getTodayISODate() {
-            //     const today = new Date();
-            //     today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-            //     return today.toISOString(); // Convert to ISO string
-            //   }
-
-            //   const cursorValue = manualCursor || dynamicCursor;
-            //   console.log('Cursor value to use in query:', cursorValue);
-            const combinedData = [...deployedData, ...archivedData];
-            const formsList = combinedData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-            }));
-
-            console.log('# of forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: combinedData.map(survey => ({
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
-              })),
-            };
-            return state;
-          });
-
-          //Clear final state
-          fn(state => {
-            delete state.references;
-            delete state.response;
-            return state;
-          });     
-
-      Get-Forms:
-        name: Get Forms
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: ddetoeuf@wcs.org-WCS-Kobo-account
-        body: |
-          // Here we fetch submissions for all "Archived" forms in GoogleSheet
-          // NOTE: See linked job "[BNS-1B] 1.Get FormsList (Historical)" for GoogleSheet query logic
-          //**********************************************************//
-          each(dataPath('surveys[*]'), state => {
-            const { url, tag, formId, name, owner } = state.data;
-            const query = "&query={\"start\":{\"$gte\":\"2021-10-29T00:00:00.000Z\"}}"
-            return get(`${url}${query}`, {}, state => {
-              console.log(state.data.result)
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  form: tag,
-                  formName: name,
-                  formOwner: owner,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log('Finding historical forms to resync...');
-              console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                return post("https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state)
-          });
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      Get-FormsList->Get-Forms:
-        source_job: Get-FormsList
-        target_job: Get-Forms
-        condition_type: on_job_success
-        enabled: true
-      webhook->Get-FormsList:
-        source_trigger: webhook
-        target_job: Get-FormsList
-        condition_type: always
-        enabled: true
-  "Get-BNS-FormsList-(Ongoing)":
-    name: 'Get BNS FormsList (Ongoing)'
-    jobs:
-      Get-Forms-List:
-        name: Get Forms List
-        adaptor: '@openfn/language-googlesheets@2.3.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
-        body: |
-          //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
-          // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
-          getValues(
-             '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
-            'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item =>
-                    item.includes('TRUE') //return forms where auto-sync = TRUE
-                    //&& item.includes('bns_survey', 'nrgt_current') 
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // Set a manual cursor if you'd like to only fetch data after this date...
-            //e.g., '2023-01-01T23:51:45.491+01:00'
-            const manualCursor = '2024-12-06T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
-            console.log('manualCursor defined?', manualCursor);
-            
-            //...otherwise the job will use this dynamicCursor
-            const dynamicCursor = getTodayISODate(); 
-
-            function getTodayISODate() {
-              const today = new Date();
-              today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-              return today.toISOString(); // Convert to ISO string
-            }
-            
-            //UNCOMMENT FOR FUTURE
-           // const cursorValue = dynamicCursor || manualCursor ; 
-            const cursorValue = manualCursor ; 
-           
-            // const cursorValue = manualCursor ; 
-            console.log('Cursor value to use in query:', cursorValue);
-
-            const formsList = sheetsData.map(survey => ({
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name 
-            })); 
-            
-            console.log('# of deployed forms detected in Sheet:: ', formsList.length);
-            console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); 
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"start":{"$gte":"${cursorValue}"}}`,
-              })),
-            };
-            return state;
-          });
-
-      Get-BNS-NRGT-Forms:
-        name: Get BNS NRGT Forms
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: ddetoeuf@wcs.org-WCS-Kobo-account
-        body: |
-          // Here we fetch submissions for all "Deployed" forms in GoogleSheet
-          // NOTE: See linked job "[BNS-1A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-
-          fn(state => {
-            state.surveySubmissions = [];
-            state.errors = [];
-            state.globalIndex = 0;
-            console.log('surveys ::', JSON.stringify(state.data.surveys, null, 2));
-            return state;
-          });
-
-          each('$.data.surveys[*]', state => {
-            const { url, query, tag, formId, name, owner } = state.data;
-            console.log('Sending GET to ::', `${url}${query}`);
-
-            return get(`${url}${query}`)(state)
-              .then(state => {
-                const results = state.data.results.map(submission => {
-                  const uniqueIndex = state.globalIndex++;
-                  return {
-                    i: uniqueIndex,
-                    // Here we append the tags defined above to the Kobo form submission data
-                    form: tag,
-                    formName: name,
-                    formOwner: owner,
-                    body: submission,
-                  };
-                });
-
-                state.surveySubmissions.push(...results);
-                const count = results.length;
-                console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-                //Once we fetch the data, we want to post each individual Kobo survey
-                //back to the OpenFn inbox to run through the jobs =========================
-                return state;
-              })
-              .catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          each(
-            '$.surveySubmissions[*]',
-            post(
-              "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",
-              state => {
-                const {i, formName} = state.data;
-                const count = state.surveySubmissions.length;
-                console.log(`Posting ${i} of ${count} from ${formName}`);
-                return { body: state.data };
-              }
-            )
-          );  
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */3 * * *'
-        enabled: false
-    edges:
-      cron->Get-Forms-List:
-        source_trigger: cron
-        target_job: Get-Forms-List
-        condition_type: always
-        enabled: true
-      Get-Forms-List->Get-BNS-NRGT-Forms:
-        source_job: Get-Forms-List
-        target_job: Get-BNS-NRGT-Forms
-        condition_type: on_job_success
-        enabled: true
-  Sync-BNS-and-NRGT-Forms:
-    name: Sync BNS and NRGT Forms
-    jobs:
-      Triage-jobs:
-        name: Triage jobs
-        adaptor: '@openfn/language-common@2.3.1'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
-
-      BNS-2A-BNS-Price:
-        name: BNS-2A BNS Price
-        adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          // NOTE: This data cleaning operation returns state, modified as needed.
-          fn(state => {
-            //try {
-            const { body, formName, instance, formOwner } = state.data;
-            const { _submission_time, _id, _xform_id_string } = body;
-            let cleanedSubmission = {};
-
-            for (const key in body) {
-              switch (body[key]) {
-                case 'yes':
-                  cleanedSubmission[key] = 1;
-                  break;
-
-                case 'no':
-                  cleanedSubmission[key] = 0;
-                  break;
-
-                default:
-                  cleanedSubmission[key] = body[key];
-                  break;
-              }
-            }
-
-            cleanedSubmission.instance = instance;
-
-            const landscapeMap = {
-              Ndoki: 'ndoki',
-              'Lac Télé': 'lac_tele',
-              Ituri: 'ituri',
-              Kahuzi: 'kahuzi',
-              MTKB: 'kahuzi',
-              'Cross River': 'crossriver',
-              Soariake: 'soariake',
-              Ankarea: 'ankarea',
-              ABS: 'baie_antongil',
-              'Nosy Be': 'tandavandriva',
-              Makira: 'makira',
-              'BNS Ndoki Prix 2020': 'ndoki',
-              PNMD: 'pnmd',
-
-              //formName: landscapeValue,
-              //other values
-            };
-
-            return {
-              ...state,
-              landscapeMap,
-              formName,
-              formOwner,
-              data: {
-                ...cleanedSubmission,
-                durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,
-                datasetId: `${formName}-${_xform_id_string}`,
-                end: cleanedSubmission.end.slice(0, 10),
-              },
-            };
-            /* } catch (error) {
-              state.connection.close();
-              throw error;
-            }*/
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
-          });
-
-          fn(state => {
-            const { good } = state.data;
-            if (!good || good.length === 0) {
-              return state;
-            }
-
-            const data = good.map((g, i) => ({
-              // Id: state.data._id,
-              Id: i + 1,
-              AnswerId: state.data._id,
-              DatasetUuidId: state.data.datasetId,
-              Surveyor: state.data.surveyor,
-              Village: state.data.village,
-              Gs: g[`good/name`],
-              Price: g[`good/price`],
-              LastUpdate: new Date().toISOString(),
-              //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value
-              Landscape: () => {
-                for (let val in state.landscapeMap)
-                  if (state.formName.includes(val)) return state.landscapeMap[val];
-                return '';
-              },
-              SurveyDate: state.data.today,
-            }));
-            // console.log('data', data);
-            return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);
-          });
-
-          fn(state => {
-            console.log('DatasetName ::', state.formName);
-            console.log('DatasetOwner ::', state.formOwner);
-            console.log('form submission id ::', state.data['_id']);
-            console.log('DatasetUuidId ::', state.data['datasetId']);
-            //console.log('data to upload ::', state.data);
-            return state;
-          });
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            //AnswerId: dataValue('durableUUID'),
-            DatasetName: state => state.formName,
-            DatasetOwner: state => state.formOwner,
-            Landscape: dataValue('landscape'),
-            DatasetUuidId: dataValue('datasetId'),
-            DatasetYear: new Date().getFullYear(),
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-            Citation: dataValue('instance'),
-          });
-
-          fn(state => {
-            console.log('data uploaded ::', state.data);
-            return state;
-          });
-
-      BNS-2B-BNS-Survey:
-        name: BNS 2B BNS Survey
-        adaptor: '@openfn/language-mssql@2.6.1'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          // NOTE: This data cleaning operation returns state, modified as needed.
-
-          fn(state => {
-            try {
-              const { body, formName, formOwner, instance } = state.data;
-              const { _submission_time, _id, _xform_id_string } = body;
-
-              let cleanedSubmission = {};
-
-              for (const key in body) {
-                switch (body[key]) {
-                  case 'yes':
-                    cleanedSubmission[key] = 1;
-                    break;
-
-                  case 'no':
-                    cleanedSubmission[key] = 0;
-                    break;
-
-                  default:
-                    cleanedSubmission[key] = body[key];
-                    break;
-                }
-              }
-
-              // NOTE: This assumes all device-collected geo data follows specific lat, log data format
-              if (cleanedSubmission.gps_method === 'device') {
-                cleanedSubmission['gps/lat'] =
-                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
-                cleanedSubmission['gps/long'] =
-                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
-              } else if (
-                Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
-                Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
-              ) {
-                console.log(
-                  `WARNING: Discarding invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`
-                );
-                delete cleanedSubmission['gps/lat'];
-                delete cleanedSubmission['gps/long'];
-              }
-
-              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
-              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
-              cleanedSubmission.instance = instance;
-              state.data = cleanedSubmission;
-
-              state.landscapeMap = {
-                tns: 'ndoki',
-                ltlt: 'lac_tele',
-                mamabay: 'makira',
-                mtkb: 'kahuzi',
-              };
-
-              // Cleaning datasetId if formName is 'BNS Cross River 2017-2020'==============
-              if (formName.replace(/\s/g, '') === 'BNSCrossRiver2017-2020') {
-                state.data.datasetId = `${state.data.datasetId}${
-                  body.today.split('-')[0]
-                }`;
-              }
-
-              // ===========================================================================
-
-              // ===========================================================================
-              //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
-              //  'NR' and 'BNS matrix' questions should follow the naming conventions below
-              //  See Docs to learn more about the assumptions made here.
-              // ===========================================================================
-              // If a partner creates a form with slightly different field names, this
-              // section will need to be updated by WCS. If future forms are being designed,
-              // we'd recommend using a repeat group that allows the partner to select the
-              // type of 'nr' or 'matrix' they're reporting on. The current approach treats
-              // the form field names in Kobo _AS_ data themselves.
-              state.nr = Object.keys(state.data)
-                .filter(key => key.startsWith('nr/'))
-                .map(key => ({
-                  DatasetUuidId: state.data.datasetId,
-                  AnswerId: state.data._id,
-                  Id: state.data._id,
-                  LastUpdate: new Date().toISOString(),
-                  Nr: key.substring(3),
-                  NrCollect: state.data[key],
-                }));
-
-              const matrix = Object.keys(state.data)
-                .filter(key => key.includes('bns_matrix_'))
-                .map(key => {
-                  const item = key.substring(
-                    key.lastIndexOf('bns_matrix_') + 'bns_matrix_'.length,
-                    key.lastIndexOf('_')
-                  );
-                  return {
-                    Dataset_Id: state.data.datasetId, //DatasetUuidId
-                    DatasetUuidId: state.data.datasetId,
-                    //Id: state.data._id,
-                    AnswerId: state.data._id,
-                    gs: item.replace(/_/g, ' '),
-                    have:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
-                    necessary:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
-                    quantity:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
-                  };
-                });
-
-              state.matrix = matrix.filter(
-                (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
-              );
-              // ===========================================================================
-              // console.log(
-              //   'The bns_matrix',
-              //   JSON.stringify(state.matrix, null, 2),
-              //   `contains ${state.matrix.length} items.`
-              // );
-              console.log('instance: ', instance);
-              return {...state, formOwner, formName};
-            } catch (error) {
-              state.connection.close();
-              throw error;
-            }
-          });
-
-          upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
-            SubmissionUuid: dataValue('_uuid'),
-            AnswerId: dataValue('_id'),
-            LastUpdate: new Date().toISOString(),
-            SurveyDate: state => {
-              const date = state.data.today || state.data._submission_time;
-              const year = Number(date.trim().split('-')[0]);
-              const formName = dataValue('formName');
-              if (year <= 2010) return Number(formName.trim().split(' ').at(-1));
-              return year;
-            },
-            Landscape: state => {
-              var landscape = dataValue('landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
-            },
-            Surveyor: dataValue('surveyor'),
-            Participant: dataValue('participant'),
-            Arrival: dataValue('arrival'),
-            District: dataValue('district'),
-            Village: dataValue('village'),
-            HhId: dataValue('hh_id'),
-            BenefProject: dataValue('benef_project'),
-            HhTypeControl: state => (state.data.hh_type === 'control' ? 1 : 0),
-            HhTypeOrgBenef: state => (state.data.hh_type === 'wcs_benef' ? 1 : 0),
-            HhTypeOtherBenef: state => (state.data.hh_type === 'other_benef' ? 1 : 0),
-            ExplainProject: dataValue('explain_project'),
-            KnowPa: dataValue('know_PA'),
-            BenefPa: dataValue('benef_PA'),
-            ExplainBenefPa: dataValue('explain_benef_PA'),
-            Livelihood1: dataValue('livelihoods/l1'),
-            Livelihood2: dataValue('livelihoods/l2'),
-            Livelihood3: dataValue('livelihoods/l3'),
-            Livelihood4: dataValue('livelihoods/l4'),
-            BnsPlus: dataValue('bns_plus'),
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = '${state.data._id}'`,
-          });
-
-          insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
-            //insert hh head first
-            DatasetUuidId: dataValue('datasetId'),
-            Id: '0',
-            //Id: state => state.data.hh_members.length,
-            AnswerId: dataValue('_id'),
-            Head: dataValue('gender_head') ? '1' : '0',
-            Gender: dataValue('gender_head'),
-            Ethnicity: dataValue('ethnicity_head'),
-            Birth: state => {
-              var birth = dataValue('birth_head')(state);
-              return birth ? parseInt(birth.substring(0, 4)) : null;
-            },
-            LastUpdate: new Date().toISOString(),
-          });
-
-          fn(state => {
-            if (state.data.hh_members) {
-              return insertMany(
-                'WCSPROGRAMS_KoboBnsAnswerhhmembers',
-                (
-                  state //then insert other members
-                ) =>
-                  state.data.hh_members.map((member, i) => ({
-                    DatasetUuidId: state.data.datasetId,
-                    // Id: state.data._id,
-                    Id: i + 1,
-                    AnswerId: state.data._id,
-                    Head: '0',
-                    Gender:
-                      member[`hh_members/gender`] || member[`hh_members/gender_001`],
-                    Ethnicity: member[`hh_members/ethnicity`],
-                    Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
-                    LastUpdate: new Date().toISOString(),
-                  }))
-              )(state);
-            }
-
-            console.log('No household members found.');
-            return state;
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'`,
-          });
-
-          fn(state => {
-            if (state.nr && state.nr.length > 0) {
-              return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
-            }
-
-            console.log('No natural resource found.');
-            return state;
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where AnswerId = '${state.data._id}'`,
-          });
-
-          fn(state => {
-            if (state.matrix && state.matrix.length > 0) {
-              return insertMany(
-                'WCSPROGRAMS_KoboBnsAnswerGS',
-                state => state.matrix
-              )(state);
-            }
-
-            console.log('No matrix found.');
-            return state;
-          });
-
-          upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'), //Q: Add new column
-            AnswerId: dataValue('_id'),
-            Id: dataValue('_id'),
-            Geom: dataValue('_geolocation'),
-            Lat: state => {
-              return dataValue('gps/lat')(state)
-                ? dataValue('gps/lat')(state)
-                : state.data._geolocation[0] || undefined;
-            },
-            Long: state => {
-              return dataValue('gps/long')(state)
-                ? dataValue('gps/long')(state)
-                : state.data._geolocation[1] || undefined;
-            },
-            LastUpdate: new Date().toISOString(),
-          });
-
-          fn(state => {
-            console.log('DatasetName ::', state.formName);
-            console.log('DatasetOwner ::', state.formOwner);
-            console.log('form submission id ::', state.data['_id']);
-            console.log('DatasetUuidId ::', state.data['datasetId']);
-            //console.log('data to upload ::', state.data);
-            return state;
-          })
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            //renamed from DatasetUuid
-            //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
-            DatasetName: state => state.formName,
-            DatasetOwner: state => state.formOwner,
-            Landscape: dataValue('landscape'),
-            DatasetUuidId: dataValue('datasetId'),
-            Citation: dataValue('instance'),
-            DatasetYear: state => {
-              const date = state.data.today || state.data._submission_time;
-              const year = Number(date.trim().split('-')[0]);
-              const formName = dataValue('formName')(state);
-              const yearToReturn = year;
-              if (year <= 2010) yearToReturn = Number(formName.trim().split(' ').at(-1));
-              console.log(yearToReturn);
-              return yearToReturn;
-              // const formName = dataValue('formName')(state);
-              // if (formName === 'BNS Cross River 2017-2020') {
-              return state.data.body.today.split('-')[0];
-              // }
-              //const year = dataValue('body.today');
-              //console.log(year);
-              return new Date().getFullYear(); // Here we don't want the date of today we want the year of the value today
-              //console.log(Date(year).getFullYear());
-            },
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-          });
-
-      BNS-2C-NRGT---Historical-Version:
-        name: BNS-2C NRGT - Historical Version
-        adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          // NOTE: This data cleaning operation returns state, modified as needed.
-          alterState(state => {
-            try {
-              const { body, formName, instance } = state.data;
-              const { _submission_time, _id, _xform_id_string } = body;
-              let cleanedSubmission = {};
-
-              for (const key in body) {
-                switch (body[key]) {
-                  case 'yes':
-                    cleanedSubmission[key] = 1;
-                    break;
-
-                  case 'no':
-                    cleanedSubmission[key] = 0;
-                    break;
-
-                  default:
-                    cleanedSubmission[key] = body[key];
-                    break;
-                }
-              }
-
-              state.landscapeMap = {
-                tns: 'ndoki',
-                mamabay: 'makira',
-                mtkb: 'kahuzi',
-                lactele: 'lac_tele',
-              };
-
-              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
-              cleanedSubmission.instance = instance;
-              state.data = cleanedSubmission;
-              return state;
-            } catch (error) {
-              state.connection.close();
-              throw error;
-            }
-          });
-
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            AnswerId: dataValue('_id'),
-            Landscape: state => {
-              var landscape = dataValue('landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
-            },
-            GovGroup: dataValue('gov_group'),
-            Jurisdiction: dataValue('jurisdiction'),
-            Objective: dataValue('objective'),
-            Members: dataValue('members'),
-            Women: dataValue('women'),
-            LastUpdate: new Date().toISOString(),
-          });
-
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            Id: dataValue('_id'),
-            AnswerId: dataValue('_id'),
-            SurveyDate: dataValue('today'),
-            Code: dataValue('code'),
-            Gender: dataValue('gender'),
-            Member: dataValue('member'),
-            Legitimacy: dataValue('legitimacy'),
-            Accountability: dataValue('accountability'),
-            Transparency: dataValue('transparency'),
-            Participation: dataValue('participation'),
-            Fairness: dataValue('fairness'),
-            KnowledgeSkills: dataValue('knowledge_skills'),
-            Resources: dataValue('resources'),
-            InstutionalFramework: dataValue('institutional_framework'),
-            Motivation: dataValue('motivation'),
-            EnactDecision: dataValue('enact_decision'),
-            HeldAccountable: dataValue('held_accountable'),
-            Diversity: dataValue('diversity'),
-            LastUpdate: new Date().toISOString(),
-          });
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            //AnswerId: dataValue('_id'),
-            DatasetName: state.data.formName,
-            DatasetOwner: state.data.formOwner,
-            DatasetUuidId: dataValue('datasetId'),
-            Citation: dataValue('instance'),
-            DatasetYear: new Date().getFullYear(),
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-          });
-
-      BNS-2D-NRGT-2019:
-        name: BNS-2D NRGT 2019
-        adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          // NOTE: This data cleaning operation returns state, modified as needed.
-          alterState(state => {
-            try {
-              const { body, formName, instance } = state.data;
-              const { _submission_time, _id, _xform_id_string } = body;
-              let cleanedSubmission = {};
-
-              for (const key in body) {
-                switch (body[key]) {
-                  case 'yes':
-                    cleanedSubmission[key] = 1;
-                    break;
-
-                  case 'no':
-                    cleanedSubmission[key] = 0;
-                    break;
-
-                  default:
-                    cleanedSubmission[key] = body[key];
-                    break;
-                }
-              }
-
-              state.landscapeMap = {
-                tns: 'ndoki',
-                mamabay: 'makira',
-                mtkb: 'kahuzi',
-              };
-
-              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
-              cleanedSubmission.instance = instance;
-              state.data = cleanedSubmission;
-              return state;
-            } catch (error) {
-              state.connection.close();
-              throw error;
-            }
-          });
-
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            AnswerId: dataValue('_id'),
-            Landscape: state => {
-              var landscape = dataValue('landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
-            },
-            Surveyor: dataValue('surveyor'),
-            GovGroup: dataValue('gov_group'),
-            SurveyDate: state => {
-              const date = state.data.today || state.data._submission_time
-              if (Number(date.split('-')[0]) >= 2014 ) {
-                return date
-              } 
-              return 2019 
-              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
-              // With the code above we are replacing any 2000 by 2019:
-            },
-            LastUpdate: new Date().toISOString(),
-          });
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-            // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
-            DatasetUuidId: dataValue('datasetId'),
-            Id: dataValue('_id'),
-            AnswerId: dataValue('_id'),
-            SurveyDate: state => {
-              const date = state.data.today || state.data._submission_time
-              if (Number(date.split('-')[0]) >= 2014 ) {
-                return date
-              } 
-              return 2019
-              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
-              // With the code above we are replacing any 2000 by 2019:
-            },
-            Gender: dataValue('gender'),
-            Member: dataValue('member'),
-            Objective: dataValue('objective'),
-            Legitimacy: dataValue('legitimacy'),
-            Accountability: dataValue('accountability'),
-            Transparency: dataValue('transparency'),
-            Participation: dataValue('participation'),
-            Fairness: dataValue('fairness'),
-            Diversity: dataValue('diversity'),
-            KnowledgeSkills: dataValue('knowledge_skills'),
-            Resources: dataValue('resources'),
-            InstutionalFramework: dataValue('framework'),
-            Motivation: dataValue('motivation'),
-            Power: dataValue('power'),
-            LastUpdate: new Date().toISOString(),
-          });
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            //AnswerId: dataValue('_id'),
-            DatasetName: state.data.formName,
-            DatasetOwner: state.data.formOwner,
-            DatasetUuidId: dataValue('datasetId'),
-            Citation: dataValue('instance'),
-            DatasetYear: new Date().getFullYear(),
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-          });
-
-      BNS-2E-NRGT---Historical-Version-2-2022:
-        name: BNS-2E NRGT - Historical Version 2 2022
-        adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
-        body: |
-          fn(state => {
-            try {
-              const { body, formName, instance } = state.data;
-              const { _submission_time, _id, _xform_id_string, group_scores } = body;
-              let cleanedSubmission = {};
-
-              for (const key in body) {
-                switch (body[key]) {
-                  case 'yes':
-                    cleanedSubmission[key] = 1;
-                    break;
-
-                  case 'no':
-                    cleanedSubmission[key] = 0;
-                    break;
-
-                  default:
-                    cleanedSubmission[key] = body[key];
-                    break;
-                }
-              }
-
-              state.landscapeMap = {
-                tns: 'ndoki',
-                mamabay: 'makira',
-                mtkb: 'kahuzi',
-                lactele: 'lac_tele',
-              };
-
-              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
-              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
-              cleanedSubmission.instance = instance;
-              cleanedSubmission.group_scores = group_scores;
-              
-              state.data = cleanedSubmission;
-
-              return state;
-            } catch (error) {
-              state.connection.close();
-              throw error;
-            }
-          });
-
-
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            AnswerId: dataValue('_id'),
-            Landscape: state => {
-              var landscape = dataValue('landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
-            },
-            GovGroup: dataValue('gov_group'),
-            Jurisdiction: dataValue('jurisdiction'),
-            Objective: dataValue('objective'),
-            Members: dataValue('members'),
-            Women: dataValue('women'),
-            LastUpdate: new Date().toISOString(),
-          });
-
-          /*
-          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            Id: dataValue('_id'),
-            AnswerId: dataValue('_id'),
-            SurveyDate: dataValue('today'),
-            Code: dataValue('code'),
-            Gender: dataValue('gender'),
-            Member: dataValue('member'),
-            Legitimacy: dataValue('legitimacy'),
-            Accountability: dataValue('accountability'),
-            Transparency: dataValue('transparency'),
-            Participation: dataValue('participation'),
-            Fairness: dataValue('fairness'),
-            KnowledgeSkills: dataValue('knowledge_skills'),
-            Resources: dataValue('resources'),
-            InstutionalFramework: dataValue('institutional_framework'),
-            Motivation: dataValue('motivation'),
-            EnactDecision: dataValue('enact_decision'),
-            HeldAccountable: dataValue('held_accountable'),
-            Diversity: dataValue('diversity'),
-            LastUpdate: new Date().toISOString(),
-          });
-          */
-
-          upsertMany(
-            'WCSPROGRAMS_KoboNrgtNrgtanswergs', 
-            'AnswerId', 
-            state => state.data.group_scores.map(x => ({
-                AnswerId: state.data._id,
-                Id: state.data._id,
-                DatasetUuidId: state.data.datasetId,
-                Accountability: x["group_scores/accountability"],
-                Code: x["group_scores/code"],
-                Diversity: x["group_scores/diversity"],
-                EnactDecision: x["group_scores/enact_decision"],
-                Fairness: x["group_scores/fairness"],
-                Gender: x["group_scores/gender"],
-                HeldAccountable: x["group_scores/held_accountable"],
-                InstutionalFramework: x["group_scores/institutional_framework"],
-                KnowledgeSkills: x["group_scores/knowledge_skills"],
-                Legitimacy: x["group_scores/legitimacy"],
-                Member: (x["group_scores/member"] === "yes"),
-                Motivation: x["group_scores/motivation"],
-                Participation: x["group_scores/participation"],
-                Resources: x["group_scores/resources"],
-                SurveyDate: x["group_scores/survey_date"],
-                Transparency: x["group_scores/transparency"],
-                LastUpdate: new Date().toISOString()
-              }))
-          );
-
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            DatasetName: state.data.formName,
-            DatasetOwner: state.data.formOwner,
-            DatasetUuidId: dataValue('datasetId'),
-            Citation: dataValue('instance'),
-            DatasetYear: new Date().getFullYear(),
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-          });
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: true
-    edges:
-      webhook->Triage-jobs:
-        source_trigger: webhook
-        target_job: Triage-jobs
-        condition_type: always
-        enabled: true
-      Triage-jobs->BNS-2A-BNS-Price:
-        source_job: Triage-jobs
-        target_job: BNS-2A-BNS-Price
-        condition_type: js_expression
-        condition_label: BNS Price
-        condition_expression: |
-          state.data.form == "bns_price" && state.data.body.body.survey_type != "practice"
-        enabled: true
-      Triage-jobs->BNS-2B-BNS-Survey:
-        source_job: Triage-jobs
-        target_job: BNS-2B-BNS-Survey
-        condition_type: js_expression
-        condition_label: BNS Survey
-        condition_expression: |
-          state.data.form == "bns_survey"
-        enabled: true
-      Triage-jobs->BNS-2C-NRGT---Historical-Version:
-        source_job: Triage-jobs
-        target_job: BNS-2C-NRGT---Historical-Version
-        condition_type: js_expression
-        condition_label: NRGT Historical
-        condition_expression: |
-          state.data.form == "nrgt_historical" && state.data.formName != "NRGT Kahuzi Biega 2019"
-        enabled: true
-      Triage-jobs->BNS-2D-NRGT-2019:
-        source_job: Triage-jobs
-        target_job: BNS-2D-NRGT-2019
-        condition_type: js_expression
-        condition_label: NRGT Current
-        condition_expression: |
-          state.data.form == "nrgt_current"  && state.data.body.body.survey_type != "practice"
-        enabled: true
-      Triage-jobs->BNS-2E-NRGT---Historical-Version-2-2022:
-        source_job: Triage-jobs
-        target_job: BNS-2E-NRGT---Historical-Version-2-2022
-        condition_type: js_expression
-        condition_label: NGRT Historical
-        condition_expression: |
-          state.data.form == "nrgt_historical" && state.data.formName == "NRGT Kahuzi Biega 2019"
         enabled: true
