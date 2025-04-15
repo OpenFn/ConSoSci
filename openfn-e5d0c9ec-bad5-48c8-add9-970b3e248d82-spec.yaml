@@ -1,6 +1,6 @@
 name: social-sciences
 description: |
-  Workflows for WCS & Partners in Social Sciences
+  Data integration workflows for WCS social sciences data. Used to transfer BNS & NRGT data from KoboToolbox forms to the WCS Programs MS SQL database.
 
 collections:
   mydata:
@@ -1471,6 +1471,27 @@ workflows:
         target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
         enabled: false
+  Test-Martin:
+    name: Test Martin
+    jobs:
+      New-job:
+        name: New job
+        adaptor: '@openfn/language-common@latest'
+        credential: null
+        body: |
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      webhook->New-job:
+        source_trigger: webhook
+        target_job: New-job
+        condition_type: always
+        enabled: true
   x_A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
     name: x_A1 Generate Jobs DB Tables and Dictionary AUTO
     jobs:

@@ -1,10 +1,10 @@
 {
   "id": "e5d0c9ec-bad5-48c8-add9-970b3e248d82",
   "name": "social-sciences",
-  "description": "Workflows for WCS & Partners in Social Sciences\n",
+  "description": "Data integration workflows for WCS social sciences data. Used to transfer BNS & NRGT data from KoboToolbox forms to the WCS Programs MS SQL database.\n",
   "concurrency": null,
   "inserted_at": "2025-03-10T07:28:21Z",
-  "updated_at": "2025-04-15T12:10:45Z",
+  "updated_at": "2025-04-15T12:19:31Z",
   "project_credentials": {
     "rediet@openfn.org-Rediet-Googlesheet": {
       "id": "8f098581-1fba-449e-b7e5-49d7e8edc66b",
@@ -442,6 +442,37 @@
           "id": "2e483885-f409-4328-8a61-e1d7fb41a0b0",
           "target_job_id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
           "source_trigger_id": "6b373324-0767-4bc2-a668-1d4e26bd6e9c",
+          "condition_type": "always"
+        }
+      }
+    },
+    "Test-Martin": {
+      "id": "d2006259-f990-406f-b63d-38ad3ad834f4",
+      "name": "Test Martin",
+      "inserted_at": "2025-04-15T12:24:55.378744Z",
+      "lock_version": 1,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "1779d825-f58f-481f-8c2f-3b6338dad750",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "New-job": {
+          "id": "3438fb91-916d-45a9-824d-8bb11baf5e4a",
+          "name": "New job",
+          "body": "// Check out the Job Writing Guide for help getting started:\n// https://docs.openfn.org/documentation/jobs/job-writing-guide\n",
+          "adaptor": "@openfn/language-common@latest",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "webhook->New-job": {
+          "enabled": true,
+          "id": "89641e06-7eea-4768-8313-4ef5e889a7e7",
+          "target_job_id": "3438fb91-916d-45a9-824d-8bb11baf5e4a",
+          "source_trigger_id": "1779d825-f58f-481f-8c2f-3b6338dad750",
           "condition_type": "always"
         }
       }
