@@ -1164,7 +1164,9 @@ workflows:
         condition_type: js_expression
         condition_label: BNS Price
         condition_expression: |
-          state.data.form == "bns_price"
+          state.data.form === "bns_price" && 
+          state.data.body?.survey_type && 
+          state.data.body.survey_type !== "practice"
         enabled: true
       Triage-jobs->BNS-2B-BNS-Survey:
         source_job: Triage-jobs
@@ -1172,7 +1174,9 @@ workflows:
         condition_type: js_expression
         condition_label: BNS Survey
         condition_expression: |
-          state.data.form == "bns_survey"
+          state.data.form == "bns_survey" && 
+          state.data.body?.survey_type && 
+          state.data.body.survey_type !== "practice"
         enabled: true
       Triage-jobs->BNS-2C-NRGT---Historical-Version:
         source_job: Triage-jobs
@@ -1188,7 +1192,9 @@ workflows:
         condition_type: js_expression
         condition_label: NRGT Current
         condition_expression: |
-          state.data.form == "nrgt_current"
+          state.data.form == "nrgt_current" && 
+          state.data.body?.survey_type && 
+          state.data.body.survey_type !== "practice"
         enabled: true
       Triage-jobs->BNS-2E-NRGT---Historical-Version-2-2022:
         source_job: Triage-jobs
