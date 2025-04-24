@@ -2,7 +2,8 @@
 getForms({}, state => {
   //ALL KEYWORDS:
   //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
+console.log('Raw Kobo response:');
+  console.log(JSON.stringify(state.data, null, 2));
   //BNS KEYWORDS ONLY
   const keywords = ['price', 'prix', 'bns', 'nrgt'];
 
