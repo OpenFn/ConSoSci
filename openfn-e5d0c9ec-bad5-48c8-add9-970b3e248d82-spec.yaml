@@ -15,23 +15,23 @@ credentials:
   ddetoeuf@wcs.org-WCS-Kobo-account:
     name: WCS Kobo account
     owner: ddetoeuf@wcs.org
-  rediet@openfn.org-Invalid-WCS-MSSQL-Test-DB:
-    name: Invalid WCS MSSQL Test DB
+  ddetoeuf@wcs.org-WCS-Kobo-account-for-form-monitoring:
+    name: WCS Kobo account for form monitoring
+    owner: ddetoeuf@wcs.org
+  ddetoeuf@wcs.org-wcsprograms-db:
+    name: wcsprograms db
+    owner: ddetoeuf@wcs.org
+  rediet@openfn.org-OpenFn-Kobo-Toolbox---WCS-access:
+    name: OpenFn Kobo Toolbox - WCS access
     owner: rediet@openfn.org
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
-  rediet@openfn.org-WCS-Kobo:
-    name: WCS Kobo
-    owner: rediet@openfn.org
-  rediet@openfn.org-WCS-Kobo-Raw:
-    name: WCS Kobo Raw
-    owner: rediet@openfn.org
-  rediet@openfn.org-WCS-Kobo-Raw-with-URL:
-    name: WCS Kobo Raw with URL
-    owner: rediet@openfn.org
   rediet@openfn.org-WCS-MSSQL-Test-DB:
     name: WCS MSSQL Test DB
+    owner: rediet@openfn.org
+  rediet@openfn.org-WCS-Programs-Database-central-db:
+    name: WCS Programs Database central db
     owner: rediet@openfn.org
 workflows:
   "1.1-Get-BNS-FormsList-(Ongoing)":
@@ -74,7 +74,7 @@ workflows:
 
             // Set a manual cursor if you'd like to only fetch data after this date...
             //e.g., '2023-01-01T23:51:45.491+01:00'
-            const manualCursor = '2024-12-06T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
+            const manualCursor = '2025-05-15T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
             console.log('manualCursor defined?', manualCursor);
             
             //...otherwise the job will use this dynamicCursor
@@ -184,7 +184,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
-        enabled: false
+        enabled: true
     edges:
       cron->Get-Forms-List:
         source_trigger: cron
@@ -366,7 +366,7 @@ workflows:
       BNS-2A-BNS-Price:
         name: BNS-2A BNS Price
         adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           // NOTE: This data cleaning operation returns state, modified as needed.
           fn(state => {
@@ -497,7 +497,7 @@ workflows:
       BNS-2B-BNS-Survey:
         name: BNS 2B BNS Survey
         adaptor: '@openfn/language-mssql@2.6.1'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           // NOTE: This data cleaning operation returns state, modified as needed.
 
@@ -813,7 +813,7 @@ workflows:
       BNS-2C-NRGT---Historical-Version:
         name: BNS-2C NRGT - Historical Version
         adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           // NOTE: This data cleaning operation returns state, modified as needed.
           alterState(state => {
@@ -911,7 +911,7 @@ workflows:
       BNS-2D-NRGT-2019:
         name: BNS-2D NRGT 2019
         adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           // NOTE: This data cleaning operation returns state, modified as needed.
           alterState(state => {
@@ -1021,7 +1021,7 @@ workflows:
       BNS-2E-NRGT---Historical-Version-2-2022:
         name: BNS-2E NRGT - Historical Version 2 2022
         adaptor: '@openfn/language-mssql@3.0.0'
-        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           fn(state => {
             try {
@@ -1210,7 +1210,7 @@ workflows:
       FS1---Get-Forms:
         name: FS1 - Get Forms
         adaptor: '@openfn/language-kobotoolbox@2.1.0'
-        credential: rediet@openfn.org-WCS-Kobo-Raw-with-URL
+        credential: rediet@openfn.org-OpenFn-Kobo-Toolbox---WCS-access
         body: |
           //Check Kobo account for forms with these matching keywords
           getForms({}, state => {
@@ -1455,7 +1455,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 0 * * *'
-        enabled: false
+        enabled: true
     edges:
       cron->FS1---Get-Forms:
         source_trigger: cron
@@ -1477,27 +1477,6 @@ workflows:
         target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
         enabled: false
-  Test-Martin:
-    name: Test Martin
-    jobs:
-      New-job:
-        name: New job
-        adaptor: '@openfn/language-common@latest'
-        credential: null
-        body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->New-job:
-        source_trigger: webhook
-        target_job: New-job
-        condition_type: always
-        enabled: true
   x_A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
     name: x_A1 Generate Jobs DB Tables and Dictionary AUTO
     jobs:
