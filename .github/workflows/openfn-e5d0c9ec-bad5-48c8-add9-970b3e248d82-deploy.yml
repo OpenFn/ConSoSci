@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - v2
 
 concurrency:
   group: openfn-deployment
