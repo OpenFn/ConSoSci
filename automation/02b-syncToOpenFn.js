@@ -86,7 +86,7 @@ fn(state => {
           DatasetId: "dataValue('_xform_id_string')",
           LastUpdated: 'new Date().toISOString()',
         };
-        for (x in values) paths.push(values[x]);
+        for (const x in values) paths.push(values[x]);
         break;
       }
       // end of master parent table
@@ -334,90 +334,82 @@ fn(state => {
   return { ...state, expression };
 });
 
-// Get existing triggers for this project.
+// Get existing workflows for this project.
+get(`api/projects/${$.projectId}/workflows`);
+
 fn(state => {
-  return request(
-    {
-      method: 'get',
-      path: 'triggers',
-      params: {
-        project_id: state.projectId,
-      },
-    },
-    next => ({ ...next, triggers: next.data })
-  )(state);
-});
+  // Find workflow with the following properties
+  const jobName = `auto-${state.prefixes}${state.tableId}`;
+  const workflow = state.data.workflows.find(
+    w => w.name === jobName && w.project_id === state.projectId
+  );
 
-// Get existing jobs for this project.
-fn(state => {
-  return request(
-    {
-      method: 'get',
-      path: 'jobs',
-      params: {
-        project_id: state.projectId,
-      },
-    },
-    next => ({ ...next, jobs: next.data.filter(job => !job.archived) })
-  )(state);
-});
+  if (workflow) {
+    const job = workflow.jobs.find(j => j.name === jobName);
+    //Update job body with new expression
+    job.body = state.expression;
+    // Build a new workflow object with the updated job
+    workflow.jobs = [job];
+    return { ...state, workflow };
+  } else {
+    const jobId = util.uuid();
+    const triggerId = util.uuid();
+    const newWorkflow = {
+      name: jobName,
+      project_id: state.projectId,
+      edges: [
+        {
+          condition_type: 'always',
+          condition_expression: null,
+          condition_label: null,
+          enabled: true,
+          source_trigger_id: triggerId,
+          target_job_id: jobId,
+        },
+      ],
+      jobs: [
+        {
+          id: jobId,
+          body: state.expression,
+          name: jobName,
+          adaptor: '@openfn/language-mssql@v2.6.11',
+        },
+      ],
+      triggers: [
+        {
+          id: triggerId,
+          comment: null,
+          custom_path: null,
+          cron_expression: '0 */3 * * *',
+          type: 'cron',
+          enabled: true,
+        },
+      ],
+    };
 
-// Create or update the trigger to detect submissions from this form.
-fn(state => {
-  const { triggers, prefixes, tableId, triggerCriteria, projectId } = state;
-  const triggerNames = triggers.map(t => t.name);
-
-  const name = `auto/${prefixes}${tableId}`;
-  const criteria = triggerCriteria;
-  const triggerIndex = triggerNames.indexOf(name);
-
-  const trigger = {
-    project_id: projectId,
-    name,
-    type: 'message',
-    criteria,
-  };
-
-  if (triggerIndex === -1) {
-    console.log('Inserting trigger.');
-    return request(
-      {
-        method: 'post',
-        path: 'triggers',
-        data: { trigger },
-      },
-      next => ({ ...next, triggers: [...next.triggers, next.data] })
-    )(state);
+    return { ...state, newWorkflow };
   }
-
-  console.log('Trigger already existing.');
-  return state;
 });
 
-// Create or update the job for handling submissions from this form.
-fn(state => {
-  const { expression, prefixes, tableId, jobs, triggers, projectId } = state;
-
-  console.log('Inserting/updating job: ', `auto/${prefixes}${tableId}`);
-
-  const jobNames = jobs.map(j => j.name);
-  const triggersName = triggers.map(t => t.name);
-  const name = `auto/${prefixes}${tableId}`;
-  const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-  const triggerIndex = triggersName.indexOf(name);
-  const triggerId = triggers[triggerIndex].id;
-
-  const method = jobIndex !== -1 ? 'put' : 'post';
-  const path = method === 'put' ? `jobs/${jobs[jobIndex].id}` : 'jobs/';
-
-  const job = {
-    adaptor: 'mssql',
-    adaptor_version: 'v2.6.11',
-    expression,
-    name,
-    project_id: projectId,
-    trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-  };
-
-  return request({ method, path, data: { job } })(state);
-});
+// Update existing workflow
+fnIf(
+  $.workflow,
+  put(`api/projects/${$.projectId}/workflows/${$.workflow.id}`, state => {
+    console.log(
+      'Updating existing workflow: ',
+      `auto-${state.prefixes}${state.tableId}`
+    );
+    return state.workflow;
+  })
+);
+// Create new workflow
+fnIf(
+  $.newWorkflow,
+  post(`api/projects/${$.projectId}/workflows/`, state => {
+    console.log(
+      'Inserting a new workflow: ',
+      `auto-${state.prefixes}${state.tableId}`
+    );
+    return state.newWorkflow;
+  })
+);
