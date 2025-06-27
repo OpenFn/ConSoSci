@@ -12,6 +12,9 @@ credentials:
   aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances:
     name: Asana API Token - AK WCS Grievances
     owner: aleksa@openfn.org
+  ddetoeuf@wcs.org-Diane-GoogleSheet:
+    name: Diane GoogleSheet
+    owner: ddetoeuf@wcs.org
   ddetoeuf@wcs.org-WCS-Kobo-account:
     name: WCS Kobo account
     owner: ddetoeuf@wcs.org
@@ -27,6 +30,9 @@ credentials:
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
+  rediet@openfn.org-Rediet-Googlesheet2:
+    name: Rediet Googlesheet2
+    owner: rediet@openfn.org
   rediet@openfn.org-WCS-MSSQL-Test-DB:
     name: WCS MSSQL Test DB
     owner: rediet@openfn.org
@@ -40,12 +46,12 @@ workflows:
       Get-Forms-List:
         name: Get Forms List
         adaptor: '@openfn/language-googlesheets@2.3.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
           // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
           getValues(
-             '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE',
+             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
             'wcs-bns-DEPLOYED!A:L', //get Deployed forms list from Sheet
             state => {
               const [headers, ...values] = state.data.values;
@@ -202,7 +208,7 @@ workflows:
       Get-FormsList:
         name: Get FormsList
         adaptor: '@openfn/language-googlesheets@2.3.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
@@ -310,7 +316,7 @@ workflows:
           //**********************************************************//
           each(dataPath('surveys[*]'), state => {
             const { url, tag, formId, name, owner } = state.data;
-            const query = "&query={\"start\":{\"$gte\":\"2021-10-29T00:00:00.000Z\"}}"
+            const query = "&query={\"start\":{\"$gte\":\"2020-10-29T00:00:00.000Z\"}}"
             return get(`${url}${query}`, {}, state => {
               console.log(state.data.result)
               state.data.submissions = state.data.results.map((submission, i) => {
@@ -1243,10 +1249,10 @@ workflows:
       FS2---Get-List-from-Sheets:
         name: FS2 - Get List from Sheets
         adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
-            '1xexwj6HKJGHJM-sOzIOGqPHolgpdnp0GmjMIXwoV7OE', //googlesheet id
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
             'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
           );
           fn(state => {
@@ -1283,7 +1289,7 @@ workflows:
       FS3---Update-Spreadsheet-with-New-Forms-Shared:
         name: FS3 - Update Spreadsheet with New Forms Shared
         adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: rediet@openfn.org-Rediet-Googlesheet
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
           fn(state => {
@@ -1391,38 +1397,49 @@ workflows:
         body: |
           //This job will add a task to Asana if a new Kobo form was shared
           fn(state => {
-            console.log('formLastModifiedDate:: ', state.formLastModified); 
-            const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
-              .toISOString()
-              .split('T')[0];
+            console.log('Preparing Form Sharing task updates for Asana... ');
 
-            state.asanaTasks = state.activeForms.map(form => {
+            state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {
+              const dateModified = new Date(form.date_deployed);
+              const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0];
               return {
                 name: `New form added to OpenFn: ${form.name}`,
                 approval_status: 'pending',
                 projects: ['1198901998266253'],
                 assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
                 assignee: '1208302456826465',
-                due_on: dueDate,
+                due_on: deployedDatePlus5,
                 notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
-            });
+            }) : [];
 
-            state.archivedFormsTasks = state.archivedForms.map(form => {
+            const yesterday = new Date();
+              yesterday.setDate(yesterday.getDate() - 1);
+              yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday
+
+            state.archivedFormsTasks = state.archivedForms
+            .filter(form => new Date(form.date_modified) > yesterday)
+            .map(form => {
+              const dateModified = new Date(form.date_modified);
+              const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0];
               return {
                 name: `Form archived: ${form.name}`,
                 projects: ['1198901998266253'],
                 assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
                 assignee: '1208302456826465',
-                due_on: dueDate,
+                due_on: modifiedDatePlus5,
                 notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
             });
 
             console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
-            console.log('New form alert tasks to upsert:: ', state.asanaTasks);
+            //console.log('New form alert tasks to upsert:: ', state.asanaTasks);
             console.log(
-              '# of Archibed Form Asana Tasks to add:: ',
+              '# of Archived Form Asana Tasks to add:: ',
               state.archivedFormsTasks.length
             );
             console.log(
@@ -1451,6 +1468,68 @@ workflows:
             })
           );
 
+          // //This job will add a task to Asana if a new Kobo form was shared
+          // fn(state => {
+          //   console.log('formLastModifiedDate:: ', state.formLastModified); 
+          //   const dueDate = new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000)
+          //     .toISOString()
+          //     .split('T')[0];
+
+          //   state.asanaTasks = state.activeForms.map(form => {
+          //     return {
+          //       name: `New form added to OpenFn: ${form.name}`,
+          //       approval_status: 'pending',
+          //       projects: ['1198901998266253'],
+          //       assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+          //       assignee: '1208302456826465',
+          //       due_on: dueDate,
+          //       notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+          //     };
+          //   });
+
+          //   state.archivedFormsTasks = state.archivedForms.map(form => {
+          //     return {
+          //       name: `Form archived: ${form.name}`,
+          //       projects: ['1198901998266253'],
+          //       assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+          //       assignee: '1208302456826465',
+          //       due_on: dueDate,
+          //       notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+          //     };
+          //   });
+
+          //   console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
+          //   console.log('New form alert tasks to upsert:: ', state.asanaTasks);
+          //   console.log(
+          //     '# of Archibed Form Asana Tasks to add:: ',
+          //     state.archivedFormsTasks.length
+          //   );
+          //   console.log(
+          //     'Archived form alert tasks to upsert:: ',
+          //     state.archivedFormsTasks
+          //   );
+          //   return state;
+          // });
+
+          // //upsert Asana task if new form shared notification needed
+          // each(
+          //   '$.asanaTasks[*]',
+          //   upsertTask('1198901998266253', {
+          //     //project_id
+          //     externalId: 'name',
+          //     data: state => state.data,
+          //   })
+          // );
+
+          // each(
+          //   '$.archivedFormsTasks[*]',
+          //   upsertTask('1198901998266253', {
+          //     //project_id
+          //     externalId: 'name',
+          //     data: state => state.data,
+          //   })
+          // );
+
     triggers:
       cron:
         type: cron
@@ -1476,7 +1555,7 @@ workflows:
         source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
         target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
-        enabled: false
+        enabled: true
   x_A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
     name: x_A1 Generate Jobs DB Tables and Dictionary AUTO
     jobs:
