@@ -8,6 +8,12 @@ credentials:
   aleksa@openfn.org-WCS-GRM-Kobo-Account:
     name: WCS GRM Kobo Account
     owner: aleksa@openfn.org
+  rediet@openfn.org-Rediet-Googlesheet:
+    name: Rediet Googlesheet
+    owner: rediet@openfn.org
+  rediet@openfn.org-WCS-GRM-Kobo---RAW-cred:
+    name: WCS GRM Kobo - RAW cred
+    owner: rediet@openfn.org
   rediet@openfn.org-WCS-Programs-Database-central-db:
     name: WCS Programs Database central db
     owner: rediet@openfn.org
@@ -141,20 +147,20 @@ workflows:
         target_job: A-GIDs-and-Mappings-for-Upsert
         condition_type: always
         enabled: true
-  "AAO-1.-Get-FormsList-(Ongoing)":
-    name: 'AAO 1. Get FormsList (Ongoing)'
+  "1.-Get-FormsList-(Ongoing)":
+    name: '1. Get FormsList (Ongoing)'
     jobs:
       GRM-Fetch-1-Get-FormsList-Ongoing:
         name: GRM-Fetch-1 Get FormsList Ongoing
         adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
+        credential: rediet@openfn.org-Rediet-Googlesheet
         body: |
           //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
           // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
           // This can be run on-demand at any time by clicking "run" //
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
+            'grm-DEPLOYED!A:P', //get Deployed GRM forms list from Sheet
             state => {
               const [headers, ...values] = state.data.values;
 
@@ -241,7 +247,7 @@ workflows:
             //   .map(s => s.body.end)
             //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
 
-            lastEnd = new Date().toISOString();
+            let lastEnd = new Date().toISOString();
 
             console.log('New cursor value:', lastEnd);
             return { ...state, references: [], lastEnd };
@@ -250,7 +256,7 @@ workflows:
       GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
         name: GRM-Fetch-2 Get Kobo Forms Ongoing
         adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
+        credential: rediet@openfn.org-WCS-GRM-Kobo---RAW-cred
         body: |
           // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
           // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
@@ -258,6 +264,16 @@ workflows:
           fn(state => {
             state.errors = [];
             state.globalIndex = 0;
+            state.regionKeyMap = {
+              'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',
+              'Global': 'glo_workflowUrl',
+              'Andes, Amazon & Orinoco': 'aao_workflowUrl',
+              'Central Africa & Gulf of Guinea': 'cag_workflowUrl',
+              'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',
+              'Patagonia': 'pat_workflowUrl',
+              'South Asia and Bay of Bengal': 'sab_workflowUrl',
+              'Sudano-Sahel': 'sus_workflowUrl'
+            };
             return state;
           });
 
@@ -283,17 +299,30 @@ workflows:
               //Once we fetch the data, we want to post each individual Kobo survey
               //back to the OpenFn inbox to run through the jobs =========================
               return each(dataPath('submissions[*]'), state => {
+                const formMeta = state.sheetsData.find(row => row.uid === formId);
+                if (!formMeta) throw new Error(`No metadata for formId ${formId}`);
+
+                const regionKey = state.regionKeyMap[formMeta.Region];
+                const workflowUrl = state.configuration[regionKey];
+
+                if (!workflowUrl) {
+                  throw new Error(`No workflow URL configured for region: "${formMeta.Region}"`);
+                }
                 console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/f5e25130-0492-4165-92c9-29865c770b15", {
+                console.log(`Submission id:: ${state.data.body._id}`);
+
+                console.log("workflowUrl " + formMeta.Region, ": ", workflowUrl); //TODO remove
+                return post(workflowUrl, {
                   body: state => state.data,
                 })(state);
               })(state);
             })(state).catch(err => {
-                state.errors.push({
+               const errors = state.errors || []; 
+               errors.push({
                   formId,
                   message: err.message,
                 });
+                state.errors = errors;
                 console.log(`Error fetching submissions from  ${formId}::`, err.message);
                 return state;
               });
@@ -328,9 +357,268 @@ workflows:
         target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
         condition_type: on_job_success
         enabled: true
-  AAO-2.-Sync-Forms-to-Asana:
-    name: AAO 2. Sync Forms to Asana
+  AAO-Sync-Forms-to-Asana:
+    name: AAO Sync Forms to Asana
     jobs:
+      Triage-jobs:
+        name: Triage jobs
+        adaptor: '@openfn/language-common@2.5.0'
+        credential: null
+        body: |
+          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
+            const formatMapping = {
+               Country_Bolivia: '1203150662724252',
+            Country_Brazil: '1203150662724253',
+            Country_Colombia: '1203150662724254',
+            Country_Ecuador: '1203150662724255',
+            Country_Peru: '1203150662724256',
+            Country_Indeterminado: '1203150662724257',
+            Donor_AFD: '1207470695842883',
+            Donor_BAF: '1207470914898964',
+            Donor_BEF: '1207470928895774',
+            Donor_EU: '1207470928895775',
+            Donor_GEF: '1207470928895776',
+            Donor_INL: '1207470928895777',
+            Donor_LLF: '1207470928895778',
+            Donor_NOAA: '1207470928895779',
+            Donor_MACP: '1207470928895780',
+            'Donor_REDD+': '1207470928895781',
+            Donor_USAID: '1207470928895782',
+            'Donor_World Bank': '1207551210258645',
+            WcsStaff_Yes: '1207934086722710',
+            WcsStaff_No: '1207934086722711',
+            ReportFormat_InPerson: '1202330347493011',
+            ReportFormat_FocalPoint: '1207724960884497',
+            ReportFormat_VoiceCall: '1202330347494027',
+            ReportFormat_Hotline: '1202330347501419',
+            ReportFormat_TextMessage: '1202330347498273',
+            ReportFormat_SuggestionBox: '1202330347499327',
+            ReportFormat_Email: '1202330347502485',
+            ReportFormat_Letter: '1202330347503544',
+            ReportFormat_OnlineForm: '1207934414764297',
+            ReportFormat_Other: '1203830536105154',
+            Anonymous_Anonymous: '1203977086782816',
+            Gender_Male: '1202330737362427',
+            Gender_Female: '1202330737362428',
+            'Gender_Mixed gender (group)': '1202330737362429',
+            'Gender_Unknown gender': '1202330737362430',
+            'Gender_Other gender': '1207852335266397',
+            'Gender_Prefer not to report': '1207852335266398',
+            IndigenousPeople_Yes_ips: '1202330755980982',
+            IndigenousPeople_No_ips: '1202330755984093',
+            IndigenousPeople_unknown_ips: '1202330755985164',
+            IndigenousPeople_mixed_group: '1207724962870243',
+            'Age_<18': '1202330714895607',
+            'Age_19-35': '1202330714895608',
+            'Age_36-50': '1202330714895609',
+            'Age_>50': '1202330714895610',
+            Age_mixed_age: '1202330714895611',
+            Age_unknown_age: '1202330714895612',
+            GrievanceAgainst_Wcs: '1202330466059593',
+            GrievanceAgainst_GovernmentPartner: '1202330466059594',
+            GrievanceAgainst_PrivateSectorPartner: '1202330466059595',
+            GrievanceAgainst_CivilSocietyPartner: '1202330466059596',
+            GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',
+            ConfidentialitySensitivity_Yes: '1202330821410493',
+            ConfidentialitySensitivity_No: '1202330821410494',
+            GrievanceType_RelatedProjects: '1187634487549316',
+            GrievanceType_LandTerritory: '1187634487549317',
+            GrievanceType_WildlifeConflict: '1187634487549318',
+            GrievanceType_OtherIssues: '1201884389902967',
+            GrievanceType_Suggestion: '1201884389905045',
+            GrievanceReportFormat_InPerson: '1192836094355011',
+            GrievanceReportFormat_PhoneCall: '1192836094355012',
+            GrievanceReportFormat_TextMessage: '1192847692374160',
+            GrievanceReportFormat_SuggestionBox: '1207122874564877',
+            GrievanceReportFormat_Email: '1192847692376214',
+            GrievanceReportFormat_PostalLetter: '1192847692376223',
+            GrievanceReportFormat_DirectSubmission: '1207001942658468',
+            GrievanceReportFormat_OnlineGlobalGRMForm: '1205980239099429'
+          };
+
+            return { ...state, formatMapping };
+          });
+
+          // console.log("projectid:");
+          // console.log(dataValue('projectid')(state));
+          fn(state =>
+          upsertTask(
+              dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
+            //'1202329899911590', //hardcoded project id
+            
+            {
+              externalId: "name", // Asana external Id field name (e.g., 'gid')
+              data: {
+                name: state =>
+                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                  `${dataValue('body.GrievanceID')(state)}`,
+                projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
+                //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
+                notes: dataValue('body.DescriptioGrievance'),
+                custom_fields: {
+                          // Fields  belonging to open-ended questions (qxns that accept free text input)
+          '1203711959959076': dataValue('body.StaffName'),
+          '1203712049265363': dataValue('body.StaffEmail'),
+          '1203150636879068': dataValue('body.DateGrievanceReceived'), // this is Submission Date in Asana
+          '1203712064304976': dataValue('body.ReporterFullName'),
+          '1203712060006636': dataValue('body.ReporterContactInformation'),
+          '1201884379104074': dataValue('body.GrievanceID'),
+          '1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
+          '1202329899911619': dataValue('body.WhereGrievance'),
+          '1203984479412129': dataValue('body.WhenGrievance'),
+          '1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
+          '1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
+          '1203829521790026': dataValue('body.DescriptioGrievance'),
+          '1203712150593482': dataValue('body.HarmSuffered'),
+          '1203712149463009': dataValue('body.ReliefRequested'),
+          '1203150636874723': dataValue('body.OneDriveFolder'),
+          '1203830309880883': dataValue('body.WhatProject'),
+          '1203829521790031': dataValue('body.Suggestion'),
+
+          // Fields  belonging to questions with dropdown or multiple choice
+          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
+          '1203150662724247': state => state.formatMapping["SubmissionType_" + dataValue('body.SubmissionType')(state)],
+          '1202593715272940': state => state.formatMapping["Grade_" + dataValue('body.Grade')(state)],
+          '1204269608862901': state => state.formatMapping["Classification_" + dataValue('body.Classification')(state)],
+          '1203150662724251': state => state.formatMapping["Country_" + dataValue('body.Country')(state)],
+          '1207470695842882': state => state.formatMapping["Donor_" + dataValue('body.WhatDonor')(state)],
+          '1207934086722709': state => state.formatMapping["WcsStaff_" + dataValue('body.WcsStaff')(state)],
+          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+          '1203977086782815': state => state.formatMapping["Anonymous_" + dataValue('body.Anonymous')(state)],
+          '1202330737362426': state => state.formatMapping["Gender_" + dataValue('body.Gender')(state)],
+          '1202330755979944': state => state.formatMapping["IndigenousPeople_" + dataValue('body.IndigenousPeople')(state)],
+          '1202330714895606': state => state.formatMapping["Age_" + dataValue('body.Age')(state)],
+          '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
+          '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
+          '1187634487549315': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
+          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+           }
+              },
+            },
+            state => {
+              console.log(JSON.stringify(state.data, null, 2)); //log data
+              return state;
+            }
+          )(state)
+          .catch(e => {
+            console.log('Asana says', JSON.stringify(e.response.data, null, 2));
+            throw e;
+          })
+          )
+
+      GRM04b-Upsert-AAO-Int-Grievances:
+        name: GRM04b Upsert AAO Int Grievances
+        adaptor: '@openfn/language-asana@2.0.0'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        body: |
+          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
+            const formatMapping = {
+            GrievanceOrSuggestion_Grievance: '1203830364115982',
+            GrievanceOrSuggestion_Suggestion: '1203830364115983',
+            Country_Bolivia: '1203830401179864',
+            Country_Brazil: '1203830401179865',
+            Country_Colombia: '1203830401179866',
+            Country_Ecuador: '1203830401179867',
+            Country_Peru: '1203830401179868',
+            Country_Indeterminado: '1203830401179869',
+            ReportFormat_InPerson: '1202330347493011',
+            ReportFormat_VoiceCall: '1202330347494027',
+            ReportFormat_TextMessage: '1202330347498273',
+            ReportFormat_Email: '1202330347502485',
+            ReportFormat_PostalLetter: '1202330347503544',
+            ReportFormat_Other: '1203830536105154',
+            ReportFormat_SuggestionBox: '1202330347499327',
+            GrievanceAgainst_Wcs: '1202330466059593',
+            GrievanceAgainst_GovernmentPartner: '1202330466059594',
+            GrievanceAgainst_PrivateSectorPartner: '1202330466059595',
+            GrievanceAgainst_CivilSocietyPartner: '1202330466059596',
+            GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',
+            ConfidentialitySensitivity_Yes: '1202330821410493',
+            ConfidentialitySensitivity_No: '1202330821410494',
+            'GrievanceStatus _BeingReviewed': '1192850232576003',
+            'GrievanceStatus _NotAssigned': '1187328718760775',
+            'GrievanceStatus _Dismissed': '1187674280676653',
+            'GrievanceStatus _OnHold': '1187328718760778',
+            'GrievanceStatus _BeingInvestigated': '1187328718760776',
+            'GrievanceStatus _Resolved': '1187328718760777',
+            'GrievanceStatus _RemediationBeingMonitored': '1192772373678248',
+            GrievanceType_RelatedProjects: '1187634487549316',
+            GrievanceType_LandTerritory: '1187634487549317',
+            GrievanceType_WildlifeConflict: '1187634487549318',
+            GrievanceType_OtherIssues: '1201884389902967',
+            GrievanceType_Suggestion: '1201884389905045',
+            GrievanceReportFormat_InPerson: '1192836094355011',
+            GrievanceReportFormat_VoiceCall: '1192836094355012',
+            GrievanceReportFormat_TextMessage: '1192847692374160',
+            GrievanceReportFormat_Email: '1192847692376214',
+            GrievanceReportFormat_PostalLetter: '1192847692376223',
+            'Confidentiality or Sensitivity_Yes': '1203830401198952',
+            'Confidentiality or Sensitivity_No': '1203830401198953'
+            };
+
+            return { ...state, formatMapping };
+          });
+
+
+          // console.log("projectid:");
+          // console.log(dataValue('projectid')(state));
+          fn(state =>
+          upsertTask(
+              dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
+            //'1202329899911590', //hardcoded project id
+            
+            {
+              externalId: "name", // Asana external Id field name (e.g., 'gid')
+              data: {
+                name: state =>
+                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                  `${dataValue('body.ReporterFullName')(state)}_${dataValue('body.WhenGrievance')(state)}`,
+                projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
+                //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
+                notes: dataValue('body.DescriptioGrievance'),
+                custom_fields: {
+                  // Fields  belonging to open-ended questions (qxns that accept free text input)
+          '1203711959959076': dataValue('body.StaffName'),
+          '1203712049265363': dataValue('body.StaffEmail'),
+          '1203830401198936': dataValue('body.DateGrievanceEntered'),
+          '1203712064304976': dataValue('body.ReporterFullName'),
+          '1203712060006636': dataValue('body.ReporterContactInformation'),
+          '1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
+          '1203830309880883': dataValue('body.WhatProject'),
+          '1202329899911619': dataValue('body.WhereGrievance'),
+          '1203984485905764': dataValue('body.WhenGrievance'),
+          '1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
+          '1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
+          //'1203830401179888': dataValue('body.DescriptioGrievance'),
+          '1203712150593482': dataValue('body.HarmSuffered'),
+          '1203712149463009': dataValue('body.ReliefRequested'),
+          '1203830401198931': dataValue('body.Suggestion'),
+          '1201884379104074': dataValue('body.GrievanceID'),
+
+          // Fields  belonging to questions with dropdown or multiple choice
+          '1203830364115981': state => state.formatMapping["GrievanceOrSuggestion_" + dataValue('body.GrievanceOrSuggestion')(state)],
+          '1203830401179863': state => state.formatMapping["Country_" + dataValue('body.Country')(state)],
+          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+          '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
+          '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
+          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
+          '1187634487549315': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
+          '1192836094355010': state => state.formatMapping["GrievanceReportFormat_" + dataValue('body.GrievanceReportFormat')(state)],
+          '1203830401198951': state => state.formatMapping["Confidentiality or Sensitivity_" + dataValue('body.Confidentiality or Sensitivity')(state)],
+                   },
+                },
+            },
+            state => {
+              console.log(JSON.stringify(state.data, null, 2)); //log data
+              return state;
+            }
+          )(state)
+          .catch(e => {
+            console.log('Asana says', JSON.stringify(e.response.data, null, 2));
+            throw e;
+          })
+          )
+
       GRM04-Upsert-AAO-Ext-Grievances:
         name: GRM04 Upsert AAO Ext Grievances
         adaptor: '@openfn/language-asana@2.0.0'
@@ -482,203 +770,29 @@ workflows:
         type: webhook
         enabled: false
     edges:
-      webhook->GRM04-Upsert-AAO-Ext-Grievances:
+      webhook->Triage-jobs:
         source_trigger: webhook
+        target_job: Triage-jobs
+        condition_type: always
+        enabled: true
+      Triage-jobs->GRM04b-Upsert-AAO-Int-Grievances:
+        source_job: Triage-jobs
+        target_job: GRM04b-Upsert-AAO-Int-Grievances
+        condition_type: js_expression
+        condition_label: Old AAO Int form
+        condition_expression: |
+          state.data.formName == "AAO Interno Grievance_Form_20220831"
+        enabled: true
+      Triage-jobs->GRM04-Upsert-AAO-Ext-Grievances:
+        source_job: Triage-jobs
         target_job: GRM04-Upsert-AAO-Ext-Grievances
         condition_type: js_expression
-        condition_label: 4. New AAO Ext form
+        condition_label: New AAO Ext form
         condition_expression: |
           state.data.formName == "Mecanismo de Atención de Peticiones, Quejas y Reclamos"
         enabled: true
-  "CAG-1.-Get-FormsList-(Ongoing)":
-    name: 'CAG 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/db3cc0a3-3009-4cb0-857f-5cb2aa9e0a22", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  CAG-2.-Sync-Forms-to-Asana:
-    name: CAG 2. Sync Forms to Asana
+  CAG-Sync-Forms-to-Asana:
+    name: CAG Sync Forms to Asana
     jobs:
       Transform-data:
         name: Transform data
@@ -1721,195 +1835,8 @@ workflows:
         condition_expression: |
           state.data.formName == "KABOBO GRM"
         enabled: true
-  "EAW-1.-Get-FormsList-(Ongoing)":
-    name: 'EAW 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/49574838-7a92-4850-8e20-b2002bce8734", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  "EAW-2.-Sync-Forms-to-Asana.":
-    name: 'EAW 2. Sync Forms to Asana.'
+  "EAW-Sync-Forms-to-Asana.":
+    name: 'EAW Sync Forms to Asana.'
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -2782,7 +2709,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: true
+        enabled: false
     edges:
       webhook->Triage-jobs:
         source_trigger: webhook
@@ -2861,195 +2788,8 @@ workflows:
           state.data.formName == "GRM Interne Madagascar"
 
         enabled: true
-  "GLO-1.-Get-FormsList-(Ongoing)":
-    name: 'GLO 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/2b8d8b32-928a-40bb-895e-bb11c2660e41", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  GLO-2.-Sync-Forms-to-Asana:
-    name: GLO 2. Sync Forms to Asana
+  GLO-Sync-Forms-to-Asana:
+    name: GLO Sync Forms to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -3219,248 +2959,23 @@ workflows:
           // Check out the Job Writing Guide for help getting started:
           // https://docs.openfn.org/documentation/jobs/job-writing-guide
 
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->Triage-jobs:
-        source_trigger: webhook
-        target_job: Triage-jobs
-        condition_type: always
-        enabled: true
-      Triage-jobs->GRM00-Upsert-TEST-Grievances:
-        source_job: Triage-jobs
-        target_job: GRM00-Upsert-TEST-Grievances
-        condition_type: js_expression
-        condition_label: New TEST form
-        condition_expression: |
-          state.data.formName == "Test WCS FGRM Form"
-        enabled: true
-      Triage-jobs->GRM01-Upsert-WCS-Global-Grievances-in-Asana:
-        source_job: Triage-jobs
-        target_job: GRM01-Upsert-WCS-Global-Grievances-in-Asana
-        condition_type: js_expression
-        condition_label: New WCS Global GRM form
-        condition_expression: |
-          state.data.formName == "WCS Global Grievances & Suggestions"
-        enabled: true
-  GRM02.c-Update-Asana-Task-Aceh:
-    name: GRM02.c Update Asana Task Aceh
-    jobs:
-      GRM02-c-Update-Asana-Task-Aceh:
-        name: GRM02 c Update Asana Task Aceh
-        adaptor: '@openfn/language-asana@v3.2.0'
-        credential: null
-        body: |
-          fn(state => {
-            state.grievanceReportFormatMap = {
-              'Verbal/Langsung': '1192836094355011', //InPerson
-              Telepon: '1192836094355012', // PhoneCall
-              Email: '1192847692376214', //Email
-              Sarut: '1192847692376223', //PostalLetter
-              'Kotak Saran': '1207122874564877', //SuggestionBox
-              'Pesan Teks': '1192847692374160', //TextMessage
-              'Pengiriman Langsung': '1207001942658468', //DirectSubmission
-            };
-
-            state.newOrContinuedMap = {
-              Baru: '1207116211136433', //New
-              Lanjutan: '1207116218726092', // Continued
-            };
-
-            state.stakeholderMap = {
-              WCS: '1207122053764074',
-              DKP: '1207122053764075',
-              'BKSDA/Taman Nasional': '1207122053764076',
-              Lainnya: '1207122053764077'
-            };
-
-            state.evidenceMap = {
-              Ada: "1207502226530960",
-              "Tidak Ada": "1207502226530961"
-            }
-
-            state.gradeMap = {
-              0: '1202593715272941',
-              1: '1202593715272942',
-              2: '1202593715272943',
-              3: '1202593715272944',
-              4: '1202593715272945',
-              5: '1202593715272946',
-            };
-
-            state.statusMap = {
-              BeingReviewed: '1192850232576003',
-              NotAssigned: '1187328718760775',
-              Dismissed: '1187674280676653',
-              OnHold: '1187328718760778',
-              BeingInvestigated: '1187328718760776',
-              // Resolved: '1187328718760774',
-              Resolved: '1187328718760777',
-              RemediationBeingMonitored: '1192772373678248',
-              InResolution: '1208167139436055',
-              'Transferred to Human Resources': '1206081287831891'
-            };
-
-            state.categoryComplainantMap = {
-              PAP: '1207001974192804', //PAP
-              'CSO/LSM': '1207001974192805', //CSOS/NGO
-              'Lembaga Pemerintah': '1207001974192806', //Government,
-              'Masyarakat Lokal (bukan PAP)': '1207001974192807', //LocalCommunities
-              Lainnya: '1207001974192808', //OtherCategory
-            };
-            
-            state.followupMap = {
-              'Ya WCS': '1201884189073507', 
-              'Ya Non-WCS': '1201884189073508', 
-              Tidak: '1207122053764079'
-            };
-
-            return state;
-          });
-
-          fn(state => {
-            const { headers } = state.data;
-            const taskIds = Object.keys(state.data).filter(
-              i =>
-                i !== 'headers' &&
-                i !== '' &&
-                i !== '__query_params' &&
-                /^[0-9]+$/.test(i) // returns only numeric ids
-            );
-            
-            console.log(taskIds);
-
-            state.data = taskIds
-              .map(taskId => {
-                const mappedObject = headers.reduce((obj, key, index) => {
-                  obj[key] = state.data[taskId].values[index];
-                  return obj;
-                }, {});
-                return { id: taskId, task: mappedObject };
-              })
-              .flat();
-            console.log(state.data);
-
-            return state;
-          });
-
-          fn(state => {
-            const {
-              categoryComplainantMap,
-              grievanceReportFormatMap,
-              statusMap,
-              newOrContinuedMap,
-              gradeMap,
-              stakeholderMap,
-              evidenceMap,
-              followupMap
-            } = state;
-            state.tasks = state.data.map(({ id, task }) => {
-              console.log(id + " " , task['Tgl Tindak Lanjut Keluhan oleh tim ']);
-              console.log(task['Grade']);
-              console.log(gradeMap[task['Grade']]);
-              console.log(task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']);
-              console.log(followupMap[task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']]);
-              
-              return {
-                id,
-                task: {
-                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-
-                  custom_fields: {
-                    //This tells Asana what fields to update and how to locate them.
-                    //The statements below apply to Asana Fields that are for OPEN ENDED
-                    //i.e. They accept FREE TEXT INPUT from the Kobo Form
-
-                    1207001974192803:
-                      categoryComplainantMap[task['Kategori Pemberi Keluhan']], //Mapped to CategoryComplainant in Asana
-
-                    1201884189073518: task['Topik / Tema Keluhan'], //Mapped to Topic in Asana
-                    1207122053764073:
-                      stakeholderMap[task['Stakeholder yang Bertanggung Jawab Terhadap Keluhan']], //Mapped to Stakeholders Responsible in Asana
-                    1207502226530959: evidenceMap[task['Bukti Pendukung Keluhan']], //Mapped to Grievance Evidence in Asana
-                    1207116211136432:
-                      newOrContinuedMap[task['Keluhan baru atau lanjutan']],
-                    1201884189073512: task['Tgl Tindak Lanjut Keluhan oleh tim '],
-
-                    1201884189073496: task['Nama Proyek/Donor'],
-                    1207116218726094: task['Terjemahan atau penjelasan tambahan'],
-                    1202593715272940: gradeMap[task['Grade']],
-                    1201884189073506: followupMap[task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']],
-                    // 1201884189073506: task['Perlu/Tidak Tindak Lanjut  (WCS)'],
-                    1201884189073516: task['Penyelesaian Keluhan'],
-                    1201884189073514: task['Tgl Pemberian Tanggapan keluhan'],
-                    1187328718760774: statusMap[task['Status Keluhan']],
-                    1207122053764071: task['Program'],
-                  },
-                },
-              };
-            });
-
-            if (state.tasks === 0) {
-              console.log('no new data to sync to Asana');
-            }
-
-            state.allResults = [];
-            return state;
-          });
-
-          each(
-            '$.tasks[*]',
-            updateTask(
-              state => state.data.id,
-              state => state.data.task,
-              state => {
-                state.allResults.push(state.data);
-                return state;
-              }
-            )
-          );
-
-          fn(state => {
-            const ids = state.allResults.map(res => res.gid);
-            if (state.allResults.length > 0) {
-              console.log(
-                `${state.allResults.length} number of tasks to be updated with the following Asana task ids`
-              );
-              console.log(JSON.stringify(ids, null, 2));
-            }
-            return state;
-          });
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->GRM02-c-Update-Asana-Task-Aceh:
-        source_trigger: webhook
-        target_job: GRM02-c-Update-Asana-Task-Aceh
-        condition_type: js_expression
-        condition_label: Changes from GoogleSheet
-        condition_expression: |
-          state.data.notificationType == "gsheet-changes"
-        enabled: true
-  GRM04b.-Upsert-AAO-Int-Grievances:
-    name: GRM04b. Upsert AAO Int Grievances
-    jobs:
-      GRM04b-Upsert-AAO-Int-Grievances:
-        name: GRM04b Upsert AAO Int Grievances
-        adaptor: '@openfn/language-asana@v2.0.0'
-        credential: null
+      TEST-Asana-Update:
+        name: TEST Asana Update
+        adaptor: '@openfn/language-asana@4.1.1'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
-            GrievanceOrSuggestion_Grievance: '1203830364115982',
-            GrievanceOrSuggestion_Suggestion: '1203830364115983',
-            Country_Bolivia: '1203830401179864',
-            Country_Brazil: '1203830401179865',
-            Country_Colombia: '1203830401179866',
-            Country_Ecuador: '1203830401179867',
-            Country_Peru: '1203830401179868',
-            Country_Indeterminado: '1203830401179869',
+            'Grade_Grade 0': '1203958686294707',
+            'Grade_Grade 1': '1203958686294708',
+            'Grade_Grade 2': '1203958686294709',
+            'Grade_Grade 3': '1203958686294710',
+            'Grade_Grade 4': '1203958686294711',
+            'Grade_Grade 5': '1203958686294712',
+            SubmissionType_Grievance: '1203958690339474',
+            SubmissionType_Suggestion: '1203958690339475',
+            SubmissionType_Request: '1203958690339476',
+            SubmissionType_Feedback: '1203958690339477',
             ReportFormat_InPerson: '1202330347493011',
             ReportFormat_VoiceCall: '1202330347494027',
             ReportFormat_TextMessage: '1202330347498273',
@@ -3468,32 +2983,32 @@ workflows:
             ReportFormat_PostalLetter: '1202330347503544',
             ReportFormat_Other: '1203830536105154',
             ReportFormat_SuggestionBox: '1202330347499327',
+            ReportFormat_Hotline: '1202330347501419',
+            SubmissionContext_individual: '1202330732062943',
+            SubmissionContext_group: '1202330732067344',
+            SubmissionContext_passive_observation: '1202330732068565',
+            Gender_male: '1202330737362427',
+            Gender_female: '1202330737362428',
+            Gender_mixed_gender: '1202330737362429',
+            Gender_unknown_gender: '1202330737362430',
+            IndigenousPeople_Yes_ips: '1202330755980982',
+            IndigenousPeople_No_ips: '1202330755984093',
+            IndigenousPeople_unknown_ips: '1202330755985164',
+            'Age_<18': '1202330714895607',
+            'Age_19-35': '1202330714895608',
+            'Age_36-50': '1202330714895609',
+            'Age_>50': '1202330714895610',
+            Age_mixed_age: '1202330714895611',
+            Age_unknown_age: '1202330714895612',
             GrievanceAgainst_Wcs: '1202330466059593',
             GrievanceAgainst_GovernmentPartner: '1202330466059594',
             GrievanceAgainst_PrivateSectorPartner: '1202330466059595',
             GrievanceAgainst_CivilSocietyPartner: '1202330466059596',
             GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',
+            DatePrecision_Yes: '1202330815421248',
+            DatePrecision_No: '1202330815421249',
             ConfidentialitySensitivity_Yes: '1202330821410493',
-            ConfidentialitySensitivity_No: '1202330821410494',
-            'GrievanceStatus _BeingReviewed': '1192850232576003',
-            'GrievanceStatus _NotAssigned': '1187328718760775',
-            'GrievanceStatus _Dismissed': '1187674280676653',
-            'GrievanceStatus _OnHold': '1187328718760778',
-            'GrievanceStatus _BeingInvestigated': '1187328718760776',
-            'GrievanceStatus _Resolved': '1187328718760777',
-            'GrievanceStatus _RemediationBeingMonitored': '1192772373678248',
-            GrievanceType_RelatedProjects: '1187634487549316',
-            GrievanceType_LandTerritory: '1187634487549317',
-            GrievanceType_WildlifeConflict: '1187634487549318',
-            GrievanceType_OtherIssues: '1201884389902967',
-            GrievanceType_Suggestion: '1201884389905045',
-            GrievanceReportFormat_InPerson: '1192836094355011',
-            GrievanceReportFormat_VoiceCall: '1192836094355012',
-            GrievanceReportFormat_TextMessage: '1192847692374160',
-            GrievanceReportFormat_Email: '1192847692376214',
-            GrievanceReportFormat_PostalLetter: '1192847692376223',
-            'Confidentiality or Sensitivity_Yes': '1203830401198952',
-            'Confidentiality or Sensitivity_No': '1203830401198953'
+            ConfidentialitySensitivity_No: '1202330821410494'
             };
 
             return { ...state, formatMapping };
@@ -3512,41 +3027,45 @@ workflows:
               data: {
                 name: state =>
                   //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-                  `${dataValue('body.ReporterFullName')(state)}_${dataValue('body.WhenGrievance')(state)}`,
+                  `${dataValue('body.GrievanceID')(state)}`,
                 projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
                 //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
                 notes: dataValue('body.DescriptioGrievance'),
                 custom_fields: {
-                  // Fields  belonging to open-ended questions (qxns that accept free text input)
-          '1203711959959076': dataValue('body.StaffName'),
-          '1203712049265363': dataValue('body.StaffEmail'),
-          '1203830401198936': dataValue('body.DateGrievanceEntered'),
-          '1203712064304976': dataValue('body.ReporterFullName'),
-          '1203712060006636': dataValue('body.ReporterContactInformation'),
-          '1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
-          '1203830309880883': dataValue('body.WhatProject'),
-          '1202329899911619': dataValue('body.WhereGrievance'),
-          '1203984485905764': dataValue('body.WhenGrievance'),
-          '1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
-          '1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
-          //'1203830401179888': dataValue('body.DescriptioGrievance'),
-          '1203712150593482': dataValue('body.HarmSuffered'),
-          '1203712149463009': dataValue('body.ReliefRequested'),
-          '1203830401198931': dataValue('body.Suggestion'),
-          '1201884379104074': dataValue('body.GrievanceID'),
+                 // Fields  belonging to open-ended questions (qxns that accept free text input)
+                // '1203958690339485': dataValue('body.StaffName'),
+                // '1203958690339489': dataValue('body.CaseID'),
+                // '1203958690339493': dataValue('body.StaffEmail'),
+                // '1203958690339497': dataValue('body.today'), // The Today value in Kobo goes into Submission Date in Asana
+                // '1203958690356245': dataValue('body.ReporterName'),
+                // '1203958690356249': dataValue('body.ReporterContactInformation'),
+                // '1203958690356256': dataValue('body.AuthorityGrievanceReporter'),
+                // '1203958690356261': dataValue('body.WhereGrievance'),
+                // '1203958690356266': dataValue('body.GrievanceDate'),
+                // '1203958690356270': dataValue('body.PartiesInvolvedGrievance'),
+                // '1203958690356274': dataValue('body.LocalAuthoritiesContacted'),
+                // '1203958690374468': dataValue('body.HarmSuffered'),
+                // '1203958690374472': dataValue('body.ReliefRequested'),
+                // '1203958690374476': dataValue('body.OnlineFolder'),
+                // '1203958690374480': dataValue('body.Location'),
+                // '1205016004799740': dataValue('body.SuggestionBoxId'),
+                // '1204411543329531': dataValue('body.SubmissionDate'), // The Submission Date in Kobo goes to the Deposit Date in Asana
+                // '1204398351814004': dataValue('body.BoxCollectionDate'),
+                // '1204398351814002': dataValue('body.SuggestionBoxGps'),
 
-          // Fields  belonging to questions with dropdown or multiple choice
-          '1203830364115981': state => state.formatMapping["GrievanceOrSuggestion_" + dataValue('body.GrievanceOrSuggestion')(state)],
-          '1203830401179863': state => state.formatMapping["Country_" + dataValue('body.Country')(state)],
-          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
-          '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
-          '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
-          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
-          '1187634487549315': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
-          '1192836094355010': state => state.formatMapping["GrievanceReportFormat_" + dataValue('body.GrievanceReportFormat')(state)],
-          '1203830401198951': state => state.formatMapping["Confidentiality or Sensitivity_" + dataValue('body.Confidentiality or Sensitivity')(state)],
-                   },
-                },
+                // // Fields  belonging to questions with dropdown or multiple choice
+                // '1203958686294706': state => state.formatMapping["Grade_" + dataValue('body.Grade')(state)],
+                // '1203958690339473': state => state.formatMapping["SubmissionType_" + dataValue('body.SubmissionType')(state)],
+                // '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+                // '1202330732061901': state => state.formatMapping["SubmissionContext_" + dataValue('body.SubmissionContext')(state)],
+                // '1202330737362426': state => state.formatMapping["Gender_" + dataValue('body.Gender')(state)],
+                // '1202330755979944': state => state.formatMapping["IndigenousPeople_" + dataValue('body.IndigenousPeople')(state)],
+                // '1202330714895606': state => state.formatMapping["Age_" + dataValue('body.Age')(state)],
+                // '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
+                // '1202330815421247': state => state.formatMapping["DatePrecision_" + dataValue('body.DatePrecision')(state)],
+                // '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
+              },
+            },
             },
             state => {
               console.log(JSON.stringify(state.data, null, 2)); //log data
@@ -3564,13 +3083,34 @@ workflows:
         type: webhook
         enabled: false
     edges:
-      webhook->GRM04b-Upsert-AAO-Int-Grievances:
+      webhook->Triage-jobs:
         source_trigger: webhook
-        target_job: GRM04b-Upsert-AAO-Int-Grievances
+        target_job: Triage-jobs
+        condition_type: always
+        enabled: true
+      Triage-jobs->GRM00-Upsert-TEST-Grievances:
+        source_job: Triage-jobs
+        target_job: GRM00-Upsert-TEST-Grievances
         condition_type: js_expression
-        condition_label: Old. New AAO Int form
+        condition_label: New TEST form
         condition_expression: |
-          state.data.formName == "AAO Interno Grievance_Form_20220831"
+          state.data.formName == "Test WCS FGRM Form"
+        enabled: false
+      Triage-jobs->GRM01-Upsert-WCS-Global-Grievances-in-Asana:
+        source_job: Triage-jobs
+        target_job: GRM01-Upsert-WCS-Global-Grievances-in-Asana
+        condition_type: js_expression
+        condition_label: New WCS Global GRM form
+        condition_expression: |
+          state.data.formName == "WCS Global Grievances & Suggestions"
+        enabled: false
+      Triage-jobs->TEST-Asana-Update:
+        source_job: Triage-jobs
+        target_job: TEST-Asana-Update
+        condition_type: js_expression
+        condition_label: TEST WCS FORM
+        condition_expression: |
+          state.data.formName == "Test WCS FGRM Form"
         enabled: true
   KM-Get-GRM-FormsList:
     name: KM Get GRM FormsList
@@ -3774,195 +3314,8 @@ workflows:
         target_job: KoboData-3-Upsert-to-DB
         condition_type: on_job_success
         enabled: true
-  "MWC-1.-Get-FormsList-(Ongoing)":
-    name: 'MWC 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/0cdddd79-5d1d-4467-9642-e18b25f422fd", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  MWC-2.-Sync-Forms-to-Asana:
-    name: MWC 2. Sync Forms to Asana
+  MWC-Sync-Forms-to-Asana:
+    name: MWC Sync Forms to Asana
     jobs:
       GRM15-Upsert-Belize-Grievances-in-Asana:
         name: GRM15 Upsert Belize Grievances in Asana
@@ -4091,195 +3444,8 @@ workflows:
         condition_expression: |
           state.data.formName == "Belize Grievance Form"
         enabled: true
-  "PAT-1.-Get-FormsList-(Ongoing)":
-    name: 'PAT 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/12d40a86-61cc-4899-97d2-183b79cdcf50", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  PAT-2.-Sync-Forms-to-Asana:
-    name: PAT 2. Sync Forms to Asana
+  PAT-Sync-Forms-to-Asana:
+    name: PAT Sync Forms to Asana
     jobs:
       GRM14-Upsert-Argentina-Grievances-in-Asana:
         name: GRM14 Upsert Argentina Grievances in Asana
@@ -4412,195 +3578,8 @@ workflows:
         condition_expression: |
           state.data.formName == "Mecanismo de atención de Quejas, Reclamos y Sugerencias"
         enabled: true
-  "SAB-1.-Get-FormsList-(Ongoing)":
-    name: 'SAB 1. Get FormsList (Ongoing)'
-    jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
-        body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
-
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
-
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
-            }
-          );
-
-          fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
-            return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/bb70d6ab-4d28-4e04-8eb6-e91b1293a9a7", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
-          });
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
-        enabled: false
-    edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  SAB-2.-Sync-Forms-to-Asana:
-    name: SAB 2. Sync Forms to Asana
+  SAB-1.-Sync-Forms-to-Asana:
+    name: SAB 1. Sync Forms to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -5004,195 +3983,206 @@ workflows:
         condition_expression: |
           state.data.formName == "Feedback and Grievance Redress Mechanism - NPL"
         enabled: true
-  "SUS-1.-Get-FormsList-(Ongoing)":
-    name: 'SUS 1. Get FormsList (Ongoing)'
+  SAB-2.-Update-Asana-Task-Aceh:
+    name: SAB 2. Update Asana Task Aceh
     jobs:
-      GRM-Fetch-1-Get-FormsList-Ongoing:
-        name: GRM-Fetch-1 Get FormsList Ongoing
-        adaptor: '@openfn/language-googlesheets@3.0.14'
+      GRM02-c-Update-Asana-Task-Aceh:
+        name: GRM02 c Update Asana Task Aceh
+        adaptor: '@openfn/language-asana@v3.2.0'
         credential: null
         body: |
-          //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
-          // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
-          // This can be run on-demand at any time by clicking "run" //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:O', //get Deployed GRM forms list from Sheet
-            state => {
-              const [headers, ...values] = state.data.values;
+          fn(state => {
+            state.grievanceReportFormatMap = {
+              'Verbal/Langsung': '1192836094355011', //InPerson
+              Telepon: '1192836094355012', // PhoneCall
+              Email: '1192847692376214', //Email
+              Sarut: '1192847692376223', //PostalLetter
+              'Kotak Saran': '1207122874564877', //SuggestionBox
+              'Pesan Teks': '1192847692374160', //TextMessage
+              'Pengiriman Langsung': '1207001942658468', //DirectSubmission
+            };
 
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
+            state.newOrContinuedMap = {
+              Baru: '1207116211136433', //New
+              Lanjutan: '1207116218726092', // Continued
+            };
+
+            state.stakeholderMap = {
+              WCS: '1207122053764074',
+              DKP: '1207122053764075',
+              'BKSDA/Taman Nasional': '1207122053764076',
+              Lainnya: '1207122053764077'
+            };
+
+            state.evidenceMap = {
+              Ada: "1207502226530960",
+              "Tidak Ada": "1207502226530961"
+            }
+
+            state.gradeMap = {
+              0: '1202593715272941',
+              1: '1202593715272942',
+              2: '1202593715272943',
+              3: '1202593715272944',
+              4: '1202593715272945',
+              5: '1202593715272946',
+            };
+
+            state.statusMap = {
+              BeingReviewed: '1192850232576003',
+              NotAssigned: '1187328718760775',
+              Dismissed: '1187674280676653',
+              OnHold: '1187328718760778',
+              BeingInvestigated: '1187328718760776',
+              // Resolved: '1187328718760774',
+              Resolved: '1187328718760777',
+              RemediationBeingMonitored: '1192772373678248',
+              InResolution: '1208167139436055',
+              'Transferred to Human Resources': '1206081287831891'
+            };
+
+            state.categoryComplainantMap = {
+              PAP: '1207001974192804', //PAP
+              'CSO/LSM': '1207001974192805', //CSOS/NGO
+              'Lembaga Pemerintah': '1207001974192806', //Government,
+              'Masyarakat Lokal (bukan PAP)': '1207001974192807', //LocalCommunities
+              Lainnya: '1207001974192808', //OtherCategory
+            };
+            
+            state.followupMap = {
+              'Ya WCS': '1201884189073507', 
+              'Ya Non-WCS': '1201884189073508', 
+              Tidak: '1207122053764079'
+            };
+
+            return state;
+          });
+
+          fn(state => {
+            const { headers } = state.data;
+            const taskIds = Object.keys(state.data).filter(
+              i =>
+                i !== 'headers' &&
+                i !== '' &&
+                i !== '__query_params' &&
+                /^[0-9]+$/.test(i) // returns only numeric ids
+            );
+            
+            console.log(taskIds);
+
+            state.data = taskIds
+              .map(taskId => {
+                const mappedObject = headers.reduce((obj, key, index) => {
+                  obj[key] = state.data[taskId].values[index];
                   return obj;
                 }, {});
+                return { id: taskId, task: mappedObject };
+              })
+              .flat();
+            console.log(state.data);
+
+            return state;
+          });
+
+          fn(state => {
+            const {
+              categoryComplainantMap,
+              grievanceReportFormatMap,
+              statusMap,
+              newOrContinuedMap,
+              gradeMap,
+              stakeholderMap,
+              evidenceMap,
+              followupMap
+            } = state;
+            state.tasks = state.data.map(({ id, task }) => {
+              console.log(id + " " , task['Tgl Tindak Lanjut Keluhan oleh tim ']);
+              console.log(task['Grade']);
+              console.log(gradeMap[task['Grade']]);
+              console.log(task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']);
+              console.log(followupMap[task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']]);
+              
+              return {
+                id,
+                task: {
+                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+
+                  custom_fields: {
+                    //This tells Asana what fields to update and how to locate them.
+                    //The statements below apply to Asana Fields that are for OPEN ENDED
+                    //i.e. They accept FREE TEXT INPUT from the Kobo Form
+
+                    1207001974192803:
+                      categoryComplainantMap[task['Kategori Pemberi Keluhan']], //Mapped to CategoryComplainant in Asana
+
+                    1201884189073518: task['Topik / Tema Keluhan'], //Mapped to Topic in Asana
+                    1207122053764073:
+                      stakeholderMap[task['Stakeholder yang Bertanggung Jawab Terhadap Keluhan']], //Mapped to Stakeholders Responsible in Asana
+                    1207502226530959: evidenceMap[task['Bukti Pendukung Keluhan']], //Mapped to Grievance Evidence in Asana
+                    1207116211136432:
+                      newOrContinuedMap[task['Keluhan baru atau lanjutan']],
+                    1201884189073512: task['Tgl Tindak Lanjut Keluhan oleh tim '],
+
+                    1201884189073496: task['Nama Proyek/Donor'],
+                    1207116218726094: task['Terjemahan atau penjelasan tambahan'],
+                    1202593715272940: gradeMap[task['Grade']],
+                    1201884189073506: followupMap[task['Perlu/Tidak Tindak Lanjut (Ya WCS / Ya Non WCS / Tidak)']],
+                    // 1201884189073506: task['Perlu/Tidak Tindak Lanjut  (WCS)'],
+                    1201884189073516: task['Penyelesaian Keluhan'],
+                    1201884189073514: task['Tgl Pemberian Tanggapan keluhan'],
+                    1187328718760774: statusMap[task['Status Keluhan']],
+                    1207122053764071: task['Program'],
+                  },
+                },
               };
+            });
 
-              state.sheetsData = values
-                .filter(
-                  item => item.includes('TRUE') //return forms where auto-sync = TRUE
-                  //&& item.includes('bns_survey', 'nrgt_current')
-                )
-                .map(item => mapHeaderToValue(item));
-
-              return state;
+            if (state.tasks === 0) {
+              console.log('no new data to sync to Asana');
             }
+
+            state.allResults = [];
+            return state;
+          });
+
+          each(
+            '$.tasks[*]',
+            updateTask(
+              state => state.data.id,
+              state => state.data.task,
+              state => {
+                state.allResults.push(state.data);
+                return state;
+              }
+            )
           );
 
           fn(state => {
-            const { sheetsData } = state;
-
-            // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana
-            const isMoreThanAWeekOld = dateString => {
-              const currentDate = new Date();
-              const inputDate = new Date(dateString);
-              // Calculate the difference in time (in milliseconds) and convert to days
-              const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);
-
-              return daysDifference > 7;
-            };
-            // IF YOU CLEAR STATE...
-            // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-02-06T22:00:07.922Z';
-
-            state.cursor = state.lastEnd || manualCursor;
-
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
+            const ids = state.allResults.map(res => res.gid);
+            if (state.allResults.length > 0) {
+              console.log(
+                `${state.allResults.length} number of tasks to be updated with the following Asana task ids`
               );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
-
-            console.log('Current cursor value:', state.cursor);
-
-            const formsList = sheetsData.map(survey => ({
-              formId: survey.uid,
-              tag: survey.tag,
-              name: survey.name,
-              projectid: survey.asana_projectid,
-            }));
-
-            console.log('# of GRM forms detected in Sheet:: ', formsList.length);
-            console.log(
-              'List of forms to re-sync:: ',
-              JSON.stringify(formsList, null, 2)
-            );
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
-                formId: survey.uid,
-                tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
-              })),
-            };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
+              console.log(JSON.stringify(ids, null, 2));
+            }
             return state;
-          });
-
-          fn(state => {
-            // let lastEnd = state.references
-            //   .filter(item => item.body)
-            //   .map(s => s.body.end)
-            //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-
-            lastEnd = new Date().toISOString();
-
-            console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
-          });
-
-      GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        name: GRM-Fetch-2 Get Kobo Forms Ongoing
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
-        body: |
-          // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          //**********************************************************//
-          fn(state => {
-            state.errors = [];
-            state.globalIndex = 0;
-            return state;
-          });
-
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
-            return get(`${url}${query}`, {}, state => {
-              state.data.submissions = state.data.results.map((submission, i) => {
-                return {
-                  i,
-                  // Here we append the tags defined above to the Kobo form submission data
-                  formId,
-                  projectid,
-                  formName: name,
-                  formOwner: owner,
-                  formType,
-                  body: submission,
-                };
-              });
-              const count = state.data.submissions.length;
-              console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-              //Once we fetch the data, we want to post each individual Kobo survey
-              //back to the OpenFn inbox to run through the jobs =========================
-              return each(dataPath('submissions[*]'), state => {
-                console.log(`Posting ${state.data.i + 1} of ${count}...`);
-                 console.log(`Submission id:: ${state.data.body._id}`);
-                return post("https://app.openfn.org/i/06029130-402b-40d0-8562-d1f7ddc38d9c", {
-                  body: state => state.data,
-                })(state);
-              })(state);
-            })(state).catch(err => {
-                state.errors.push({
-                  formId,
-                  message: err.message,
-                });
-                console.log(`Error fetching submissions from  ${formId}::`, err.message);
-                return state;
-              });
-          });
-
-          //Throw errors at the end of the job if we failed to extract any Kobo forms
-          fn(state => {
-            if (!state.errors) return state;
-           
-            if (state.errors ? state.errors.length > 0 : false){
-              console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); 
-              throw new Error(
-                `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-              );
-            }  
-            return state; 
           });
 
     triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */1 * * *'
+      webhook:
+        type: webhook
         enabled: false
     edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
+      webhook->GRM02-c-Update-Asana-Task-Aceh:
+        source_trigger: webhook
+        target_job: GRM02-c-Update-Asana-Task-Aceh
+        condition_type: js_expression
+        condition_label: Changes from GoogleSheet
+        condition_expression: |
+          state.data.notificationType == "gsheet-changes"
         enabled: true
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: true
-  SUS-2.-Sync-Forms-to-Asana:
-    name: SUS 2. Sync Forms to Asana
+  SUS-Sync-Forms-to-Asana:
+    name: SUS Sync Forms to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
