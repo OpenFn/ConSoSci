@@ -8,6 +8,9 @@ credentials:
   aleksa@openfn.org-WCS-GRM-Kobo-Account:
     name: WCS GRM Kobo Account
     owner: aleksa@openfn.org
+  ddetoeuf@wcs.org-Diane-GoogleSheet:
+    name: Diane GoogleSheet
+    owner: ddetoeuf@wcs.org
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
@@ -137,13 +140,12 @@ workflows:
           // ***************** END OF STATEMENTS FOR OPEN-ENDED QUESTIONS ************************************* 
 
     triggers:
-      cron:
-        type: cron
-        cron_expression: '0 2 * * *'
+      webhook:
+        type: webhook
         enabled: false
     edges:
-      cron->A-GIDs-and-Mappings-for-Upsert:
-        source_trigger: cron
+      webhook->A-GIDs-and-Mappings-for-Upsert:
+        source_trigger: webhook
         target_job: A-GIDs-and-Mappings-for-Upsert
         condition_type: always
         enabled: true
@@ -153,7 +155,7 @@ workflows:
       GRM-Fetch-1-Get-FormsList-Ongoing:
         name: GRM-Fetch-1 Get FormsList Ongoing
         adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: rediet@openfn.org-Rediet-Googlesheet
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           //== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//
           // Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602
@@ -223,6 +225,10 @@ workflows:
               'List of forms to re-sync:: ',
               JSON.stringify(formsList, null, 2)
             );
+            //TODO: Remove
+            let query = state.range ? `&query={"_submission_time":{"$lt":"2025-06-21T08:00:06.083Z","$gte":"2025-06-19T15:01:18.213Z"}}
+          ` : `&query={"_submission_time":{"$gte":"${state.cursor}"}}`
+            ////
 
             state.data = {
               surveys: sheetsData.map(survey => ({
@@ -267,11 +273,12 @@ workflows:
             state.regionKeyMap = {
               'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',
               'Global': 'glo_workflowUrl',
+              'Greater Mekong': 'gmk_workflowUrl',
               'Andes, Amazon & Orinoco': 'aao_workflowUrl',
               'Central Africa & Gulf of Guinea': 'cag_workflowUrl',
               'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',
               'Patagonia': 'pat_workflowUrl',
-              'South Asia and Bay of Bengal': 'sab_workflowUrl',
+              'Southeast Asia Pacific': 'sap_workflowUrl',
               'Sudano-Sahel': 'sus_workflowUrl'
             };
             return state;
@@ -306,7 +313,7 @@ workflows:
                 const workflowUrl = state.configuration[regionKey];
 
                 if (!workflowUrl) {
-                  throw new Error(`No workflow URL configured for region: "${formMeta.Region}"`);
+                  throw new Error(`No workflow URL configured for region: "${formMeta.Region}" and formId "${formMeta.formId}"`);
                 }
                 console.log(`Posting ${state.data.i + 1} of ${count}...`);
                 console.log(`Submission id:: ${state.data.body._id}`);
@@ -357,8 +364,8 @@ workflows:
         target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
         condition_type: on_job_success
         enabled: true
-  AAO-Sync-Forms-to-Asana:
-    name: AAO Sync Forms to Asana
+  AAO-Sync-to-Asana:
+    name: AAO Sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -791,8 +798,8 @@ workflows:
         condition_expression: |
           state.data.formName == "Mecanismo de Atención de Peticiones, Quejas y Reclamos"
         enabled: true
-  CAG-Sync-Forms-to-Asana:
-    name: CAG Sync Forms to Asana
+  CAGG-Sync-to-Asana:
+    name: CAGG Sync to Asana
     jobs:
       Transform-data:
         name: Transform data
@@ -1835,8 +1842,8 @@ workflows:
         condition_expression: |
           state.data.formName == "KABOBO GRM"
         enabled: true
-  "EAW-Sync-Forms-to-Asana.":
-    name: 'EAW Sync Forms to Asana.'
+  EAWIO-Sync-to-Asana:
+    name: EAWIO Sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -2722,7 +2729,7 @@ workflows:
         condition_type: js_expression
         condition_label: New Blue Future GRM
         condition_expression: |
-          state.data.formName == "Public Grievance Form"
+          state.data.formName == "Formulário de Sugestões e Reclamações Públicas"
 
         enabled: true
       Triage-jobs->GRM07-Upsert-Ruaha-Katavi-Grievances:
@@ -2788,8 +2795,8 @@ workflows:
           state.data.formName == "GRM Interne Madagascar"
 
         enabled: true
-  GLO-Sync-Forms-to-Asana:
-    name: GLO Sync Forms to Asana
+  Global-Sync-to-Asana:
+    name: Global Sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -3112,210 +3119,270 @@ workflows:
         condition_expression: |
           state.data.formName == "Test WCS FGRM Form"
         enabled: true
-  KM-Get-GRM-FormsList:
-    name: KM Get GRM FormsList
+  Greater-Mekong-Sync-to-Asana:
+    name: Greater Mekong Sync to Asana
     jobs:
-      KoboData-1-Get-GRM-FormsList:
-        name: KoboData-1 Get GRM FormsList
-        adaptor: '@openfn/language-googlesheets@v2.3.0'
+      Triage-jobs:
+        name: Triage jobs
+        adaptor: '@openfn/language-common@latest'
         credential: null
         body: |
-          //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
-          // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:AA', //get Deployed forms list from Sheet
-            
-            state => {
-              const [headers, ...values] = state.data.values;
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
 
-              const mapHeaderToValue = value => {
-                return headers.reduce((obj, header) => {
-                  obj[header] = value[headers.indexOf(header)];
-                  return obj;
-                }, {});
-              };
+      GRM11-Upsert-KSWS-Grievances-in-Asana:
+        name: GRM11 Upsert KSWS Grievances in Asana
+        adaptor: '@openfn/language-asana@2.0.0'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        body: |
+          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
+            const formatMapping = {
+           GrievanceReport_CallProjectStaff: '1205638979644643',
+            GrievanceReport_Email: '1205638979644644',
+            GrievanceReport_HotlineCall: '1205638979644645',
+            GrievanceReport_InPerson: '1205638979644646',
+            GrievanceReport_PostalLetter: '1205638979644647',
+            GrievanceReport_TelegramMessage: '1205638979644648',
+            GrievanceReport_SuggestionBox: '1208201385471326',
+            GrievanceType_Comment: '1205638979644651',
+            GrievanceType_GeneralGrievance: '1205638979644652',
+            GrievanceType_ProjectGrievance: '1205638979644653',
+            GrievanceType_Suggestion: '1206939331510951',
+            GrievanceType_Request: '1206939331510952',
+            GrievanceType_ReportIllegalActivities: '1208201385471325',
+            CaseType_Boundary: '1205638979644656',
+            CaseType_CashForCommunities: '1205638979644657',
+            CaseType_CommunityPatrols: '1205638979644658',
+            CaseType_Governance: '1205638979644659',
+            CaseType_HumanWildlifeConflict: '1205638979644660',
+            CaseType_IllegalLogging: '1205638982100772',
+            CaseType_LandClearance: '1205638982100773',
+            CaseType_LandGrabbing: '1205638982100774',
+            CaseType_LawEnforcement: '1205638982100775',
+            CaseType_LeMemberThreat: '1205638982100776',
+            CaseType_LogsTransportation: '1205638982100777',
+            CaseType_NestProtection: '1205638982100778',
+            CaseType_PermissionLetterLogging: '1205638982100779',
+            CaseType_Poaching: '1205638982100780',
+            CaseType_ProjectImplementation: '1205638982100781',
+            CaseType_SignBoard: '1205638982100782',
+            CaseType_Threats: '1205638982100783',
+            CaseType_VillageFocalPerson: '1205638982100784',
+            CaseType_WcsStaffFraud: '1205638982100785',
+            ReponseNeeded_Yes: '1205638982100788',
+            ReponseNeeded_No: '1205638982100789',
+            ReponseNeeded_NotSure: '1205638982100790',
+            'GrievanceStatus _BeingReviewed': '1192850232576003',
+            'GrievanceStatus _NotAssigned': '1187328718760775',
+            'GrievanceStatus _Dismissed': '1187674280676653',
+            'GrievanceStatus _OnHold': '1187328718760778',
+            'GrievanceStatus _BeingInvestigated': '1187328718760776',
+            'GrievanceStatus _Resolved': '1187328718760777',
+            'GrievanceStatus _RemediationBeingMonitored': '1192772373678248' 
+            };
 
-              state.sheetsData = values
-                .filter(
-                  item =>
-                    item.includes('TRUE') //return forms where auto-sync = TRUE
+            return { ...state, formatMapping };
+          });
+
+          upsertTask(
+            dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
+            //'1201382240883590', //hardcoded project id
+
+            {
+              externalId: "name", // Asana external Id field name (e.g., 'gid')
+              data: {
+                name: state =>
+                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                    `${dataValue('body.GrievanceId')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
+                //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
+                notes: state =>
+          `Complaint in Khmer: ${dataValue('body.ComplaintKhmer')(state)}.
+          Complaint English: ${dataValue('body.ComplaintEnglish')(state)}.`,
+                custom_fields: {
+                    //This tells Asana what fields to update and how to locate them.
                     
-                )
-                .map(item => mapHeaderToValue(item));
-
+                    //The statements below apply to Asana Fields that are for OPEN ENDED
+                    //i.e. They accept FREE TEXT INPUT from the Kobo Form
+          '1202329899911605': dataValue('body.ReporterName'),
+          '1201884379104074': dataValue('body.GrievanceId'),
+          '1205638664513483': dataValue('body.GrievanceDate'),
+          '1205638669631280': dataValue('body.GrievanceTime'),
+          '1202329899911619': dataValue('body.Village'),
+          '1205638664513479': dataValue('body.NamePhone'),
+          '1205638664513487': dataValue('body.Position'),
+          '1205638664544001': dataValue('body.DateTimeLocationIncident'),
+          '1205638664544009': dataValue('body.ActionTaken'),
+          '1205638664555699': dataValue('body.ResponseGiven'),
+          '1205638664544013': dataValue('body.ResultAction'),
+          '1205638664544017': dataValue('body.Evidence'),
+          '1205639008044145': dataValue('body.StatusExplanation'),
+          '1205638664555695': dataValue('body.DateResolved'),
+          '1205638664555691': dataValue('body.LTM reviewed'),
+                    
+                    //The statements below apply to Asana Fields that have multiplechoice / DropDown options
+                    //i.e. They require that the user selects specific options from the Kobo Form dropdown list.
+                    // These are the questions that require the MAPPING TABLES at the top of this page.
+                    //The mapping key-value pairs are obtained using a console.log tht runs in the Fetch GID Job
+                   /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
+          '1205638979644642': state => state.formatMapping["GrievanceReport_" + dataValue('body.GrievanceReport')(state)],
+          '1205638979644650': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
+          '1205638979644655': state => state.formatMapping["CaseType_" + dataValue('body.CaseType')(state)],
+          '1205638982100787': state => state.formatMapping["ReponseNeeded_" + dataValue('body.ReponseNeeded')(state)],
+          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
+                },
+              },
+            },
+            state => {
+              console.log(JSON.stringify(state.data, null, 2)); //log data
               return state;
             }
           );
 
-          fn(state => {
-            const { sheetsData } = state;
-
-            // Set a manual cursor if you'd like to only fetch data after this date...
-            //e.g., '2023-01-01T23:51:45.491+01:00'
-            const manualCursor = '';  //lastUsed: 2024-04-01T00:00:00.000Z
-            console.log('manualCursor defined?', manualCursor);
-            
-            //...otherwise the job will use this dynamicCursor
-            const dynamicCursor = getTodayISODate(); 
-
-            function getTodayISODate() {
-              const today = new Date();
-              today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-              return today.toISOString(); // Convert to ISO string
-            }
-            
-            const cursorValue = manualCursor || dynamicCursor; 
-            console.log('Cursor value to use in query:', cursorValue);
-            
-             
-
-            const formsList = sheetsData.map(survey => ({
-                formId: survey.uid,
-                owner: survey.owner,
-                name: survey.name 
-            })); 
-            
-            console.log('# of deployed forms detected in Sheet:: ', formsList.length);
-            console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); 
-
-            state.data = {
-              surveys: sheetsData.map(survey => ({
-                formId: survey.uid,
-                //tag: survey.tag,
-                name: survey.name,
-                owner: survey.owner,
-                projectId: survey.asana_projectid,
-                url1: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/counts`,
-                url2: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data`
-                // query: `&query={"end":{"$gte":"${cursorValue}"}}`,
-              })),
-            };
-            console.log(state.data);
-            return state;
-          });
-
-      KoboData-2-GetSubmissionMetadata:
-        name: KoboData-2 GetSubmissionMetadata
-        adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
+      GRM19-Upsert-NPL-Grievances-in-Asana:
+        name: GRM19 Upsert NPL Grievances in Asana
+        adaptor: '@openfn/language-asana@2.0.0'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
-          // Initialize an empty array to accumulate survey data
-          fn(state => ({ ...state, surveysList: [] })),
+          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
+                      const formatMapping = {
+                      ReportFormat_Email: '1202330347502485',
+                      ReportFormat_FocalPoint: '1207724960884497',
+                      ReportFormat_Hotline: '1202330347501419',
+                      ReportFormat_InPerson: '1202330347493011',
+                      ReportFormat_Letter: '1202330347503544',
+                      ReportFormat_OnlineForm: '1207934414764297',
+                      ReportFormat_Other: '1203830536105154',
+                      ReportFormat_ProjectMeeting: '1208936305975370',
+                      ReportFormat_Prospecting: '1208419056473280',
+                      ReportFormat_SuggestionBox: '1202330347499327',
+                      ReportFormat_TextMessage: '1202330347498273',
+                      ReportFormat_VoiceCall: '1202330347494027',
+                      SubmissionType_Grievance: '1202329899911646',
+                      SubmissionType_Suggestion: '1202329899911647',
+                      SubmissionType_Request: '1202329899911648',
+                      SubmissionType_Feedback: '1202329899911649',
+                      TypeOfGrievance_ReportIllegalAtivities: '1208936168537764',
+                      TypeOfGrievance_ProjectGrievance: '1208936168537765',
+                      CaseType_Boundary: '1205638979644656',
+                      CaseType_CashForCommunities: '1205638979644657',
+                      CaseType_CommunityPatrols: '1205638979644658',
+                      CaseType_Governance: '1205638979644659',
+                      CaseType_HumanWildlifeConflict: '1205638979644660',
+                      CaseType_IllegalLogging: '1205638982100772',
+                      CaseType_LandClearance: '1205638982100773',
+                      CaseType_LandGrabbing: '1205638982100774',
+                      CaseType_LawEnforcement: '1205638982100775',
+                      CaseType_LeMemberThreat: '1205638982100776',
+                      CaseType_LogsTransportation: '1205638982100777',
+                      CaseType_NestProtection: '1205638982100778',
+                      CaseType_PermissionLetterLogging: '1205638982100779',
+                      CaseType_Poaching: '1205638982100780',
+                      CaseType_ProjectImplementation: '1205638982100781',
+                      CaseType_SignBoard: '1205638982100782',
+                      CaseType_Threats: '1205638982100783',
+                      CaseType_VillageFocalPerson: '1205638982100784',
+                      CaseType_WcsStaffFraud: '1205638982100785',
+                      ResponseNeeded_Yes: '1205638982100788',
+                      ResponseNeeded_No: '1205638982100789',
+                      ResponseNeeded_NotSure: '1205638982100790'
+                      };
 
-          // Process each survey
-          each(dataPath('surveys[*]'), state => {
-            const { url1, url2, formId, name, owner, projectId } = state.data;
+                      return { ...state, formatMapping };
+                    });
 
-            return fn(async state => {
-              const response1 = await get(`${url1}`, {})(state);
-              const response2 = await get(`${url2}`, {})(state);
+                    upsertTask(
+                      dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
+                      //'1201382240883590', //hardcoded project id
 
-              const resultList = response2.data.results;
-              // const lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
-              let lastSubmissionTime;
-              if (resultList.length > 0) {
-                lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
-              } else {
-                lastSubmissionTime = null;
-              }
-              
-              let total_submission_count;
-              if (response1.data && 'total_submission_count' in response1.data) {
-                total_submission_count = response1.data.total_submission_count;
-              } else {
-                total_submission_count = undefined;
-              }
-              
-              console.log(`Processing: ${formId}`);
-              console.log(url1);
-              console.log(url2);
-              console.log(`Last submission time: ${lastSubmissionTime}`);
+                      {
+                        externalId: "name", // Asana external Id field name (e.g., 'gid')
+                        data: {
+                          name: state =>
+                            //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                              `${dataValue('body.CaseID')(state)} (KoboID:${dataValue('body._id')(state)})`,
+                          projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
+                          //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
+                          notes: state =>
+                    `Complaint in Khmer: ${dataValue('body.ComplaintKhmer')(state)}.
+                    Complaint English: ${dataValue('body.ComplaintEnglish')(state)}.`,
+                          custom_fields: {
+                              //This tells Asana what fields to update and how to locate them.
+                              
+                              //The statements below apply to Asana Fields that are for OPEN ENDED
+                              //i.e. They accept FREE TEXT INPUT from the Kobo Form
+                    '1202329899911595': dataValue('body.CaseID'),
+                    '1202329899911599': dataValue('body.SubmissionDate'),
+                    '1208936137293167': dataValue('body.SubmissionTime'),
+                    '1208908109568167': dataValue('body.Location'),
+                    '1203712060006636': dataValue('body.ReporterContactInformation'),
+                    '1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
+                    '1202329899911623': dataValue('body.GrievanceDate'),
+                    '1202329899911619': dataValue('body.WhereGrievance'),
+                    '1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
+                    '1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
+                    '1203712150593482': dataValue('body.HarmSuffered'),
+                    '1203712149463009': dataValue('body.ReliefRequested'),
+                    '1202329899911635': dataValue('body.OnlineFolder'),
+                    '1205638664544009': dataValue('body.ActionTaken'),
+                    '1205638664555699': dataValue('body.ResponseGiven'),
+                    '1205638664544013': dataValue('body.ResultAction'),
+                    '1205638664544017': dataValue('body.Evidence'),
+                              
+                              //The statements below apply to Asana Fields that have multiplechoice / DropDown options
+                              //i.e. They require that the user selects specific options from the Kobo Form dropdown list.
+                              // These are the questions that require the MAPPING TABLES at the top of this page.
+                              //The mapping key-value pairs are obtained using a console.log tht runs in the Fetch GID Job
 
-              const surveyData = {
-                formId,
-                name,
-                // total_submission_count: response1.data.total_submission_count,
-                owner,
-                total_submission_count,
-                lastSubmissionTime,
-                projectId
-              };
-
-              // Add the current survey data to the accumulator
-              return { 
-                ...state, 
-                surveysList: [...state.surveysList, surveyData]
-              };
-            })(state);
-          }),
-
-          // After processing all surveys, update the state with the accumulated data
-          fn(state => {
-            const finalState = {
-              ...state,
-              data: {
-                ...state.data,
-                surveys: state.surveysList
-              }
-            };
-            console.log("Final combined state:", JSON.stringify(finalState.data, null, 2));
-            return finalState;
-          })
-
-      KoboData-3-Upsert-to-DB:
-        name: KoboData-3 Upsert to DB
-        adaptor: '@openfn/language-mssql@2.6.11'
-        credential: rediet@openfn.org-WCS-Programs-Database-central-db
-        body: |
-          fn((state) => {
-           
-            const surveys = state.data.surveys.map((survey) => ({
-              DatasetName: survey.name,
-              DatasetOwner: survey.owner,
-              DatasetUuidID: survey.formId,
-              LastSubmissionTime: survey.lastSubmissionTime,
-              KoboSubmissionCount: survey.total_submission_count,
-              LastCheckedTime: new Date().toISOString(),
-              LastUpdateTime: new Date().toISOString(),
-              KoboManaged: true,
-              Citation: survey.projectId
-            }));
-
-            console.log("Surveys to be upserted: ", surveys);
-           
-            return { ...state, surveys };
-          });
-
-
-
-          upsertMany("WCSPROGRAMS_KoboData", "DatasetUuidID", (state) => state.surveys, {
-            logQuery: true,
-          });
-
+                    '1202593715272940': state => state.formatMapping["Grade_" + dataValue('body.Grade')(state)],
+                    '1204269608862901': state => state.formatMapping["Classification_" + dataValue('body.Classification')(state)],
+                    '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
+                    '1202329899911645': state => state.formatMapping["SubmissionType_" + dataValue('body.SubmissionType')(state)],
+                    '1208936168537763': state => state.formatMapping["TypeOfGrievance_" + dataValue('body.TypeOfGrievance')(state)],
+                    '1205638979644655': state => state.formatMapping["CaseType_" + dataValue('body.CaseType')(state)],
+                    '1202330737362426': state => state.formatMapping["Gender_" + dataValue('body.Gender')(state)],
+                    '1202330755979944': state => state.formatMapping["IndigenousPeople_" + dataValue('body.IndigenousPeople')(state)],
+                    '1202330714895606': state => state.formatMapping["Age_" + dataValue('body.Age')(state)],
+                    '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
+                    '1202330815421247': state => state.formatMapping["DatePrecision_" + dataValue('body.DatePrecision')(state)],
+                    '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
+                    '1205638982100787': state => state.formatMapping["ResponseNeeded_" + dataValue('body.ResponseNeeded')(state)],
+                          },
+                        },
+                      },
+                      state => {
+                        console.log(JSON.stringify(state.data, null, 2)); //log data
+                        return state;
+                      }
+                    );
     triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */3 * * *'
+      webhook:
+        type: webhook
         enabled: false
     edges:
-      cron->KoboData-1-Get-GRM-FormsList:
-        source_trigger: cron
-        target_job: KoboData-1-Get-GRM-FormsList
+      webhook->Triage-jobs:
+        source_trigger: webhook
+        target_job: Triage-jobs
         condition_type: always
         enabled: true
-      KoboData-1-Get-GRM-FormsList->KoboData-2-GetSubmissionMetadata:
-        source_job: KoboData-1-Get-GRM-FormsList
-        target_job: KoboData-2-GetSubmissionMetadata
-        condition_type: on_job_success
+      Triage-jobs->GRM11-Upsert-KSWS-Grievances-in-Asana:
+        source_job: Triage-jobs
+        target_job: GRM11-Upsert-KSWS-Grievances-in-Asana
+        condition_type: js_expression
+        condition_label: New Keo Seima Form
+        condition_expression: |
+          state.data.formName == "Keo Seima GRM"
         enabled: true
-      KoboData-2-GetSubmissionMetadata->KoboData-3-Upsert-to-DB:
-        source_job: KoboData-2-GetSubmissionMetadata
-        target_job: KoboData-3-Upsert-to-DB
-        condition_type: on_job_success
+      Triage-jobs->GRM19-Upsert-NPL-Grievances-in-Asana:
+        source_job: Triage-jobs
+        target_job: GRM19-Upsert-NPL-Grievances-in-Asana
+        condition_type: js_expression
+        condition_label: New NPL form
+        condition_expression: |
+          state.data.formName == "Feedback and Grievance Redress Mechanism - NPL"
         enabled: true
-  MWC-Sync-Forms-to-Asana:
-    name: MWC Sync Forms to Asana
+  MesoAmerica-Sync-to-Asana:
+    name: MesoAmerica Sync to Asana
     jobs:
       GRM15-Upsert-Belize-Grievances-in-Asana:
         name: GRM15 Upsert Belize Grievances in Asana
@@ -3444,8 +3511,8 @@ workflows:
         condition_expression: |
           state.data.formName == "Belize Grievance Form"
         enabled: true
-  PAT-Sync-Forms-to-Asana:
-    name: PAT Sync Forms to Asana
+  Patagonia-Sync-to-Asana:
+    name: Patagonia Sync to Asana
     jobs:
       GRM14-Upsert-Argentina-Grievances-in-Asana:
         name: GRM14 Upsert Argentina Grievances in Asana
@@ -3578,8 +3645,8 @@ workflows:
         condition_expression: |
           state.data.formName == "Mecanismo de atención de Quejas, Reclamos y Sugerencias"
         enabled: true
-  SAB-1.-Sync-Forms-to-Asana:
-    name: SAB 1. Sync Forms to Asana
+  SAP-1.-Sync-to-Asana:
+    name: SAP 1. Sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -3727,7 +3794,7 @@ workflows:
       GRM02-b-Sync-to-GoogleSheets-Aceh:
         name: GRM02 b Sync to GoogleSheets Aceh
         adaptor: '@openfn/language-googlesheets@3.0.14'
-        credential: null
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           fn((state) => {
             const formatGlobals = {
@@ -3827,123 +3894,6 @@ workflows:
             })(state);
           });
 
-      GRM11-Upsert-KSWS-Grievances-in-Asana:
-        name: GRM11 Upsert KSWS Grievances in Asana
-        adaptor: '@openfn/language-asana@2.0.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
-        body: |
-          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
-            const formatMapping = {
-           GrievanceReport_CallProjectStaff: '1205638979644643',
-            GrievanceReport_Email: '1205638979644644',
-            GrievanceReport_HotlineCall: '1205638979644645',
-            GrievanceReport_InPerson: '1205638979644646',
-            GrievanceReport_PostalLetter: '1205638979644647',
-            GrievanceReport_TelegramMessage: '1205638979644648',
-            GrievanceReport_SuggestionBox: '1208201385471326',
-            GrievanceType_Comment: '1205638979644651',
-            GrievanceType_GeneralGrievance: '1205638979644652',
-            GrievanceType_ProjectGrievance: '1205638979644653',
-            GrievanceType_Suggestion: '1206939331510951',
-            GrievanceType_Request: '1206939331510952',
-            GrievanceType_ReportIllegalActivities: '1208201385471325',
-            CaseType_Boundary: '1205638979644656',
-            CaseType_CashForCommunities: '1205638979644657',
-            CaseType_CommunityPatrols: '1205638979644658',
-            CaseType_Governance: '1205638979644659',
-            CaseType_HumanWildlifeConflict: '1205638979644660',
-            CaseType_IllegalLogging: '1205638982100772',
-            CaseType_LandClearance: '1205638982100773',
-            CaseType_LandGrabbing: '1205638982100774',
-            CaseType_LawEnforcement: '1205638982100775',
-            CaseType_LeMemberThreat: '1205638982100776',
-            CaseType_LogsTransportation: '1205638982100777',
-            CaseType_NestProtection: '1205638982100778',
-            CaseType_PermissionLetterLogging: '1205638982100779',
-            CaseType_Poaching: '1205638982100780',
-            CaseType_ProjectImplementation: '1205638982100781',
-            CaseType_SignBoard: '1205638982100782',
-            CaseType_Threats: '1205638982100783',
-            CaseType_VillageFocalPerson: '1205638982100784',
-            CaseType_WcsStaffFraud: '1205638982100785',
-            ReponseNeeded_Yes: '1205638982100788',
-            ReponseNeeded_No: '1205638982100789',
-            ReponseNeeded_NotSure: '1205638982100790',
-            'GrievanceStatus _BeingReviewed': '1192850232576003',
-            'GrievanceStatus _NotAssigned': '1187328718760775',
-            'GrievanceStatus _Dismissed': '1187674280676653',
-            'GrievanceStatus _OnHold': '1187328718760778',
-            'GrievanceStatus _BeingInvestigated': '1187328718760776',
-            'GrievanceStatus _Resolved': '1187328718760777',
-            'GrievanceStatus _RemediationBeingMonitored': '1192772373678248' 
-            };
-
-            return { ...state, formatMapping };
-          });
-
-          upsertTask(
-            dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
-            //'1201382240883590', //hardcoded project id
-
-            {
-              externalId: "name", // Asana external Id field name (e.g., 'gid')
-              data: {
-                name: state =>
-                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-                    `${dataValue('body.GrievanceId')(state)} (KoboID:${dataValue('body._id')(state)})`,
-                projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
-                //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
-                notes: state =>
-          `Complaint in Khmer: ${dataValue('body.ComplaintKhmer')(state)}.
-          Complaint English: ${dataValue('body.ComplaintEnglish')(state)}.`,
-                custom_fields: {
-                    //This tells Asana what fields to update and how to locate them.
-                    
-                    //The statements below apply to Asana Fields that are for OPEN ENDED
-                    //i.e. They accept FREE TEXT INPUT from the Kobo Form
-          '1202329899911605': dataValue('body.ReporterName'),
-          '1201884379104074': dataValue('body.GrievanceId'),
-          '1205638664513483': dataValue('body.GrievanceDate'),
-          '1205638669631280': dataValue('body.GrievanceTime'),
-          '1202329899911619': dataValue('body.Village'),
-          '1205638664513479': dataValue('body.NamePhone'),
-          '1205638664513487': dataValue('body.Position'),
-          '1205638664544001': dataValue('body.DateTimeLocationIncident'),
-          '1205638664544009': dataValue('body.ActionTaken'),
-          '1205638664555699': dataValue('body.ResponseGiven'),
-          '1205638664544013': dataValue('body.ResultAction'),
-          '1205638664544017': dataValue('body.Evidence'),
-          '1205639008044145': dataValue('body.StatusExplanation'),
-          '1205638664555695': dataValue('body.DateResolved'),
-          '1205638664555691': dataValue('body.LTM reviewed'),
-                    
-                    //The statements below apply to Asana Fields that have multiplechoice / DropDown options
-                    //i.e. They require that the user selects specific options from the Kobo Form dropdown list.
-                    // These are the questions that require the MAPPING TABLES at the top of this page.
-                    //The mapping key-value pairs are obtained using a console.log tht runs in the Fetch GID Job
-                   /* '0000000000000000': dataValue('body.WhereGrievance'), */ //Grievance Date field missing in Asana
-          '1205638979644642': state => state.formatMapping["GrievanceReport_" + dataValue('body.GrievanceReport')(state)],
-          '1205638979644650': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
-          '1205638979644655': state => state.formatMapping["CaseType_" + dataValue('body.CaseType')(state)],
-          '1205638982100787': state => state.formatMapping["ReponseNeeded_" + dataValue('body.ReponseNeeded')(state)],
-          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
-                },
-              },
-            },
-            state => {
-              console.log(JSON.stringify(state.data, null, 2)); //log data
-              return state;
-            }
-          );
-
-      GRM19-Upsert-NPL-Grievances-in-Asana:
-        name: GRM19 Upsert NPL Grievances in Asana
-        adaptor: '@openfn/language-asana@2.0.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
-        body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
-
     triggers:
       webhook:
         type: webhook
@@ -3967,24 +3917,8 @@ workflows:
         target_job: GRM02-b-Sync-to-GoogleSheets-Aceh
         condition_type: on_job_success
         enabled: true
-      Triage-jobs->GRM11-Upsert-KSWS-Grievances-in-Asana:
-        source_job: Triage-jobs
-        target_job: GRM11-Upsert-KSWS-Grievances-in-Asana
-        condition_type: js_expression
-        condition_label: New Keo Seima Form
-        condition_expression: |
-          state.data.formName == "Keo Seima GRM"
-        enabled: true
-      Triage-jobs->GRM19-Upsert-NPL-Grievances-in-Asana:
-        source_job: Triage-jobs
-        target_job: GRM19-Upsert-NPL-Grievances-in-Asana
-        condition_type: js_expression
-        condition_label: New NPL form
-        condition_expression: |
-          state.data.formName == "Feedback and Grievance Redress Mechanism - NPL"
-        enabled: true
-  SAB-2.-Update-Asana-Task-Aceh:
-    name: SAB 2. Update Asana Task Aceh
+  SAP-2.-Update-Asana-Task-Aceh:
+    name: SAP 2. Update Asana Task Aceh
     jobs:
       GRM02-c-Update-Asana-Task-Aceh:
         name: GRM02 c Update Asana Task Aceh
@@ -4181,8 +4115,8 @@ workflows:
         condition_expression: |
           state.data.notificationType == "gsheet-changes"
         enabled: true
-  SUS-Sync-Forms-to-Asana:
-    name: SUS Sync Forms to Asana
+  Sudano-Sahel-Sync-to-Asana:
+    name: Sudano Sahel Sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
@@ -4454,6 +4388,208 @@ workflows:
         condition_label: New Sera Oura Form
         condition_expression: |
           state.data.formName == "GRM Sena Oura"
+        enabled: true
+  Sync-GRM-Submission-Metadata:
+    name: Sync GRM Submission Metadata
+    jobs:
+      Get-GRM-Forms-List:
+        name: Get GRM Forms List
+        adaptor: '@openfn/language-googlesheets@3.0.14'
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
+        body: |
+          //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
+          // This can be run on-demand at any time by clicking "run" or modify manualCursor below //
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'grm-DEPLOYED!A:AA', //get Deployed forms list from Sheet
+            
+            state => {
+              const [headers, ...values] = state.data.values;
+
+              const mapHeaderToValue = value => {
+                return headers.reduce((obj, header) => {
+                  obj[header] = value[headers.indexOf(header)];
+                  return obj;
+                }, {});
+              };
+
+              state.sheetsData = values
+                .filter(
+                  item =>
+                    item.includes('TRUE') //return forms where auto-sync = TRUE
+                    
+                )
+                .map(item => mapHeaderToValue(item));
+
+              return state;
+            }
+          );
+
+          fn(state => {
+            const { sheetsData } = state;
+
+            // Set a manual cursor if you'd like to only fetch data after this date...
+            //e.g., '2023-01-01T23:51:45.491+01:00'
+            const manualCursor = '';  //lastUsed: 2024-04-01T00:00:00.000Z
+            console.log('manualCursor defined?', manualCursor);
+            
+            //...otherwise the job will use this dynamicCursor
+            const dynamicCursor = getTodayISODate(); 
+
+            function getTodayISODate() {
+              const today = new Date();
+              today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
+              return today.toISOString(); // Convert to ISO string
+            }
+            
+            const cursorValue = manualCursor || dynamicCursor; 
+            console.log('Cursor value to use in query:', cursorValue);
+            
+             
+
+            const formsList = sheetsData.map(survey => ({
+                formId: survey.uid,
+                owner: survey.owner,
+                name: survey.name 
+            })); 
+            
+            console.log('# of deployed forms detected in Sheet:: ', formsList.length);
+            console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); 
+
+            state.data = {
+              surveys: sheetsData.map(survey => ({
+                formId: survey.uid,
+                //tag: survey.tag,
+                name: survey.name,
+                owner: survey.owner,
+                projectId: survey.asana_projectid,
+                url1: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/counts`,
+                url2: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data`
+                // query: `&query={"end":{"$gte":"${cursorValue}"}}`,
+              })),
+            };
+            console.log(state.data);
+            return state;
+          });
+
+      Get-Submission-Metadata:
+        name: Get Submission Metadata
+        adaptor: '@openfn/language-http@3.1.11'
+        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
+        body: |
+          // Initialize an empty array to accumulate survey data
+          fn(state => ({ ...state, surveysList: [] })),
+
+          // Process each survey
+          each(dataPath('surveys[*]'), state => {
+            const { url1, url2, formId, name, owner, projectId } = state.data;
+
+            return fn(async state => {
+              const response1 = await get(`${url1}`, {})(state);
+              const response2 = await get(`${url2}`, {})(state);
+
+              const resultList = response2.data.results;
+              // const lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
+              let lastSubmissionTime;
+              if (resultList.length > 0) {
+                lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
+              } else {
+                lastSubmissionTime = null;
+              }
+              
+              let total_submission_count;
+              if (response1.data && 'total_submission_count' in response1.data) {
+                total_submission_count = response1.data.total_submission_count;
+              } else {
+                total_submission_count = undefined;
+              }
+              
+              console.log(`Processing: ${formId}`);
+              console.log(url1);
+              console.log(url2);
+              console.log(`Last submission time: ${lastSubmissionTime}`);
+
+              const surveyData = {
+                formId,
+                name,
+                // total_submission_count: response1.data.total_submission_count,
+                owner,
+                total_submission_count,
+                lastSubmissionTime,
+                projectId
+              };
+
+              // Add the current survey data to the accumulator
+              return { 
+                ...state, 
+                surveysList: [...state.surveysList, surveyData]
+              };
+            })(state);
+          }),
+
+          // After processing all surveys, update the state with the accumulated data
+          fn(state => {
+            const finalState = {
+              ...state,
+              data: {
+                ...state.data,
+                surveys: state.surveysList
+              }
+            };
+            console.log("Final combined state:", JSON.stringify(finalState.data, null, 2));
+            return finalState;
+          })
+
+      Upsert-to-DB:
+        name: Upsert to DB
+        adaptor: '@openfn/language-mssql@2.6.11'
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
+        body: |
+          fn((state) => {
+           
+            const surveys = state.data.surveys.map((survey) => ({
+              DatasetName: survey.name,
+              DatasetOwner: survey.owner,
+              DatasetUuidID: survey.formId,
+              LastSubmissionTime: survey.lastSubmissionTime,
+              KoboSubmissionCount: survey.total_submission_count,
+              LastCheckedTime: new Date().toISOString(),
+              LastUpdateTime: new Date().toISOString(),
+              KoboManaged: true,
+              Citation: survey.projectId
+            }));
+
+            console.log("Surveys to be upserted: ", surveys);
+           
+            return { ...state, surveys };
+          });
+
+
+
+          upsertMany("WCSPROGRAMS_KoboData", "DatasetUuidID", (state) => state.surveys, {
+            logQuery: true,
+          });
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 */3 * * *'
+        enabled: false
+    edges:
+      cron->Get-GRM-Forms-List:
+        source_trigger: cron
+        target_job: Get-GRM-Forms-List
+        condition_type: always
+        enabled: true
+      Get-GRM-Forms-List->Get-Submission-Metadata:
+        source_job: Get-GRM-Forms-List
+        target_job: Get-Submission-Metadata
+        condition_type: on_job_success
+        enabled: true
+      Get-Submission-Metadata->Upsert-to-DB:
+        source_job: Get-Submission-Metadata
+        target_job: Upsert-to-DB
+        condition_type: on_job_success
         enabled: true
   "[ARCHIVE]-Fetch-Historical-Kobo-Grievance-Data":
     name: '[ARCHIVE] Fetch Historical Kobo Grievance Data'
