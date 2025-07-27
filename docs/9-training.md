@@ -47,7 +47,7 @@ This includes:
 
 ---
 
-## 10.3 Video Recordings & Demos
+## Video Recordings & Demos
 
 Watch recorded sessions and tutorial videos to review training content or catch up on anything you missed:
 
@@ -59,7 +59,7 @@ Watch recorded sessions and tutorial videos to review training content or catch 
 
 ---
 
-## 10.4 Community & Help Channels
+## Community & Help Channels
 
 Need help or want to go further? Here are the best ways to get support:
 
