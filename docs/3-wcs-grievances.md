@@ -1,14 +1,13 @@
 ---
 layout: page
 title: WCS Grievances
-nav_order: 5
+nav_order: 3
 permalink: /wcs-grievances/
 ---
 
 # WCS Grievances
 
 ## Project Overview & Prerequisites
-
 The WCS Grievances project enables automated ingestion of GRM (Grievance Redress Mechanism) submissions from Kobo Toolbox, transforming and saving these into Asana for case management. This project was originally implemented in OpenFn V1 but has since been migrated to OpenFn V2 with several improvements to scalability and maintainability.
 
 In the V2 version:
@@ -56,6 +55,29 @@ Included Jobs:
   - Sends valid submissions to the right region workflow
 
 #### 2. [Region] Sync to Asana Workflow
+The WCS Grievances project is modularized into region-specific workflows. Each workflow corresponds to one of WCS’s programmatic regions and contains the logic to process and post GRM form submissions from Kobo into the relevant Asana project.
+
+Each regional workflow contains one or more OpenFn jobs:
+- One job per Kobo form handled in that region
+- Jobs are responsible for:
+  - Cleaning and validating incoming Kobo submissions
+  - Mapping form fields to Asana custom fields and enum options
+  - Posting the data as a task in a specified Asana project using upsertTask
+
+**Regional Workflows Summary**
+Below is a list of all regional workflows and their corresponding responsibilities:
+
+| Region                                   | Workflow Name on OpenFn |
+|------------------------------------------|--------------------------|
+| East Africa Western Indian Ocean & Madagascar | `EAWIO Sync to Asana`        |
+| Global                                   | `Global Sync to Asana`       |
+| Greater Mekong                           | `Greater Mekong Sync to Asana`          |
+| Andes, Amazon & Orinoco                  | `AAO Sync to Asana`          |
+| Central Africa & Gulf of Guinea          | `CAGG Sync to Asana`          |
+| Mesoamerica & Western Caribbean          | `MesoAmerica Sync to Asana`          |
+| Patagonia                                | `Patagonia Sync to Asana`          |
+| Southeast Asia Pacific                   | `SAP 1. Sync to Asana` and `SAP 2. Update Asana Task Aceh`          |
+| Sudano-Sahel                             | `Sudano Sahel Sync to Asana`          |
 
 #### 3. 0. Get Asana Field IDs for Project Workflow
  
@@ -63,14 +85,15 @@ Written to retrieve the gids of all the associated fields from the Asana project
 
 The key is to create a dummy task in Asana using the " +Add task" button in the Asana UI. Click to view the Asana task details and take note of the UI structure in the browser. It should look like this:. 
 
-https://app.asana.com/0/<Project_gid>/< Task_gid>  (Note: We use the TaskID in the getTask request, and not the _ProjectID_)
+`https://app.asana.com/0/<Project_gid>/< Task_gid>`
+(**Note**: We use the TaskID in the getTask request, and not the _ProjectID_)
 
 This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is then modified to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #3).
 
 This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can be switched off or archived afterwards.
 
 ⚠ *Notes for developers:*
-- An example of this `A. GIDs and Mappings for Updsert` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
+- An example of this `. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
 - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
 - See below for a screenshot of how it might look configured on the platform.  
 
@@ -143,69 +166,16 @@ iv.Upsert the data into the Asana project, as follows:
 - An example of this `Upsert Job`  is linked to the Github file [`/asana/upsertTask.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/upsertTask.js).
 - On OpenFn.org this job is configured with the `asana` adaptor, and a `message filter` trigger which is activated every time a Kobo form is fetched with a matching name (e.g., `{"formName":"WCS Global Grievances"}`). 
 
-
-
-
 ### Assumptions
 
 1. The jobs and mapping design are based on this [KoboToolBox to Asana Integration Requirement](https://docs.google.com/document/d/1blAjAyZ1UfDI-3zDdf38sXYqevroGQVHxOkFWseNTS4/edit#) of WCS.
 2. All data cleaning will be done in Kobo Toolbox. Every time Kobo data is
    received, OpenFn first checks for a matching task record in Asana, If a match is found, the Task is updated with new details. If a matching task is not found, a new Task is created in Asana with the data fields populated.
 3. The uuid used for syncing with the destination DB is the Kobo answer `_id`. The combination of `GrievanceID` and Kobo `_id_` creates a unique identifier for each form across various systems that would interact wit this data. **Note:** `uuid` may vary, and hence not a reliable unique identifier.
-
-
-## Q2 2024 GoogleSheets Integration
-
-### Project Overview
-
-In some cases, after grievances are entered into the KoboToolbox form, the team will need to add updates on investigation and resolution in a Google Spreadsheet rather than in Asana. If they do that, we still need the data to be synced and updated with Asana. The objective of the project is to allow data entered in Kobo to be synced automatically in Google Sheet then manually updated by the team in Google Sheet, with all the updates being synced with Asana so that Asana contains the complete information on the grievance.
-
-
-**GoogleSheets**
-
-OpenFn will sync Kobo data to this [GoogleSheet](https://docs.google.com/spreadsheets/d/1WxZ8En1SX-g0UkvLnutZicmIEyZodwI4nGPFEvrxKE0/edit?gid=216423581#gid=216423581). Review the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for details on how to use the GoogleSheet.
-
-
-
-**Data Flows** 
-
-*[See this data flow diagram](https://lucid.app/lucidchart/3f6e91d6-feac-4c12-9602-60a0f9029943/edit?invitationId=inv_6fe97638-7d35-4930-9e00-ca2e538688eb&page=OQGlZYTqVO5E#).* 
-
-
-### Jobs Configured 
-
-The following jobs are configured on OpenFn.org to run automatically.
-
-
-**1. Sync to GoogleSheets**
-
-After the tasks are upserted in Asana via the `GRM02. Upsert Aceh Grievances in Asana` job, the `Sync to GoogleSheets` job will run automatically. This job automatically cleans, maps, & loads the Kobo survey data into the specified GoogleSheet. This job stores the `Asana Task ID` returned from Asana in the Google sheet and uses it as the UUID for each row.
-This job employs a  *one-to-one mapping* i.e. 
-
-       1 Kobo form submission => 1 row in GoogleSheets 
-
-After OpenFn syncs the Kobo data to GoogleSheets, the Indonesia team addresses the grievances and leaves updates directly in the sheet. OpenFn has created protected ranges in the Sheet so that the users will only be able to update certain rows and cannot delete any rows. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details on these protected ranges. 
-
-**2. Update Asana Task**
-
-This job is triggered by a message that is sent to the OpenFn project inbox. The message is automatically sent to OpenFn daily at midnight UTC by a [Google Apps Script](https://github.com/WCS-ConsTech/OpenFn-GrievanceRedressMechanism/blob/master/asana/syncChangesToOpenFn.gs) that was developed by the OpenFn team. Please notify the OpenFn team if any changes need to be made to this script. The message the script pushes to OpenFn will contain the rows and columns that have been updated since the last sync. Note: it is possible to send this message manually (instead of waiting until midnight) by clicking the "OpenFn Sync" button. Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more details. 
-
-The `Update Asana Task` job will find the existing task in Asana using the `Asana Task ID` and map and load the GoogleSheet data to Asana. Only the fields in the `MAP 2: GoogleSheets -> Asana` tab in the [mapping specifications](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) will be synced from GoogleSheets to Asana. 
-
-### Data Element Mappings
-
-[See here](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466) for the integration mapping specifications. 
-
-
-### Assumptions
-
-1. Only the GoogleSheets document owner and the WCS GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
-2. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the WCS user and the document owner would have the privileges to update the ID the GoogleSheet.
-3. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
-4. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
-
-
-
+4. Only the GoogleSheets document owner and the WCS GoogleSheets integration user will be able to update the protected ranges in the GoogleSheet or delete rows in the Sheet. 
+5. The `Update Asana Task` should always find the Asana task using the uuid `Asana Task Id`. If the task is not found in Asana it may have been deleted in Asana or someone may have changed the ID in the GoogleSheet. If assumption number 1 is met, only the WCS user and the document owner would have the privileges to update the ID the GoogleSheet.
+6. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
+7. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
 
 ### Administration & Support
 #### Provisioning, Hosting, & Maintenance
