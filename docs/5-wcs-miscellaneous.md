@@ -115,10 +115,6 @@ The job then saves the records into the database:
 
 This ensures no duplicate data is created and any updates are applied correctly.
 
-#### 6. Log the results
-
-Finally, the job logs whether each submission was saved, skipped, or partially matched. These logs are useful for monitoring the workflow and troubleshooting if needed.
-
 ---
 
 ### Assumptions

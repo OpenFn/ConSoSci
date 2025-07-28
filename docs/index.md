@@ -117,3 +117,5 @@ The new OpenFn platform (called Lightning or v2) introduces big improvements ove
 - **It’s open-source and easier to host:** Just like v1, v2 can be self-hosted. Now it’s even easier with Docker templates and documentation available on GitHub.
 
 👉 Want to learn more? Read the full announcement blog here:[ Lightning is here](https://www.openfn.org/blog/lightning-is-here)
+
+[![consosci-Logo](images/ConSoSci_Logo-Horiz.png)](https://www.wcs.org)

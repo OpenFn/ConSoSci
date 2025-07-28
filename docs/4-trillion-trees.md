@@ -8,6 +8,16 @@ permalink: /trilliontrees/
 # Trillion Trees
 
 ## Project Overview & Prerequisites
+
+The **Trillion Trees** initiative is a joint effort by BirdLife International, WCS, and WWF to restore and protect forests globally. This project supports data management for WCS-led forest restoration activities by automating the flow of field data collected via KoboToolbox into a central MS SQL database for monitoring and analysis.
+
+Through this integration, WCS teams can:
+- Collect standardized planting, seedling monitoring, and field survey data in Kobo
+- Configure form behavior and sync settings via a shared Google Sheet
+- Automatically process and insert submissions into the appropriate Trillion Trees database tables
+
+The system is built on the OpenFn platform and includes scheduled jobs to fetch new or historical submissions, route them based on form type, transform values to match database codes, and store clean, validated records. 
+
 ### Prerequisites
 
 - Active KoboToolbox credentials
@@ -15,11 +25,19 @@ permalink: /trilliontrees/
 - Valid MS SQL database credentials and schema
 - Standardized naming conventions and codes for enums and select options (e.g. `TT_TreeSpacingExtCode`, `TT_RegionExtCode`)
 
+---
+
 ## Workflow Diagram
+
+![trillion-trees](images/trillion-trees-wf.png)
+
+---
 
 ## Field-to-DB Mappings
 
 [See here](https://docs.google.com/spreadsheets/d/17DLdsUCS3wincSlHD07lrgR7vOIYQEhDmrg2EtZbwCo/edit?gid=570142397#gid=570142397) for the mapping specifications defined by WCS.
+
+---
 
 ## Data Flows & Workflow Descriptions
 ###  Overview
@@ -65,8 +83,6 @@ The job first checks if the Kobo form submission should be processed. For exampl
 
 This helps track each record and makes sure it's being routed correctly.
 
----
-
 #### 2. Clean and format the data
 
 Before saving anything to the database, the job ensures the data is clean and standardized:
@@ -76,8 +92,6 @@ Before saving anything to the database, the job ensures the data is clean and st
 
 This helps avoid errors when saving to the database and keeps things consistent.
 
----
-
 #### 3. Match answers to reference values
 
 Some Kobo fields have dropdown choices (like region names or spacing types). These are mapped to standardized codes used in the database. For example:
@@ -85,8 +99,6 @@ Some Kobo fields have dropdown choices (like region names or spacing types). The
 - `"Dense"` spacing becomes code `TT002`
 
 This is done using lookup tables, and the job searches these tables to find the correct code for each answer.
-
----
 
 #### 4. Build the database record
 
@@ -98,8 +110,6 @@ Once the values are cleaned and matched, the job builds a structured "record" th
 
 If the form contains repeat groups (like a list of seedlings or people), each item is handled separately and linked back to the main record.
 
----
-
 #### 5. Save to the database
 
 Finally, the job saves the cleaned and mapped data into the correct table using:
@@ -108,21 +118,15 @@ Finally, the job saves the cleaned and mapped data into the correct table using:
 
 OpenFn makes sure that if a record already exists (based on unique ID), it’s updated instead of duplicated.
 
----
-
-#### 6. Finish and log
-
-After saving, the job logs what was done for monitoring and debugging. Any issues (like unmatched values or errors connecting to the database) are logged clearly so they can be reviewed.
-
----
-
+> ℹ️ **Info:** 
 This structure is reused across all Trillion Trees form jobs — so adding a new form is mostly a matter of copying a job and updating the field mappings.
+> 
+> If you're non-technical, you can still help by:
+> - Making sure Kobo forms are properly configured in the Google Sheet
+> - Reviewing mappings in the shared mapping spreadsheet
+> - Confirming which table each form should save to
 
-If you're non-technical, you can still help by:
-- Making sure Kobo forms are properly configured in the Google Sheet
-- Reviewing mappings in the shared mapping spreadsheet
-- Confirming which table each form should save to
-
+---
 
 ### Assumptions
 
@@ -136,11 +140,15 @@ If you're non-technical, you can still help by:
 - Lookup values in MS SQL are uniquely identified via `ExtCode` fields  
 - `SurveyType != 'practice'` is used to exclude test data  
 - Each form submission is uniquely identified via `_id` + `_xform_id_string` combo
-  
-## Administration & Support
 
+---
+
+### Administration & Support
 #### Provisioning, Hosting, & Maintenance
+- This integration is hosted on OpenFn.org with hosted SaaS.
+- The KoboToolBox Forms managed by WCS
 
 ####  Questions or support needed?
-Contact support@openfn.org. 
+- For new project setup or scale-up requests, contact: [Diane Detoeuf](ddetoeuf@wcs.org), [Vanesa Reyes](vreyes@wcs.org), [Omar Torrico](otorrico@wcs.org), [Wendy Acahuana](wacahuana@wcs.org)
+- For technical support, raise a ticket via [support@openfn.org](support@openfn.org)
 

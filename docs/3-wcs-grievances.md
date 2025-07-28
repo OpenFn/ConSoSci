@@ -14,19 +14,25 @@ In the V2 version:
 - Workflows have been modularized and split by region for better maintainability and clarity.
 - A centralized workflow (`Get GRM Forms from Kobo`) is used to dynamically fetch configured forms and route submissions to the appropriate regional workflows based on the region mapping provided in the configuration spreadsheet.
 
-**Prerequisites:**
+###Prerequisites:
 - Kobo credentials for form access
 - A configuration spreadsheet containing form IDs and associated region codes
 - Asana credentials and project setup per region
 - Mapping documentation for each region-specific workflow
 
+---
+
 ## Workflow Diagram
 
-*[See this data flow diagram](https://lucid.app/documents/view/6221fa37-411d-49d2-93e7-b889c4f06511).* 
+![wcs-grievances](images/wcs-grievances-wf.png)
+
+---
 
 ## Field-to-Asana Mappings
 
 [See here](https://docs.google.com/spreadsheets/d/18AXoD-ABl8gAGDpJHiBkK8oDP6YrEsF4/edit?usp=drive_web&ouid=102832098624169374758&rtpof=true) for the integration mapping specifications. 
+
+---
 
 ## Data Flows & Workflow Descriptions
 
@@ -143,9 +149,9 @@ This job is run *only once* as the Asana field gids for a given project are uniq
 - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
 - See below for a screenshot of how it might look configured on the platform.  
 
-![jobA-example](../job1_ex.png)
+![jobA-example](images/job-A-ex.png)
 
-
+---
 
 ### Assumptions
 
@@ -158,9 +164,13 @@ This job is run *only once* as the Asana field gids for a given project are uniq
 6. Because Asana tasks can be moved to different projects, Asana users should make sure OpenFn has access to those project spaces so that the integration will always find the task to be updated.
 7. The GoogleSheet sharing setting will remain set to "Restricted - Only people with access can open with the link" so that any changes made to the document will be associated with a user.
 
+---
 ### Administration & Support
 #### Provisioning, Hosting, & Maintenance
-This integration is hosted on OpenFn.org with hosted SaaS. The KoboToolBox Forms managed by WCS (email: ddetoeuf@wcs.org).
+- This integration is hosted on OpenFn.org with hosted SaaS.
+- The KoboToolBox Forms managed by WCS
 
 ####  Questions or support needed?
-Contact support@openfn.org. 
+- For new project setup or scale-up requests, contact: [Diane Detoeuf](ddetoeuf@wcs.org), [Vanesa Reyes](vreyes@wcs.org), [Omar Torrico](otorrico@wcs.org), [Wendy Acahuana](wacahuana@wcs.org)
+- For technical support, raise a ticket via [support@openfn.org](support@openfn.org)
+

@@ -22,7 +22,13 @@ Toolbox and a Postgresql transitional database.
 
 > ⚠️ The `study_id` and `site_id` values are currently hardcoded in jobs. All surveys will default to `study_id: 1000` and `site_id: 1001` unless otherwise defined per form type.
 
+---
+
 ## Workflow Diagram
+
+![wildmeat](images/wildmeat-wf.png)
+
+---
 
 ## Field-to-DB Mappings
 
@@ -111,7 +117,8 @@ Records are inserted into the database using:
 The upsert method ensures that:
 - Existing records are updated (not duplicated)
 - New records are added only once
-  
+
+ --- 
 ### Assumptions
 
 - `study_id` and `site_id` values are hardcoded for now. These default to:
@@ -123,11 +130,14 @@ The upsert method ensures that:
 - All forms must include consent (`consent_checklist == 'yes'`) to be processed.
 - Forms use different repeat groups (e.g., `group_food`, `vendor.sales`, `animal_details`) to capture wildmeat data.
 - Some calculated values (e.g., `massin_grams`) are derived at runtime.
-  
+
+---
+
 ## Administration & Support
 
 #### Provisioning, Hosting, & Maintenance
-This integration is hosted on OpenFn.org with hosted SaaS. The Postgres DB is managed by WCS/EU SWM Wildmeat partners (email: U.Muchlish@cgiar.org).
+- This integration is hosted on OpenFn.org with hosted SaaS.
+- The KoboToolBox Forms managed by WCS
 
 ####  Questions or support needed?
 Contact support@openfn.org. 
