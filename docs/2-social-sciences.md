@@ -18,7 +18,7 @@ The **BNS & NRGT are standard surveys used by WCS** for Monitoring & Evaluation 
 
 👉 For more information, visit [WCS Social Science FAQ](https://programs.wcs.org/socialscience/en-us/Frequently-Asked-Questions).
 
-###Prerequisites
+### Prerequisites
 Before using this system, make sure the following are in place:
 - **All forms to be synced are listed** in the WCS tracking Google Sheet (`wcs-bns-DEPLOYED` or `wcs-bns-ARCHIVED`) and marked with `auto-sync = TRUE`.
 - **For older forms**, set `historical_sync = TRUE` in the sheet if you want to pull past submissions.
