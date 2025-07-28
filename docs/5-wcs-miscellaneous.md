@@ -9,16 +9,30 @@ permalink: /miscellaneous/
 
 ## Project Overview & Prerequisites
 
+This workflow supports WCS efforts to protect sharks, and rays by enabling the structured collection and integration of survey data into a centralized MS SQL database. Sharks and rays are some of the ocean’s most threatened species, often overlooked in marine conservation. WCS works across critical regions to better understand and manage these species by engaging with communities, researchers, and policymakers.
+
+This integration streamlines the management of KoboToolbox data collected through community monitoring, catch surveys, and other field assessments. Submissions are cleaned, transformed, and inserted into the `SharksRays` database, helping WCS track species presence, fishing pressures, and conservation impact over time.
+
+➡️ To find out more about WCS’s work with sharks and rays, visit [wcs.org](https://www.wcs.org/our-work/wildlife/sharks-skates-rays).
+
 ### Prerequisites
 - KoboToolbox API credentials  
 - MS SQL credentials and defined schema for `SharksRays` tables  
 - Mappings between Kobo dropdown fields and internal ExtCode values (e.g., species, region, survey type)
 
+---
+
 ## Workflow Diagram
+
+![wcs-miscellaneous](images/wcs-miscellaneous-wf.png)
+
+---
 
 ## Field-to-DB Mappings
 
 N/A
+
+---
 
 ## Data Flows & Workflow Descriptions
 ###  Overview
@@ -30,8 +44,6 @@ N/A
 - Writes form details (title, owner, ID) into a shared Google Sheet
 - Supports easier onboarding and monitoring of forms across projects
 
----
-
 #### 2. `Sharks & Rays 1.1 Get Forms Ongoing`
 
 - Runs on a schedule to fetch *recent* submissions from deployed forms
@@ -39,16 +51,12 @@ N/A
 - Filters submissions based on a rolling timestamp (`manualCursor`) to avoid duplicates
 - Posts each submission to the OpenFn Inbox for downstream processing
 
----
-
 #### 3. `Sharks & Rays 1.2 Get Forms Historical`
 
 - Similar to the Ongoing workflow but fetches older submissions
 - Triggered manually, used for backfilling or onboarding historical forms
 - Targets forms marked with `historical_sync = TRUE` in the Google Sheet
 - Includes both deployed and archived Kobo forms
-
----
 
 #### 4. `Sharks & Rays 2. Sync Forms to Database`
 
@@ -124,12 +132,16 @@ This ensures no duplicate data is created and any updates are applied correctly.
 - Only non-test data should be processed (`survey_type != 'practice'` may be used)
 - Lookup tables must be kept updated to support ExtCode matching
 - Repeat groups follow the expected nested structure for observed species or events
-  
+
+---
+
 ## Administration & Support
 
 #### Provisioning, Hosting, & Maintenance
-This integration is hosted on OpenFn.org with hosted SaaS. The Postgres DB is managed by WCS/EU SWM Wildmeat partners (email: U.Muchlish@cgiar.org).
+- This integration is hosted on OpenFn.org with hosted SaaS.
+- The KoboToolBox Forms managed by WCS
 
 ####  Questions or support needed?
-Contact support@openfn.org. 
+- For new project setup or scale-up requests, contact: [Diane Detoeuf](ddetoeuf@wcs.org), [Usmijuka](usmijuka@wcs.org), [Narangua Batdorj](bnarangua@wcs.org)
+- For technical support, raise a ticket via [support@openfn.org](support@openfn.org)
 
