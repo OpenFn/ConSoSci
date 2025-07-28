@@ -14,7 +14,7 @@ In the V2 version:
 - Workflows have been modularized and split by region for better maintainability and clarity.
 - A centralized workflow (`Get GRM Forms from Kobo`) is used to dynamically fetch configured forms and route submissions to the appropriate regional workflows based on the region mapping provided in the configuration spreadsheet.
 
-###Prerequisites:
+### Prerequisites:
 - Kobo credentials for form access
 - A configuration spreadsheet containing form IDs and associated region codes
 - Asana credentials and project setup per region
@@ -85,10 +85,6 @@ Below is a list of all regional workflows and their corresponding responsibiliti
 | Southeast Asia Pacific                   | `SAP 1. Sync to Asana` and `SAP 2. Update Asana Task Aceh`          |
 | Sudano-Sahel                             | `Sudano Sahel Sync to Asana`          |
 
-Within each regional workflow there are one or more jobs that require a *one-to-one mapping* 
-
-       1 Kobo form submission => 1 task in Asana 
-
 For scalability, WCS also required that this integration be designed such that multiple versions of the Kobo form (with identical fields) can be mapped to their own corresponding project tasks in Asana. 
 
 There are two types of fields to be mapped:
@@ -97,14 +93,14 @@ i. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typic
 
        custom_fields: {'1234567890123456': dataValue('body.OneDriveFolder')} 
 
-ii. Multiple Choice / Drop-down Kobo fields. These fileds typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in Job #1. These parameters are structured as follows:
+ii. Multiple Choice / Drop-down Kobo fields. These fields typically have a list of pre-defined choices that users must select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in Job #1. These parameters are structured as follows:
 
        custom_fields: {
           1234567890123456: state =>
           state.formatMapping[dataValue('body.GrievanceOrSuggestion')(state)],
        }  
 
-iii. For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
+For the Task name in Asana, we used a combination of (1) the GrievanceID (filled in by the survey respondent) and (2) the unique, auto-generated KoboToolbox ID ( `_id` ). This was assigned to the `name` key in the `upsert()` method as follows:
 
        name: state =>
          `${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`, 
@@ -120,16 +116,15 @@ Next, a `formatMapping` method was included in the First Job, to map every singl
     Bangladesh: '1187466717116804', 
    
 
-
-iv.Upsert the data into the Asana project, as follows:
+Upsert the data into the Asana project, as follows:
 
        upsertTask(
           dataValue('projectid'),...
        );
 
-⚠ *Notes for developers:*
-- An example of this `Upsert Job`  is linked to the Github file [`/asana/upsertTask.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/upsertTask.js).
-- On OpenFn.org this job is configured with the `asana` adaptor, and a `message filter` trigger which is activated every time a Kobo form is fetched with a matching name (e.g., `{"formName":"WCS Global Grievances"}`). 
+> ⚠ *Notes for developers:*
+> - An example of this `Upsert Job`  is linked to the Github file [`/asana/upsertTask.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/upsertTask.js).
+> - On OpenFn.org this job is configured with the `asana` adaptor, and a `message filter` trigger which is activated every time a Kobo form is fetched with a matching name (e.g., `{"formName":"WCS Global Grievances"}`). 
 
 #### 3. 0. Get Asana Field IDs for Project Workflow
  
@@ -140,16 +135,51 @@ The key is to create a dummy task in Asana using the " +Add task" button in the 
 `https://app.asana.com/0/<Project_gid>/< Task_gid>`
 (**Note**: We use the TaskID in the getTask request, and not the _ProjectID_)
 
-This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is then modified to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #3).
+This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The output of `state.data` contains the gids for all the Asana fields, otions and labels. Finally, this job is then modified to  create a mapping table of Kobo field response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements that can be inserted into Fn blocks in the main upsert job (Job #2).
 
 This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can be switched off or archived afterwards.
 
-⚠ *Notes for developers:*
-- An example of this `. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
-- On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
-- See below for a screenshot of how it might look configured on the platform.  
+> ⚠ *Notes for developers:*
+> - An example of this `A. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
+> - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
+> - See below for a screenshot of how it might look configured on the platform.  
 
 ![jobA-example](images/job-A-ex.png)
+
+### Special Flow: Indonesia (Aceh)
+
+The `SAP 1. Sync to Asana` and `SAP 2. Update Asana Task Aceh` workflows support a customized workflow for the Indonesia (Aceh) region. In addition to syncing Kobo submissions to Asana, this region also syncs submissions to a protected GoogleSheet used for ongoing updates by the WCS Indonesia team.
+
+#### 1. SAP 1. Sync to Asana
+
+After a Kobo submission is upserted as a task in Asana via the `SAP 1. Sync to Asana` job, the data is also written to a designated GoogleSheet. This secondary sync:
+
+- Cleans, maps, and loads the Kobo data into the sheet.
+- Stores the `Asana Task ID` as the unique identifier for each row.
+- Enables a one-to-one mapping between Kobo and sheet records:
+
+      1 Kobo submission => 1 row in GoogleSheets
+
+- Includes protected ranges to prevent deletion or editing of sensitive fields. Only specific users (WCS Indonesia and the document owner) can edit rows or trigger changes.
+
+📘 Refer to the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more on sheet permissions and usage.
+
+#### 2. SAP 2. Update Asana Task Aceh
+
+The `SAP 2. Update Asana Task Aceh` workflow is triggered when changes are made in the GoogleSheet.
+
+- A **Google Apps Script** runs daily at midnight UTC and sends updated rows to OpenFn.
+- Alternatively, users can manually trigger the sync by clicking the **"OpenFn Sync"** button in the sheet.
+- The job:
+  - Locates the corresponding task in Asana using the stored `Asana Task ID`
+  - Maps and loads updated field values from the sheet
+  - Only syncs fields listed in the `MAP 2: GoogleSheets → Asana` tab in the [mapping specs](https://docs.google.com/spreadsheets/d/1D3_smWDjelubR_Lg-1xex9TLl6lAEGMSbGDyw8whqx4/edit#gid=373544466)
+
+📘 See the [GRM GoogleSheets User Guide](https://docs.google.com/document/d/1vAPLG1Sc4pSe6L0z3J5qVfmQFcvuJ1zEGmEKuExs5iI/edit) for more information about editable fields and triggering syncs.
+
+![wcs-grievances-indonesia](images/wcs-grievances-indonesia-wf.png)
+
+This hybrid workflow enables both task creation in Asana and spreadsheet-based case management by local teams. OpenFn ensures that updates made in the GoogleSheet are reflected in Asana, keeping the two systems synchronized for consistent case tracking and follow-up.
 
 ---
 

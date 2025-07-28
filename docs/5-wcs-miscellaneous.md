@@ -30,7 +30,7 @@ This integration streamlines the management of KoboToolbox data collected throug
 
 ## Field-to-DB Mappings
 
-N/A
+N/A — mappings are auto-generated via the automation solution.
 
 ---
 
