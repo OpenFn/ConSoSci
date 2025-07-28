@@ -367,8 +367,7 @@ workflows:
         adaptor: '@openfn/language-common@2.3.1'
         credential: rediet@openfn.org-WCS-MSSQL-Test-DB
         body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
+          // This job is only a step to split the workflow into the different Sync Jobs - not actually doing anything.
 
       BNS-2A-BNS-Price:
         name: BNS-2A BNS Price
@@ -439,9 +438,10 @@ workflows:
 
           // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
           // Maybe check result of previous op, then only delete if it was an update.
+          // Simulate an overwrite in the database. Accounting for scenarios where data is deleted from Kobo.
           sql({
             query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,
+              `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = ${state.data._id} AND DatasetUuidId = '${state.data.datasetId}'`,
           });
 
           fn(state => {
@@ -468,7 +468,7 @@ workflows:
               },
               SurveyDate: state.data.today,
             }));
-            // console.log('data', data);
+             console.log('data', data);
             return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);
           });
 
@@ -1217,7 +1217,7 @@ workflows:
       FS1---Get-Forms:
         name: FS1 - Get Forms
         adaptor: '@openfn/language-kobotoolbox@2.1.0'
-        credential: rediet@openfn.org-OpenFn-Kobo-Toolbox---WCS-access
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           //Check Kobo account for forms with these matching keywords
           getForms({}, state => {
@@ -1489,7 +1489,7 @@ workflows:
         source_job: FS2---Get-List-from-Sheets
         target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
         condition_type: on_job_success
-        enabled: true
+        enabled: false
       FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
         source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
         target_job: FS4---Notify-in-Asana
