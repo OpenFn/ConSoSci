@@ -3011,7 +3011,7 @@ workflows:
             };
             // IF YOU CLEAR STATE...
             // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-06-30T22:00:07.922Z';
+            const manualCursor = '2025-08-06T22:00:07.922Z';
 
             let cursorEnd = null;
 
