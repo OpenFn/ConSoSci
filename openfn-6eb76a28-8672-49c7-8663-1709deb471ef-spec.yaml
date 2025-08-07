@@ -11,11 +11,17 @@ credentials:
   ddetoeuf@wcs.org-Diane-GoogleSheet:
     name: Diane GoogleSheet
     owner: ddetoeuf@wcs.org
+  ddetoeuf@wcs.org-GRM-Asana-token:
+    name: GRM Asana token
+    owner: ddetoeuf@wcs.org
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
   rediet@openfn.org-WCS-GRM-Kobo---RAW-cred:
     name: WCS GRM Kobo - RAW cred
+    owner: rediet@openfn.org
+  rediet@openfn.org-WCS-Kobo-Form-Monitoring:
+    name: WCS Kobo Form Monitoring
     owner: rediet@openfn.org
   rediet@openfn.org-WCS-Programs-Database-central-db:
     name: WCS Programs Database central db
@@ -27,7 +33,7 @@ workflows:
       A-GIDs-and-Mappings-for-Upsert:
         name: A GIDs and Mappings for Upsert
         adaptor: '@openfn/language-asana@latest'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           //Typically run at the very beginning, or when we add new fields in Asana.
           // Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
@@ -301,7 +307,7 @@ workflows:
       GRM04b-Upsert-AAO-Int-Grievances:
         name: GRM04b Upsert AAO Int Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -351,7 +357,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
@@ -362,6 +370,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -421,7 +430,7 @@ workflows:
       GRM04-Upsert-AAO-Ext-Grievances:
         name: GRM04 Upsert AAO Ext Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -497,6 +506,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
@@ -507,6 +519,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+
             const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -611,7 +625,7 @@ workflows:
       GRM03-Upsert-Ituri-Grievances-in-Asana:
         name: GRM03 Upsert Ituri Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -656,7 +670,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -667,6 +683,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -729,7 +747,7 @@ workflows:
       GRM06-Upsert-KBNP-Grievances:
         name: GRM06 Upsert KBNP Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -804,7 +822,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1203958690339489.value': $.inputData?.body?.CaseID,
@@ -815,6 +835,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -879,7 +900,7 @@ workflows:
       GRM09-Update-PNMD-Grievances:
         name: GRM09 Update PNMD Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -925,6 +946,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -935,6 +959,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -998,7 +1023,7 @@ workflows:
       GRM10-Update-Ndoki-Grievances:
         name: GRM10 Update Ndoki Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping =
@@ -1061,6 +1086,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -1071,6 +1099,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1134,7 +1164,7 @@ workflows:
       GRM13-Upsert-Mbe-Mountains-Grievances:
         name: GRM13 Upsert Mbe Mountains Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1187,6 +1217,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -1197,6 +1230,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1258,7 +1293,7 @@ workflows:
       GRM16-Upsert-Afi-Grievances:
         name: GRM16 Upsert Afi Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1310,6 +1345,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -1320,6 +1358,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1382,7 +1421,7 @@ workflows:
       GRM17-Upsert-Yankari-Grievances:
         name: GRM17 Upsert Yankari Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1431,6 +1470,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -1441,6 +1483,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1500,7 +1543,7 @@ workflows:
       GRM20-Upsert-Kabobo-Grievances:
         name: GRM20 Upsert Kabobo Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1558,6 +1601,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1209077505698831.value': $.inputData?.body?.CaseID,
@@ -1568,6 +1614,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1633,7 +1680,7 @@ workflows:
       GRM26-Upsert-Okwango-Grievances:
         name: GRM26 Upsert Okwango Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           // Check out the Job Writing Guide for help getting started:
           // https://docs.openfn.org/documentation/jobs/job-writing-guide
@@ -1684,7 +1731,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -1695,6 +1744,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -1852,7 +1903,7 @@ workflows:
       GRM05-Upsert-Blue-Future-Grievances:
         name: GRM05 Upsert Blue Future Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1895,7 +1946,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.calculation,
@@ -1906,6 +1959,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID, calculation
             const grievanceId = state.inputData?.body?.calculation;
 
             if (tasks.length > 0) {
@@ -1955,7 +2009,7 @@ workflows:
       GRM07-Upsert-Ruaha-Katavi-Grievances:
         name: GRM07 Upsert Ruaha Katavi Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -1989,7 +2043,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1204127413705636.value': $.inputData?.body?.start,
@@ -2000,6 +2056,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.start;
 
             if (tasks.length > 0) {
@@ -2057,7 +2114,7 @@ workflows:
       GRM08-Upsert-NiassaGrievances:
         name: GRM08 Upsert NiassaGrievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2101,6 +2158,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
@@ -2108,6 +2168,7 @@ workflows:
             }
           });
 
+          // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
@@ -2173,7 +2234,7 @@ workflows:
       GRM12-Upsert-Mamabay-Grievances:
         name: GRM12 Upsert Mamabay Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2228,9 +2289,12 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
-              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
+              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
               resource_subtype: 'default_task'
             }
           });
@@ -2238,7 +2302,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
-            const grievanceId = state.inputData?.body?.GrievanceID;
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+            const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
               console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);
@@ -2302,7 +2367,7 @@ workflows:
       GRM21-Upsert-TZ-Marine-Grievances:
         name: GRM21 Upsert TZ Marine Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2357,6 +2422,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1209399308955036.value': $.inputData?.body?.CaseID,
@@ -2367,6 +2435,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -2430,7 +2499,7 @@ workflows:
       GRM23-Upsert-Mada-NO-Grievances:
         name: GRM23 Upsert Mada NO Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2481,9 +2550,12 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
-              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
+              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
               resource_subtype: 'default_task'
             }
           });
@@ -2491,7 +2563,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
-            const grievanceId = state.inputData?.body?.GrievanceID;
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+            const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
               console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);
@@ -2547,7 +2620,7 @@ workflows:
       GRM24-Upsert-Mada-SO-Grievances:
         name: GRM24 Upsert Mada SO Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2600,9 +2673,12 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
-              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
+              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
               resource_subtype: 'default_task'
             }
           });
@@ -2610,7 +2686,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
-            const grievanceId = state.inputData?.body?.GrievanceID;
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID, GrievanceId
+            const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
               console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);
@@ -2676,7 +2753,7 @@ workflows:
       GRM25-Upsert-Mada-Interne:
         name: GRM25 Upsert Mada Interne
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -2728,9 +2805,12 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
-              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
+              'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
               resource_subtype: 'default_task'
             }
           });
@@ -2738,7 +2818,8 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
-            const grievanceId = state.inputData?.body?.GrievanceID;
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+            const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
               console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);
@@ -2930,7 +3011,7 @@ workflows:
             };
             // IF YOU CLEAR STATE...
             // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2025-07-29T22:00:07.922Z';
+            const manualCursor = '2025-06-30T22:00:07.922Z';
 
             let cursorEnd = null;
 
@@ -3095,7 +3176,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */1 * * *'
-        enabled: false
+        enabled: true
     edges:
       cron->GRM-Fetch-1-Get-FormsList-Ongoing:
         source_trigger: cron
@@ -3121,7 +3202,7 @@ workflows:
       GRM00-Upsert-TEST-Grievances:
         name: GRM00 Upsert TEST Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -3205,6 +3286,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
@@ -3215,6 +3299,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -3280,7 +3365,7 @@ workflows:
       GRM01-Upsert-WCS-Global-Grievances-in-Asana:
         name: GRM01 Upsert WCS Global Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids
             const formatMapping = {
@@ -3312,6 +3397,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID,
@@ -3322,6 +3410,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -3373,7 +3462,7 @@ workflows:
       TEST-Asana-Update:
         name: TEST Asana Update
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -3425,7 +3514,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
-
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID,
@@ -3436,6 +3527,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -3545,7 +3637,7 @@ workflows:
       GRM11-Upsert-KSWS-Grievances-in-Asana:
         name: GRM11 Upsert KSWS Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -3596,6 +3688,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
@@ -3606,6 +3701,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
@@ -3664,7 +3760,7 @@ workflows:
       GRM19-Upsert-NPL-Grievances-in-Asana:
         name: GRM19 Upsert NPL Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -3713,6 +3809,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -3723,6 +3822,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -3819,7 +3919,7 @@ workflows:
       GRM15-Upsert-Belize-Grievances-in-Asana:
         name: GRM15 Upsert Belize Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -3868,6 +3968,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,
@@ -3878,6 +3981,7 @@ workflows:
           fn(state => {
            state.skipCreate = false;
            const tasks = state.data || []; 
+           // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
            const grievanceId = state.inputData?.body?.GrievanceID;
 
             if (tasks.length > 0) {
@@ -3956,15 +4060,15 @@ workflows:
       FS1---Get-Forms:
         name: FS1 - Get Forms
         adaptor: '@openfn/language-kobotoolbox@2.1.0'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
+        credential: rediet@openfn.org-WCS-Kobo-Form-Monitoring
         body: |
           //Check Kobo account for forms with these matching keywords
           getForms({}, state => {
             //ALL KEYWORDS:
-            //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
+            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
 
             //BNS KEYWORDS ONLY
-            const keywords = ['price', 'prix', 'bns', 'nrgt'];
+            //const keywords = ['price', 'prix', 'bns', 'nrgt'];
 
             const checkForKeyWords = name => {
               return keywords.some(keyword => name.toLowerCase().includes(keyword));
@@ -3993,7 +4097,7 @@ workflows:
         body: |
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
-            'grm-DEPLOYED!A:O' //range of columns in sheet
+            'grm-DEPLOYED!A:P' //range of columns in sheet
           );
           fn(state => {
             const { activeForms, archivedForms, data } = state;
@@ -4133,7 +4237,7 @@ workflows:
       FS4---Notify-in-Asana:
         name: FS4 - Notify in Asana
         adaptor: '@openfn/language-asana@4.0.9'
-        credential: null
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
           //This job will add a task to Asana if a new Kobo form was shared
           fn(state => {
@@ -4212,7 +4316,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 0 * * *'
-        enabled: false
+        enabled: true
     edges:
       cron->FS1---Get-Forms:
         source_trigger: cron
@@ -4240,7 +4344,7 @@ workflows:
       GRM14-Upsert-Argentina-Grievances-in-Asana:
         name: GRM14 Upsert Argentina Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -4290,6 +4394,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -4300,6 +4407,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -4389,7 +4497,7 @@ workflows:
       GRM02-a-Upsert-Aceh-Grievances-in-Asana:
         name: GRM02 a Upsert Aceh Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           // Your job goes here.
 
@@ -4443,6 +4551,9 @@ workflows:
             return { ...state, formatMapping, koboFormData };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceId,
@@ -4453,6 +4564,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const grievanceId = state.inputData?.body?.GrievanceId;
 
             if (tasks.length > 0) {
@@ -4858,7 +4970,7 @@ workflows:
       GRM18-Upsert-CAR-Grievances-in-Asana:
         name: GRM18 Upsert CAR Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -4908,6 +5020,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -4918,6 +5033,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
@@ -4981,7 +5097,7 @@ workflows:
       GRM22-Upsert-Sena-Oura-Grievances:
         name: GRM22 Upsert Sena Oura Grievances
         adaptor: '@openfn/language-asana@4.3.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
@@ -5033,6 +5149,9 @@ workflows:
             return { ...state, formatMapping };
           });
 
+          // ✅ SEARCH TASKS IN ASANA:
+          // Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.
+          // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
               'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
@@ -5043,6 +5162,7 @@ workflows:
           fn(state => {
             state.skipCreate = false;
             const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
             const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
