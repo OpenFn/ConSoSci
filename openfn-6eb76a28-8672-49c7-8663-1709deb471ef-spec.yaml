@@ -557,7 +557,7 @@ workflows:
 
                 // Fields  belonging to questions with dropdown or multiple choice
                 '1187328718760774': state => state.formatMapping["GrievanceStatus _" + $.inputData.body.GrievanceStatus],
-                '1203150662724247': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
+                '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202593715272940': state => state.formatMapping["Grade_" + $.inputData.body.Grade],
                 '1204269608862901': state => state.formatMapping["Classification_" + $.inputData.body.Classification],
                 '1203150662724251': state => state.formatMapping["Country_" + $.inputData.body.Country],
