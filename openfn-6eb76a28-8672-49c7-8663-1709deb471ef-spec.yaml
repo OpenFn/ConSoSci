@@ -1990,7 +1990,7 @@ workflows:
                 // Fields  belonging to questions with dropdown or multiple choice
                 '1203977086782815': state => state.formatMapping["Anonymous_" + $.inputData.body.Anonymous],
                 '1203977284295126': state => state.formatMapping["Language_" + $.inputData.body.Language],
-                '1203711963400188': state => state.formatMapping["GrievanceOrSuggestion_" + $.inputData.body.GrievanceOrSuggestion],
+                '1202329899911645': state => state.formatMapping["GrievanceOrSuggestion_" + $.inputData.body.GrievanceOrSuggestion], //GrievanceOrSuggestion is SubmissionType
                 '1203977373054582': state => state.formatMapping["Frequency_" + $.inputData.body.Frequency],
               },
             },
