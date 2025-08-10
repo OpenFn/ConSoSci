@@ -33,7 +33,7 @@ workflows:
       A-GIDs-and-Mappings-for-Upsert:
         name: A GIDs and Mappings for Upsert
         adaptor: '@openfn/language-asana@latest'
-        credential: ddetoeuf@wcs.org-GRM-Asana-token
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
         body: |
           //Typically run at the very beginning, or when we add new fields in Asana.
           // Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
@@ -59,7 +59,7 @@ workflows:
           // Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
 
           // Make sure that this task is alive in asana!
-            getTask("1210969979241485",   //Again, this is a task_gid, and NOT a project_id
+            getTask("1211017850383887",   //Again, this is a task_gid, and NOT a project_id
             {},
             state => {
               return state;
@@ -4063,10 +4063,7 @@ workflows:
           //Check Kobo account for forms with these matching keywords
           getForms({}, state => {
             //ALL KEYWORDS:
-            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            //BNS KEYWORDS ONLY
-            //const keywords = ['price', 'prix', 'bns', 'nrgt'];
+            const keywords = ['grm', 'grievance', 'suggestion', 'queja', 'reclamo', 'ocorrência', 'Reclamações', 'feedback'];
 
             const checkForKeyWords = name => {
               return keywords.some(keyword => name.toLowerCase().includes(keyword));
@@ -4100,7 +4097,7 @@ workflows:
           fn(state => {
             const { activeForms, archivedForms, data } = state;
             const [headers, ...sheetsData] = data.values;
-            const sheetsUids = sheetsData.map(row => row[0]);
+            const sheetsUids = sheetsData.map(row => row[1]);
             console.log('Ignoring headers', headers);
 
             state.formsToCreate = activeForms.filter(
@@ -4111,7 +4108,7 @@ workflows:
               .filter(form => sheetsUids.includes(form.uid))
               .map(form => {
                 const rowIndex = sheetsData.findIndex(row => {
-                  return row[0] === form.uid;
+                  return row[1] === form.uid;
                 });
                 if (rowIndex !== -1) {
                   return { ...form, rowIndex };
@@ -4135,29 +4132,6 @@ workflows:
         body: |
           //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
           fn(state => {
-            const { formsToCreate, formsToUpdate } = state;
-            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            const tagMapping = {
-              price: 'bns_price',
-              prix: 'bns_price',
-              bns: 'bns_survey',
-              nrgt: 'nrgt_current',
-              grm: 'grm',
-              feedback: 'grm',
-            };
-
-            const createTagName = name => {
-              let tag = '';
-              const keyword = keywords.find(keyword =>
-                name.toLowerCase().includes(keyword)
-              );
-
-              if (keyword) {
-                tag = tagMapping[keyword] || keyword;
-              }
-              return tag;
-            };
 
             const containsGRMFeedback = name =>
               !name.toLowerCase().includes('grm', 'feedback');
@@ -4165,43 +4139,36 @@ workflows:
             const instance = name =>
               containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
 
-            const projectId = name =>
-              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
-
-            const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
-
-            const workspaceName = name =>
-              containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
-              
             state.formLastModified = form => form.date_modified; 
 
             const sheetRowMap = form => [
+              '',
               form.uid,
               form.name,
-              createTagName(form.name),
+              'ADD MANUALLY @Admin!', //for GRM only
+              'ADD MANUALLY @Admin!', //for GRM only
               form.owner__username,
-              instance(form.name),
-              //projectId(form.name), //for GRM only
-              //grmID(form.name), //for GRM only
               form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
-              'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
+              'WCS Grievances (Kobo to Asana)', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
               `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
               form.date_modified, //kobo_form_date_modified
               form.date_created, //kobo_form_date_created
               new Date().toISOString(), //row_date_modified
               false, //auto_sync checkbox
               //job code template
-              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+              `"{id: '${form.uid}', name: '${
                 form.name
               }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
+              '',
+              'ADD MANUALLY @Admin!'
             ];
 
-            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
-            state.rowValuesToUpdate = formsToUpdate.map(form => ({
-              range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+            state.rowValuesToCreate = state.formsToCreate.map(form => sheetRowMap(form));
+            state.rowValuesToUpdate = state.formsToUpdate.map(form => ({
+              range: `grm-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
               values: [sheetRowMap(form)],
             }));
-            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
+            state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));
 
             console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
             console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
@@ -4211,7 +4178,7 @@ workflows:
           //if new Kobo form shared, adding to the "Deployed"" Sheet...
           appendValues({
             spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
+            range: 'grm-DEPLOYED!A:O', //range of columns in sheet
             values: state => state.rowValuesToCreate,
           });
 
@@ -4250,7 +4217,7 @@ workflows:
                 name: `New form added to OpenFn: ${form.name}`,
                 approval_status: 'pending',
                 projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+                assignee_section: '1202566315436326', //OLD General Section: '1203181218738601',
                 assignee: '1208302456826465',
                 due_on: deployedDatePlus5,
                 notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
