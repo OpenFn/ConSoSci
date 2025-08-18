@@ -5369,7 +5369,7 @@ workflows:
 
       Upsert-to-DB:
         name: Upsert to DB
-        adaptor: '@openfn/language-mssql@2.6.11'
+        adaptor: '@openfn/language-mssql@6.0.0'
         credential: rediet@openfn.org-WCS-Programs-Database-central-db
         body: |
           fn((state) => {
