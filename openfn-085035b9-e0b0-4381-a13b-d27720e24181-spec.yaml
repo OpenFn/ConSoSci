@@ -3123,7 +3123,7 @@ workflows:
     jobs:
       auto-TT_SurvivalMonitoring:
         name: auto-TT_SurvivalMonitoring
-        adaptor: '@openfn/language-mssql@v2.6.11'
+        adaptor: '@openfn/language-mssql@6.0.0'
         credential: null
         body: |
           fn(state => {

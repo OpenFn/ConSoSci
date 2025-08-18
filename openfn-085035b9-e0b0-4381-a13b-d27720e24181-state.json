@@ -395,38 +395,6 @@
         }
       }
     },
-    "auto-TT_SurvivalMonitoring": {
-      "id": "91816930-9a56-4455-9028-8b83c48ee79e",
-      "name": "auto-TT_SurvivalMonitoring",
-      "inserted_at": "2025-06-06T17:32:57.991110Z",
-      "lock_version": 1,
-      "triggers": {
-        "cron": {
-          "enabled": true,
-          "id": "69ec97c9-b304-4ed6-9c44-2d740194ba02",
-          "type": "cron",
-          "cron_expression": "0 */3 * * *"
-        }
-      },
-      "jobs": {
-        "auto-TT_SurvivalMonitoring": {
-          "id": "87d6fc42-8b8f-4c2d-a691-3bba3dc40dab",
-          "name": "auto-TT_SurvivalMonitoring",
-          "body": "fn(state => {\n  const multiSelectIds = [\"\"];\n\n  function generateUuid(body, uuid) {\n    for (const property in body) {\n      if (Array.isArray(body[property]) && body !== null) {\n        body['__generatedUuid'] = uuid;\n        body[property].forEach((thing, i, arr) => {\n          if (thing !== null) {\n            thing['__parentUuid'] = uuid;\n            let newUuid = uuid + '-' + (i + 1);\n            thing['__generatedUuid'] = newUuid;\n            for (const property in thing) {\n              if (Array.isArray(thing[property])) {\n                generateUuid(thing, newUuid);\n              }\n            }\n          }\n        });\n      }\n    }\n  }\n\n  generateUuid(\n    state.data.body,\n    state.data.body._id+'-'+state.data.body._xform_id_string\n  );\n\n  const { body } = state.data;\n  const { _id, _xform_id_string } = body;\n  state.data = { ...state.data, ...body };\n\n  return { ...state, _id, _xform_id_string };\n}); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('TT_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  Otherintervention: dataValue('OtherIntervention'),\n  TT_AnrinterventionsID_Anrinterventions: await findValue({uuid: 'tt_anrinterventionsid', relation: 'TT_Anrinterventions', where: { TT_AnrinterventionsExtCode: dataValue('AnrInterventions') }})(state),\n  TT_YesnoID_Crops: await findValue({uuid: 'tt_yesnoid', relation: 'TT_Yesno', where: { TT_YesnoExtCode: dataValue('Crops') }})(state),\n  Fertilizerquantity: dataValue('FertilizerQuantity'),\n  Fertilizername: dataValue('FertilizerName'),\n  TT_YesnoID_Fertilizer: await findValue({uuid: 'tt_yesnoid', relation: 'TT_Yesno', where: { TT_YesnoExtCode: dataValue('Fertilizer') }})(state),\n  TT_BufferID_Buffer: await findValue({uuid: 'tt_bufferid', relation: 'TT_Buffer', where: { TT_BufferExtCode: dataValue('Buffer') }})(state),\n  Noburning: dataValue('NoBurning'),\n  Noclearance: dataValue('NoClearance'),\n  TT_SpacingID_Spacing: await findValue({uuid: 'tt_spacingid', relation: 'TT_Spacing', where: { TT_SpacingExtCode: dataValue('Spacing') }})(state),\n  Averagesurvival: dataValue('AverageSurvival'),\n  Totalnumbertreesplanted: dataValue('TotalNumberTreesPlanted'),\n  Nbspecies: dataValue('NbSpecies'),\n  TT_TreetypeID_Treetype: await findValue({uuid: 'tt_treetypeid', relation: 'TT_Treetype', where: { TT_TreetypeExtCode: dataValue('TreeType') }})(state),\n  TT_InterventiontypeID_Interventiontype: await findValue({uuid: 'tt_interventiontypeid', relation: 'TT_Interventiontype', where: { TT_InterventiontypeExtCode: dataValue('InterventionType') }})(state),\n  Dateofplanting: dataValue('DateOfPlanting'),\n  Photooftrees: dataValue('PhotoOfTrees'),\n  Gpscoordinates: dataValue('GpsCoordinates'),\n  Contactnumber: dataValue('ContactNumber'),\n  Landownerrepresentativename: dataValue('LandOwnerRepresentativeName'),\n  Nameoflandownerorinstitution: dataValue('NameOfLandownerOrInstitution'),\n  TT_PlotidID_Plotidentfier: await findValue({uuid: 'tt_plotidid', relation: 'TT_Plotid', where: { TT_PlotidExtCode: dataValue('PlotIdentfier') }})(state),\n  TT_VillageID_Village: await findValue({uuid: 'tt_villageid', relation: 'TT_Village', where: { TT_VillageExtCode: dataValue('Village') }})(state),\n  TT_DistrictID_District: await findValue({uuid: 'tt_districtid', relation: 'TT_District', where: { TT_DistrictExtCode: dataValue('District') }})(state),\n  TT_ProvinceID_Province: await findValue({uuid: 'tt_provinceid', relation: 'TT_Province', where: { TT_ProvinceExtCode: dataValue('Province') }})(state),\n  TT_CountryID_Country: await findValue({uuid: 'tt_countryid', relation: 'TT_Country', where: { TT_CountryExtCode: dataValue('country') }})(state),\n  TT_SurveyorID_Monitorname: await findValue({uuid: 'tt_surveyorid', relation: 'TT_Surveyor', where: { TT_SurveyorExtCode: dataValue('MonitorName') }})(state),\n  TT_SurveytypeID_Surveytype: await findValue({uuid: 'tt_surveytypeid', relation: 'TT_Surveytype', where: { TT_SurveytypeExtCode: dataValue('SurveyType') }})(state),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('TT_SurvivalMonitoring', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const dataArray = state.data.body['Monitoring'] || [] \n\n        const mapping = []; \n\n        for (let x of dataArray) { \n\n          mapping.push({\n  TT_SpeciesID_Species: await findValue({uuid: 'tt_speciesid', relation: 'TT_Species', where: { TT_SpeciesExtCode: x['Monitoring/Species'] }})(state),\n  Nbplanted: x['Monitoring/NbPlanted'],\n  Nbsampled: x['Monitoring/NbSampled'],\n  Nbdead: x['Monitoring/NbDead'],\n  Alive: x['Monitoring/Alive'],\n  Missing: x['Monitoring/Missing'],\n  Survivalrate: x['Monitoring/SurvivalRate'],\n  SurvivalmonitoringUuid: dataValue('undefined'),\n  AnswerId: state._id,\n  GeneratedUuid: x['__generatedUuid']\n}) \n\n          } \n return upsertMany('TT_SurvivalMonitoringMonitoring', 'GeneratedUuid', () => mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
-          "adaptor": "@openfn/language-mssql@v2.6.11",
-          "project_credential_id": null
-        }
-      },
-      "edges": {
-        "cron->auto-TT_SurvivalMonitoring": {
-          "enabled": true,
-          "id": "e5e517d9-2122-40db-b41b-af67096d6969",
-          "target_job_id": "87d6fc42-8b8f-4c2d-a691-3bba3dc40dab",
-          "source_trigger_id": "69ec97c9-b304-4ed6-9c44-2d740194ba02",
-          "condition_type": "always"
-        }
-      }
-    },
     "BNS-2C-NRGT---Historical-Version": {
       "id": "8ae42fcd-03d0-42bc-974d-e7f103ad5fc2",
       "name": "BNS-2C NRGT - Historical Version",
@@ -490,6 +458,38 @@
           "condition_type": "js_expression",
           "condition_label": "NRGT 19 Submission",
           "condition_expression": "state.data.body[\"survey_type\"] != \"practice\" && state.data.form == \"nrgt_current\""
+        }
+      }
+    },
+    "auto-TT_SurvivalMonitoring": {
+      "id": "91816930-9a56-4455-9028-8b83c48ee79e",
+      "name": "auto-TT_SurvivalMonitoring",
+      "inserted_at": "2025-08-18T14:44:33.872380Z",
+      "lock_version": 2,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "69ec97c9-b304-4ed6-9c44-2d740194ba02",
+          "type": "cron",
+          "cron_expression": "0 */3 * * *"
+        }
+      },
+      "jobs": {
+        "auto-TT_SurvivalMonitoring": {
+          "id": "87d6fc42-8b8f-4c2d-a691-3bba3dc40dab",
+          "name": "auto-TT_SurvivalMonitoring",
+          "body": "fn(state => {\n  const multiSelectIds = [\"\"];\n\n  function generateUuid(body, uuid) {\n    for (const property in body) {\n      if (Array.isArray(body[property]) && body !== null) {\n        body['__generatedUuid'] = uuid;\n        body[property].forEach((thing, i, arr) => {\n          if (thing !== null) {\n            thing['__parentUuid'] = uuid;\n            let newUuid = uuid + '-' + (i + 1);\n            thing['__generatedUuid'] = newUuid;\n            for (const property in thing) {\n              if (Array.isArray(thing[property])) {\n                generateUuid(thing, newUuid);\n              }\n            }\n          }\n        });\n      }\n    }\n  }\n\n  generateUuid(\n    state.data.body,\n    state.data.body._id+'-'+state.data.body._xform_id_string\n  );\n\n  const { body } = state.data;\n  const { _id, _xform_id_string } = body;\n  state.data = { ...state.data, ...body };\n\n  return { ...state, _id, _xform_id_string };\n}); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('TT_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  Otherintervention: dataValue('OtherIntervention'),\n  TT_AnrinterventionsID_Anrinterventions: await findValue({uuid: 'tt_anrinterventionsid', relation: 'TT_Anrinterventions', where: { TT_AnrinterventionsExtCode: dataValue('AnrInterventions') }})(state),\n  TT_YesnoID_Crops: await findValue({uuid: 'tt_yesnoid', relation: 'TT_Yesno', where: { TT_YesnoExtCode: dataValue('Crops') }})(state),\n  Fertilizerquantity: dataValue('FertilizerQuantity'),\n  Fertilizername: dataValue('FertilizerName'),\n  TT_YesnoID_Fertilizer: await findValue({uuid: 'tt_yesnoid', relation: 'TT_Yesno', where: { TT_YesnoExtCode: dataValue('Fertilizer') }})(state),\n  TT_BufferID_Buffer: await findValue({uuid: 'tt_bufferid', relation: 'TT_Buffer', where: { TT_BufferExtCode: dataValue('Buffer') }})(state),\n  Noburning: dataValue('NoBurning'),\n  Noclearance: dataValue('NoClearance'),\n  TT_SpacingID_Spacing: await findValue({uuid: 'tt_spacingid', relation: 'TT_Spacing', where: { TT_SpacingExtCode: dataValue('Spacing') }})(state),\n  Averagesurvival: dataValue('AverageSurvival'),\n  Totalnumbertreesplanted: dataValue('TotalNumberTreesPlanted'),\n  Nbspecies: dataValue('NbSpecies'),\n  TT_TreetypeID_Treetype: await findValue({uuid: 'tt_treetypeid', relation: 'TT_Treetype', where: { TT_TreetypeExtCode: dataValue('TreeType') }})(state),\n  TT_InterventiontypeID_Interventiontype: await findValue({uuid: 'tt_interventiontypeid', relation: 'TT_Interventiontype', where: { TT_InterventiontypeExtCode: dataValue('InterventionType') }})(state),\n  Dateofplanting: dataValue('DateOfPlanting'),\n  Photooftrees: dataValue('PhotoOfTrees'),\n  Gpscoordinates: dataValue('GpsCoordinates'),\n  Contactnumber: dataValue('ContactNumber'),\n  Landownerrepresentativename: dataValue('LandOwnerRepresentativeName'),\n  Nameoflandownerorinstitution: dataValue('NameOfLandownerOrInstitution'),\n  TT_PlotidID_Plotidentfier: await findValue({uuid: 'tt_plotidid', relation: 'TT_Plotid', where: { TT_PlotidExtCode: dataValue('PlotIdentfier') }})(state),\n  TT_VillageID_Village: await findValue({uuid: 'tt_villageid', relation: 'TT_Village', where: { TT_VillageExtCode: dataValue('Village') }})(state),\n  TT_DistrictID_District: await findValue({uuid: 'tt_districtid', relation: 'TT_District', where: { TT_DistrictExtCode: dataValue('District') }})(state),\n  TT_ProvinceID_Province: await findValue({uuid: 'tt_provinceid', relation: 'TT_Province', where: { TT_ProvinceExtCode: dataValue('Province') }})(state),\n  TT_CountryID_Country: await findValue({uuid: 'tt_countryid', relation: 'TT_Country', where: { TT_CountryExtCode: dataValue('country') }})(state),\n  TT_SurveyorID_Monitorname: await findValue({uuid: 'tt_surveyorid', relation: 'TT_Surveyor', where: { TT_SurveyorExtCode: dataValue('MonitorName') }})(state),\n  TT_SurveytypeID_Surveytype: await findValue({uuid: 'tt_surveytypeid', relation: 'TT_Surveytype', where: { TT_SurveytypeExtCode: dataValue('SurveyType') }})(state),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('TT_SurvivalMonitoring', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const dataArray = state.data.body['Monitoring'] || [] \n\n        const mapping = []; \n\n        for (let x of dataArray) { \n\n          mapping.push({\n  TT_SpeciesID_Species: await findValue({uuid: 'tt_speciesid', relation: 'TT_Species', where: { TT_SpeciesExtCode: x['Monitoring/Species'] }})(state),\n  Nbplanted: x['Monitoring/NbPlanted'],\n  Nbsampled: x['Monitoring/NbSampled'],\n  Nbdead: x['Monitoring/NbDead'],\n  Alive: x['Monitoring/Alive'],\n  Missing: x['Monitoring/Missing'],\n  Survivalrate: x['Monitoring/SurvivalRate'],\n  SurvivalmonitoringUuid: dataValue('undefined'),\n  AnswerId: state._id,\n  GeneratedUuid: x['__generatedUuid']\n}) \n\n          } \n return upsertMany('TT_SurvivalMonitoringMonitoring', 'GeneratedUuid', () => mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
+          "adaptor": "@openfn/language-mssql@6.0.0",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "cron->auto-TT_SurvivalMonitoring": {
+          "enabled": true,
+          "id": "e5e517d9-2122-40db-b41b-af67096d6969",
+          "target_job_id": "87d6fc42-8b8f-4c2d-a691-3bba3dc40dab",
+          "source_trigger_id": "69ec97c9-b304-4ed6-9c44-2d740194ba02",
+          "condition_type": "always"
         }
       }
     }
