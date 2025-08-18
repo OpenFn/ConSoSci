@@ -2692,7 +2692,7 @@ workflows:
     jobs:
       BNS-2E-NRGT---Historical-Version-2-2022:
         name: BNS-2E NRGT - Historical Version 2-2022
-        adaptor: '@openfn/language-mssql@v3.0.0'
+        adaptor: '@openfn/language-mssql@6.0.0'
         credential: null
         body: |
           fn(state => {
