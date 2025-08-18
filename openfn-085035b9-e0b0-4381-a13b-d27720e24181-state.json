@@ -5,6 +5,7 @@
   "concurrency": 4,
   "inserted_at": "2025-06-05T08:30:47Z",
   "updated_at": "2025-06-05T08:31:08Z",
+  "scheduled_deletion": null,
   "project_credentials": {
     "mtuchi@openfn.org-Trillion-Trees-Kobo": {
       "id": "06bbfaf4-7f81-466e-aa76-4c132701f958",
@@ -17,7 +18,6 @@
       "owner": "mtuchi@openfn.org"
     }
   },
-  "scheduled_deletion": null,
   "history_retention_period": 365,
   "dataclip_retention_period": null,
   "retention_policy": "retain_all",
@@ -112,39 +112,6 @@
           "target_job_id": "117f69ec-cbda-4b5b-8962-adbe0c8fcf44",
           "source_job_id": "a11117d5-c49f-4751-89fe-dfd59e0b9824",
           "condition_type": "on_job_success"
-        }
-      }
-    },
-    "BNS-2A-BNS-Price": {
-      "id": "8e24437d-b0b6-47c4-b831-9dd9a6fea923",
-      "name": "BNS-2A BNS Price",
-      "inserted_at": "2025-06-05T16:57:53.810329Z",
-      "lock_version": 3,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "ccfda76f-fb53-4d04-86d2-01a4e4f59460",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "BNS-2A-BNS-Price": {
-          "id": "42110c67-1dfb-4e33-892f-72b30032ebf5",
-          "name": "BNS-2A BNS Price",
-          "body": "// NOTE: This data cleaning operation returns state, modified as needed.\nfn(state => {\n  //try {\n  const { body, formName, instance, formOwner } = state.data;\n  const { _submission_time, _id, _xform_id_string } = body;\n  let cleanedSubmission = {};\n\n  for (const key in body) {\n    switch (body[key]) {\n      case 'yes':\n        cleanedSubmission[key] = 1;\n        break;\n\n      case 'no':\n        cleanedSubmission[key] = 0;\n        break;\n\n      default:\n        cleanedSubmission[key] = body[key];\n        break;\n    }\n  }\n\n  cleanedSubmission.instance = instance;\n\n  const landscapeMap = {\n    Ndoki: 'ndoki',\n    'Lac Télé': 'lac_tele',\n    Ituri: 'ituri',\n    Kahuzi: 'kahuzi',\n    MTKB: 'kahuzi',\n    'Cross River': 'crossriver',\n    Soariake: 'soariake',\n    Ankarea: 'ankarea',\n    ABS: 'baie_antongil',\n    'Nosy Be': 'tandavandriva',\n    Makira: 'makira',\n    'BNS Ndoki Prix 2020': 'ndoki',\n    PNMD: 'pnmd',\n\n    //formName: landscapeValue,\n    //other values\n  };\n\n  return {\n    ...state,\n    landscapeMap,\n    formName,\n    formOwner,\n    data: {\n      ...cleanedSubmission,\n      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,\n      datasetId: `${formName}-${_xform_id_string}`,\n      end: cleanedSubmission.end.slice(0, 10),\n    },\n  };\n  /* } catch (error) {\n    state.connection.close();\n    throw error;\n  }*/\n});\n\n// Refactor this for scale so it doesn't perform a no-op delete 9/10 times.\n// Maybe check result of previous op, then only delete if it was an update.\nsql({\n  query: state =>\n    `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,\n});\n\nfn(state => {\n  const { good } = state.data;\n  if (!good || good.length === 0) {\n    return state;\n  }\n\n  const data = good.map((g, i) => ({\n    // Id: state.data._id,\n    Id: i + 1,\n    AnswerId: state.data._id,\n    DatasetUuidId: state.data.datasetId,\n    Surveyor: state.data.surveyor,\n    Village: state.data.village,\n    Gs: g[`good/name`],\n    Price: g[`good/price`],\n    LastUpdate: new Date().toISOString(),\n    //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value\n    Landscape: () => {\n      for (let val in state.landscapeMap)\n        if (state.formName.includes(val)) return state.landscapeMap[val];\n      return '';\n    },\n    SurveyDate: state.data.today,\n  }));\n  // console.log('data', data);\n  return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);\n});\n\nfn(state => {\n  console.log('DatasetName ::', state.formName);\n  console.log('DatasetOwner ::', state.formOwner);\n  console.log('form submission id ::', state.data['_id']);\n  console.log('DatasetUuidId ::', state.data['datasetId']);\n  //console.log('data to upload ::', state.data);\n  return state;\n});\n\nupsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {\n  //AnswerId: dataValue('durableUUID'),\n  DatasetName: state => state.formName,\n  DatasetOwner: state => state.formOwner,\n  Landscape: dataValue('landscape'),\n  DatasetUuidId: dataValue('datasetId'),\n  DatasetYear: new Date().getFullYear(),\n  LastSubmissionTime: dataValue('_submission_time'),\n  LastCheckedTime: dataValue('_submission_time'),\n  LastUpdateTime: new Date().toISOString(),\n  KoboManaged: true,\n  Tags: dataValue('_tags'),\n  Citation: dataValue('instance'),\n});\n\nfn(state => {\n  console.log('data uploaded ::', state.data);\n  return state;\n});\n",
-          "adaptor": "@openfn/language-mssql@v3.0.0",
-          "project_credential_id": null
-        }
-      },
-      "edges": {
-        "webhook->BNS-2A-BNS-Price": {
-          "enabled": true,
-          "id": "22732f09-3526-4045-80ba-bb4de35dcccc",
-          "target_job_id": "42110c67-1dfb-4e33-892f-72b30032ebf5",
-          "source_trigger_id": "ccfda76f-fb53-4d04-86d2-01a4e4f59460",
-          "condition_type": "js_expression",
-          "condition_label": "BNS Price Submission",
-          "condition_expression": "state.data.body[\"survey_type\"] != \"practice\" && state.data.form == \"bns_price\""
         }
       }
     },
@@ -490,6 +457,39 @@
           "condition_type": "js_expression",
           "condition_label": "NRGT Kahuzi Biega 2019 form",
           "condition_expression": "state.data.formName == \"NRGT Kahuzi Biega 2019\""
+        }
+      }
+    },
+    "BNS-2A-BNS-Price": {
+      "id": "8e24437d-b0b6-47c4-b831-9dd9a6fea923",
+      "name": "BNS-2A BNS Price",
+      "inserted_at": "2025-08-18T14:47:25.047626Z",
+      "lock_version": 4,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "ccfda76f-fb53-4d04-86d2-01a4e4f59460",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "BNS-2A-BNS-Price": {
+          "id": "42110c67-1dfb-4e33-892f-72b30032ebf5",
+          "name": "BNS-2A BNS Price",
+          "body": "// NOTE: This data cleaning operation returns state, modified as needed.\nfn(state => {\n  //try {\n  const { body, formName, instance, formOwner } = state.data;\n  const { _submission_time, _id, _xform_id_string } = body;\n  let cleanedSubmission = {};\n\n  for (const key in body) {\n    switch (body[key]) {\n      case 'yes':\n        cleanedSubmission[key] = 1;\n        break;\n\n      case 'no':\n        cleanedSubmission[key] = 0;\n        break;\n\n      default:\n        cleanedSubmission[key] = body[key];\n        break;\n    }\n  }\n\n  cleanedSubmission.instance = instance;\n\n  const landscapeMap = {\n    Ndoki: 'ndoki',\n    'Lac Télé': 'lac_tele',\n    Ituri: 'ituri',\n    Kahuzi: 'kahuzi',\n    MTKB: 'kahuzi',\n    'Cross River': 'crossriver',\n    Soariake: 'soariake',\n    Ankarea: 'ankarea',\n    ABS: 'baie_antongil',\n    'Nosy Be': 'tandavandriva',\n    Makira: 'makira',\n    'BNS Ndoki Prix 2020': 'ndoki',\n    PNMD: 'pnmd',\n\n    //formName: landscapeValue,\n    //other values\n  };\n\n  return {\n    ...state,\n    landscapeMap,\n    formName,\n    formOwner,\n    data: {\n      ...cleanedSubmission,\n      durableUUID: `${_submission_time}-${_xform_id_string}-${_id}`,\n      datasetId: `${formName}-${_xform_id_string}`,\n      end: cleanedSubmission.end.slice(0, 10),\n    },\n  };\n  /* } catch (error) {\n    state.connection.close();\n    throw error;\n  }*/\n});\n\n// Refactor this for scale so it doesn't perform a no-op delete 9/10 times.\n// Maybe check result of previous op, then only delete if it was an update.\nsql({\n  query: state =>\n    `DELETE FROM WCSPROGRAMS_KoboBnsPrice where AnswerId = '${state.data._id}'`,\n});\n\nfn(state => {\n  const { good } = state.data;\n  if (!good || good.length === 0) {\n    return state;\n  }\n\n  const data = good.map((g, i) => ({\n    // Id: state.data._id,\n    Id: i + 1,\n    AnswerId: state.data._id,\n    DatasetUuidId: state.data.datasetId,\n    Surveyor: state.data.surveyor,\n    Village: state.data.village,\n    Gs: g[`good/name`],\n    Price: g[`good/price`],\n    LastUpdate: new Date().toISOString(),\n    //Landscape: state.landscapeMap[state.data.formName], //see L24 for mappings. We want to use formName to look-up a new value\n    Landscape: () => {\n      for (let val in state.landscapeMap)\n        if (state.formName.includes(val)) return state.landscapeMap[val];\n      return '';\n    },\n    SurveyDate: state.data.today,\n  }));\n  // console.log('data', data);\n  return insertMany('WCSPROGRAMS_KoboBnsPrice', data)(state);\n});\n\nfn(state => {\n  console.log('DatasetName ::', state.formName);\n  console.log('DatasetOwner ::', state.formOwner);\n  console.log('form submission id ::', state.data['_id']);\n  console.log('DatasetUuidId ::', state.data['datasetId']);\n  //console.log('data to upload ::', state.data);\n  return state;\n});\n\nupsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {\n  //AnswerId: dataValue('durableUUID'),\n  DatasetName: state => state.formName,\n  DatasetOwner: state => state.formOwner,\n  Landscape: dataValue('landscape'),\n  DatasetUuidId: dataValue('datasetId'),\n  DatasetYear: new Date().getFullYear(),\n  LastSubmissionTime: dataValue('_submission_time'),\n  LastCheckedTime: dataValue('_submission_time'),\n  LastUpdateTime: new Date().toISOString(),\n  KoboManaged: true,\n  Tags: dataValue('_tags'),\n  Citation: dataValue('instance'),\n});\n\nfn(state => {\n  console.log('data uploaded ::', state.data);\n  return state;\n});\n",
+          "adaptor": "@openfn/language-mssql@6.0.0",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "webhook->BNS-2A-BNS-Price": {
+          "enabled": true,
+          "id": "22732f09-3526-4045-80ba-bb4de35dcccc",
+          "target_job_id": "42110c67-1dfb-4e33-892f-72b30032ebf5",
+          "source_trigger_id": "ccfda76f-fb53-4d04-86d2-01a4e4f59460",
+          "condition_type": "js_expression",
+          "condition_label": "BNS Price Submission",
+          "condition_expression": "state.data.body[\"survey_type\"] != \"practice\" && state.data.form == \"bns_price\""
         }
       }
     }
