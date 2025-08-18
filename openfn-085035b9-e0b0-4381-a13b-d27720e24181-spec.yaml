@@ -2124,7 +2124,7 @@ workflows:
     jobs:
       BNS-2B-BNS-Survey:
         name: BNS-2B BNS Survey
-        adaptor: '@openfn/language-mssql@v2.6.1'
+        adaptor: '@openfn/language-mssql@6.0.0'
         credential: null
         body: |
           fn(state => {
