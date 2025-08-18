@@ -2566,7 +2566,7 @@ workflows:
     jobs:
       BNS-2D-NRGT-2019:
         name: BNS-2D NRGT 2019
-        adaptor: '@openfn/language-mssql@v3.0.0'
+        adaptor: '@openfn/language-mssql@6.0.0'
         credential: null
         body: |
           // NOTE: This data cleaning operation returns state, modified as needed.
