@@ -59,7 +59,7 @@ workflows:
           // Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
 
           // Make sure that this task is alive in asana!
-            getTask("1211017850383887",   //Again, this is a task_gid, and NOT a project_id
+            getTask("1211124808602372",   //Again, this is a task_gid, and NOT a project_id
             {},
             state => {
               return state;
@@ -1832,7 +1832,7 @@ workflows:
         condition_type: js_expression
         condition_label: New KBNP GRM
         condition_expression: |
-          state.data.formName == "KBNP Feedback Form"
+          state.data.formName == "Formulaire de retours d'information-PNKB / KBNP Feedback Form"
         enabled: true
       Transform-data->GRM09-Update-PNMD-Grievances:
         source_job: Transform-data
