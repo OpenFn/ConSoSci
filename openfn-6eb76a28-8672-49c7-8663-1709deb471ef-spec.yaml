@@ -888,7 +888,7 @@ workflows:
                 '1202329899911645': state.formatMapping['SubmissionType_' + $.inputData.body.SubmissionType],
                 '1208262949429784': state.formatMapping['WcsStaff_' + $.inputData.body.WcsStaff],
                 '1202330347491974': state.formatMapping['ReportFormat_' + $.inputData.body.ReportFormat],
-                '1211147892345813': state => state.formatMapping["GenderFocalPoint_" + $.inputData.body.body.GenderFocalPoint],
+                '1211147892345813': state.formatMapping["GenderFocalPoint_" + $.inputData.body.body.GenderFocalPoint],
                 '1202330732061901': state.formatMapping['SubmissionContext_' + $.inputData.body.SubmissionContext],
                 '1202330737362426': state.formatMapping['Gender_' + $.inputData.body.Gender],
                 '1202330755979944': state.formatMapping['IndigenousPeople_' + $.inputData.body.IndigenousPeople],
@@ -897,7 +897,7 @@ workflows:
                 '1202330815421247': state.formatMapping['DatePrecision_' + $.inputData.body.DatePrecision],
                 '1202330821410492': state.formatMapping['ConfidentialitySensitivity_' + $.inputData.body.ConfidentialitySensitivity],
                 '1208406425574581': state.formatMapping['Groupement_' + $.inputData.body.Groupement],
-                '1211147888650968': state => state.formatMapping["Sector_" + + $.inputDatabody.Sector],
+                '1211147888650968': state.formatMapping["Sector_" + + $.inputDatabody.Sector],
               },
             },
               state => {
@@ -3240,21 +3240,21 @@ workflows:
               state.cursor = daterange.start;
               cursorEnd = daterange.end;
             } else {
-            state.cursor = state.lastEnd || manualCursor;
+              state.cursor = state.lastEnd || manualCursor;
 
-            if (!state.cursor)
-              throw new Error(
-                'Please define a cursor date no greater than 1 week ago and try again'
-              );
-            if (isMoreThanAWeekOld(state.cursor))
-              throw new Error(
-                `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
-              );
+              if (!state.cursor)
+                throw new Error(
+                  'Please define a cursor date no greater than 1 week ago and try again'
+                );
+              if (isMoreThanAWeekOld(state.cursor))
+                throw new Error(
+                  `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`
+                );
             }
             console.log('Current cursor value:', state.cursor);
             if (cursorEnd) console.log('Using cursorEnd:', cursorEnd);
 
-            const formsList =  sheetsData.map(survey => ({
+            const formsList = sheetsData.map(survey => ({
               formId: survey.uid,
               tag: survey.tag,
               name: survey.name,
@@ -3269,7 +3269,7 @@ workflows:
 
             state.data = {
               surveys: sheetsData.map(survey => ({
-                projectid: survey.asana_projectid ,
+                projectid: survey.asana_projectid,
                 formId: survey.uid,
                 tag: survey.tag,
                 name: survey.name,
@@ -3280,9 +3280,9 @@ workflows:
                   : `&query={"_submission_time":{"$gte":"${state.cursor}"}}`,
               })),
             };
-            
-            console.log('mapped sheetsData::', JSON.stringify(state.data, null,2)); 
-            
+
+            console.log('mapped sheetsData::', JSON.stringify(state.data, null, 2));
+
             return state;
           });
 
@@ -3291,14 +3291,13 @@ workflows:
             //   .filter(item => item.body)
             //   .map(s => s.body.end)
             //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            let lastEnd = new Date().toISOString();
 
             if (state.daterange) {
-              console.log('Manual run with daterange detected — not updating lastEnd');
+              console.log('Manual run with daterange detected');
               delete state.daterange;
-              return { ...state, references: [] };
+              return { ...state, references: [], lastEnd };
             }
-
-            let lastEnd = new Date().toISOString();
 
             console.log('New cursor value:', lastEnd);
             return { ...state, references: [], lastEnd };
