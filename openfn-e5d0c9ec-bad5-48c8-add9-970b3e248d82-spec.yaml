@@ -1228,6 +1228,10 @@ workflows:
           upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
             DatasetName: state.data.formName,
             DatasetOwner: state.data.formOwner,
+            Landscape:  state => {
+              var landscape = dataValue('landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
             DatasetUuidId: dataValue('datasetId'),
             Citation: dataValue('instance'),
             DatasetYear: new Date().getFullYear(),
