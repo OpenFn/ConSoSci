@@ -142,7 +142,7 @@ This job is run *only once* as the Asana field gids for a given project are uniq
 > ⚠ *Notes for developers:*
 > - An example of this `A. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
 > - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
-> - See below for a screenshot of how it might look configured on the platform.  
+> - See below for a screenshot of how it might look configured on the platform.
 
 ![jobA-example](images/job-A-ex.png)
 
