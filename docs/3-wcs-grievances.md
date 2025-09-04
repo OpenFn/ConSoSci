@@ -152,31 +152,84 @@ If a task is found, creation is skipped. Otherwise, a new task is created with t
 > - An example of this `Create Job`  is linked to the Github file [`/asana/createTask.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/createTask.js).
 > - On OpenFn.org this job is configured with the `asana` adaptor which is activated every time a Kobo form is fetched with a matching name (e.g., `{"formName":"WCS Global Grievances"}`).
 
-#### 3. 0. Get Asana Field IDs for Project Workflow
+#### 3. Asana Mapping Template
 
-Written to retrieve the gids of all the associated fields from the Asana project. **Note**: the Project gid is found in
-the Asana project URL, which usually has the format:`https://app.asana.com/0/<Project_gid/list`.
+This workflow generates the Asana custom field IDs and the copy-paste snippets you will use in the regional workflows.
 
-The key is to create a dummy task in Asana using the " +Add task" button in the Asana UI. Click to view the Asana task
-details and take note of the UI structure in the browser. It should look like this:.
+**What this job does**
+- Reads a real task from the target Asana project
+- Builds a combined `formatMapping` of enum choices
+- Emits two paste blocks:
+  - **PASTE 1** a mapping table you load into `state.formatMapping`
+  - **PASTE 2** a `custom_fields` object body tailored to the fields actually present in that project
 
-`https://app.asana.com/0/<Project_gid>/< Task_gid>`
-(**Note**: We use the TaskID in the getTask request, and not the _ProjectID_)
+**Before you run it**
 
-This *Task_gid* becomes an argument in a `getTask` request sent to Asana. The output of `state.data` contains the gids
-for all the Asana fields, otions and labels. Finally, this job is then modified to create a mapping table of Kobo field
-response choices to their respective Asana custom_fields_choices gids. It also generates and logs a set of statements
-that can be inserted into Fn blocks in the main upsert job (Job #2).
+Open the generator job and replace the sample task id at the top:
 
-This job is run *only once* as the Asana field gids for a given project are unique and doo not change. Thus this job can
-be switched off or archived afterwards.
+```javascript
+// Paste that task's gid below.
+const SAMPLE_TASK_GID = "<<<REPLACE_WITH_TASK_GID>>>";
+```
+Pick this gid by creating or opening any task in the target project and copying the Task ID from the URL:
+`https://app.asana.com/1/<Workspace_gid>/project/<Project_gid>/task/<Task_gid>`
+
+**Where the Project gid lives**
+- Project gid is visible in the URL: `https://app.asana.com/1/<Workspace_gid>/project/<Project_gid>/list`
+- You do not need the Project gid for the generator, but it helps you confirm you are looking at the right project.
+
+**What shows up in the logs**
+- The job fetches the task and inspects its `custom_fields`
+- It prints two clean, copy-paste blocks, bounded by markers
+
+PASTE 1 (put this in STEP 1 of your regional job):
+```javascript
+const formatMapping = { /* many "Field_Option": "gid" pairs */ };
+state.formatMapping = formatMapping;
+```
+PASTE 2 (paste only the inner lines into the custom_fields object of createTask):
+```javascript
+custom_fields: {
+  '1202329899911595': $.inputData.body.CaseID,
+  '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
+  '1210398577520508': state => state.formatMapping["Request Response_" + $.inputData.body['Request Response']],
+  // ...
+}
+```
+**How to use the outputs**
+1. In your regional job, STEP 1: Replace the two commented lines with the two lines from PASTE 1
+2. In your regional job, inside `createTask({ ... })`: Paste only the lines from PASTE 2 into the existing `custom_fields: { ... }`
+
+Example output from the generator job
+```javascript
+-----BEGIN PASTE 1-----
+const formatMapping = {
+  "SubmissionType_Grievance": "1202329899911646",
+  "ReportFormat_Email": "1202330347502485",
+  // ...
+};
+state.formatMapping = formatMapping;
+-----END PASTE 1-----
+
+-----BEGIN PASTE 2-----
+custom_fields: {
+  '1202329899911595': $.inputData.body.CaseID,
+  '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
+  '1210398577520508': state => state.formatMapping["Request Response_" + $.inputData.body['Request Response']],
+  // ...
+}
+-----END PASTE 2-----
+```
+
+That is it. Set `SAMPLE_TASK_GID`, run the generator, then drop PASTE 1 and PASTE 2 into the regional job in the two places noted above.
+
+This job is run *only once* as the Asana field gids for a given project are unique and do not change. 
 
 > ⚠ *Notes for developers:*
-> - An example of this `A. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/getTaskGID.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/getTaskGID.js).
-> - On OpenFn.org this job is configured with the `asana` adaptor and a `cron` trigger.
-> - See below for a screenshot of how it might look configured on the platform.
+> - An example of this `A. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/template-generator.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/template-generator.js).
+> - On OpenFn.org this job is configured with the `asana` adaptor and a `webhook` trigger.
 
-![jobA-example](images/job-A-ex.png)
+![jobA-example](images/template-generator.png)
 
 ### Special Flow: Indonesia (Aceh)
 
