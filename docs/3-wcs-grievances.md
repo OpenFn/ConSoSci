@@ -46,6 +46,18 @@ for the integration mapping specifications.
 2. For each active form, it retrieves Kobo submissions from the past 7 days.
 3. Submissions are enriched with metadata (e.g., region, project ID) and routed to the appropriate regional workflow.
 4. The regional workflow processes and posts the data to Asana.
+5. The `Get GRM Forms from Kobo` workflow can also be run on-demand with a custom date range.
+    - This is useful for re-running a historical sync or recovering submissions that may have failed to sync due to connectivity issues.
+    - Submissions within the specified start and end dates will be fetched and processed.
+    - To trigger a manual run, provide a `daterange` object in the workflow input:
+ ```json
+{
+  "daterange": {
+    "start": "2025-08-01T00:00:00.000Z",
+    "end": "2025-08-10T23:59:59.999Z"
+  }
+}
+```  
 
 ### Triggers & Scheduling
 
@@ -107,7 +119,7 @@ i. Open-Ended Kobo Fields: These fields are NOT drop-down fields. They are typic
 free text input from the user. The key-value pair statements needed to populate the custom fields are auto-generated in
 Job #1. These ones are mapped as follows:
 
-```
+```json
 custom_fields: {
     '1203712049265363': $.inputData.body.StaffEmail,
      '1202329899911595': $.inputData.body.CaseID,
@@ -118,7 +130,8 @@ ii. Multiple Choice / Drop-down Kobo fields. These fields typically have a list 
 select from. In Asana, these are mapped to `enum_options` which also have their unique gid values for every single
 choice in kobo. The key-value pair statements needed to populate the custom fields are also auto-generated in the generator job.
 These parameters are structured as follows:
-```
+
+```json
 custom_fields: {
     '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
     '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
@@ -197,8 +210,10 @@ custom_fields: {
 }
 ```
 **How to use the outputs**
-1. In your regional job, STEP 1: Replace the two commented lines with the two lines from PASTE 1
-2. In your regional job, inside `createTask({ ... })`: Paste only the lines from PASTE 2 into the existing `custom_fields: { ... }`
+1. In your regional job, STEP 1:
+   - Replace the two commented lines with the two lines from PASTE 1
+2. In your regional job, inside `createTask({ ... })`:
+   - Paste only the lines from PASTE 2 into the existing `custom_fields: { ... }`
 
 Example output from the generator job
 ```javascript
@@ -226,7 +241,7 @@ That is it. Set `SAMPLE_TASK_GID`, run the generator, then drop PASTE 1 and PAST
 This job is run *only once* as the Asana field gids for a given project are unique and do not change. 
 
 > ⚠ *Notes for developers:*
-> - An example of this `A. Get Asana Field IDs for Project` job is linked to the Github file [`/asana/template-generator.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/template-generator.js).
+> - An example of this `Asana Mapping Template` job is linked to the Github file [`/asana/template-generator.js`](https://github.com/OpenFn/ConSoSci/blob/master/asana/template-generator.js).
 > - On OpenFn.org this job is configured with the `asana` adaptor and a `webhook` trigger.
 
 ![jobA-example](images/template-generator.png)
