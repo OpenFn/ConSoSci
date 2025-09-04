@@ -46,7 +46,15 @@ for the integration mapping specifications.
 2. For each active form, it retrieves Kobo submissions from the past 7 days.
 3. Submissions are enriched with metadata (e.g., region, project ID) and routed to the appropriate regional workflow.
 4. The regional workflow processes and posts the data to Asana.
-5. The `Get GRM Forms from Kobo` workflow can also be run on-demand with a custom date range.
+
+### Triggers & Scheduling
+
+- The `Get GRM Forms from Kobo` workflow runs on a timer (cron) basis (every hour).
+- Google Sheet configurations are read fresh on each execution, any changes to form routing or project IDs are picked up
+  automatically.
+- Regional workflows are triggered dynamically from the `Get GRM Forms from Kobo` workflow and are not independently
+  scheduled.
+- The `Get GRM Forms from Kobo` workflow can also be run on-demand with a custom date range.
     - This is useful for re-running a historical sync or recovering submissions that may have failed to sync due to connectivity issues.
     - Submissions within the specified start and end dates will be fetched and processed.
     - To trigger a manual run, provide a `daterange` object in the workflow input:
@@ -58,14 +66,6 @@ for the integration mapping specifications.
   }
 }
 ```  
-
-### Triggers & Scheduling
-
-- The `Get GRM Forms from Kobo` workflow runs on a timer (cron) basis (every hour).
-- Google Sheet configurations are read fresh on each execution, any changes to form routing or project IDs are picked up
-  automatically.
-- Regional workflows are triggered dynamically from the `Get GRM Forms from Kobo` workflow and are not independently
-  scheduled.
 
 ### OpenFn Workflow Setup & Logic
 
