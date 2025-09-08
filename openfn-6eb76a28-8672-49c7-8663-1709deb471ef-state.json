@@ -696,37 +696,6 @@
         }
       }
     },
-    "0.-Get-Asana-Field-IDs-for-Project": {
-      "id": "46f442b7-49b6-4f68-8ff1-436fcb2fb211",
-      "name": "0. Get Asana Field IDs for Project",
-      "inserted_at": "2025-08-27T15:42:00.593092Z",
-      "lock_version": 28,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "A-GIDs-and-Mappings-for-Upsert": {
-          "id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
-          "name": "A GIDs and Mappings for Upsert",
-          "body": "//Typically run at the very beginning, or when we add new fields in Asana.\n// Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n// get(\"/tasks/1201871867457231\", {\n//     headers: {\n//       Accept: \"application/json\",\n//       Authorization: `Bearer ${state.configuration.token}`      \n//       },\n  \n//   },\n  \n    //Returns a json of all fields and their associated gids. There are gids for project, task, field and field options/choices.\n    //this can be viewed in the Activity History\n    \n    //Note: Customizing a field name in Asana does not change its gid.  \n  \n  \n  \n  \n   // =========== FETCHING GIDS FROM ASANA TO CREATE SOME HELPFSUL UPSERT STATEMENTS =============  \n//FOR THIS JOB WE NEED A task_gid and NOT project_id. \n// So you first create a sample task in your project, and retrieve its task_id and then insert it in 'getTask' below\n// Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n\n// Make sure that this task is alive in asana!\n  getTask(\"1211124808602372\",   //Again, this is a task_gid, and NOT a project_id\n  {},\n  state => {\n    return state;\n  },\n );\n \n // =========== MAPPLE TABLES & STATEMENTS FOR UPSERT JOB =============\n \n// *********** 1. MAPPING TABLES **************\n//This fn below creates a mapping table / code snippet for Asana custom fields choices (enum_option)\n//This should be at the very top of the script, before the upsert function.\nfn(state => {\n  const { data } = state;\n  const formatMapping = {};\n  \n  console.log(\"*********DATA***********\");\n  console.log(data);\n  \n  data.custom_fields.forEach(field => {\n    if (field.enum_options){\n      field.enum_options.forEach(option => {\n        formatMapping[field.name + \"_\" + option.name] = option.gid;\n      });\n    }\n  });\n   \n  console.log(\"//=======Mapping Table Statements ============\");\n  console.log(\"(Must be placed in fn block where you define const formatMapping, and return ...state, formatMapping)\");\n  console.log(formatMapping);\n  console.log('//=====================End of Mapping Table statements=============');\n  console.log('');\n  return state;\n});\n //These output Statements should be placed into this fn Block:\n \n// fn(state => {   \n//   const formatMapping = {\n//   Statement 1\n//   Statement 2\n//   Statement n\n//   };\n//   return { ...state, formatMapping };\n// });\n// ********************** END OF MAPPLE TABLES ****************************************************\n\n\n\n// ***************** 2. STATEMENTS FOR OPEN-ENDED AND MULTICHOICE QUESTIONS *************************************\n//This tells Asana what fields to update and how to locate them.\nfn(state => {\n  const { data } = state;\n  var script = \"\";\n  \n  console.log(\"//========Statements to insert into custom_fieds{} =======\");\n  console.log(\"\");\n  \n  console.log(\"// Fields  belonging to open-ended questions (qxns that accept free text input)\");\n  data.custom_fields.forEach(s => {\n    if(s.name && !s.enum_options){\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      script = \"'\"+ s.gid + \"'\" + \": dataValue('body.\" + s.name+\"'),\";\n      console.log(script);\n    }\n  });\n\n\n  console.log(\"\");\n  console.log(\"// Fields  belonging to questions with dropdown or multiple choice\");\n  data.custom_fields.forEach(s => {\n    if(s.name && s.enum_options){\n      // Fields  belonging to questions with dropdown or multiple choice\n      script = `'${s.gid}': state => state.formatMapping[\"${s.name}_\" + dataValue('body.${s.name}')(state)],`;\n      console.log(script);\n    }\n\n  });\n\n\n  console.log('//===========End of Statements========================');\n  \n  return state;\n });\n \n// ***************** END OF STATEMENTS FOR OPEN-ENDED QUESTIONS ************************************* \n\n",
-          "adaptor": "@openfn/language-asana@latest",
-          "project_credential_id": "3b707ca8-ef3c-4552-a536-ecb246664a13"
-        }
-      },
-      "edges": {
-        "webhook->A-GIDs-and-Mappings-for-Upsert": {
-          "enabled": true,
-          "id": "e652a60b-5e85-4ccc-8777-4163e0e9d4ff",
-          "target_job_id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
-          "source_trigger_id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
-          "condition_type": "always"
-        }
-      }
-    },
     "EAWIO-Sync-to-Asana": {
       "id": "a195906a-3908-4adc-978e-af131a8f8a6d",
       "name": "EAWIO Sync to Asana",
@@ -1119,6 +1088,37 @@
           "condition_type": "js_expression",
           "condition_label": "New Okwangwo GRM",
           "condition_expression": "state.data.formName == \"Okwangwo GRM\""
+        }
+      }
+    },
+    "0.-Get-Asana-Field-IDs-for-Project": {
+      "id": "46f442b7-49b6-4f68-8ff1-436fcb2fb211",
+      "name": "0. Get Asana Field IDs for Project",
+      "inserted_at": "2025-09-08T12:30:04.227443Z",
+      "lock_version": 30,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "A-GIDs-and-Mappings-for-Upsert": {
+          "id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
+          "name": "A GIDs and Mappings for Upsert",
+          "body": "//Typically run at the very beginning, or when we add new fields in Asana.\n// Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n// get(\"/tasks/1201871867457231\", {\n//     headers: {\n//       Accept: \"application/json\",\n//       Authorization: `Bearer ${state.configuration.token}`      \n//       },\n  \n//   },\n  \n    //Returns a json of all fields and their associated gids. There are gids for project, task, field and field options/choices.\n    //this can be viewed in the Activity History\n    \n    //Note: Customizing a field name in Asana does not change its gid.  \n  \n  \n  \n  \n   // =========== FETCHING GIDS FROM ASANA TO CREATE SOME HELPFSUL UPSERT STATEMENTS =============  \n//FOR THIS JOB WE NEED A task_gid and NOT project_id. \n// So you first create a sample task in your project, and retrieve its task_id and then insert it in 'getTask' below\n// Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n\n// Make sure that this task is alive in asana!\n  getTask(\"1211290941230412\",   //Again, this is a task_gid, and NOT a project_id\n  {},\n  state => {\n    return state;\n  },\n );\n \n // =========== MAPPLE TABLES & STATEMENTS FOR UPSERT JOB =============\n \n// *********** 1. MAPPING TABLES **************\n//This fn below creates a mapping table / code snippet for Asana custom fields choices (enum_option)\n//This should be at the very top of the script, before the upsert function.\nfn(state => {\n  const { data } = state;\n  const formatMapping = {};\n  \n  console.log(\"*********DATA***********\");\n  console.log(data);\n  \n  data.custom_fields.forEach(field => {\n    if (field.enum_options){\n      field.enum_options.forEach(option => {\n        formatMapping[field.name + \"_\" + option.name] = option.gid;\n      });\n    }\n  });\n   \n  console.log(\"//=======Mapping Table Statements ============\");\n  console.log(\"(Must be placed in fn block where you define const formatMapping, and return ...state, formatMapping)\");\n  console.log(formatMapping);\n  console.log('//=====================End of Mapping Table statements=============');\n  console.log('');\n  return state;\n});\n //These output Statements should be placed into this fn Block:\n \n// fn(state => {   \n//   const formatMapping = {\n//   Statement 1\n//   Statement 2\n//   Statement n\n//   };\n//   return { ...state, formatMapping };\n// });\n// ********************** END OF MAPPLE TABLES ****************************************************\n\n\n\n// ***************** 2. STATEMENTS FOR OPEN-ENDED AND MULTICHOICE QUESTIONS *************************************\n//This tells Asana what fields to update and how to locate them.\nfn(state => {\n  const { data } = state;\n  var script = \"\";\n  \n  console.log(\"//========Statements to insert into custom_fieds{} =======\");\n  console.log(\"\");\n  \n  console.log(\"// Fields  belonging to open-ended questions (qxns that accept free text input)\");\n  data.custom_fields.forEach(s => {\n    if(s.name && !s.enum_options){\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      script = \"'\"+ s.gid + \"'\" + \": dataValue('body.\" + s.name+\"'),\";\n      console.log(script);\n    }\n  });\n\n\n  console.log(\"\");\n  console.log(\"// Fields  belonging to questions with dropdown or multiple choice\");\n  data.custom_fields.forEach(s => {\n    if(s.name && s.enum_options){\n      // Fields  belonging to questions with dropdown or multiple choice\n      script = `'${s.gid}': state => state.formatMapping[\"${s.name}_\" + dataValue('body.${s.name}')(state)],`;\n      console.log(script);\n    }\n\n  });\n\n\n  console.log('//===========End of Statements========================');\n  \n  return state;\n });\n \n// ***************** END OF STATEMENTS FOR OPEN-ENDED QUESTIONS ************************************* \n\n",
+          "adaptor": "@openfn/language-asana@5.0.0",
+          "project_credential_id": "3b707ca8-ef3c-4552-a536-ecb246664a13"
+        }
+      },
+      "edges": {
+        "webhook->A-GIDs-and-Mappings-for-Upsert": {
+          "enabled": true,
+          "id": "e652a60b-5e85-4ccc-8777-4163e0e9d4ff",
+          "target_job_id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
+          "source_trigger_id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
+          "condition_type": "always"
         }
       }
     }
