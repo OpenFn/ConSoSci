@@ -33,7 +33,7 @@ workflows:
       A-GIDs-and-Mappings-for-Upsert:
         name: A GIDs and Mappings for Upsert
         adaptor: '@openfn/language-asana@5.0.0'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           //Typically run at the very beginning, or when we add new fields in Asana.
           // Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
@@ -59,7 +59,7 @@ workflows:
           // Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
 
           // Make sure that this task is alive in asana!
-            getTask("1211290941230412",   //Again, this is a task_gid, and NOT a project_id
+            getTask("1211291260552135",   //Again, this is a task_gid, and NOT a project_id
             {},
             state => {
               return state;
@@ -163,146 +163,8 @@ workflows:
         adaptor: '@openfn/language-common@2.5.0'
         credential: null
         body: |
-          fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
-            const formatMapping = {
-               Country_Bolivia: '1203150662724252',
-            Country_Brazil: '1203150662724253',
-            Country_Colombia: '1203150662724254',
-            Country_Ecuador: '1203150662724255',
-            Country_Peru: '1203150662724256',
-            Country_Indeterminado: '1203150662724257',
-            Donor_AFD: '1207470695842883',
-            Donor_BAF: '1207470914898964',
-            Donor_BEF: '1207470928895774',
-            Donor_EU: '1207470928895775',
-            Donor_GEF: '1207470928895776',
-            Donor_INL: '1207470928895777',
-            Donor_LLF: '1207470928895778',
-            Donor_NOAA: '1207470928895779',
-            Donor_MACP: '1207470928895780',
-            'Donor_REDD+': '1207470928895781',
-            Donor_USAID: '1207470928895782',
-            'Donor_World Bank': '1207551210258645',
-            WcsStaff_Yes: '1207934086722710',
-            WcsStaff_No: '1207934086722711',
-            ReportFormat_InPerson: '1202330347493011',
-            ReportFormat_FocalPoint: '1207724960884497',
-            ReportFormat_VoiceCall: '1202330347494027',
-            ReportFormat_Hotline: '1202330347501419',
-            ReportFormat_TextMessage: '1202330347498273',
-            ReportFormat_SuggestionBox: '1202330347499327',
-            ReportFormat_Email: '1202330347502485',
-            ReportFormat_Letter: '1202330347503544',
-            ReportFormat_OnlineForm: '1207934414764297',
-            ReportFormat_Other: '1203830536105154',
-            Anonymous_Anonymous: '1203977086782816',
-            Gender_Male: '1202330737362427',
-            Gender_Female: '1202330737362428',
-            'Gender_Mixed gender (group)': '1202330737362429',
-            'Gender_Unknown gender': '1202330737362430',
-            'Gender_Other gender': '1207852335266397',
-            'Gender_Prefer not to report': '1207852335266398',
-            IndigenousPeople_Yes_ips: '1202330755980982',
-            IndigenousPeople_No_ips: '1202330755984093',
-            IndigenousPeople_unknown_ips: '1202330755985164',
-            IndigenousPeople_mixed_group: '1207724962870243',
-            'Age_<18': '1202330714895607',
-            'Age_19-35': '1202330714895608',
-            'Age_36-50': '1202330714895609',
-            'Age_>50': '1202330714895610',
-            Age_mixed_age: '1202330714895611',
-            Age_unknown_age: '1202330714895612',
-            GrievanceAgainst_Wcs: '1202330466059593',
-            GrievanceAgainst_GovernmentPartner: '1202330466059594',
-            GrievanceAgainst_PrivateSectorPartner: '1202330466059595',
-            GrievanceAgainst_CivilSocietyPartner: '1202330466059596',
-            GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',
-            ConfidentialitySensitivity_Yes: '1202330821410493',
-            ConfidentialitySensitivity_No: '1202330821410494',
-            GrievanceType_RelatedProjects: '1187634487549316',
-            GrievanceType_LandTerritory: '1187634487549317',
-            GrievanceType_WildlifeConflict: '1187634487549318',
-            GrievanceType_OtherIssues: '1201884389902967',
-            GrievanceType_Suggestion: '1201884389905045',
-            GrievanceReportFormat_InPerson: '1192836094355011',
-            GrievanceReportFormat_PhoneCall: '1192836094355012',
-            GrievanceReportFormat_TextMessage: '1192847692374160',
-            GrievanceReportFormat_SuggestionBox: '1207122874564877',
-            GrievanceReportFormat_Email: '1192847692376214',
-            GrievanceReportFormat_PostalLetter: '1192847692376223',
-            GrievanceReportFormat_DirectSubmission: '1207001942658468',
-            GrievanceReportFormat_OnlineGlobalGRMForm: '1205980239099429'
-          };
-
-            return { ...state, formatMapping };
-          });
-
-          // console.log("projectid:");
-          // console.log(dataValue('projectid')(state));
-          fn(state =>
-          upsertTask(
-              dataValue('projectid'), //to dynamically map project id, assuming it's defined in the Get job. This projectID must be originally added to the Job that fetches data from Kobo.
-            //'1202329899911590', //hardcoded project id
-            
-            {
-              externalId: "name", // Asana external Id field name (e.g., 'gid')
-              data: {
-                name: state =>
-                  //`Grievance ID: ${dataValue('body.GrievanceID')(state)} (KoboID:${dataValue('body._id')(state)})`,
-                  `${dataValue('body.GrievanceID')(state)}`,
-                projects: state => [`${dataValue('projectid')(state)}`], //to dynamically map project id, assuming it's defined in the Get job
-                //projects: ['1201382240883590'], //hardcoded Asana project id for Template Project
-                notes: dataValue('body.DescriptioGrievance'),
-                custom_fields: {
-                          // Fields  belonging to open-ended questions (qxns that accept free text input)
-          '1203711959959076': dataValue('body.StaffName'),
-          '1203712049265363': dataValue('body.StaffEmail'),
-          '1203150636879068': dataValue('body.DateGrievanceReceived'), // this is Submission Date in Asana
-          '1203712064304976': dataValue('body.ReporterFullName'),
-          '1203712060006636': dataValue('body.ReporterContactInformation'),
-          '1201884379104074': dataValue('body.GrievanceID'),
-          '1203712112458773': dataValue('body.AuthorityGrievanceReporter'),
-          '1202329899911619': dataValue('body.WhereGrievance'),
-          '1203984479412129': dataValue('body.WhenGrievance'),
-          '1203712125372990': dataValue('body.PartiesInvolvedGrievance'),
-          '1203712145400954': dataValue('body.LocalAuthoritiesContacted'),
-          '1203829521790026': dataValue('body.DescriptioGrievance'),
-          '1203712150593482': dataValue('body.HarmSuffered'),
-          '1203712149463009': dataValue('body.ReliefRequested'),
-          '1203150636874723': dataValue('body.OneDriveFolder'),
-          '1203830309880883': dataValue('body.WhatProject'),
-          '1203829521790031': dataValue('body.Suggestion'),
-
-          // Fields  belonging to questions with dropdown or multiple choice
-          '1187328718760774': state => state.formatMapping["GrievanceStatus _" + dataValue('body.GrievanceStatus ')(state)],
-          '1203150662724247': state => state.formatMapping["SubmissionType_" + dataValue('body.SubmissionType')(state)],
-          '1202593715272940': state => state.formatMapping["Grade_" + dataValue('body.Grade')(state)],
-          '1204269608862901': state => state.formatMapping["Classification_" + dataValue('body.Classification')(state)],
-          '1203150662724251': state => state.formatMapping["Country_" + dataValue('body.Country')(state)],
-          '1207470695842882': state => state.formatMapping["Donor_" + dataValue('body.WhatDonor')(state)],
-          '1207934086722709': state => state.formatMapping["WcsStaff_" + dataValue('body.WcsStaff')(state)],
-          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
-          '1203977086782815': state => state.formatMapping["Anonymous_" + dataValue('body.Anonymous')(state)],
-          '1202330737362426': state => state.formatMapping["Gender_" + dataValue('body.Gender')(state)],
-          '1202330755979944': state => state.formatMapping["IndigenousPeople_" + dataValue('body.IndigenousPeople')(state)],
-          '1202330714895606': state => state.formatMapping["Age_" + dataValue('body.Age')(state)],
-          '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + dataValue('body.GrievanceAgainst')(state)],
-          '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + dataValue('body.ConfidentialitySensitivity')(state)],
-          '1187634487549315': state => state.formatMapping["GrievanceType_" + dataValue('body.GrievanceType')(state)],
-          '1202330347491974': state => state.formatMapping["ReportFormat_" + dataValue('body.ReportFormat')(state)],
-           }
-              },
-            },
-            state => {
-              console.log(JSON.stringify(state.data, null, 2)); //log data
-              return state;
-            }
-          )(state)
-          .catch(e => {
-            console.log('Asana says', JSON.stringify(e.response.data, null, 2));
-            throw e;
-          })
-          )
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
 
       GRM04b-Upsert-AAO-Int-Grievances:
         name: GRM04b Upsert AAO Int Grievances
@@ -4553,7 +4415,7 @@ workflows:
               form.owner__username,
               form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
               'WCS Grievances (Kobo to Asana)', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
-              `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
+              `${form.url}`, //form.url,
               form.date_modified, //kobo_form_date_modified
               form.date_created, //kobo_form_date_created
               new Date().toISOString(), //row_date_modified
