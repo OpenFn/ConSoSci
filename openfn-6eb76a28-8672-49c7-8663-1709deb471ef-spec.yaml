@@ -995,7 +995,7 @@ workflows:
                 '1202330815421247': state.formatMapping['DatePrecision_' + $.inputData.body.DatePrecision],
                 '1202330821410492': state.formatMapping['ConfidentialitySensitivity_' + $.inputData.body.ConfidentialitySensitivity],
                 '1208406425574581': state.formatMapping['Groupement_' + $.inputData.body.Groupement],
-                '1211147888650968': state.formatMapping["Sector_" + + $.inputData.body.Sector],
+                '1211147888650968': state => state.formatMapping["Sector_" + dataValue('body.Sector')(state)],
               },
             },
               state => {
