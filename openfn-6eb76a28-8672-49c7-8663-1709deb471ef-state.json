@@ -5,7 +5,6 @@
   "concurrency": null,
   "inserted_at": "2025-03-10T07:35:06Z",
   "updated_at": "2025-09-09T07:44:22Z",
-  "scheduled_deletion": null,
   "project_credentials": {
     "aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances": {
       "id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
@@ -48,12 +47,11 @@
       "owner": "rediet@openfn.org"
     }
   },
+  "scheduled_deletion": null,
   "history_retention_period": 7,
   "dataclip_retention_period": null,
   "retention_policy": "retain_all",
-  "allow_support_access": false,
   "collections": {},
-  "requires_mfa": false,
   "workflows": {
     "SAP-2.-Update-Asana-Task-Aceh": {
       "id": "76032ad6-6dae-45d4-9a6f-60dc96f4db82",
@@ -733,51 +731,6 @@
         }
       }
     },
-    "Asana-Mapping-Template": {
-      "id": "b97403e0-90f7-4de6-8300-110dd565db9c",
-      "name": "Asana Mapping Template",
-      "inserted_at": "2025-09-04T10:13:54.787248Z",
-      "lock_version": 8,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "Generate-Asana-GID-Mapping": {
-          "id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "name": "Generate Asana GID Mapping",
-          "body": "// Run this after creating a sample task in the target project.\n// Paste that task's gid below.\nconst SAMPLE_TASK_GID = \"1210973692586457\";\n\n// 1) Standard fields (present across projects)\nconst STANDARD_FIELDS = {\n  SubmissionType: \"1202329899911645\",\n  ReportFormat: \"1202330347491974\",\n  CaseID: \"1202329899911595\",\n  GrievanceID: \"1201884379104074\",\n  Gender: \"1202330737362426\",\n  IndigenousPeoples: \"1202330755979944\",\n  Age: \"1202330714895606\"\n};\n\n// 2) Standard option GIDs (enum choices)\nconst STANDARD_OPTION_MAPPING = {\n  \"SubmissionType_Grievance\": \"1202329899911646\",\n  \"SubmissionType_Suggestion\": \"1202329899911647\",\n  \"SubmissionType_Request\": \"1202329899911648\",\n  \"SubmissionType_Feedback\": \"1202329899911649\",\n\n  \"ReportFormat_InPerson\": \"1202330347493011\",\n  \"ReportFormat_FocalPoint\": \"1207724960884497\",\n  \"ReportFormat_VoiceCall\": \"1202330347494027\",\n  \"ReportFormat_Hotline\": \"1202330347501419\",\n  \"ReportFormat_TextMessage\": \"1202330347498273\",\n  \"ReportFormat_SuggestionBox\": \"1202330347499327\",\n  \"ReportFormat_Email\": \"1202330347502485\",\n  \"ReportFormat_Letter\": \"1202330347503544\",\n  \"ReportFormat_OnlineForm\": \"1207934414764297\",\n  \"ReportFormat_Other\": \"1203830536105154\",\n  \"ReportFormat_Prospecting\": \"1208419056473280\",\n\n  \"Gender_Male\": \"1202330737362427\",\n  \"Gender_Female\": \"1202330737362428\",\n  \"Gender_Mixed gender\": \"1202330737362429\",\n  \"Gender_Unknown gender\": \"1202330737362430\",\n  \"Gender_Other gender\": \"1207852335266397\",\n  \"Gender_Prefer not to report\": \"1207852335266398\",\n\n  \"IndigenousPeoples_Yes\": \"1202330755980982\",\n  \"IndigenousPeoples_No\": \"1202330755984093\",\n  \"IndigenousPeoples_Unknown\": \"1202330755985164\",\n  \"IndigenousPeoples_Mixed group\": \"1207724962870243\",\n\n  \"Age_<18\": \"1202330714895607\",\n  \"Age_19–35\": \"1202330714895608\",\n  \"Age_36–50\": \"1202330714895609\",\n  \"Age_>50\": \"1202330714895610\",\n  \"Age_Mixed age\": \"1202330714895611\",\n  \"Age_Unknown age\": \"1202330714895612\"\n};\n\n// Fetch the sample task so we can inspect this project's custom fields\ngetTask(SAMPLE_TASK_GID, {}, state => {\n  const { data } = state.body;\n\n  // Build a set of standard field GIDs so we can skip duplicates later\n  const standardGids = new Set(Object.values(STANDARD_FIELDS));\n  const presentGids = new Set(data.custom_fields.map(f => f.gid));\n\n  // 3) Build the combined mapping table: start with standard options, then add project-specific options\n  const formatMapping = { ...STANDARD_OPTION_MAPPING };\n\n  data.custom_fields.forEach(field => {\n    // Skip if this field is one of the known standard fields\n    if (standardGids.has(field.gid)) return;\n\n    if (field.enum_options) {\n      field.enum_options.forEach(option => {\n        formatMapping[`${field.name}_${option.name}`] = option.gid;\n      });\n    }\n  });\n\n  // Print a copy-paste friendly mapping table\n  console.log(\"//======= Mapping Table (Standard + Project specific) =========\");\n  console.log(\"-----BEGIN PASTE 1-----\");\n  console.log(\"const formatMapping = \" + JSON.stringify(formatMapping, null, 2) + \";\");\n  console.log(\"state.formatMapping = formatMapping;\");\n  console.log(\"-----END PASTE 1-----\");\n  console.log(\"//===================== End Mapping Table =====================\");\n  console.log(\"\");\n\n\n  // 4) Print statements for custom_fields payload\n  // helpers\n  const cleanName = s => (s || '').trim();\n  const isIdent = s => /^[A-Za-z_$][\\w$]*$/.test(s);\n  const bodyRef = name => {\n    const clean = cleanName(name);\n    return isIdent(clean) ? `$.inputData.body.${clean}` : `$.inputData.body[${JSON.stringify(clean)}]`;\n  };\n  const enumExpr = name => {\n    const clean = cleanName(name);\n    // lookup key is \"<FieldName>_\" + raw payload value\n    return `state => state.formatMapping[${JSON.stringify(clean + \"_\")} + ${bodyRef(clean)}]`;\n  };\n\n  let paste2 = \"custom_fields: {\\n\";\n\n  // Standard open-ended\n  if (presentGids.has(STANDARD_FIELDS.CaseID)) {\n    paste2 += `  '${STANDARD_FIELDS.CaseID}': ${bodyRef('CaseID')},\\n`;\n  }\n  if (presentGids.has(STANDARD_FIELDS.GrievanceID)) {\n    paste2 += `  '${STANDARD_FIELDS.GrievanceID}': ${bodyRef('GrievanceID')},\\n`;\n  }\n\n  // Standard enums\n  ['SubmissionType', 'ReportFormat', 'Gender', 'IndigenousPeoples', 'Age'].forEach(name => {\n    const gid = STANDARD_FIELDS[name];\n    if (presentGids.has(gid)) {\n      paste2 += `  '${gid}': ${enumExpr(name)},\\n`;\n    }\n  });\n\n  // Project specific\n  data.custom_fields.forEach(f => {\n    if (standardGids.has(f.gid)) return;\n    if (f.name && !f.enum_options) {\n      paste2 += `  '${f.gid}': ${bodyRef(f.name)},\\n`;\n    } else if (f.name && f.enum_options) {\n      paste2 += `  '${f.gid}': ${enumExpr(f.name)},\\n`;\n    }\n  });\n\n  paste2 += \"}\";\n\n  console.log(\"-----BEGIN PASTE 2-----\\n\" + paste2 + \"\\n-----END PASTE 2-----\");\n  console.log(\"//=========== End of Statements =======================\");\n\n  // Return state with the combined mapping in case you want to consume it programmatically\n  return { ...state, formatMapping };\n});",
-          "adaptor": "@openfn/language-asana@5.0.2",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
-        },
-        "Asana-Regional-Template": {
-          "id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
-          "name": "Asana Regional Template",
-          "body": "// ===== STEP 1: Mapping + input capture =====\nfn(state => {\n  // 🔹 PASTE 1: from the Generator job\n  // Copy the BEGIN/END block from Generator logs that looks like:\n  //   const formatMapping = { ... };\n  //   state.formatMapping = formatMapping;\n  // Paste ONLY those 2 lines here, nothing else.\n\n  state.inputData = state.data;                     // keep\n  state.formatMapping = state.formatMapping || {};  // safe fallback\n  return state;\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID below to your CaseID/GrievanceID field GID.\n// Also update the key if your input uses a different field name like CaseID instead of GrievanceID.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID, // <-- REPLACE THIS GID if needed\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  const grievanceId = state.inputData?.body?.GrievanceID; // <-- REPLACE THIS: must match your search key above\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, \n  createTask({\n    name: $.inputData.body.GrievanceID,             // or CaseID, to match your search key\n    projects: [$.inputData.projectid],              // keep as is\n    notes: $.inputData.body.DescriptioGrievance,    // keep as is\n    // 🔹 PASTE 2: from the Generator job\n    // Copy everything inside of the block between BEGIN/END markers\n    // The generator will output lines like:\n    custom_fields: {\n      //   '1202329899911595': $.inputData.body.CaseID,\n      //   '1201884379104074': $.inputData.body.GrievanceID,\n      //   '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      //   '1210398577520508': state => state.formatMapping[\"Request Response_\" + $.inputData.body['Request Response']],\n      // Notice: if the field name contains spaces, the generator already uses bracket notation for you.\n    },\n  },\n    st => {\n      console.log(JSON.stringify(st.data, null, 2)); // log data\n      return st;\n    }\n  )\n);\n",
-          "adaptor": "@openfn/language-asana@5.0.2",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
-        }
-      },
-      "edges": {
-        "webhook->Generate-Asana-GID-Mapping": {
-          "enabled": true,
-          "id": "10554605-2076-4b6c-8a20-ad1a4f07925f",
-          "target_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "source_trigger_id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
-          "condition_type": "always"
-        },
-        "Generate-Asana-GID-Mapping->Asana-Regional-Template": {
-          "enabled": false,
-          "id": "9045f83c-4764-46eb-8d1c-2d508cbd34db",
-          "target_job_id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
-          "source_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "AAO-Sync-to-Asana": {
       "id": "10bdc608-ec9d-4e72-980c-016f8c8f44b2",
       "name": "AAO Sync to Asana",
@@ -913,37 +866,6 @@
           "target_job_id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
           "source_job_id": "6be96110-8a85-4b48-874a-09cd6dc61039",
           "condition_type": "on_job_success"
-        }
-      }
-    },
-    "0.-Get-Asana-Field-IDs-for-Project": {
-      "id": "46f442b7-49b6-4f68-8ff1-436fcb2fb211",
-      "name": "0. Get Asana Field IDs for Project",
-      "inserted_at": "2025-09-09T08:08:45.706618Z",
-      "lock_version": 33,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "A-GIDs-and-Mappings-for-Upsert": {
-          "id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
-          "name": "A GIDs and Mappings for Upsert",
-          "body": "//Typically run at the very beginning, or when we add new fields in Asana.\n// Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n// get(\"/tasks/1201871867457231\", {\n//     headers: {\n//       Accept: \"application/json\",\n//       Authorization: `Bearer ${state.configuration.token}`      \n//       },\n  \n//   },\n  \n    //Returns a json of all fields and their associated gids. There are gids for project, task, field and field options/choices.\n    //this can be viewed in the Activity History\n    \n    //Note: Customizing a field name in Asana does not change its gid.  \n  \n  \n  \n  \n   // =========== FETCHING GIDS FROM ASANA TO CREATE SOME HELPFSUL UPSERT STATEMENTS =============  \n//FOR THIS JOB WE NEED A task_gid and NOT project_id. \n// So you first create a sample task in your project, and retrieve its task_id and then insert it in 'getTask' below\n// Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n\n// Make sure that this task is alive in asana!\n  getTask(\"1211291260552135\",   //Again, this is a task_gid, and NOT a project_id\n  {},\n  state => {\n    return state;\n  },\n );\n \n // =========== MAPPLE TABLES & STATEMENTS FOR UPSERT JOB =============\n \n// *********** 1. MAPPING TABLES **************\n//This fn below creates a mapping table / code snippet for Asana custom fields choices (enum_option)\n//This should be at the very top of the script, before the upsert function.\nfn(state => {\n  const { data } = state;\n  const formatMapping = {};\n  \n  console.log(\"*********DATA***********\");\n  console.log(data);\n  \n  data.custom_fields.forEach(field => {\n    if (field.enum_options){\n      field.enum_options.forEach(option => {\n        formatMapping[field.name + \"_\" + option.name] = option.gid;\n      });\n    }\n  });\n   \n  console.log(\"//=======Mapping Table Statements ============\");\n  console.log(\"(Must be placed in fn block where you define const formatMapping, and return ...state, formatMapping)\");\n  console.log(formatMapping);\n  console.log('//=====================End of Mapping Table statements=============');\n  console.log('');\n  return state;\n});\n //These output Statements should be placed into this fn Block:\n \n// fn(state => {   \n//   const formatMapping = {\n//   Statement 1\n//   Statement 2\n//   Statement n\n//   };\n//   return { ...state, formatMapping };\n// });\n// ********************** END OF MAPPLE TABLES ****************************************************\n\n\n\n// ***************** 2. STATEMENTS FOR OPEN-ENDED AND MULTICHOICE QUESTIONS *************************************\n//This tells Asana what fields to update and how to locate them.\nfn(state => {\n  const { data } = state;\n  var script = \"\";\n  \n  console.log(\"//========Statements to insert into custom_fieds{} =======\");\n  console.log(\"\");\n  \n  console.log(\"// Fields  belonging to open-ended questions (qxns that accept free text input)\");\n  data.custom_fields.forEach(s => {\n    if(s.name && !s.enum_options){\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      script = \"'\"+ s.gid + \"'\" + \": dataValue('body.\" + s.name+\"'),\";\n      console.log(script);\n    }\n  });\n\n\n  console.log(\"\");\n  console.log(\"// Fields  belonging to questions with dropdown or multiple choice\");\n  data.custom_fields.forEach(s => {\n    if(s.name && s.enum_options){\n      // Fields  belonging to questions with dropdown or multiple choice\n      script = `'${s.gid}': state => state.formatMapping[\"${s.name}_\" + dataValue('body.${s.name}')(state)],`;\n      console.log(script);\n    }\n\n  });\n\n\n  console.log('//===========End of Statements========================');\n  \n  return state;\n });\n \n// ***************** END OF STATEMENTS FOR OPEN-ENDED QUESTIONS ************************************* \n\n",
-          "adaptor": "@openfn/language-asana@5.0.0",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
-        }
-      },
-      "edges": {
-        "webhook->A-GIDs-and-Mappings-for-Upsert": {
-          "enabled": true,
-          "id": "e652a60b-5e85-4ccc-8777-4163e0e9d4ff",
-          "target_job_id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
-          "source_trigger_id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
-          "condition_type": "always"
         }
       }
     },
@@ -1121,6 +1043,84 @@
           "condition_expression": "state.data.formName == \"Okwangwo GRM\""
         }
       }
+    },
+    "Asana-Mapping-Template": {
+      "id": "b97403e0-90f7-4de6-8300-110dd565db9c",
+      "name": "Asana Mapping Template",
+      "inserted_at": "2025-09-09T09:09:11.460724Z",
+      "lock_version": 9,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "Generate-Asana-GID-Mapping": {
+          "id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "name": "Generate Asana GID Mapping",
+          "body": "// Run this after creating a sample task in the target project.\n// Paste that task's gid below.\nconst SAMPLE_TASK_GID = \"1211291260552135\";\n\n// 1) Standard fields (present across projects)\nconst STANDARD_FIELDS = {\n  SubmissionType: \"1202329899911645\",\n  ReportFormat: \"1202330347491974\",\n  CaseID: \"1202329899911595\",\n  GrievanceID: \"1201884379104074\",\n  Gender: \"1202330737362426\",\n  IndigenousPeoples: \"1202330755979944\",\n  Age: \"1202330714895606\"\n};\n\n// 2) Standard option GIDs (enum choices)\nconst STANDARD_OPTION_MAPPING = {\n  \"SubmissionType_Grievance\": \"1202329899911646\",\n  \"SubmissionType_Suggestion\": \"1202329899911647\",\n  \"SubmissionType_Request\": \"1202329899911648\",\n  \"SubmissionType_Feedback\": \"1202329899911649\",\n\n  \"ReportFormat_InPerson\": \"1202330347493011\",\n  \"ReportFormat_FocalPoint\": \"1207724960884497\",\n  \"ReportFormat_VoiceCall\": \"1202330347494027\",\n  \"ReportFormat_Hotline\": \"1202330347501419\",\n  \"ReportFormat_TextMessage\": \"1202330347498273\",\n  \"ReportFormat_SuggestionBox\": \"1202330347499327\",\n  \"ReportFormat_Email\": \"1202330347502485\",\n  \"ReportFormat_Letter\": \"1202330347503544\",\n  \"ReportFormat_OnlineForm\": \"1207934414764297\",\n  \"ReportFormat_Other\": \"1203830536105154\",\n  \"ReportFormat_Prospecting\": \"1208419056473280\",\n\n  \"Gender_Male\": \"1202330737362427\",\n  \"Gender_Female\": \"1202330737362428\",\n  \"Gender_Mixed gender\": \"1202330737362429\",\n  \"Gender_Unknown gender\": \"1202330737362430\",\n  \"Gender_Other gender\": \"1207852335266397\",\n  \"Gender_Prefer not to report\": \"1207852335266398\",\n\n  \"IndigenousPeoples_Yes\": \"1202330755980982\",\n  \"IndigenousPeoples_No\": \"1202330755984093\",\n  \"IndigenousPeoples_Unknown\": \"1202330755985164\",\n  \"IndigenousPeoples_Mixed group\": \"1207724962870243\",\n\n  \"Age_<18\": \"1202330714895607\",\n  \"Age_19–35\": \"1202330714895608\",\n  \"Age_36–50\": \"1202330714895609\",\n  \"Age_>50\": \"1202330714895610\",\n  \"Age_Mixed age\": \"1202330714895611\",\n  \"Age_Unknown age\": \"1202330714895612\"\n};\n\n// Fetch the sample task so we can inspect this project's custom fields\ngetTask(SAMPLE_TASK_GID, {}, state => {\n  const { data } = state.body;\n\n  // Build a set of standard field GIDs so we can skip duplicates later\n  const standardGids = new Set(Object.values(STANDARD_FIELDS));\n  const presentGids = new Set(data.custom_fields.map(f => f.gid));\n\n  // 3) Build the combined mapping table: start with standard options, then add project-specific options\n  const formatMapping = { ...STANDARD_OPTION_MAPPING };\n\n  data.custom_fields.forEach(field => {\n    // Skip if this field is one of the known standard fields\n    if (standardGids.has(field.gid)) return;\n\n    if (field.enum_options) {\n      field.enum_options.forEach(option => {\n        formatMapping[`${field.name}_${option.name}`] = option.gid;\n      });\n    }\n  });\n\n  // Print a copy-paste friendly mapping table\n  console.log(\"//======= Mapping Table (Standard + Project specific) =========\");\n  console.log(\"-----BEGIN PASTE 1-----\");\n  console.log(\"const formatMapping = \" + JSON.stringify(formatMapping, null, 2) + \";\");\n  console.log(\"state.formatMapping = formatMapping;\");\n  console.log(\"-----END PASTE 1-----\");\n  console.log(\"//===================== End Mapping Table =====================\");\n  console.log(\"\");\n\n\n  // 4) Print statements for custom_fields payload\n  // helpers\n  const cleanName = s => (s || '').trim();\n  const isIdent = s => /^[A-Za-z_$][\\w$]*$/.test(s);\n  const bodyRef = name => {\n    const clean = cleanName(name);\n    return isIdent(clean) ? `$.inputData.body.${clean}` : `$.inputData.body[${JSON.stringify(clean)}]`;\n  };\n  const enumExpr = name => {\n    const clean = cleanName(name);\n    // lookup key is \"<FieldName>_\" + raw payload value\n    return `state => state.formatMapping[${JSON.stringify(clean + \"_\")} + ${bodyRef(clean)}]`;\n  };\n\n  let paste2 = \"custom_fields: {\\n\";\n\n  // Standard open-ended\n  if (presentGids.has(STANDARD_FIELDS.CaseID)) {\n    paste2 += `  '${STANDARD_FIELDS.CaseID}': ${bodyRef('CaseID')},\\n`;\n  }\n  if (presentGids.has(STANDARD_FIELDS.GrievanceID)) {\n    paste2 += `  '${STANDARD_FIELDS.GrievanceID}': ${bodyRef('GrievanceID')},\\n`;\n  }\n\n  // Standard enums\n  ['SubmissionType', 'ReportFormat', 'Gender', 'IndigenousPeoples', 'Age'].forEach(name => {\n    const gid = STANDARD_FIELDS[name];\n    if (presentGids.has(gid)) {\n      paste2 += `  '${gid}': ${enumExpr(name)},\\n`;\n    }\n  });\n\n  // Project specific\n  data.custom_fields.forEach(f => {\n    if (standardGids.has(f.gid)) return;\n    if (f.name && !f.enum_options) {\n      paste2 += `  '${f.gid}': ${bodyRef(f.name)},\\n`;\n    } else if (f.name && f.enum_options) {\n      paste2 += `  '${f.gid}': ${enumExpr(f.name)},\\n`;\n    }\n  });\n\n  paste2 += \"}\";\n\n  console.log(\"-----BEGIN PASTE 2-----\\n\" + paste2 + \"\\n-----END PASTE 2-----\");\n  console.log(\"//=========== End of Statements =======================\");\n\n  // Return state with the combined mapping in case you want to consume it programmatically\n  return { ...state, formatMapping };\n});",
+          "adaptor": "@openfn/language-asana@5.0.2",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
+        },
+        "Asana-Regional-Template": {
+          "id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
+          "name": "Asana Regional Template",
+          "body": "// ===== STEP 1: Mapping + input capture =====\nfn(state => {\n  // 🔹 PASTE 1: from the Generator job\n  // Copy the BEGIN/END block from Generator logs that looks like:\n  //   const formatMapping = { ... };\n  //   state.formatMapping = formatMapping;\n  // Paste ONLY those 2 lines here, nothing else.\n\n  state.inputData = state.data;                     // keep\n  state.formatMapping = state.formatMapping || {};  // safe fallback\n  return state;\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID below to your CaseID/GrievanceID field GID.\n// Also update the key if your input uses a different field name like CaseID instead of GrievanceID.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID, // <-- REPLACE THIS GID if needed\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  const grievanceId = state.inputData?.body?.GrievanceID; // <-- REPLACE THIS: must match your search key above\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, \n  createTask({\n    name: $.inputData.body.GrievanceID,             // or CaseID, to match your search key\n    projects: [$.inputData.projectid],              // keep as is\n    notes: $.inputData.body.DescriptioGrievance,    // keep as is\n    // 🔹 PASTE 2: from the Generator job\n    // Copy everything inside of the block between BEGIN/END markers\n    // The generator will output lines like:\n    custom_fields: {\n      //   '1202329899911595': $.inputData.body.CaseID,\n      //   '1201884379104074': $.inputData.body.GrievanceID,\n      //   '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      //   '1210398577520508': state => state.formatMapping[\"Request Response_\" + $.inputData.body['Request Response']],\n      // Notice: if the field name contains spaces, the generator already uses bracket notation for you.\n    },\n  },\n    st => {\n      console.log(JSON.stringify(st.data, null, 2)); // log data\n      return st;\n    }\n  )\n);\n",
+          "adaptor": "@openfn/language-asana@5.0.2",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
+        }
+      },
+      "edges": {
+        "webhook->Generate-Asana-GID-Mapping": {
+          "enabled": true,
+          "id": "10554605-2076-4b6c-8a20-ad1a4f07925f",
+          "target_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "source_trigger_id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
+          "condition_type": "always"
+        },
+        "Generate-Asana-GID-Mapping->Asana-Regional-Template": {
+          "enabled": false,
+          "id": "9045f83c-4764-46eb-8d1c-2d508cbd34db",
+          "target_job_id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
+          "source_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "condition_type": "on_job_success"
+        }
+      }
+    },
+    "OLD.-Get-Asana-Field-IDs-for-Project": {
+      "id": "46f442b7-49b6-4f68-8ff1-436fcb2fb211",
+      "name": "OLD. Get Asana Field IDs for Project",
+      "inserted_at": "2025-09-15T09:37:01.382517Z",
+      "lock_version": 34,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "A-GIDs-and-Mappings-for-Upsert": {
+          "id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
+          "name": "A GIDs and Mappings for Upsert",
+          "body": "//Typically run at the very beginning, or when we add new fields in Asana.\n// Retrieve the Project gid and task gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n// get(\"/tasks/1201871867457231\", {\n//     headers: {\n//       Accept: \"application/json\",\n//       Authorization: `Bearer ${state.configuration.token}`      \n//       },\n  \n//   },\n  \n    //Returns a json of all fields and their associated gids. There are gids for project, task, field and field options/choices.\n    //this can be viewed in the Activity History\n    \n    //Note: Customizing a field name in Asana does not change its gid.  \n  \n  \n  \n  \n   // =========== FETCHING GIDS FROM ASANA TO CREATE SOME HELPFSUL UPSERT STATEMENTS =============  \n//FOR THIS JOB WE NEED A task_gid and NOT project_id. \n// So you first create a sample task in your project, and retrieve its task_id and then insert it in 'getTask' below\n// Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id\n\n// Make sure that this task is alive in asana!\n  getTask(\"1211291260552135\",   //Again, this is a task_gid, and NOT a project_id\n  {},\n  state => {\n    return state;\n  },\n );\n \n // =========== MAPPLE TABLES & STATEMENTS FOR UPSERT JOB =============\n \n// *********** 1. MAPPING TABLES **************\n//This fn below creates a mapping table / code snippet for Asana custom fields choices (enum_option)\n//This should be at the very top of the script, before the upsert function.\nfn(state => {\n  const { data } = state;\n  const formatMapping = {};\n  \n  console.log(\"*********DATA***********\");\n  console.log(data);\n  \n  data.custom_fields.forEach(field => {\n    if (field.enum_options){\n      field.enum_options.forEach(option => {\n        formatMapping[field.name + \"_\" + option.name] = option.gid;\n      });\n    }\n  });\n   \n  console.log(\"//=======Mapping Table Statements ============\");\n  console.log(\"(Must be placed in fn block where you define const formatMapping, and return ...state, formatMapping)\");\n  console.log(formatMapping);\n  console.log('//=====================End of Mapping Table statements=============');\n  console.log('');\n  return state;\n});\n //These output Statements should be placed into this fn Block:\n \n// fn(state => {   \n//   const formatMapping = {\n//   Statement 1\n//   Statement 2\n//   Statement n\n//   };\n//   return { ...state, formatMapping };\n// });\n// ********************** END OF MAPPLE TABLES ****************************************************\n\n\n\n// ***************** 2. STATEMENTS FOR OPEN-ENDED AND MULTICHOICE QUESTIONS *************************************\n//This tells Asana what fields to update and how to locate them.\nfn(state => {\n  const { data } = state;\n  var script = \"\";\n  \n  console.log(\"//========Statements to insert into custom_fieds{} =======\");\n  console.log(\"\");\n  \n  console.log(\"// Fields  belonging to open-ended questions (qxns that accept free text input)\");\n  data.custom_fields.forEach(s => {\n    if(s.name && !s.enum_options){\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      script = \"'\"+ s.gid + \"'\" + \": dataValue('body.\" + s.name+\"'),\";\n      console.log(script);\n    }\n  });\n\n\n  console.log(\"\");\n  console.log(\"// Fields  belonging to questions with dropdown or multiple choice\");\n  data.custom_fields.forEach(s => {\n    if(s.name && s.enum_options){\n      // Fields  belonging to questions with dropdown or multiple choice\n      script = `'${s.gid}': state => state.formatMapping[\"${s.name}_\" + dataValue('body.${s.name}')(state)],`;\n      console.log(script);\n    }\n\n  });\n\n\n  console.log('//===========End of Statements========================');\n  \n  return state;\n });\n \n// ***************** END OF STATEMENTS FOR OPEN-ENDED QUESTIONS ************************************* \n\n",
+          "adaptor": "@openfn/language-asana@5.0.0",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2"
+        }
+      },
+      "edges": {
+        "webhook->A-GIDs-and-Mappings-for-Upsert": {
+          "enabled": true,
+          "id": "e652a60b-5e85-4ccc-8777-4163e0e9d4ff",
+          "target_job_id": "627e7d10-1ce0-4b02-9c04-8af30a1e158e",
+          "source_trigger_id": "d084bb98-e1d0-46c7-a9e8-80fdbaea6b1d",
+          "condition_type": "always"
+        }
+      }
     }
-  }
+  },
+  "allow_support_access": false,
+  "requires_mfa": false
 }
