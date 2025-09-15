@@ -354,7 +354,7 @@ workflows:
         body: |
           // Run this after creating a sample task in the target project.
           // Paste that task's gid below.
-          const SAMPLE_TASK_GID = "1211291260552135";
+          const SAMPLE_TASK_GID = "1211324120675814";
 
           // 1) Standard fields (present across projects)
           const STANDARD_FIELDS = {
@@ -778,13 +778,13 @@ workflows:
               Groupement_Mudaka: '1208406425574583',
               Groupement_Musenyi: '1208521520130897',
               Groupement_Nindja: '1208521520130898',
-              Sector_Nkuku: "1211147888650973",
-              Sector_Tshivanga: "1211147888650969",
-              Sector_Kasese: "1211147888650971",
-              Sector_Lulingu: "1211147888650972",
-              Sector_Itebero: "1211147892345744",
-              Sector_Mumbili: "1211147888650974",
-              Sector_Nzovu: "1211147888650970",
+            "Sector_Tshivanga": "1211147888650969",
+            "Sector_Nzovu": "1211147888650970",
+            "Sector_Kasese": "1211147888650971",
+            "Sector_Lulingu": "1211147888650972",
+            "Sector_Nkuku": "1211147888650973",
+            "Sector_Mumbili": "1211147888650974",
+            "Sector_Itebero": "1211147892345744",
             };
             state.inputData = state.data;
             return { ...state, formatMapping };
@@ -867,7 +867,7 @@ workflows:
                 '1202330815421247': state.formatMapping['DatePrecision_' + $.inputData.body.DatePrecision],
                 '1202330821410492': state.formatMapping['ConfidentialitySensitivity_' + $.inputData.body.ConfidentialitySensitivity],
                 '1208406425574581': state.formatMapping['Groupement_' + $.inputData.body.Groupement],
-                '1211147888650968': state => state.formatMapping["Sector_" + dataValue('body.Sector')(state)],
+                '1211147888650968': state => state.formatMapping["Sector_" + $.inputData.body.Sector],
               },
             },
               state => {
