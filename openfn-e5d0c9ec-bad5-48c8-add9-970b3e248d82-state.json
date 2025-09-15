@@ -5,7 +5,6 @@
   "concurrency": null,
   "inserted_at": "2025-03-10T07:28:21Z",
   "updated_at": "2025-07-30T13:12:11Z",
-  "scheduled_deletion": null,
   "project_credentials": {
     "rediet@openfn.org-Rediet-Googlesheet": {
       "id": "8f098581-1fba-449e-b7e5-49d7e8edc66b",
@@ -56,19 +55,23 @@
       "id": "8740c151-bc19-4ae6-b5e4-f9f73c4e5c84",
       "name": "Diane GoogleSheet",
       "owner": "ddetoeuf@wcs.org"
+    },
+    "aleksa@openfn.org-openfn-api---AK-PAT": {
+      "id": "8e4d7d2d-3484-4260-b6a0-a2156ce49264",
+      "name": "openfn api - AK PAT",
+      "owner": "aleksa@openfn.org"
     }
   },
+  "scheduled_deletion": null,
   "history_retention_period": 180,
   "dataclip_retention_period": null,
   "retention_policy": "retain_all",
-  "allow_support_access": true,
   "collections": {
     "mydata": {
       "id": "18cc32b8-cb96-40d9-83cb-1d940b63b725",
       "name": "mydata"
     }
   },
-  "requires_mfa": false,
   "workflows": {
     "x_A2-Process-Forms-AUTO": {
       "id": "32090694-7fd3-4131-b68c-f2372fa9623b",
@@ -359,8 +362,8 @@
     "2.-Sync-BNS-and-NRGT-Forms": {
       "id": "83fd9ae8-4dc6-4dd9-bc9b-f5940c5d8ef5",
       "name": "2. Sync BNS and NRGT Forms",
-      "inserted_at": "2025-09-02T08:00:14.068093Z",
-      "lock_version": 111,
+      "inserted_at": "2025-09-15T07:56:51.113425Z",
+      "lock_version": 112,
       "triggers": {
         "webhook": {
           "enabled": true,
@@ -473,7 +476,7 @@
           "condition_expression": "state.data.form == \"nrgt_historical\" && state.data.formName == \"NRGT Kahuzi Biega 2019\""
         },
         "Triage-jobs->BNS-survey-2F-Leuser-2024": {
-          "enabled": true,
+          "enabled": false,
           "id": "c5a2586f-489b-4875-85cf-5a0649cae6ee",
           "target_job_id": "023b2a50-0300-44e3-81e0-4e7d17dac034",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -481,5 +484,7 @@
         }
       }
     }
-  }
+  },
+  "allow_support_access": true,
+  "requires_mfa": false
 }
