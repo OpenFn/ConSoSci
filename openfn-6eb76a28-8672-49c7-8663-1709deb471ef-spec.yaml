@@ -5646,7 +5646,7 @@ workflows:
               LastCheckedTime: new Date().toISOString(),
               LastUpdateTime: new Date().toISOString(),
               KoboManaged: true,
-              Citation: survey.projectId
+              AsanaProjectID: survey.projectId
             }));
 
             console.log("Surveys to be upserted: ", surveys);
