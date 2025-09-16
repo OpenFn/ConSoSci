@@ -5553,8 +5553,8 @@ workflows:
                 name: survey.name,
                 owner: survey.owner,
                 projectId: survey.asana_projectid,
-                url1: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/counts`,
-                url2: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data`
+                url1: `api/v2/assets/${survey.uid}/counts`,
+                url2: `api/v2/assets/${survey.uid}/data`
                 // query: `&query={"end":{"$gte":"${cursorValue}"}}`,
               })),
             };
@@ -5568,7 +5568,10 @@ workflows:
         credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
         body: |
           // Initialize an empty array to accumulate survey data
-          fn(state => ({ ...state, surveysList: [] })),
+          fn(state => {
+            console.log("Initializing state with empty surveysList");
+            return { ...state, surveysList: [] };
+          });
 
           // Process each survey
           each(dataPath('surveys[*]'), state => {
@@ -5615,9 +5618,9 @@ workflows:
                 surveysList: [...state.surveysList, surveyData]
               };
             })(state);
-          }),
+          })
 
-          // After processing all surveys, update the state with the accumulated data
+          //After processing all surveys, update the state with the accumulated data
           fn(state => {
             const finalState = {
               ...state,
@@ -5628,7 +5631,7 @@ workflows:
             };
             console.log("Final combined state:", JSON.stringify(finalState.data, null, 2));
             return finalState;
-          })
+          });
 
       Upsert-to-DB:
         name: Upsert to DB

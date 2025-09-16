@@ -5,6 +5,7 @@
   "concurrency": null,
   "inserted_at": "2025-03-10T07:35:06Z",
   "updated_at": "2025-09-09T07:44:22Z",
+  "scheduled_deletion": null,
   "project_credentials": {
     "aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances": {
       "id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
@@ -47,11 +48,12 @@
       "owner": "rediet@openfn.org"
     }
   },
-  "scheduled_deletion": null,
   "history_retention_period": 7,
   "dataclip_retention_period": null,
   "retention_policy": "retain_all",
+  "allow_support_access": false,
   "collections": {},
+  "requires_mfa": false,
   "workflows": {
     "SAP-2.-Update-Asana-Task-Aceh": {
       "id": "76032ad6-6dae-45d4-9a6f-60dc96f4db82",
@@ -1063,8 +1065,8 @@
     "Sync-GRM-Submission-Metadata": {
       "id": "05dee792-addf-4f97-9590-1ea2e32dc8b5",
       "name": "Sync GRM Submission Metadata",
-      "inserted_at": "2025-09-15T09:55:44.061837Z",
-      "lock_version": 13,
+      "inserted_at": "2025-09-16T09:19:41.929109Z",
+      "lock_version": 61,
       "triggers": {
         "cron": {
           "enabled": true,
@@ -1077,14 +1079,14 @@
         "Get-GRM-Forms-List": {
           "id": "111f81f3-e27b-4c00-9f8a-a0700c112a39",
           "name": "Get GRM Forms List",
-          "body": "//== Job to be used for getting a list of \"deployed\" Kobo forms from sheets to auto-sync  ==//\n// This can be run on-demand at any time by clicking \"run\" or modify manualCursor below //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:AA', //get Deployed forms list from Sheet\n  \n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item =>\n          item.includes('TRUE') //return forms where auto-sync = TRUE\n          \n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData } = state;\n\n  // Set a manual cursor if you'd like to only fetch data after this date...\n  //e.g., '2023-01-01T23:51:45.491+01:00'\n  const manualCursor = '';  //lastUsed: 2024-04-01T00:00:00.000Z\n  console.log('manualCursor defined?', manualCursor);\n  \n  //...otherwise the job will use this dynamicCursor\n  const dynamicCursor = getTodayISODate(); \n\n  function getTodayISODate() {\n    const today = new Date();\n    today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0\n    return today.toISOString(); // Convert to ISO string\n  }\n  \n  const cursorValue = manualCursor || dynamicCursor; \n  console.log('Cursor value to use in query:', cursorValue);\n  \n   \n\n  const formsList = sheetsData.map(survey => ({\n      formId: survey.uid,\n      owner: survey.owner,\n      name: survey.name \n  })); \n  \n  console.log('# of deployed forms detected in Sheet:: ', formsList.length);\n  console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); \n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      formId: survey.uid,\n      //tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      projectId: survey.asana_projectid,\n      url1: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/counts`,\n      url2: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data`\n      // query: `&query={\"end\":{\"$gte\":\"${cursorValue}\"}}`,\n    })),\n  };\n  console.log(state.data);\n  return state;\n});\n",
+          "body": "//== Job to be used for getting a list of \"deployed\" Kobo forms from sheets to auto-sync  ==//\n// This can be run on-demand at any time by clicking \"run\" or modify manualCursor below //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:AA', //get Deployed forms list from Sheet\n  \n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item =>\n          item.includes('TRUE') //return forms where auto-sync = TRUE\n          \n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData } = state;\n\n  // Set a manual cursor if you'd like to only fetch data after this date...\n  //e.g., '2023-01-01T23:51:45.491+01:00'\n  const manualCursor = '';  //lastUsed: 2024-04-01T00:00:00.000Z\n  console.log('manualCursor defined?', manualCursor);\n  \n  //...otherwise the job will use this dynamicCursor\n  const dynamicCursor = getTodayISODate(); \n\n  function getTodayISODate() {\n    const today = new Date();\n    today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0\n    return today.toISOString(); // Convert to ISO string\n  }\n  \n  const cursorValue = manualCursor || dynamicCursor; \n  console.log('Cursor value to use in query:', cursorValue);\n  \n   \n\n  const formsList = sheetsData.map(survey => ({\n      formId: survey.uid,\n      owner: survey.owner,\n      name: survey.name \n  })); \n  \n  console.log('# of deployed forms detected in Sheet:: ', formsList.length);\n  console.log('List of forms to auto-sync:: ', JSON.stringify(formsList, null, 2)); \n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      formId: survey.uid,\n      //tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      projectId: survey.asana_projectid,\n      url1: `api/v2/assets/${survey.uid}/counts`,\n      url2: `api/v2/assets/${survey.uid}/data`\n      // query: `&query={\"end\":{\"$gte\":\"${cursorValue}\"}}`,\n    })),\n  };\n  console.log(state.data);\n  return state;\n});\n",
           "adaptor": "@openfn/language-googlesheets@3.0.14",
           "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae"
         },
         "Get-Submission-Metadata": {
           "id": "c2488e94-83f4-487f-94a3-5f197e3360f1",
           "name": "Get Submission Metadata",
-          "body": "// Initialize an empty array to accumulate survey data\nfn(state => ({ ...state, surveysList: [] })),\n\n// Process each survey\neach(dataPath('surveys[*]'), state => {\n  const { url1, url2, formId, name, owner, projectId } = state.data;\n\n  return fn(async state => {\n    const response1 = await get(`${url1}`, {})(state);\n    const response2 = await get(`${url2}`, {})(state);\n\n    const resultList = response2.data.results;\n    // const lastSubmissionTime = resultList[resultList.length - 1]._submission_time;\n    let lastSubmissionTime;\n    if (resultList.length > 0) {\n      lastSubmissionTime = resultList[resultList.length - 1]._submission_time;\n    } else {\n      lastSubmissionTime = null;\n    }\n    \n    let total_submission_count;\n    if (response1.data && 'total_submission_count' in response1.data) {\n      total_submission_count = response1.data.total_submission_count;\n    } else {\n      total_submission_count = undefined;\n    }\n    \n    console.log(`Processing: ${formId}`);\n    console.log(url1);\n    console.log(url2);\n    console.log(`Last submission time: ${lastSubmissionTime}`);\n\n    const surveyData = {\n      formId,\n      name,\n      // total_submission_count: response1.data.total_submission_count,\n      owner,\n      total_submission_count,\n      lastSubmissionTime,\n      projectId\n    };\n\n    // Add the current survey data to the accumulator\n    return { \n      ...state, \n      surveysList: [...state.surveysList, surveyData]\n    };\n  })(state);\n}),\n\n// After processing all surveys, update the state with the accumulated data\nfn(state => {\n  const finalState = {\n    ...state,\n    data: {\n      ...state.data,\n      surveys: state.surveysList\n    }\n  };\n  console.log(\"Final combined state:\", JSON.stringify(finalState.data, null, 2));\n  return finalState;\n})\n",
+          "body": "// Initialize an empty array to accumulate survey data\nfn(state => {\n  console.log(\"Initializing state with empty surveysList\");\n  return { ...state, surveysList: [] };\n});\n\n// Process each survey\neach(dataPath('surveys[*]'), state => {\n  const { url1, url2, formId, name, owner, projectId } = state.data;\n\n  return fn(async state => {\n    const response1 = await get(`${url1}`, {})(state);\n    const response2 = await get(`${url2}`, {})(state);\n\n    const resultList = response2.data.results;\n    // const lastSubmissionTime = resultList[resultList.length - 1]._submission_time;\n    let lastSubmissionTime;\n    if (resultList.length > 0) {\n      lastSubmissionTime = resultList[resultList.length - 1]._submission_time;\n    } else {\n      lastSubmissionTime = null;\n    }\n    \n    let total_submission_count;\n    if (response1.data && 'total_submission_count' in response1.data) {\n      total_submission_count = response1.data.total_submission_count;\n    } else {\n      total_submission_count = undefined;\n    }\n    \n    console.log(`Processing: ${formId}`);\n    console.log(url1);\n    console.log(url2);\n    console.log(`Last submission time: ${lastSubmissionTime}`);\n\n    const surveyData = {\n      formId,\n      name,\n      // total_submission_count: response1.data.total_submission_count,\n      owner,\n      total_submission_count,\n      lastSubmissionTime,\n      projectId\n    };\n\n    // Add the current survey data to the accumulator\n    return { \n      ...state, \n      surveysList: [...state.surveysList, surveyData]\n    };\n  })(state);\n})\n\n//After processing all surveys, update the state with the accumulated data\nfn(state => {\n  const finalState = {\n    ...state,\n    data: {\n      ...state.data,\n      surveys: state.surveysList\n    }\n  };\n  console.log(\"Final combined state:\", JSON.stringify(finalState.data, null, 2));\n  return finalState;\n});\n",
           "adaptor": "@openfn/language-http@3.1.11",
           "project_credential_id": "f4713092-5fff-4910-b4ff-d3a4f942ad9f"
         },
@@ -1120,7 +1122,5 @@
         }
       }
     }
-  },
-  "allow_support_access": false,
-  "requires_mfa": false
+  }
 }
