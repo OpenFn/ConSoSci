@@ -12,8 +12,8 @@ credentials:
   aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances:
     name: Asana API Token - AK WCS Grievances
     owner: aleksa@openfn.org
-  aleksa@openfn.org-openfn-api---AK-PAT:
-    name: openfn api - AK PAT
+  aleksa@openfn.org-openfn-api-AK-PAT-social-sciences:
+    name: openfn api-AK PAT-social sciences
     owner: aleksa@openfn.org
   ddetoeuf@wcs.org-Diane-GoogleSheet:
     name: Diane GoogleSheet
@@ -1245,322 +1245,6 @@ workflows:
             Tags: dataValue('_tags'),
           });
 
-      BNS-survey-2F-Leuser-2024:
-        name: BNS survey 2F Leuser 2024
-        adaptor: '@openfn/language-mssql@6.0.1'
-        credential: null
-        body: |
-          // NOTE: This data cleaning operation returns state, modified as needed.
-
-          fn(state => {
-            try {
-              const { body, formName, formOwner, instance } = state.data;
-              const { _submission_time, _id, _xform_id_string } = body;
-
-              let cleanedSubmission = {};
-
-              for (const key in body) {
-                switch (body[key]) {
-                  case 'yes':
-                    cleanedSubmission[key] = 1;
-                    break;
-
-                  case 'no':
-                    cleanedSubmission[key] = 0;
-                    break;
-
-                  default:
-                    cleanedSubmission[key] = body[key];
-                    break;
-                }
-              }
-
-              // NOTE: This assumes all device-collected geo data follows specific lat, log data format
-              if (cleanedSubmission.gps_method === 'device') {
-                cleanedSubmission['gps/lat'] =
-                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[0];
-                cleanedSubmission['gps/long'] =
-                  cleanedSubmission.geo && cleanedSubmission.geo.split(' ')[1];
-              } else if (
-                Math.abs(parseFloat(cleanedSubmission['gps/lat'])) > 90 ||
-                Math.abs(parseFloat(cleanedSubmission['gps/long'])) > 180
-              ) {
-                console.log(
-                  `WARNING: Discarding invalid manual GPS entry: 'gps/lat': ${cleanedSubmission['gps/lat']}; 'gps/long': ${cleanedSubmission['gps/long']}`
-                );
-                delete cleanedSubmission['gps/lat'];
-                delete cleanedSubmission['gps/long'];
-              }
-
-              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`; //survey uuid
-              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`; //dataset uuid
-              cleanedSubmission.instance = instance;
-              state.data = cleanedSubmission;
-
-              state.landscapeMap = {
-                tns: 'ndoki',
-                ltlt: 'lac_tele',
-                mamabay: 'makira',
-                mtkb: 'kahuzi',
-              };
-
-              // Cleaning datasetId if formName is 'BNS Cross River 2017-2020'==============
-              if (formName.replace(/\s/g, '') === 'BNSCrossRiver2017-2020') {
-                state.data.datasetId = `${state.data.datasetId}${
-                  body.today.split('-')[0]
-                }`;
-              }
-
-              // ===========================================================================
-
-              // ===========================================================================
-              //  NOTE: These job mappings assume a specific Kobo form metadata naming syntax!
-              //  'NR' and 'BNS matrix' questions should follow the naming conventions below
-              //  See Docs to learn more about the assumptions made here.
-              // ===========================================================================
-              // If a partner creates a form with slightly different field names, this
-              // section will need to be updated by WCS. If future forms are being designed,
-              // we'd recommend using a repeat group that allows the partner to select the
-              // type of 'nr' or 'matrix' they're reporting on. The current approach treats
-              // the form field names in Kobo _AS_ data themselves.
-              state.nr = Object.keys(state.data)
-                .filter(key => key.startsWith('nr/'))
-                .map(key => ({
-                  DatasetUuidId: state.data.datasetId,
-                  AnswerId: state.data._id,
-                  Id: state.data._id,
-                  LastUpdate: new Date().toISOString(),
-                  Nr: key.substring(3),
-                  NrCollect: state.data[key],
-                }));
-
-              const matrix = Object.keys(state.data)
-                .filter(key => key.includes('bns_matrix_'))
-                .map(key => {
-                  const item = key.substring(
-                    key.lastIndexOf('bns_matrix_') + 'bns_matrix_'.length,
-                    key.lastIndexOf('_')
-                  );
-                  return {
-                    Dataset_Id: state.data.datasetId, //DatasetUuidId
-                    DatasetUuidId: state.data.datasetId,
-                    //Id: state.data._id,
-                    AnswerId: state.data._id,
-                    gs: item.replace(/_/g, ' '),
-                    have:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_possess`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_possess`],
-                    necessary:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_necessary`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_necessary`],
-                    quantity:
-                      state.data[
-                        `hh_assets/bns_matrix_${item}/bns_matrix_${item}_number`
-                      ] || state.data[`bns_matrix_${item}/bns_matrix_${item}_number`],
-                  };
-                });
-
-              state.matrix = matrix.filter(
-                (x, i) => matrix.findIndex(y => y.gs == x.gs) == i
-              );
-              // ===========================================================================
-              // console.log(
-              //   'The bns_matrix',
-              //   JSON.stringify(state.matrix, null, 2),
-              //   `contains ${state.matrix.length} items.`
-              // );
-              console.log('instance: ', instance);
-              return {...state, formOwner, formName};
-            } catch (error) {
-              state.connection.close();
-              throw error;
-            }
-          });
-
-          upsert('WCSPROGRAMS_KoboBnsAnswer', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'),
-            //Id: dataValue('durableUUID'), //Q: does not exist, to add for consistency?
-            SubmissionUuid: dataValue('_uuid'),
-            AnswerId: dataValue('_id'),
-            LastUpdate: new Date().toISOString(),
-            SurveyDate: state => {
-              const date = state.data.today || state.data._submission_time;
-              const year = Number(date.trim().split('-')[0]);
-              const formName = dataValue('formName');
-              if (year <= 2010) return Number(formName.trim().split(' ').at(-1));
-              return year;
-            },
-            Landscape: state => {
-              var landscape = dataValue('group_cq4or32/landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
-            },
-            Surveyor: dataValue('surveyor'),
-            Participant: dataValue('participant'),
-            Arrival: dataValue('arrival'),
-            District: dataValue('district'),
-            Village: dataValue('village'),
-            HhId: dataValue('hh_id'),
-            BenefProject: dataValue('benef_project'),
-            HhTypeControl: state => (state.data.hh_type === 'control' ? 1 : 0),
-            HhTypeOrgBenef: state => (state.data.hh_type === 'wcs_benef' ? 1 : 0),
-            HhTypeOtherBenef: state => (state.data.hh_type === 'other_benef' ? 1 : 0),
-            ExplainProject: dataValue('explain_project'),
-            KnowPa: dataValue('know_PA'),
-            BenefPa: dataValue('benef_PA'),
-            ExplainBenefPa: dataValue('explain_benef_PA'),
-            Livelihood1: dataValue('livelihoods/l1'),
-            Livelihood2: dataValue('livelihoods/l2'),
-            Livelihood3: dataValue('livelihoods/l3'),
-            Livelihood4: dataValue('livelihoods/l4'),
-            BnsPlus: dataValue('bns_plus'),
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerhhmembers where AnswerId = '${state.data._id}'`,
-          });
-
-          insert('WCSPROGRAMS_KoboBnsAnswerhhmembers', {
-            //insert hh head first
-            DatasetUuidId: dataValue('datasetId'),
-            Id: '0',
-            //Id: state => state.data.hh_members.length,
-            AnswerId: dataValue('_id'),
-            Head: dataValue('gender_head') ? '1' : '0',
-            Gender: dataValue('gender_head'),
-            Ethnicity: dataValue('ethnicity_head'),
-            Birth: state => {
-              var birth = dataValue('birth_head')(state);
-              return birth ? parseInt(birth.substring(0, 4)) : null;
-            },
-            LastUpdate: new Date().toISOString(),
-          });
-
-          fn(state => {
-            if (state.data.hh_members) {
-              return insertMany(
-                'WCSPROGRAMS_KoboBnsAnswerhhmembers',
-                (
-                  state //then insert other members
-                ) =>
-                  state.data.hh_members.map((member, i) => ({
-                    DatasetUuidId: state.data.datasetId,
-                    // Id: state.data._id,
-                    Id: i + 1,
-                    AnswerId: state.data._id,
-                    Head: '0',
-                    Gender:
-                      member[`hh_members/gender`] || member[`hh_members/gender_001`],
-                    Ethnicity: member[`hh_members/ethnicity`],
-                    Birth: parseInt(member[`hh_members/birth`].substring(0, 4)),
-                    LastUpdate: new Date().toISOString(),
-                  }))
-              )(state);
-            }
-
-            console.log('No household members found.');
-            return state;
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswernr where AnswerId = '${state.data._id}'`,
-          });
-
-          fn(state => {
-            if (state.nr && state.nr.length > 0) {
-              return insertMany('WCSPROGRAMS_KoboBnsAnswernr', state => state.nr)(state);
-            }
-
-            console.log('No natural resource found.');
-            return state;
-          });
-
-          // Refactor this for scale so it doesn't perform a no-op delete 9/10 times.
-          // Maybe check result of previous op, then only delete if it was an update.
-          //sql({ query: state => `DELETE FROM WCSPROGRAMS_KoboBnsAnswergs where AnswerId = '${state.data._id}'` }); //ERROR: AnswerId does not exist
-          sql({
-            query: state =>
-              `DELETE FROM WCSPROGRAMS_KoboBnsAnswerGS where AnswerId = '${state.data._id}'`,
-          });
-
-          fn(state => {
-            if (state.matrix && state.matrix.length > 0) {
-              return insertMany(
-                'WCSPROGRAMS_KoboBnsAnswerGS',
-                state => state.matrix
-              )(state);
-            }
-
-            console.log('No matrix found.');
-            return state;
-          });
-
-          upsert('WCSPROGRAMS_KoboBnsAnswergps', 'AnswerId', {
-            DatasetUuidId: dataValue('datasetId'), //Q: Add new column
-            AnswerId: dataValue('_id'),
-            Id: dataValue('_id'),
-            Geom: dataValue('_geolocation'),
-            Lat: state => {
-              return dataValue('gps/lat')(state)
-                ? dataValue('gps/lat')(state)
-                : state.data._geolocation[0] || undefined;
-            },
-            Long: state => {
-              return dataValue('gps/long')(state)
-                ? dataValue('gps/long')(state)
-                : state.data._geolocation[1] || undefined;
-            },
-            LastUpdate: new Date().toISOString(),
-          });
-
-          fn(state => {
-            console.log('DatasetName ::', state.formName);
-            console.log('DatasetOwner ::', state.formOwner);
-            console.log('form submission id ::', state.data['_id']);
-            console.log('DatasetUuidId ::', state.data['datasetId']);
-            //console.log('data to upload ::', state.data);
-            return state;
-          })
-
-          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
-            //renamed from DatasetUuid
-            //AnswerId: dataValue('_id'), //KoboData = 1 Dataset (not 1 survey)
-            DatasetName: state => state.formName,
-            DatasetOwner: state => state.formOwner,
-            Landscape: dataValue('landscape'),
-            DatasetUuidId: dataValue('datasetId'),
-            Citation: dataValue('instance'),
-            DatasetYear: state => {
-              const date = state.data.today || state.data._submission_time;
-              const year = Number(date.trim().split('-')[0]);
-              const formName = dataValue('formName')(state);
-              const yearToReturn = year;
-              if (year <= 2010) yearToReturn = Number(formName.trim().split(' ').at(-1));
-              console.log(yearToReturn);
-              return yearToReturn;
-              // const formName = dataValue('formName')(state);
-              // if (formName === 'BNS Cross River 2017-2020') {
-              return state.data.body.today.split('-')[0];
-              // }
-              //const year = dataValue('body.today');
-              //console.log(year);
-              return new Date().getFullYear(); // Here we don't want the date of today we want the year of the value today
-              //console.log(Date(year).getFullYear());
-            },
-            LastSubmissionTime: dataValue('_submission_time'),
-            LastCheckedTime: dataValue('_submission_time'),
-            LastUpdateTime: new Date().toISOString(),
-            KoboManaged: true,
-            Tags: dataValue('_tags'),
-          });
-
     triggers:
       webhook:
         type: webhook
@@ -1617,305 +1301,15 @@ workflows:
         condition_expression: |
           state.data.form == "nrgt_historical" && state.data.formName == "NRGT Kahuzi Biega 2019"
         enabled: true
-      Triage-jobs->BNS-survey-2F-Leuser-2024:
-        source_job: Triage-jobs
-        target_job: BNS-survey-2F-Leuser-2024
-        condition_type: on_job_success
-        enabled: false
-  Monitor-Forms-Shared:
-    name: Monitor Forms Shared
+  AUTO1-Get-Kobo-Form:
+    name: AUTO1 Get Kobo Form
     jobs:
-      FS1---Get-Forms:
-        name: FS1 - Get Forms
-        adaptor: '@openfn/language-kobotoolbox@2.1.0'
+      A-1-1-Get-Kobo-Forms:
+        name: A-1-1 Get Kobo Forms
+        adaptor: '@openfn/language-http@3.1.11'
         credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
-          //Check Kobo account for forms with these matching keywords
-          getForms({}, state => {
-            //ALL KEYWORDS:
-            //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            //BNS KEYWORDS ONLY
-            const keywords = ['price', 'prix', 'bns', 'nrgt'];
-
-            const checkForKeyWords = name => {
-              return keywords.some(keyword => name.toLowerCase().includes(keyword));
-            };
-
-            state.activeForms = state.data.results
-              .filter(form => checkForKeyWords(form.name))
-              .filter(form => form.deployment__active);
-
-            state.archivedForms = state.data.results
-              .filter(form => checkForKeyWords(form.name))
-              .filter(form => !form.deployment__active);
-              
-            console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );
-            console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );
-
-            state.data = {};
-            state.references = [];
-            return state;
-          });
-
-      FS2---Get-List-from-Sheets:
-        name: FS2 - Get List from Sheets
-        adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
-        body: |
-          getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
-            'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
-          );
-          fn(state => {
-            const { activeForms, archivedForms, data } = state;
-            const [headers, ...sheetsData] = data.values;
-            const sheetsUids = sheetsData.map(row => row[0]);
-            console.log('Ignoring headers', headers);
-
-            state.formsToCreate = activeForms.filter(
-              form => !sheetsUids.includes(form.uid)
-            );
-
-            state.formsToUpdate = archivedForms
-              .filter(form => sheetsUids.includes(form.uid))
-              .map(form => {
-                const rowIndex = sheetsData.findIndex(row => {
-                  return row[0] === form.uid;
-                });
-                if (rowIndex !== -1) {
-                  return { ...form, rowIndex };
-                }
-                console.log(form.uid, 'Could not be found in google sheet');
-              });
-
-            return state;
-          });
-
-          fn(state => {
-            const { data, references, response, ...remainingState } = state;
-
-            return remainingState;
-          });
-
-      FS3---Update-Spreadsheet-with-New-Forms-Shared:
-        name: FS3 - Update Spreadsheet with New Forms Shared
-        adaptor: '@openfn/language-googlesheets@2.4.0'
-        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
-        body: |
-          //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
-          fn(state => {
-            const { formsToCreate, formsToUpdate } = state;
-            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
-
-            const tagMapping = {
-              price: 'bns_price',
-              prix: 'bns_price',
-              bns: 'bns_survey',
-              nrgt: 'nrgt_current',
-              grm: 'grm',
-              feedback: 'grm',
-            };
-
-            const createTagName = name => {
-              let tag = '';
-              const keyword = keywords.find(keyword =>
-                name.toLowerCase().includes(keyword)
-              );
-
-              if (keyword) {
-                tag = tagMapping[keyword] || keyword;
-              }
-              return tag;
-            };
-
-            const containsGRMFeedback = name =>
-              !name.toLowerCase().includes('grm', 'feedback');
-
-            const instance = name =>
-              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
-
-            const projectId = name =>
-              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
-
-            const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
-
-            const workspaceName = name =>
-              containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
-              
-            state.formLastModified = form => form.date_modified; 
-
-            const sheetRowMap = form => [
-              form.uid,
-              form.name,
-              createTagName(form.name),
-              form.owner__username,
-              instance(form.name),
-              //projectId(form.name), //for GRM only
-              //grmID(form.name), //for GRM only
-              form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
-              'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
-              `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
-              form.date_modified, //kobo_form_date_modified
-              form.date_created, //kobo_form_date_created
-              new Date().toISOString(), //row_date_modified
-              false, //auto_sync checkbox
-              false, //historical_sync checkbox
-              //job code template
-              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
-                form.name
-              }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
-            ];
-
-            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
-            state.rowValuesToUpdate = formsToUpdate.map(form => ({
-              range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
-              values: [sheetRowMap(form)],
-            }));
-            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
-
-            console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
-            console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
-            return state;
-          });
-
-          //if new Kobo form shared, adding to the "Deployed"" Sheet...
-          appendValues({
-            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
-            values: state => state.rowValuesToCreate,
-          });
-
-          //updating rows in Sheet where forms are archived
-          each(
-            '$.rowValuesToUpdate[*]',
-            batchUpdateValues({
-              spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-              range: state => state.data.range, //range of columns in sheet
-              values: state => state.data.values,
-            })
-          );
-
-          //also adding archived rows to "Archived" Sheet...
-          appendValues({
-            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
-            values: state => state.rowValuesToArchive,
-          });
-
-      FS4---Notify-in-Asana:
-        name: FS4 - Notify in Asana
-        adaptor: '@openfn/language-asana@4.0.9'
-        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
-        body: |
-          //This job will add a task to Asana if a new Kobo form was shared
-          fn(state => {
-            console.log('Preparing Form Sharing task updates for Asana... ');
-
-            state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {
-              const dateModified = new Date(form.date_deployed);
-              const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
-                .toISOString()
-                .split('T')[0];
-              return {
-                name: `New form added to OpenFn: ${form.name}`,
-                approval_status: 'pending',
-                projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
-                due_on: deployedDatePlus5,
-                notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
-              };
-            }) : [];
-
-            const yesterday = new Date();
-              yesterday.setDate(yesterday.getDate() - 1);
-              yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday
-
-            state.archivedFormsTasks = state.archivedForms
-            .filter(form => new Date(form.date_modified) > yesterday)
-            .map(form => {
-              const dateModified = new Date(form.date_modified);
-              const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
-                .toISOString()
-                .split('T')[0];
-              return {
-                name: `Form archived: ${form.name}`,
-                projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
-                due_on: modifiedDatePlus5,
-                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
-              };
-            });
-
-            console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
-            //console.log('New form alert tasks to upsert:: ', state.asanaTasks);
-            console.log(
-              '# of Archived Form Asana Tasks to add:: ',
-              state.archivedFormsTasks.length
-            );
-            console.log(
-              'Archived form alert tasks to upsert:: ',
-              state.archivedFormsTasks
-            );
-            return state;
-          });
-
-          //upsert Asana task if new form shared notification needed
-          each(
-            '$.asanaTasks[*]',
-            upsertTask('1198901998266253', {
-              //project_id
-              externalId: 'name',
-              data: state => state.data,
-            })
-          );
-
-          each(
-            '$.archivedFormsTasks[*]',
-            upsertTask('1198901998266253', {
-              //project_id
-              externalId: 'name',
-              data: state => state.data,
-            })
-          );
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 0 * * *'
-        enabled: true
-    edges:
-      cron->FS1---Get-Forms:
-        source_trigger: cron
-        target_job: FS1---Get-Forms
-        condition_type: always
-        enabled: true
-      FS1---Get-Forms->FS2---Get-List-from-Sheets:
-        source_job: FS1---Get-Forms
-        target_job: FS2---Get-List-from-Sheets
-        condition_type: on_job_success
-        enabled: true
-      FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared:
-        source_job: FS2---Get-List-from-Sheets
-        target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
-        condition_type: on_job_success
-        enabled: true
-      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
-        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
-        target_job: FS4---Notify-in-Asana
-        condition_type: on_job_success
-        enabled: true
-  x_A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
-    name: x_A1 Generate Jobs DB Tables and Dictionary AUTO
-    jobs:
-      A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
-        name: A1 Generate Jobs DB Tables and Dictionary AUTO
-        adaptor: '@openfn/language-http@6.5.4'
-        credential: null
-        body: |
-          get('https://kf.kobotoolbox.org/api/v2/assets/?format=json', {}, state => {
+          get('/assets/?format=json', {}, state => {
             console.log(`Previous cursor: ${state.lastEnd}`);
             // Set a manual cursor if you'd like to only fetch form after a certain date
             const manualCursor = '2019-05-25T14:32:43.325+01:00';
@@ -1933,10 +1327,10 @@ workflows:
               //     tableId: 'Project' // Result is Run 062f3e43-46fe-7332-99e3-07cce87ddbdf
               // },
               {
-                  uid: 'axfD6ntJyhfD2mxAGuVRSE', // Form name: 2. Deployments
+                  uid: 'aCCzQpdHoAwgWBXR7Yv2r9', // Form name: 2. Deployments
                   p1: 'WCSPROGRAMS',
                   p2: 'CameraKobo',
-                  tableId: 'Deployment' // Result is Run 062f3e47-ed7f-7fc5-b367-4c0f9b530053
+                  tableId: 'NrgtNrgtAnswer' // Result is Run 062f3e47-ed7f-7fc5-b367-4c0f9b530053
               },
               // {
               //     uid: 'a4yYjawjdbpHcckBx8m8AP', // Form name: 3. Retrieval
@@ -2030,7 +1424,7 @@ workflows:
                   formId: form.uid,
                   tag: manualSpec.surveyTable || form.name,
                   //tag: form.name,
-                  url,
+                  url: `/api/v2/assets/${form.uid}/?format=json`,
                   prefix1: manualSpec.p1,
                   prefix2: manualSpec.p2 || '',
                   tableId: manualSpec.tableId,
@@ -2056,10 +1450,15 @@ workflows:
             return { ...state, lastEnd, formsWatched: manualFormList };
           });
 
-          each(dataPath('forms[*]'), state => {
+      A-1-2-Post-Data-to-WF-Generator:
+        name: A-1-2 Post Data to WF Generator
+        adaptor: '@openfn/language-http@3.1.11'
+        credential: null
+        body: |
+          each('$.data.forms[*]', state => {
             const form = state.data;
             return post(
-              state.configuration.openfnInboxUrl,
+              "https://app.openfn.org/i/ec90e89e-9fd3-4d26-ab9f-df0dc01a0629",
               { body: { ...form, formUpdate: true } },
               state => {
                 console.log('Sent ', form.tag, ' for handling:');
@@ -2081,18 +1480,23 @@ workflows:
         cron_expression: '0 */3 * * *'
         enabled: false
     edges:
-      cron->A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO:
+      cron->A-1-1-Get-Kobo-Forms:
         source_trigger: cron
-        target_job: A1-Generate-Jobs-DB-Tables-and-Dictionary-AUTO
+        target_job: A-1-1-Get-Kobo-Forms
         condition_type: always
         enabled: true
-  x_A2-Process-Forms-AUTO:
-    name: x_A2 Process Forms AUTO
+      A-1-1-Get-Kobo-Forms->A-1-2-Post-Data-to-WF-Generator:
+        source_job: A-1-1-Get-Kobo-Forms
+        target_job: A-1-2-Post-Data-to-WF-Generator
+        condition_type: on_job_success
+        enabled: true
+  AUTO2-Process-Forms:
+    name: AUTO2 Process Forms
     jobs:
       A2-Process-Forms-AUTO:
         name: A2 Process Forms AUTO
-        adaptor: '@openfn/language-http@v4.0.0'
-        credential: null
+        adaptor: '@openfn/language-http@4.0.0'
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           get(`${state.data.url}`, {}, state => {
             state.formDefinition = state.data; // keeping form definition for data dictionary
@@ -2352,7 +1756,6 @@ workflows:
                   const parentTableName = `${prefixes}${tableId}${toCamelCase(suffix)}`;
                   // prettier-ignore
                   const parentTableReferenceColumn = `${prefixes}${toCamelCase(suffix || tableId)}ID`;
-
                   if (!tables.find(t => t.name === junctionTableName)) {
                     // console.log('junctiontable', junctionTableName);
                     const path = processPath(q, i, arr);
@@ -2739,8 +2142,8 @@ workflows:
 
       A4-Generate-OpenFn-Job-script-AUTO---OPENFN-JOB:
         name: A4 Generate OpenFn Job script AUTO - OPENFN JOB
-        adaptor: '@openfn/language-openfn@v1.1.4'
-        credential: null
+        adaptor: '@openfn/language-http@7.0.6'
+        credential: aleksa@openfn.org-openfn-api-AK-PAT-social-sciences
         body: |
           // {
           //   ...state,
@@ -2830,7 +2233,7 @@ workflows:
                     DatasetId: "dataValue('_xform_id_string')",
                     LastUpdated: 'new Date().toISOString()',
                   };
-                  for (x in values) paths.push(values[x]);
+                  for (const x in values) paths.push(values[x]);
                   break;
                 }
                 // end of master parent table
@@ -3078,104 +2481,93 @@ workflows:
             return { ...state, expression };
           });
 
-          // Get existing triggers for this project.
+          // Get existing workflows for this project.
+          get(`api/projects/${$.projectId}/workflows`);
+
           fn(state => {
-            return request(
-              {
-                method: 'get',
-                path: 'triggers',
-                params: {
-                  project_id: state.projectId,
-                },
-              },
-              next => ({ ...next, triggers: next.data })
-            )(state);
-          });
+            // Find workflow with the following properties
+            const jobName = `auto-${state.prefixes}${state.tableId}`;
+            const workflow = state.data.workflows.find(
+              w => w.name === jobName && w.project_id === state.projectId
+            );
 
-          // Get existing jobs for this project.
-          fn(state => {
-            return request(
-              {
-                method: 'get',
-                path: 'jobs',
-                params: {
-                  project_id: state.projectId,
-                },
-              },
-              next => ({ ...next, jobs: next.data.filter(job => !job.archived) })
-            )(state);
-          });
+            if (workflow) {
+              const job = workflow.jobs.find(j => j.name === jobName);
+              //Update job body with new expression
+              job.body = state.expression;
+              // Build a new workflow object with the updated job
+              workflow.jobs = [job];
+              return { ...state, workflow };
+            } else {
+              const jobId = util.uuid();
+              const triggerId = util.uuid();
+              const newWorkflow = {
+                name: jobName,
+                project_id: state.projectId,
+                edges: [
+                  {
+                    condition_type: 'always',
+                    condition_expression: null,
+                    condition_label: null,
+                    enabled: true,
+                    source_trigger_id: triggerId,
+                    target_job_id: jobId,
+                  },
+                ],
+                jobs: [
+                  {
+                    id: jobId,
+                    body: state.expression,
+                    name: jobName,
+                    adaptor: '@openfn/language-mssql@v6.0.0',
+                  },
+                ],
+                triggers: [
+                  {
+                    id: triggerId,
+                    comment: null,
+                    custom_path: null,
+                    cron_expression: '0 */3 * * *',
+                    type: 'cron',
+                    enabled: true,
+                  },
+                ],
+              };
 
-          // Create or update the trigger to detect submissions from this form.
-          fn(state => {
-            const { triggers, prefixes, tableId, triggerCriteria, projectId } = state;
-            const triggerNames = triggers.map(t => t.name);
-
-            const name = `auto/${prefixes}${tableId}`;
-            const criteria = triggerCriteria;
-            const triggerIndex = triggerNames.indexOf(name);
-
-            const trigger = {
-              project_id: projectId,
-              name,
-              type: 'message',
-              criteria,
-            };
-
-            if (triggerIndex === -1) {
-              console.log('Inserting trigger.');
-              return request(
-                {
-                  method: 'post',
-                  path: 'triggers',
-                  data: { trigger },
-                },
-                next => ({ ...next, triggers: [...next.triggers, next.data] })
-              )(state);
+              return { ...state, newWorkflow };
             }
-
-            console.log('Trigger already existing.');
-            return state;
           });
 
-          // Create or update the job for handling submissions from this form.
-          fn(state => {
-            const { expression, prefixes, tableId, jobs, triggers, projectId } = state;
-
-            console.log('Inserting/updating job: ', `auto/${prefixes}${tableId}`);
-
-            const jobNames = jobs.map(j => j.name);
-            const triggersName = triggers.map(t => t.name);
-            const name = `auto/${prefixes}${tableId}`;
-            const jobIndex = jobNames.indexOf(name); // We check if there is a job with that name.
-            const triggerIndex = triggersName.indexOf(name);
-            const triggerId = triggers[triggerIndex].id;
-
-            const method = jobIndex !== -1 ? 'put' : 'post';
-            const path = method === 'put' ? `jobs/${jobs[jobIndex].id}` : 'jobs/';
-
-            const job = {
-              adaptor: 'mssql',
-              adaptor_version: 'v2.6.11',
-              expression,
-              name,
-              project_id: projectId,
-              trigger_id: triggerId, // we (1) create a trigger first; (2) get the id ; (3) assign it here!
-            };
-
-            return request({ method, path, data: { job } })(state);
-          });
+          // Update existing workflow
+          fnIf(
+            $.workflow,
+            put(`api/projects/${$.projectId}/workflows/${$.workflow.id}`, state => {
+              console.log(
+                'Updating existing workflow: ',
+                `auto-${state.prefixes}${state.tableId}`
+              );
+              return state.workflow;
+            })
+          );
+          // Create new workflow
+          fnIf(
+            $.newWorkflow,
+            post(`api/projects/${$.projectId}/workflows/`, state => {
+              console.log(
+                'Inserting a new workflow: ',
+                `auto-${state.prefixes}${state.tableId}`
+              );
+              return state.newWorkflow;
+            })
+          );
 
       A3-Generate-SQL-to-setup-DB-AUTO---MSSQL:
         name: A3 Generate SQL to setup DB AUTO - MSSQL
-        adaptor: '@openfn/language-mssql@v3.0.0'
-        credential: null
+        adaptor: '@openfn/language-mssql@6.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
         body: |
           // Here we set default options for the SQL adaptor. Setting execute or writeSql
           // below will set the standard behavior of all SQL functions below unless overwritten.
-
-          //SET execute: true  if you want to SQL script to be auto-executed in the DB linked to this job 
-          //SET execute: false if you do NOT want to execure the SQL script, and only wnat to generate the script (see "writeSql")
           fn(state => ({ ...state, execute: false, writeSql: true }));
 
           // Creates tables in the db.
@@ -3277,6 +2669,7 @@ workflows:
                     const { rows } = resp.response.body;
                     if (resp.response.body.rowCount === 0) {
                       console.log('No matching table found in mssql --- Inserting.');
+
                       const columns = mergedColumns.filter(x => x.name !== undefined);
 
                       // change this line to 'return insert(name, columns, true, writeSql, state);' to override 'execute: false' at top
@@ -3333,7 +2726,7 @@ workflows:
           fn(state => {
             console.log('----------------------');
             console.log('Logging queries.');
-            for (query of state.queries) console.log(query);
+            for (const query of state.queries) console.log(query);
             console.log('----------------------');
 
             return state;
@@ -3341,8 +2734,8 @@ workflows:
 
       A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL:
         name: A5 Prepare Form for Data Dictionary AUTO - MSSQL
-        adaptor: '@openfn/language-mssql@v2.6.4'
-        credential: null
+        adaptor: '@openfn/language-mssql@6.0.0'
+        credential: rediet@openfn.org-WCS-MSSQL-Test-DB
         body: |
           fn(state => {
             const KoboToolBox_Forms = [
@@ -3565,7 +2958,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: false
+        enabled: true
     edges:
       webhook->A2-Process-Forms-AUTO:
         source_trigger: webhook
@@ -3589,4 +2982,414 @@ workflows:
         source_job: A2-Process-Forms-AUTO
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
+        enabled: false
+  Monitor-Forms-Shared:
+    name: Monitor Forms Shared
+    jobs:
+      FS1---Get-Forms:
+        name: FS1 - Get Forms
+        adaptor: '@openfn/language-kobotoolbox@2.1.0'
+        credential: ddetoeuf@wcs.org-WCS-Kobo-account
+        body: |
+          //Check Kobo account for forms with these matching keywords
+          getForms({}, state => {
+            //ALL KEYWORDS:
+            //const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
+
+            //BNS KEYWORDS ONLY
+            const keywords = ['price', 'prix', 'bns', 'nrgt'];
+
+            const checkForKeyWords = name => {
+              return keywords.some(keyword => name.toLowerCase().includes(keyword));
+            };
+
+            state.activeForms = state.data.results
+              .filter(form => checkForKeyWords(form.name))
+              .filter(form => form.deployment__active);
+
+            state.archivedForms = state.data.results
+              .filter(form => checkForKeyWords(form.name))
+              .filter(form => !form.deployment__active);
+              
+            console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );
+            console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );
+
+            state.data = {};
+            state.references = [];
+            return state;
+          });
+
+      FS2---Get-List-from-Sheets:
+        name: FS2 - Get List from Sheets
+        adaptor: '@openfn/language-googlesheets@2.4.0'
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
+        body: |
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
+            'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
+          );
+          fn(state => {
+            const { activeForms, archivedForms, data } = state;
+            const [headers, ...sheetsData] = data.values;
+            const sheetsUids = sheetsData.map(row => row[0]);
+            console.log('Ignoring headers', headers);
+
+            state.formsToCreate = activeForms.filter(
+              form => !sheetsUids.includes(form.uid)
+            );
+
+            state.formsToUpdate = archivedForms
+              .filter(form => sheetsUids.includes(form.uid))
+              .map(form => {
+                const rowIndex = sheetsData.findIndex(row => {
+                  return row[0] === form.uid;
+                });
+                if (rowIndex !== -1) {
+                  return { ...form, rowIndex };
+                }
+                console.log(form.uid, 'Could not be found in google sheet');
+              });
+
+            return state;
+          });
+
+          fn(state => {
+            const { data, references, response, ...remainingState } = state;
+
+            return remainingState;
+          });
+
+      FS3---Update-Spreadsheet-with-New-Forms-Shared:
+        name: FS3 - Update Spreadsheet with New Forms Shared
+        adaptor: '@openfn/language-googlesheets@2.4.0'
+        credential: ddetoeuf@wcs.org-Diane-GoogleSheet
+        body: |
+          //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
+          fn(state => {
+            const { formsToCreate, formsToUpdate } = state;
+            const keywords = ['price', 'prix', 'bns', 'nrgt', 'grm', 'feedback'];
+
+            const tagMapping = {
+              price: 'bns_price',
+              prix: 'bns_price',
+              bns: 'bns_survey',
+              nrgt: 'nrgt_current',
+              grm: 'grm',
+              feedback: 'grm',
+            };
+
+            const createTagName = name => {
+              let tag = '';
+              const keyword = keywords.find(keyword =>
+                name.toLowerCase().includes(keyword)
+              );
+
+              if (keyword) {
+                tag = tagMapping[keyword] || keyword;
+              }
+              return tag;
+            };
+
+            const containsGRMFeedback = name =>
+              !name.toLowerCase().includes('grm', 'feedback');
+
+            const instance = name =>
+              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
+
+            const projectId = name =>
+              containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
+
+            const grmID = name => (containsGRMFeedback(name) ? 'GRM ID. XX' : '');
+
+            const workspaceName = name =>
+              containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
+              
+            state.formLastModified = form => form.date_modified; 
+
+            const sheetRowMap = form => [
+              form.uid,
+              form.name,
+              createTagName(form.name),
+              form.owner__username,
+              instance(form.name),
+              //projectId(form.name), //for GRM only
+              //grmID(form.name), //for GRM only
+              form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
+              'ConSoSci', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
+              `https://kf.kobotoolbox.org/#/forms/${form.url}/summary`, //form.url,
+              form.date_modified, //kobo_form_date_modified
+              form.date_created, //kobo_form_date_created
+              new Date().toISOString(), //row_date_modified
+              false, //auto_sync checkbox
+              false, //historical_sync checkbox
+              //job code template
+              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
+                form.name
+              }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
+            ];
+
+            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
+            state.rowValuesToUpdate = formsToUpdate.map(form => ({
+              range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+              values: [sheetRowMap(form)],
+            }));
+            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
+
+            console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
+            console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
+            return state;
+          });
+
+          //if new Kobo form shared, adding to the "Deployed"" Sheet...
+          appendValues({
+            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+            range: 'wcs-bns-DEPLOYED!A:O', //range of columns in sheet
+            values: state => state.rowValuesToCreate,
+          });
+
+          //updating rows in Sheet where forms are archived
+          each(
+            '$.rowValuesToUpdate[*]',
+            batchUpdateValues({
+              spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+              range: state => state.data.range, //range of columns in sheet
+              values: state => state.data.values,
+            })
+          );
+
+          //also adding archived rows to "Archived" Sheet...
+          appendValues({
+            spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
+            range: 'wcs-bns-ARCHIVED!A:O', //range of columns in sheet
+            values: state => state.rowValuesToArchive,
+          });
+
+      FS4---Notify-in-Asana:
+        name: FS4 - Notify in Asana
+        adaptor: '@openfn/language-asana@4.0.9'
+        credential: aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances
+        body: |
+          //This job will add a task to Asana if a new Kobo form was shared
+          fn(state => {
+            console.log('Preparing Form Sharing task updates for Asana... ');
+
+            state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {
+              const dateModified = new Date(form.date_deployed);
+              const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0];
+              return {
+                name: `New form added to OpenFn: ${form.name}`,
+                approval_status: 'pending',
+                projects: ['1198901998266253'],
+                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+                assignee: '1208302456826465',
+                due_on: deployedDatePlus5,
+                notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+              };
+            }) : [];
+
+            const yesterday = new Date();
+              yesterday.setDate(yesterday.getDate() - 1);
+              yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday
+
+            state.archivedFormsTasks = state.archivedForms
+            .filter(form => new Date(form.date_modified) > yesterday)
+            .map(form => {
+              const dateModified = new Date(form.date_modified);
+              const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0];
+              return {
+                name: `Form archived: ${form.name}`,
+                projects: ['1198901998266253'],
+                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
+                assignee: '1208302456826465',
+                due_on: modifiedDatePlus5,
+                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+              };
+            });
+
+            console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);
+            //console.log('New form alert tasks to upsert:: ', state.asanaTasks);
+            console.log(
+              '# of Archived Form Asana Tasks to add:: ',
+              state.archivedFormsTasks.length
+            );
+            console.log(
+              'Archived form alert tasks to upsert:: ',
+              state.archivedFormsTasks
+            );
+            return state;
+          });
+
+          //upsert Asana task if new form shared notification needed
+          each(
+            '$.asanaTasks[*]',
+            upsertTask('1198901998266253', {
+              //project_id
+              externalId: 'name',
+              data: state => state.data,
+            })
+          );
+
+          each(
+            '$.archivedFormsTasks[*]',
+            upsertTask('1198901998266253', {
+              //project_id
+              externalId: 'name',
+              data: state => state.data,
+            })
+          );
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 0 * * *'
+        enabled: true
+    edges:
+      cron->FS1---Get-Forms:
+        source_trigger: cron
+        target_job: FS1---Get-Forms
+        condition_type: always
+        enabled: true
+      FS1---Get-Forms->FS2---Get-List-from-Sheets:
+        source_job: FS1---Get-Forms
+        target_job: FS2---Get-List-from-Sheets
+        condition_type: on_job_success
+        enabled: true
+      FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared:
+        source_job: FS2---Get-List-from-Sheets
+        target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        condition_type: on_job_success
+        enabled: true
+      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
+        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        target_job: FS4---Notify-in-Asana
+        condition_type: on_job_success
+        enabled: true
+  auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
+    name: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
+    jobs:
+      auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
+        name: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
+        adaptor: '@openfn/language-mssql@latest'
+        credential: ddetoeuf@wcs.org-wcsprograms-db
+        body: |
+          fn(state => {
+            const multiSelectIds = [""];
+
+            function generateUuid(body, uuid) {
+              for (const property in body) {
+                if (Array.isArray(body[property]) && body !== null) {
+                  body['__generatedUuid'] = uuid;
+                  body[property].forEach((thing, i, arr) => {
+                    if (thing !== null) {
+                      thing['__parentUuid'] = uuid;
+                      let newUuid = uuid + '-' + (i + 1);
+                      thing['__generatedUuid'] = newUuid;
+                      for (const property in thing) {
+                        if (Array.isArray(thing[property])) {
+                          generateUuid(thing, newUuid);
+                        }
+                      }
+                    }
+                  });
+                }
+              }
+            }
+
+            generateUuid(
+              state.data.body,
+              state.data.body._id+'-'+state.data.body._xform_id_string
+            );
+
+            const { body } = state.data;
+            const { _id, _xform_id_string } = body;
+            state.data = { ...state.data, ...body };
+
+            return { ...state, _id, _xform_id_string };
+          }); 
+          fn(async state => {
+           const mapping = {
+            FormName: dataValue('formName'),
+            DatasetId: dataValue('_xform_id_string'),
+            LastUpdated: new Date().toISOString()
+          } 
+           return upsert('WCSPROGRAMS_KoboDataset', "DatasetId", mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+          fn(async state => {
+           const mapping = {
+            Thanks: dataValue('Annexes_group/thanks'),
+            Recommendations: dataValue('Annexes_group/recommendations'),
+            Power: dataValue('Power_group/power'),
+            WCSPROGRAMS_CameraKoboScoreID_Power4: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power4') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Power3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power3') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Power2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Power1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power1') }})(state),
+            Capacity: dataValue('Capacity_group/capacity'),
+            WCSPROGRAMS_CameraKoboScoreID_Motivation: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/motivation') }})(state),
+            Framework: dataValue('Capacity_group/framework'),
+            WCSPROGRAMS_CameraKoboScoreID_Framework2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/framework2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Framework1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/framework1') }})(state),
+            Resources: dataValue('Capacity_group/resources'),
+            WCSPROGRAMS_CameraKoboScoreID_Resources2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/resources2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Resources1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/resources1') }})(state),
+            KnowledgeSkills: dataValue('Capacity_group/knowledge_skills'),
+            WCSPROGRAMS_CameraKoboScoreID_KnowledgeSkills2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/knowledge_skills2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_KnowledgeSkills1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/knowledge_skills1') }})(state),
+            Authority: dataValue('Authority_group/authority'),
+            Diversity: dataValue('Authority_group/diversity'),
+            WCSPROGRAMS_CameraKoboScoreID_Diversity2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/diversity2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Diversity1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/diversity1') }})(state),
+            Fairness: dataValue('Authority_group/fairness'),
+            WCSPROGRAMS_CameraKoboScoreID_Fairness3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness3') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Fairness2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Fairness1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness1') }})(state),
+            Participation: dataValue('Authority_group/participation'),
+            WCSPROGRAMS_CameraKoboScoreID_Participation3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/participation3') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Participation1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/participation1') }})(state),
+            Transparency: dataValue('Authority_group/transparency'),
+            WCSPROGRAMS_CameraKoboScoreID_Transparency2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/transparency2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Transparency1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/transparency1') }})(state),
+            Accountability: dataValue('Authority_group/accountability'),
+            WCSPROGRAMS_CameraKoboScoreID_Accountability2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/accountability2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Accountability1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/accountability1') }})(state),
+            Legitimacy: dataValue('Authority_group/legitimacy'),
+            WCSPROGRAMS_CameraKoboScoreID_Legitimacy2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/legitimacy2') }})(state),
+            WCSPROGRAMS_CameraKoboScoreID_Legitimacy1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/legitimacy1') }})(state),
+            Objective: dataValue('objective'),
+            WCSPROGRAMS_CameraKoboYesnoID_Supervise: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesno', where: { WCSPROGRAMS_CameraKoboYesnoExtCode: dataValue('RespondenInfo/supervise') }})(state),
+            WCSPROGRAMS_CameraKoboPositionID_Position: await findValue({uuid: 'wcsprograms_camerakobopositionid', relation: 'WCSPROGRAMS_CameraKoboPosition', where: { WCSPROGRAMS_CameraKoboPositionExtCode: dataValue('RespondenInfo/position') }})(state),
+            WCSPROGRAMS_CameraKoboYesnoID_Member: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesno', where: { WCSPROGRAMS_CameraKoboYesnoExtCode: dataValue('RespondenInfo/member') }})(state),
+            Sebutkan: dataValue('RespondenInfo/Sebutkan'),
+            WCSPROGRAMS_CameraKoboGroupID_GovGroup: await findValue({uuid: 'wcsprograms_camerakobogroupid', relation: 'WCSPROGRAMS_CameraKoboGroup', where: { WCSPROGRAMS_CameraKoboGroupExtCode: dataValue('RespondenInfo/gov_group') }})(state),
+            WCSPROGRAMS_CameraKoboVillageID_Village: await findValue({uuid: 'wcsprograms_camerakobovillageid', relation: 'WCSPROGRAMS_CameraKoboVillage', where: { WCSPROGRAMS_CameraKoboVillageExtCode: dataValue('RespondenInfo/village') }})(state),
+            WCSPROGRAMS_CameraKoboDistrictID_District: await findValue({uuid: 'wcsprograms_camerakobodistrictid', relation: 'WCSPROGRAMS_CameraKoboDistrict', where: { WCSPROGRAMS_CameraKoboDistrictExtCode: dataValue('RespondenInfo/district') }})(state),
+            WCSPROGRAMS_CameraKoboProvinceID_Province: await findValue({uuid: 'wcsprograms_camerakoboprovinceid', relation: 'WCSPROGRAMS_CameraKoboProvince', where: { WCSPROGRAMS_CameraKoboProvinceExtCode: dataValue('RespondenInfo/province') }})(state),
+            WCSPROGRAMS_CameraKoboGenderID_Gender: await findValue({uuid: 'wcsprograms_camerakobogenderid', relation: 'WCSPROGRAMS_CameraKoboGender', where: { WCSPROGRAMS_CameraKoboGenderExtCode: dataValue('RespondenInfo/gender') }})(state),
+            Consent: dataValue('ConsentInform/consent'),
+            WCSPROGRAMS_CameraKoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_camerakobosurveyorid', relation: 'WCSPROGRAMS_CameraKoboSurveyor', where: { WCSPROGRAMS_CameraKoboSurveyorExtCode: dataValue('ConsentInform/surveyor') }})(state),
+            WCSPROGRAMS_CameraKoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_camerakobolandscapeid', relation: 'WCSPROGRAMS_CameraKoboLandscape', where: { WCSPROGRAMS_CameraKoboLandscapeExtCode: dataValue('ConsentInform/landscape') }})(state),
+            Deviceid: dataValue('deviceid'),
+            Today: dataValue('today'),
+            FormDateEnd: dataValue('end'),
+            Start: dataValue('start'),
+            AnswerId: state._id,
+            GeneratedUuid: dataValue('__generatedUuid'),
+            Payload: state.data.body
+          } 
+           return upsert('WCSPROGRAMS_CameraKoboNrgtNrgtAnswer', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+
+    triggers:
+      cron:
+        type: cron
+        cron_expression: '0 */3 * * *'
+        enabled: false
+    edges:
+      cron->auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
+        source_trigger: cron
+        target_job: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
+        condition_type: always
         enabled: true
