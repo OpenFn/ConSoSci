@@ -1245,6 +1245,115 @@ workflows:
             Tags: dataValue('_tags'),
           });
 
+      Indonesia-NRGT:
+        name: Indonesia NRGT
+        adaptor: '@openfn/language-mssql@6.0.3'
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
+        body: |
+          // NOTE: This data cleaning operation returns state, modified as needed.
+          alterState(state => {
+            try {
+              const { body, formName, instance } = state.data;
+              const { _submission_time, _id, _xform_id_string } = body;
+              let cleanedSubmission = {};
+
+              for (const key in body) {
+                switch (body[key]) {
+                  case 'yes':
+                    cleanedSubmission[key] = 1;
+                    break;
+
+                  case 'no':
+                    cleanedSubmission[key] = 0;
+                    break;
+
+                  default:
+                    cleanedSubmission[key] = body[key];
+                    break;
+                }
+              }
+
+            
+              cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;
+              cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;
+              cleanedSubmission.instance = instance;
+              state.data = cleanedSubmission;
+              return state;
+            } catch (error) {
+              state.connection.close();
+              throw error;
+            }
+          });
+
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {
+            DatasetUuidId: dataValue('datasetId'),
+            AnswerId: dataValue('_id'),
+            Landscape: state => {
+              var landscape = dataValue('ConsentInform/landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            Surveyor: dataValue('ConsentInform/surveyor'),
+            GovGroup: dataValue('RespondenInfo/gov_group'),
+            SurveyDate: state => {
+              const date = state.data.today || state.data._submission_time
+              if (Number(date.split('-')[0]) >= 2014 ) {
+                return date
+              } 
+              return 2019 
+              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+              // With the code above we are replacing any 2000 by 2019:
+            },
+            LastUpdate: new Date().toISOString(),
+          });
+          upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {
+            // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {
+            DatasetUuidId: dataValue('datasetId'),
+            Id: dataValue('_id'),
+            AnswerId: dataValue('_id'),
+            SurveyDate: state => {
+              const date = state.data.today || state.data._submission_time
+              if (Number(date.split('-')[0]) >= 2014 ) {
+                return date
+              } 
+              return 2019
+              // If the time/date is not properly set on the device used to collect the data, the year of "today" will be 2000. 
+              // With the code above we are replacing any 2000 by 2019:
+            },
+            Gender: dataValue('RespondenInfo/gender'),
+            Member: dataValue('RespondenInfo/member'),
+            Objective: dataValue('objective'),
+            Legitimacy: dataValue('Authority_group/legitimacy'),
+            Accountability: dataValue('Authority_group/accountability'),
+            Transparency: dataValue('Authority_group/transparency'),
+            Participation: dataValue('Authority_group/participation'),
+            Fairness: dataValue('Authority_group/fairness'),
+            Diversity: dataValue('Authority_group/diversity'),
+            KnowledgeSkills: dataValue('Capacity_group/knowledge_skills'),
+            Resources: dataValue('Capacity_group/resources'),
+            InstutionalFramework: dataValue('Capacity_group/framework'),
+            Motivation: dataValue('Capacity_group/motivation'),
+            Power: dataValue('power'),
+            LastUpdate: new Date().toISOString(),
+          });
+
+          upsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {
+            //AnswerId: dataValue('_id'),
+            DatasetName: state.data.formName,
+            DatasetOwner: state.data.formOwner,
+            Landscape:  state => {
+              var landscape = dataValue('ConsentInform/landscape')(state);
+              return state.landscapeMap[landscape] || landscape;
+            },
+            DatasetUuidId: dataValue('datasetId'),
+            Citation: dataValue('instance'),
+            DatasetYear: new Date().getFullYear(),
+            LastSubmissionTime: dataValue('_submission_time'),
+            LastCheckedTime: dataValue('_submission_time'),
+            LastUpdateTime: new Date().toISOString(),
+            KoboManaged: true,
+            Tags: dataValue('_tags'),
+          });
+
     triggers:
       webhook:
         type: webhook
@@ -1301,6 +1410,16 @@ workflows:
         condition_expression: |
           state.data.form == "nrgt_historical" && state.data.formName == "NRGT Kahuzi Biega 2019"
         enabled: true
+      Triage-jobs->Indonesia-NRGT:
+        source_job: Triage-jobs
+        target_job: Indonesia-NRGT
+        condition_type: js_expression
+        condition_label: BNS-2E NRGT Indonesia
+        condition_expression: |
+          state.data.form == "nrgt_current" && 
+          state.data.body?.survey_type && 
+          state.data.body.survey_type !== "practice"
+        enabled: true
   AUTO1-Get-Kobo-Form:
     name: AUTO1 Get Kobo Form
     jobs:
@@ -1319,82 +1438,14 @@ workflows:
 
             const manualFormList = [
               //==================== Forms must be shared with the account openfn_kobo====================//
-              //=== WCS Camera trap metadata =====
-              // {
-              //     uid: 'axDXRTMWEkhrQDYQ9K3YdT', // Form name: 1. Project and cameras
-              //     p1: 'WCSPROGRAMS',
-              //     p2: 'CameraKobo',
-              //     tableId: 'Project' // Result is Run 062f3e43-46fe-7332-99e3-07cce87ddbdf
-              // },
+            
               {
-                  uid: 'aCCzQpdHoAwgWBXR7Yv2r9', // Form name: 2. Deployments
-                  p1: 'WCSPROGRAMS',
-                  p2: 'CameraKobo',
-                  tableId: 'NrgtNrgtAnswer' // Result is Run 062f3e47-ed7f-7fc5-b367-4c0f9b530053
+                  uid: 'aCCzQpdHoAwgWBXR7Yv2r9', // This is the uid of the form to sync.
+                  p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)
+                  p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)
+                  tableId: 'NrgtNrgtAnswer' // This is the table name in the database 
               },
-              // {
-              //     uid: 'a4yYjawjdbpHcckBx8m8AP', // Form name: 3. Retrieval
-              //     p1: 'WCSPROGRAMS',
-              //     p2: 'CameraKobo',
-              //     tableId: 'Retrieval' // Result is Run 062f3e43-10bc-7697-9417-11c931b14c8f
-              // },
-              // {
-              //     uid: 'a9F5e7wMMopSm85Abw3LTN', // Form name: 4. Images
-              //     p1: 'WCSPROGRAMS',
-              //     p2: 'CameraKobo',
-              //     tableId: 'Image'
-              // },
-              //=== WCS Socio Economic Database =====
-              // {
-              //     uid: 'aukhdejQU76K33caCkF4rP',
-              //     p1: 'WCSPROGRAMS',
-              //     p2: 'SocioEco',
-              //     tableId: 'SocioEcoSurvey'
-              // },
-              //==== SharksRays ===============//
-              // {
-              //   uid: 'aaknL3DQQgkgZ8iay89X5P',
-              //   p1: 'WCSPROGRAMS',
-              //   p2: '',
-              //   tableId: 'SharksRays',
-              // },
-              // {
-              //   uid: 'aStMvYShWXZsKYa7AyN6sr',
-              //   p1: 'WCSPROGRAMS',
-              //   p2: '',
-              //   tableId: 'SharksRays',
-              // },
-              // {
-              //   uid: 'aQeXAtEkgg8PGwxDiCUnPW',
-              //   p1: 'WCSPROGRAMS',
-              //   p2: '',
-              //   tableId: 'SharksRays',
-              // },
-              //=== Trillion Trees forms =====
-              // {
-              //   uid: 'aHPGTtrrLB4k3xDA9UZipu',
-              //   p1: 'WCSPROGRAMS',
-              //   p2: '',
-              //   tableId: 'Site',
-              // },
-              // {
-              //   uid: 'a8ffyF7HgbFUEnYBppEL79',
-              //   p1: 'WCSPROGRAMS',
-              //   p2: '',
-              //   tableId: 'Land',
-              // },
-              //=================================
-              // {
-              //   uid: 'avLpvrukkvuFzCHacjHdRs',
-              //   p1: 'WCS',
-              //   p2: 'Vegetation',
-              //   tableId: 'VegetationClassficationAndTreeMeasurementForm'},
-
-              //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'OpenFn', p2: 'Sharks', tableId: 'SharkRaysMay4Test'},
-              //{ uid: 'azg4rJb2Kk8DT2upSPyYjB', p1: 'WCS', p2: 'Livestock', tableId: 'LivestockProduction'},
-              //{ uid: 'aDgPJqN4SAYohZ4ZueEeYU', p1: 'WCS', p2: 'Arcadia', tableId: 'ArcadiaDataCollection'},
-              //{ uid: 'a7Dx4vpFcj7ziwaKE4682U', p1: 'WCS', p2: 'Vegetation', tableId: 'VegetationClassficationAndTreeMeasurementForm'},
-              //{ uid: 'apZrpKcK78xzrPcAfRrfac', p1: 'WCS', p2: 'SR', tableId: 'SharkAndRaysTraining'}
+              
             ];
 
             state.data.forms = state.data.results
@@ -2983,6 +3034,27 @@ workflows:
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
         enabled: false
+  Event-based-Workflow:
+    name: Event-based Workflow
+    jobs:
+      Transform-data:
+        name: Transform data
+        adaptor: '@openfn/language-common@latest'
+        credential: null
+        body: |
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      webhook->Transform-data:
+        source_trigger: webhook
+        target_job: Transform-data
+        condition_type: always
+        enabled: true
   Monitor-Forms-Shared:
     name: Monitor Forms Shared
     jobs:
@@ -3268,13 +3340,34 @@ workflows:
         target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
         enabled: true
-  auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
-    name: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
+  Sync-Submission-Metadata-2:
+    name: Sync Submission Metadata 2
     jobs:
-      auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
-        name: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
-        adaptor: '@openfn/language-mssql@latest'
-        credential: ddetoeuf@wcs.org-wcsprograms-db
+      Transform-data:
+        name: Transform data
+        adaptor: '@openfn/language-common@latest'
+        credential: null
+        body: |
+          // Check out the Job Writing Guide for help getting started:
+          // https://docs.openfn.org/documentation/jobs/job-writing-guide
+
+    triggers:
+      webhook:
+        type: webhook
+        enabled: true
+    edges:
+      webhook->Transform-data:
+        source_trigger: webhook
+        target_job: Transform-data
+        condition_type: always
+        enabled: true
+  auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
+    name: auto-WCSPROGRAMS_KoboNrgtNrgtAnswer
+    jobs:
+      auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
+        name: auto-WCSPROGRAMS_KoboNrgtNrgtAnswer
+        adaptor: '@openfn/language-mssql@v6.0.0'
+        credential: null
         body: |
           fn(state => {
             const multiSelectIds = [""];
@@ -3323,54 +3416,54 @@ workflows:
             Thanks: dataValue('Annexes_group/thanks'),
             Recommendations: dataValue('Annexes_group/recommendations'),
             Power: dataValue('Power_group/power'),
-            WCSPROGRAMS_CameraKoboScoreID_Power4: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power4') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Power3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power3') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Power2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Power1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Power_group/power1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Power4: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Power_group/power4') }})(state),
+            WCSPROGRAMS_KoboScoreID_Power3: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Power_group/power3') }})(state),
+            WCSPROGRAMS_KoboScoreID_Power2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Power_group/power2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Power1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Power_group/power1') }})(state),
             Capacity: dataValue('Capacity_group/capacity'),
-            WCSPROGRAMS_CameraKoboScoreID_Motivation: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/motivation') }})(state),
+            WCSPROGRAMS_KoboScoreID_Motivation: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/motivation') }})(state),
             Framework: dataValue('Capacity_group/framework'),
-            WCSPROGRAMS_CameraKoboScoreID_Framework2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/framework2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Framework1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/framework1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Framework2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/framework2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Framework1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/framework1') }})(state),
             Resources: dataValue('Capacity_group/resources'),
-            WCSPROGRAMS_CameraKoboScoreID_Resources2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/resources2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Resources1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/resources1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Resources2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/resources2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Resources1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/resources1') }})(state),
             KnowledgeSkills: dataValue('Capacity_group/knowledge_skills'),
-            WCSPROGRAMS_CameraKoboScoreID_KnowledgeSkills2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/knowledge_skills2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_KnowledgeSkills1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Capacity_group/knowledge_skills1') }})(state),
+            WCSPROGRAMS_KoboScoreID_KnowledgeSkills2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/knowledge_skills2') }})(state),
+            WCSPROGRAMS_KoboScoreID_KnowledgeSkills1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Capacity_group/knowledge_skills1') }})(state),
             Authority: dataValue('Authority_group/authority'),
             Diversity: dataValue('Authority_group/diversity'),
-            WCSPROGRAMS_CameraKoboScoreID_Diversity2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/diversity2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Diversity1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/diversity1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Diversity2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/diversity2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Diversity1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/diversity1') }})(state),
             Fairness: dataValue('Authority_group/fairness'),
-            WCSPROGRAMS_CameraKoboScoreID_Fairness3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness3') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Fairness2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Fairness1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/fairness1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Fairness3: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/fairness3') }})(state),
+            WCSPROGRAMS_KoboScoreID_Fairness2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/fairness2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Fairness1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/fairness1') }})(state),
             Participation: dataValue('Authority_group/participation'),
-            WCSPROGRAMS_CameraKoboScoreID_Participation3: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/participation3') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Participation1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/participation1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Participation3: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/participation3') }})(state),
+            WCSPROGRAMS_KoboScoreID_Participation1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/participation1') }})(state),
             Transparency: dataValue('Authority_group/transparency'),
-            WCSPROGRAMS_CameraKoboScoreID_Transparency2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/transparency2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Transparency1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/transparency1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Transparency2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/transparency2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Transparency1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/transparency1') }})(state),
             Accountability: dataValue('Authority_group/accountability'),
-            WCSPROGRAMS_CameraKoboScoreID_Accountability2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/accountability2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Accountability1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/accountability1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Accountability2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/accountability2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Accountability1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/accountability1') }})(state),
             Legitimacy: dataValue('Authority_group/legitimacy'),
-            WCSPROGRAMS_CameraKoboScoreID_Legitimacy2: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/legitimacy2') }})(state),
-            WCSPROGRAMS_CameraKoboScoreID_Legitimacy1: await findValue({uuid: 'wcsprograms_camerakoboscoreid', relation: 'WCSPROGRAMS_CameraKoboScore', where: { WCSPROGRAMS_CameraKoboScoreExtCode: dataValue('Authority_group/legitimacy1') }})(state),
+            WCSPROGRAMS_KoboScoreID_Legitimacy2: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/legitimacy2') }})(state),
+            WCSPROGRAMS_KoboScoreID_Legitimacy1: await findValue({uuid: 'wcsprograms_koboscoreid', relation: 'WCSPROGRAMS_KoboScore', where: { WCSPROGRAMS_KoboScoreExtCode: dataValue('Authority_group/legitimacy1') }})(state),
             Objective: dataValue('objective'),
-            WCSPROGRAMS_CameraKoboYesnoID_Supervise: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesno', where: { WCSPROGRAMS_CameraKoboYesnoExtCode: dataValue('RespondenInfo/supervise') }})(state),
-            WCSPROGRAMS_CameraKoboPositionID_Position: await findValue({uuid: 'wcsprograms_camerakobopositionid', relation: 'WCSPROGRAMS_CameraKoboPosition', where: { WCSPROGRAMS_CameraKoboPositionExtCode: dataValue('RespondenInfo/position') }})(state),
-            WCSPROGRAMS_CameraKoboYesnoID_Member: await findValue({uuid: 'wcsprograms_camerakoboyesnoid', relation: 'WCSPROGRAMS_CameraKoboYesno', where: { WCSPROGRAMS_CameraKoboYesnoExtCode: dataValue('RespondenInfo/member') }})(state),
+            WCSPROGRAMS_KoboYesnoID_Supervise: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('RespondenInfo/supervise') }})(state),
+            WCSPROGRAMS_KoboPositionID_Position: await findValue({uuid: 'wcsprograms_kobopositionid', relation: 'WCSPROGRAMS_KoboPosition', where: { WCSPROGRAMS_KoboPositionExtCode: dataValue('RespondenInfo/position') }})(state),
+            WCSPROGRAMS_KoboYesnoID_Member: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('RespondenInfo/member') }})(state),
             Sebutkan: dataValue('RespondenInfo/Sebutkan'),
-            WCSPROGRAMS_CameraKoboGroupID_GovGroup: await findValue({uuid: 'wcsprograms_camerakobogroupid', relation: 'WCSPROGRAMS_CameraKoboGroup', where: { WCSPROGRAMS_CameraKoboGroupExtCode: dataValue('RespondenInfo/gov_group') }})(state),
-            WCSPROGRAMS_CameraKoboVillageID_Village: await findValue({uuid: 'wcsprograms_camerakobovillageid', relation: 'WCSPROGRAMS_CameraKoboVillage', where: { WCSPROGRAMS_CameraKoboVillageExtCode: dataValue('RespondenInfo/village') }})(state),
-            WCSPROGRAMS_CameraKoboDistrictID_District: await findValue({uuid: 'wcsprograms_camerakobodistrictid', relation: 'WCSPROGRAMS_CameraKoboDistrict', where: { WCSPROGRAMS_CameraKoboDistrictExtCode: dataValue('RespondenInfo/district') }})(state),
-            WCSPROGRAMS_CameraKoboProvinceID_Province: await findValue({uuid: 'wcsprograms_camerakoboprovinceid', relation: 'WCSPROGRAMS_CameraKoboProvince', where: { WCSPROGRAMS_CameraKoboProvinceExtCode: dataValue('RespondenInfo/province') }})(state),
-            WCSPROGRAMS_CameraKoboGenderID_Gender: await findValue({uuid: 'wcsprograms_camerakobogenderid', relation: 'WCSPROGRAMS_CameraKoboGender', where: { WCSPROGRAMS_CameraKoboGenderExtCode: dataValue('RespondenInfo/gender') }})(state),
+            WCSPROGRAMS_KoboGroupID_GovGroup: await findValue({uuid: 'wcsprograms_kobogroupid', relation: 'WCSPROGRAMS_KoboGroup', where: { WCSPROGRAMS_KoboGroupExtCode: dataValue('RespondenInfo/gov_group') }})(state),
+            WCSPROGRAMS_KoboVillageID_Village: await findValue({uuid: 'wcsprograms_kobovillageid', relation: 'WCSPROGRAMS_KoboVillage', where: { WCSPROGRAMS_KoboVillageExtCode: dataValue('RespondenInfo/village') }})(state),
+            WCSPROGRAMS_KoboDistrictID_District: await findValue({uuid: 'wcsprograms_kobodistrictid', relation: 'WCSPROGRAMS_KoboDistrict', where: { WCSPROGRAMS_KoboDistrictExtCode: dataValue('RespondenInfo/district') }})(state),
+            WCSPROGRAMS_KoboProvinceID_Province: await findValue({uuid: 'wcsprograms_koboprovinceid', relation: 'WCSPROGRAMS_KoboProvince', where: { WCSPROGRAMS_KoboProvinceExtCode: dataValue('RespondenInfo/province') }})(state),
+            WCSPROGRAMS_KoboGenderID_Gender: await findValue({uuid: 'wcsprograms_kobogenderid', relation: 'WCSPROGRAMS_KoboGender', where: { WCSPROGRAMS_KoboGenderExtCode: dataValue('RespondenInfo/gender') }})(state),
             Consent: dataValue('ConsentInform/consent'),
-            WCSPROGRAMS_CameraKoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_camerakobosurveyorid', relation: 'WCSPROGRAMS_CameraKoboSurveyor', where: { WCSPROGRAMS_CameraKoboSurveyorExtCode: dataValue('ConsentInform/surveyor') }})(state),
-            WCSPROGRAMS_CameraKoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_camerakobolandscapeid', relation: 'WCSPROGRAMS_CameraKoboLandscape', where: { WCSPROGRAMS_CameraKoboLandscapeExtCode: dataValue('ConsentInform/landscape') }})(state),
+            WCSPROGRAMS_KoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_kobosurveyorid', relation: 'WCSPROGRAMS_KoboSurveyor', where: { WCSPROGRAMS_KoboSurveyorExtCode: dataValue('ConsentInform/surveyor') }})(state),
+            WCSPROGRAMS_KoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_kobolandscapeid', relation: 'WCSPROGRAMS_KoboLandscape', where: { WCSPROGRAMS_KoboLandscapeExtCode: dataValue('ConsentInform/landscape') }})(state),
             Deviceid: dataValue('deviceid'),
             Today: dataValue('today'),
             FormDateEnd: dataValue('end'),
@@ -3379,17 +3472,17 @@ workflows:
             GeneratedUuid: dataValue('__generatedUuid'),
             Payload: state.data.body
           } 
-           return upsert('WCSPROGRAMS_CameraKoboNrgtNrgtAnswer', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
+           return upsert('WCSPROGRAMS_KoboNrgtNrgtAnswer', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
           }) 
 
     triggers:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
-        enabled: false
+        enabled: true
     edges:
-      cron->auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer:
+      cron->auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
         source_trigger: cron
-        target_job: auto-WCSPROGRAMS_CameraKoboNrgtNrgtAnswer
+        target_job: auto-WCSPROGRAMS_KoboNrgtNrgtAnswer
         condition_type: always
         enabled: true
