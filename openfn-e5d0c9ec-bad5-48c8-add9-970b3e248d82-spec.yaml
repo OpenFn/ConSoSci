@@ -1535,10 +1535,10 @@ workflows:
               //==================== Forms must be shared with the account openfn_kobo====================//
             
               {
-                  uid:'aHQYf6Y6F7nnbmyPmH8Z9r', // This is the uid of the form to sync.
+                  uid:'arwvoy3RZ3Qg6X88W6pU2c', // This is the uid of the form to sync.
                   p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)
                   p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)
-                  tableId: 'BnsPrice' // This is the table name in the database 
+                  tableId: 'BnsAnswer' // This is the table name in the database 
               },
               
             ];
@@ -3454,105 +3454,6 @@ workflows:
       webhook->Transform-data:
         source_trigger: webhook
         target_job: Transform-data
-        condition_type: always
-        enabled: true
-  auto-WCSPROGRAMS_KoboBnsPrice:
-    name: auto-WCSPROGRAMS_KoboBnsPrice
-    jobs:
-      auto-WCSPROGRAMS_KoboBnsPrice:
-        name: auto-WCSPROGRAMS_KoboBnsPrice
-        adaptor: '@openfn/language-mssql@v6.0.0'
-        credential: null
-        body: |
-          fn(state => {
-            const multiSelectIds = [""];
-
-            function generateUuid(body, uuid) {
-              for (const property in body) {
-                if (Array.isArray(body[property]) && body !== null) {
-                  body['__generatedUuid'] = uuid;
-                  body[property].forEach((thing, i, arr) => {
-                    if (thing !== null) {
-                      thing['__parentUuid'] = uuid;
-                      let newUuid = uuid + '-' + (i + 1);
-                      thing['__generatedUuid'] = newUuid;
-                      for (const property in thing) {
-                        if (Array.isArray(thing[property])) {
-                          generateUuid(thing, newUuid);
-                        }
-                      }
-                    }
-                  });
-                }
-              }
-            }
-
-            generateUuid(
-              state.data.body,
-              state.data.body._id+'-'+state.data.body._xform_id_string
-            );
-
-            const { body } = state.data;
-            const { _id, _xform_id_string } = body;
-            state.data = { ...state.data, ...body };
-
-            return { ...state, _id, _xform_id_string };
-          }); 
-          fn(async state => {
-           const mapping = {
-            FormName: dataValue('formName'),
-            DatasetId: dataValue('_xform_id_string'),
-            LastUpdated: new Date().toISOString()
-          } 
-           return upsert('WCSPROGRAMS_KoboDataset', "DatasetId", mapping, {setNull: ["''", "'undefined'"]})(state); 
-          }) 
-          fn(async state => {
-           const mapping = {
-            GoodsNumber: dataValue('information/goods_number'),
-            WCSPROGRAMS_KoboVillageID_Village: await findValue({uuid: 'wcsprograms_kobovillageid', relation: 'WCSPROGRAMS_KoboVillage', where: { WCSPROGRAMS_KoboVillageExtCode: dataValue('information/village') }})(state),
-            WCSPROGRAMS_KoboDistrictID_District: await findValue({uuid: 'wcsprograms_kobodistrictid', relation: 'WCSPROGRAMS_KoboDistrict', where: { WCSPROGRAMS_KoboDistrictExtCode: dataValue('information/district') }})(state),
-            WCSPROGRAMS_KoboProvinceID_Province: await findValue({uuid: 'wcsprograms_koboprovinceid', relation: 'WCSPROGRAMS_KoboProvince', where: { WCSPROGRAMS_KoboProvinceExtCode: dataValue('information/province') }})(state),
-            WCSPROGRAMS_KoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_kobosurveyorid', relation: 'WCSPROGRAMS_KoboSurveyor', where: { WCSPROGRAMS_KoboSurveyorExtCode: dataValue('information/surveyor') }})(state),
-            Welcome: dataValue('information/welcome'),
-            WCSPROGRAMS_KoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_kobolandscapeid', relation: 'WCSPROGRAMS_KoboLandscape', where: { WCSPROGRAMS_KoboLandscapeExtCode: dataValue('information/landscape') }})(state),
-            Deviceid: dataValue('deviceid'),
-            Today: dataValue('today'),
-            FormDateEnd: dataValue('end'),
-            Start: dataValue('start'),
-            AnswerId: state._id,
-            GeneratedUuid: dataValue('__generatedUuid'),
-            Payload: state.data.body
-          } 
-           return upsert('WCSPROGRAMS_KoboBnsPrice', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
-          }) 
-          fn(async state => {
-           const dataArray = state.data.body['good'] || [] 
-
-                  const mapping = []; 
-
-                  for (let x of dataArray) { 
-
-                    mapping.push({
-            WCSPROGRAMS_KoboGoodsID_Name: await findValue({uuid: 'wcsprograms_kobogoodsid', relation: 'WCSPROGRAMS_KoboGoods', where: { WCSPROGRAMS_KoboGoodsExtCode: x['good/name'] }})(state),
-            Price: x['good/price'],
-            BnspriceUuid: dataValue('undefined'),
-            AnswerId: state._id,
-            GeneratedUuid: x['__generatedUuid']
-          }) 
-
-                    } 
-           return upsertMany('WCSPROGRAMS_KoboBnsPriceGood', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
-          }) 
-
-    triggers:
-      cron:
-        type: cron
-        cron_expression: '0 */3 * * *'
-        enabled: true
-    edges:
-      cron->auto-WCSPROGRAMS_KoboBnsPrice:
-        source_trigger: cron
-        target_job: auto-WCSPROGRAMS_KoboBnsPrice
         condition_type: always
         enabled: true
   auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
