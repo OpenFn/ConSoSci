@@ -70,14 +70,12 @@
     }
   },
   "version_history": [],
-  "allow_support_access": true,
   "collections": {
     "mydata": {
       "id": "18cc32b8-cb96-40d9-83cb-1d940b63b725",
       "name": "mydata"
     }
   },
-  "requires_mfa": false,
   "workflows": {
     "Monitor-Forms-Shared": {
       "id": "cc58f66e-143e-43da-8f62-8225b9258bd5",
@@ -395,52 +393,6 @@
         }
       }
     },
-    "AUTO1-Get-Kobo-Form": {
-      "id": "130c93c1-371a-4883-bc7e-073da26dc263",
-      "name": "AUTO1 Get Kobo Form",
-      "inserted_at": "2025-10-22T07:21:42.960522Z",
-      "lock_version": 40,
-      "triggers": {
-        "cron": {
-          "enabled": false,
-          "id": "6b373324-0767-4bc2-a668-1d4e26bd6e9c",
-          "type": "cron",
-          "cron_expression": "0 */3 * * *"
-        }
-      },
-      "jobs": {
-        "A-1-1-Get-Kobo-Forms": {
-          "id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
-          "name": "A-1-1 Get Kobo Forms",
-          "body": "get('/assets/?format=json', {}, state => {\n  console.log(`Previous cursor: ${state.lastEnd}`);\n  // Set a manual cursor if you'd like to only fetch form after a certain date\n  const manualCursor = '2019-05-25T14:32:43.325+01:00';\n\n  // ===========================================================================\n  // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//\n\n  const manualFormList = [\n    //==================== Forms must be shared with the account openfn_kobo====================//\n  \n    {\n        uid: 'aCCzQpdHoAwgWBXR7Yv2r9', // This is the uid of the form to sync.\n        p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)\n        p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)\n        tableId: 'NrgtNrgtAnswer' // This is the table name in the database \n    },\n    \n  ];\n\n  state.data.forms = state.data.results\n    // Filter the response from Kobo to show only those forms we want to update.\n    .filter(form => manualFormList.map(x => x.uid).includes(form.uid))\n    .filter(form => {\n      // Note: If a form in manualFormList was not present in the list during\n      // the last run of the job (formsWatched), then we always trigger an\n      // update for that form.\n      if (!state.formsWatched) {\n        return true;\n      }\n      if (!state.formsWatched.find(f => f.uid === form.uid)) {\n        console.log(`New form ${form.uid} (${form.name}) added to watch list.`);\n        return true;\n      }\n      // Note: If a form is not NEW to the watch list, then we only trigger an\n      // update if it has been modified more recently than the greatest\n      // last-modified date across all forms from our last run.\n      return form.date_modified > (state.lastEnd || manualCursor);\n    })\n    // Map those forms so that we can post each to the inbox later.\n    .map(form => {\n      const url = form.url.split('?').join('?');\n      const manualSpec = manualFormList.find(f => f.uid === form.uid);\n      return {\n        formId: form.uid,\n        tag: manualSpec.surveyTable || form.name,\n        //tag: form.name,\n        url: `/api/v2/assets/${form.uid}/?format=json`,\n        prefix1: manualSpec.p1,\n        prefix2: manualSpec.p2 || '',\n        tableId: manualSpec.tableId,\n        lastModified: form.date_modified,\n      };\n    });\n\n  // Set lastEnd to the greatest date_modified value for all forms we care about.\n  const lastEnd = state.data.results\n    .filter(item => item.date_modified)\n    .map(s => s.date_modified)\n    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n\n  console.log(\n    'Detected changes for:',\n    JSON.stringify(\n      state.data.forms.map(f => f.url),\n      null,\n      2\n    )\n  );\n\n  return { ...state, lastEnd, formsWatched: manualFormList };\n});\n\n",
-          "adaptor": "@openfn/language-http@3.1.11",
-          "project_credential_id": "89b65a0e-e01d-4760-b021-1778799e9b2e"
-        },
-        "A-1-2-Post-Data-to-WF-Generator": {
-          "id": "00c962e5-e61e-4158-8da2-fe19f57351b8",
-          "name": "A-1-2 Post Data to WF Generator",
-          "body": "each('$.data.forms[*]', state => {\n  const form = state.data;\n  return post(\n    \"https://app.openfn.org/i/ec90e89e-9fd3-4d26-ab9f-df0dc01a0629\",\n    { body: { ...form, formUpdate: true } },\n    state => {\n      console.log('Sent ', form.tag, ' for handling:');\n      console.log(form);\n      return state;\n    }\n  )(state);\n});\n\n// Clear everything from state but the required cursors.\nalterState(state => ({\n  lastEnd: state.lastEnd,\n  formsWatched: state.formsWatched,\n}));\n",
-          "adaptor": "@openfn/language-http@3.1.11",
-          "project_credential_id": null
-        }
-      },
-      "edges": {
-        "cron->A-1-1-Get-Kobo-Forms": {
-          "enabled": true,
-          "id": "2e483885-f409-4328-8a61-e1d7fb41a0b0",
-          "target_job_id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
-          "source_trigger_id": "6b373324-0767-4bc2-a668-1d4e26bd6e9c",
-          "condition_type": "always"
-        },
-        "A-1-1-Get-Kobo-Forms->A-1-2-Post-Data-to-WF-Generator": {
-          "enabled": true,
-          "id": "ddc12e40-3116-4c14-8d2e-486c5b75e6ba",
-          "target_job_id": "00c962e5-e61e-4158-8da2-fe19f57351b8",
-          "source_job_id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "auto-WCSPROGRAMS_KoboNrgtNrgtAnswer": {
       "id": "ab75467f-d471-46fa-9945-9058ece1ef16",
       "name": "auto-WCSPROGRAMS_KoboNrgtNrgtAnswer",
@@ -473,11 +425,89 @@
         }
       }
     },
+    "AUTO1-Get-Kobo-Form": {
+      "id": "130c93c1-371a-4883-bc7e-073da26dc263",
+      "name": "AUTO1 Get Kobo Form",
+      "inserted_at": "2025-10-23T00:56:07.028299Z",
+      "lock_version": 43,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "6b373324-0767-4bc2-a668-1d4e26bd6e9c",
+          "type": "cron",
+          "cron_expression": "0 */3 * * *"
+        }
+      },
+      "jobs": {
+        "A-1-1-Get-Kobo-Forms": {
+          "id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
+          "name": "A-1-1 Get Kobo Forms",
+          "body": "get('/assets/?format=json', {}, state => {\n  console.log(`Previous cursor: ${state.lastEnd}`);\n  // Set a manual cursor if you'd like to only fetch form after a certain date\n  const manualCursor = '2019-05-25T14:32:43.325+01:00';\n\n  // ===========================================================================\n  // == FOR ADMINS: Update the below `manualFormList` to designate which Kobo forms to sync ==//\n\n  const manualFormList = [\n    //==================== Forms must be shared with the account openfn_kobo====================//\n  \n    {\n        uid:'aHQYf6Y6F7nnbmyPmH8Z9r', // This is the uid of the form to sync.\n        p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)\n        p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)\n        tableId: 'BnsPrice' // This is the table name in the database \n    },\n    \n  ];\n\n  state.data.forms = state.data.results\n    // Filter the response from Kobo to show only those forms we want to update.\n    .filter(form => manualFormList.map(x => x.uid).includes(form.uid))\n    .filter(form => {\n      // Note: If a form in manualFormList was not present in the list during\n      // the last run of the job (formsWatched), then we always trigger an\n      // update for that form.\n      if (!state.formsWatched) {\n        return true;\n      }\n      if (!state.formsWatched.find(f => f.uid === form.uid)) {\n        console.log(`New form ${form.uid} (${form.name}) added to watch list.`);\n        return true;\n      }\n      // Note: If a form is not NEW to the watch list, then we only trigger an\n      // update if it has been modified more recently than the greatest\n      // last-modified date across all forms from our last run.\n      return form.date_modified > (state.lastEnd || manualCursor);\n    })\n    // Map those forms so that we can post each to the inbox later.\n    .map(form => {\n      const url = form.url.split('?').join('?');\n      const manualSpec = manualFormList.find(f => f.uid === form.uid);\n      return {\n        formId: form.uid,\n        tag: manualSpec.surveyTable || form.name,\n        //tag: form.name,\n        url: `/api/v2/assets/${form.uid}/?format=json`,\n        prefix1: manualSpec.p1,\n        prefix2: manualSpec.p2 || '',\n        tableId: manualSpec.tableId,\n        lastModified: form.date_modified,\n      };\n    });\n\n  // Set lastEnd to the greatest date_modified value for all forms we care about.\n  const lastEnd = state.data.results\n    .filter(item => item.date_modified)\n    .map(s => s.date_modified)\n    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n\n  console.log(\n    'Detected changes for:',\n    JSON.stringify(\n      state.data.forms.map(f => f.url),\n      null,\n      2\n    )\n  );\n\n  return { ...state, lastEnd, formsWatched: manualFormList };\n});\n\n",
+          "adaptor": "@openfn/language-http@3.1.11",
+          "project_credential_id": "89b65a0e-e01d-4760-b021-1778799e9b2e"
+        },
+        "A-1-2-Post-Data-to-WF-Generator": {
+          "id": "00c962e5-e61e-4158-8da2-fe19f57351b8",
+          "name": "A-1-2 Post Data to WF Generator",
+          "body": "each('$.data.forms[*]', state => {\n  const form = state.data;\n  return post(\n    \"https://app.openfn.org/i/ec90e89e-9fd3-4d26-ab9f-df0dc01a0629\",\n    { body: { ...form, formUpdate: true } },\n    state => {\n      console.log('Sent ', form.tag, ' for handling:');\n      console.log(form);\n      return state;\n    }\n  )(state);\n});\n\n// Clear everything from state but the required cursors.\nalterState(state => ({\n  lastEnd: state.lastEnd,\n  formsWatched: state.formsWatched,\n}));\n",
+          "adaptor": "@openfn/language-http@3.1.11",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "cron->A-1-1-Get-Kobo-Forms": {
+          "enabled": true,
+          "id": "2e483885-f409-4328-8a61-e1d7fb41a0b0",
+          "target_job_id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
+          "source_trigger_id": "6b373324-0767-4bc2-a668-1d4e26bd6e9c",
+          "condition_type": "always"
+        },
+        "A-1-1-Get-Kobo-Forms->A-1-2-Post-Data-to-WF-Generator": {
+          "enabled": true,
+          "id": "ddc12e40-3116-4c14-8d2e-486c5b75e6ba",
+          "target_job_id": "00c962e5-e61e-4158-8da2-fe19f57351b8",
+          "source_job_id": "f5836ca3-5263-4137-93e6-1b0eb51cb5e8",
+          "condition_type": "on_job_success"
+        }
+      }
+    },
+    "auto-WCSPROGRAMS_KoboBnsPrice": {
+      "id": "40a78725-ecff-4267-ae7a-4f5143279035",
+      "name": "auto-WCSPROGRAMS_KoboBnsPrice",
+      "inserted_at": "2025-10-23T00:57:20.159393Z",
+      "lock_version": 1,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "3ea89675-2e2b-4389-96d9-82d3f7aae129",
+          "type": "cron",
+          "cron_expression": "0 */3 * * *"
+        }
+      },
+      "jobs": {
+        "auto-WCSPROGRAMS_KoboBnsPrice": {
+          "id": "f13aaaa9-9279-4cb5-b494-319d2ee8de3e",
+          "name": "auto-WCSPROGRAMS_KoboBnsPrice",
+          "body": "fn(state => {\n  const multiSelectIds = [\"\"];\n\n  function generateUuid(body, uuid) {\n    for (const property in body) {\n      if (Array.isArray(body[property]) && body !== null) {\n        body['__generatedUuid'] = uuid;\n        body[property].forEach((thing, i, arr) => {\n          if (thing !== null) {\n            thing['__parentUuid'] = uuid;\n            let newUuid = uuid + '-' + (i + 1);\n            thing['__generatedUuid'] = newUuid;\n            for (const property in thing) {\n              if (Array.isArray(thing[property])) {\n                generateUuid(thing, newUuid);\n              }\n            }\n          }\n        });\n      }\n    }\n  }\n\n  generateUuid(\n    state.data.body,\n    state.data.body._id+'-'+state.data.body._xform_id_string\n  );\n\n  const { body } = state.data;\n  const { _id, _xform_id_string } = body;\n  state.data = { ...state.data, ...body };\n\n  return { ...state, _id, _xform_id_string };\n}); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('WCSPROGRAMS_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  GoodsNumber: dataValue('information/goods_number'),\n  WCSPROGRAMS_KoboVillageID_Village: await findValue({uuid: 'wcsprograms_kobovillageid', relation: 'WCSPROGRAMS_KoboVillage', where: { WCSPROGRAMS_KoboVillageExtCode: dataValue('information/village') }})(state),\n  WCSPROGRAMS_KoboDistrictID_District: await findValue({uuid: 'wcsprograms_kobodistrictid', relation: 'WCSPROGRAMS_KoboDistrict', where: { WCSPROGRAMS_KoboDistrictExtCode: dataValue('information/district') }})(state),\n  WCSPROGRAMS_KoboProvinceID_Province: await findValue({uuid: 'wcsprograms_koboprovinceid', relation: 'WCSPROGRAMS_KoboProvince', where: { WCSPROGRAMS_KoboProvinceExtCode: dataValue('information/province') }})(state),\n  WCSPROGRAMS_KoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_kobosurveyorid', relation: 'WCSPROGRAMS_KoboSurveyor', where: { WCSPROGRAMS_KoboSurveyorExtCode: dataValue('information/surveyor') }})(state),\n  Welcome: dataValue('information/welcome'),\n  WCSPROGRAMS_KoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_kobolandscapeid', relation: 'WCSPROGRAMS_KoboLandscape', where: { WCSPROGRAMS_KoboLandscapeExtCode: dataValue('information/landscape') }})(state),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('WCSPROGRAMS_KoboBnsPrice', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const dataArray = state.data.body['good'] || [] \n\n        const mapping = []; \n\n        for (let x of dataArray) { \n\n          mapping.push({\n  WCSPROGRAMS_KoboGoodsID_Name: await findValue({uuid: 'wcsprograms_kobogoodsid', relation: 'WCSPROGRAMS_KoboGoods', where: { WCSPROGRAMS_KoboGoodsExtCode: x['good/name'] }})(state),\n  Price: x['good/price'],\n  BnspriceUuid: dataValue('undefined'),\n  AnswerId: state._id,\n  GeneratedUuid: x['__generatedUuid']\n}) \n\n          } \n return upsertMany('WCSPROGRAMS_KoboBnsPriceGood', 'GeneratedUuid', () => mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
+          "adaptor": "@openfn/language-mssql@v6.0.0",
+          "project_credential_id": null
+        }
+      },
+      "edges": {
+        "cron->auto-WCSPROGRAMS_KoboBnsPrice": {
+          "enabled": true,
+          "id": "aef86eab-abf5-4121-9e75-cf53d266418a",
+          "target_job_id": "f13aaaa9-9279-4cb5-b494-319d2ee8de3e",
+          "source_trigger_id": "3ea89675-2e2b-4389-96d9-82d3f7aae129",
+          "condition_type": "always"
+        }
+      }
+    },
     "2.-Sync-BNS-and-NRGT-Forms": {
       "id": "83fd9ae8-4dc6-4dd9-bc9b-f5940c5d8ef5",
       "name": "2. Sync BNS and NRGT Forms",
-      "inserted_at": "2025-10-22T07:41:13.388640Z",
-      "lock_version": 125,
+      "inserted_at": "2025-10-23T03:31:12.772134Z",
+      "lock_version": 132,
       "triggers": {
         "webhook": {
           "enabled": true,
@@ -528,11 +558,18 @@
           "adaptor": "@openfn/language-mssql@5.2.3",
           "project_credential_id": "6058484f-c8c5-498b-b420-67152bf41ccf"
         },
-        "Indonesia-NRGT": {
+        "Indonesia-Leuser-NRGT": {
           "id": "a92c6b11-a801-4573-8398-b0c388696561",
-          "name": "Indonesia NRGT",
+          "name": "Indonesia Leuser NRGT",
           "body": "// NOTE: This data cleaning operation returns state, modified as needed.\nalterState(state => {\n  try {\n    const { body, formName, instance } = state.data;\n    const { _submission_time, _id, _xform_id_string } = body;\n    let cleanedSubmission = {};\n\n    for (const key in body) {\n      switch (body[key]) {\n        case 'yes':\n          cleanedSubmission[key] = 1;\n          break;\n\n        case 'no':\n          cleanedSubmission[key] = 0;\n          break;\n\n        default:\n          cleanedSubmission[key] = body[key];\n          break;\n      }\n    }\n\n  \n    cleanedSubmission.durableUUID = `${_submission_time}-${_xform_id_string}-${_id}`;\n    cleanedSubmission.datasetId = `${formName}-${_xform_id_string}`;\n    cleanedSubmission.instance = instance;\n    state.data = cleanedSubmission;\n    return state;\n  } catch (error) {\n    state.connection.close();\n    throw error;\n  }\n});\n\nupsert('WCSPROGRAMS_KoboNrgtNrgtanswer', 'AnswerId', {\n  DatasetUuidId: dataValue('datasetId'),\n  AnswerId: dataValue('_id'),\n  Landscape: state => {\n    var landscape = dataValue('ConsentInform/landscape')(state);\n    return state.landscapeMap[landscape] || landscape;\n  },\n  Surveyor: dataValue('ConsentInform/surveyor'),\n  GovGroup: dataValue('RespondenInfo/gov_group'),\n  SurveyDate: state => {\n    const date = state.data.today || state.data._submission_time\n    if (Number(date.split('-')[0]) >= 2014 ) {\n      return date\n    } \n    return 2019 \n    // If the time/date is not properly set on the device used to collect the data, the year of \"today\" will be 2000. \n    // With the code above we are replacing any 2000 by 2019:\n  },\n  LastUpdate: new Date().toISOString(),\n});\nupsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'AnswerId', {\n  // upsert('WCSPROGRAMS_KoboNrgtNrgtanswergs', 'DatasetUuidId', {\n  DatasetUuidId: dataValue('datasetId'),\n  Id: dataValue('_id'),\n  AnswerId: dataValue('_id'),\n  SurveyDate: state => {\n    const date = state.data.today || state.data._submission_time\n    if (Number(date.split('-')[0]) >= 2014 ) {\n      return date\n    } \n    return 2019\n    // If the time/date is not properly set on the device used to collect the data, the year of \"today\" will be 2000. \n    // With the code above we are replacing any 2000 by 2019:\n  },\n  Gender: dataValue('RespondenInfo/gender'),\n  Member: dataValue('RespondenInfo/member'),\n  Objective: dataValue('objective'),\n  Legitimacy: dataValue('Authority_group/legitimacy'),\n  Accountability: dataValue('Authority_group/accountability'),\n  Transparency: dataValue('Authority_group/transparency'),\n  Participation: dataValue('Authority_group/participation'),\n  Fairness: dataValue('Authority_group/fairness'),\n  Diversity: dataValue('Authority_group/diversity'),\n  KnowledgeSkills: dataValue('Capacity_group/knowledge_skills'),\n  Resources: dataValue('Capacity_group/resources'),\n  InstutionalFramework: dataValue('Capacity_group/framework'),\n  Motivation: dataValue('Capacity_group/motivation'),\n  Power: dataValue('power'),\n  LastUpdate: new Date().toISOString(),\n});\n\nupsert('WCSPROGRAMS_KoboData', 'DatasetUuidId', {\n  //AnswerId: dataValue('_id'),\n  DatasetName: state.data.formName,\n  DatasetOwner: state.data.formOwner,\n  Landscape:  state => {\n    var landscape = dataValue('ConsentInform/landscape')(state);\n    return state.landscapeMap[landscape] || landscape;\n  },\n  DatasetUuidId: dataValue('datasetId'),\n  Citation: dataValue('instance'),\n  DatasetYear: new Date().getFullYear(),\n  LastSubmissionTime: dataValue('_submission_time'),\n  LastCheckedTime: dataValue('_submission_time'),\n  LastUpdateTime: new Date().toISOString(),\n  KoboManaged: true,\n  Tags: dataValue('_tags'),\n});\n",
           "adaptor": "@openfn/language-mssql@6.0.3",
+          "project_credential_id": "6058484f-c8c5-498b-b420-67152bf41ccf"
+        },
+        "Indonesia-BNS-Price": {
+          "id": "b2d6bb72-1371-4fdf-89a4-9e967d9e9c03",
+          "name": "Indonesia BNS Price",
+          "body": "fn(state => {\n  const multiSelectIds = [\"\"];\n\n  function generateUuid(body, uuid) {\n    for (const property in body) {\n      if (Array.isArray(body[property]) && body !== null) {\n        body['__generatedUuid'] = uuid;\n        body[property].forEach((thing, i, arr) => {\n          if (thing !== null) {\n            thing['__parentUuid'] = uuid;\n            let newUuid = uuid + '-' + (i + 1);\n            thing['__generatedUuid'] = newUuid;\n            for (const property in thing) {\n              if (Array.isArray(thing[property])) {\n                generateUuid(thing, newUuid);\n              }\n            }\n          }\n        });\n      }\n    }\n  }\n\n  generateUuid(\n    state.data.body,\n    state.data.body._id+'-'+state.data.body._xform_id_string\n  );\n\n  const { body } = state.data;\n  const { _id, _xform_id_string } = body;\n  state.data = { ...state.data, ...body };\n\n  return { ...state, _id, _xform_id_string };\n}); \nfn(async state => {\n const mapping = {\n  FormName: dataValue('formName'),\n  DatasetId: dataValue('_xform_id_string'),\n  LastUpdated: new Date().toISOString()\n} \n return upsert('WCSPROGRAMS_KoboDataset', \"DatasetId\", mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const mapping = {\n  GoodsNumber: dataValue('information/goods_number'),\n  WCSPROGRAMS_KoboVillageID_Village: await findValue({uuid: 'wcsprograms_kobovillageid', relation: 'WCSPROGRAMS_KoboVillage', where: { WCSPROGRAMS_KoboVillageExtCode: dataValue('information/village') }})(state),\n  WCSPROGRAMS_KoboDistrictID_District: await findValue({uuid: 'wcsprograms_kobodistrictid', relation: 'WCSPROGRAMS_KoboDistrict', where: { WCSPROGRAMS_KoboDistrictExtCode: dataValue('information/district') }})(state),\n  WCSPROGRAMS_KoboProvinceID_Province: await findValue({uuid: 'wcsprograms_koboprovinceid', relation: 'WCSPROGRAMS_KoboProvince', where: { WCSPROGRAMS_KoboProvinceExtCode: dataValue('information/province') }})(state),\n  WCSPROGRAMS_KoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_kobosurveyorid', relation: 'WCSPROGRAMS_KoboSurveyor', where: { WCSPROGRAMS_KoboSurveyorExtCode: dataValue('information/surveyor') }})(state),\n  Welcome: dataValue('information/welcome'),\n  WCSPROGRAMS_KoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_kobolandscapeid', relation: 'WCSPROGRAMS_KoboLandscape', where: { WCSPROGRAMS_KoboLandscapeExtCode: dataValue('information/landscape') }})(state),\n  Deviceid: dataValue('deviceid'),\n  Today: dataValue('today'),\n  FormDateEnd: dataValue('end'),\n  Start: dataValue('start'),\n  AnswerId: state._id,\n  GeneratedUuid: dataValue('__generatedUuid'),\n  Payload: state.data.body\n} \n return upsert('WCSPROGRAMS_KoboBnsPrice', 'GeneratedUuid', mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \nfn(async state => {\n const dataArray = state.data.body['good'] || [] \n\n        const mapping = []; \n\n        for (let x of dataArray) { \n\n          mapping.push({\n  WCSPROGRAMS_KoboGoodsID_Name: await findValue({uuid: 'wcsprograms_kobogoodsid', relation: 'WCSPROGRAMS_KoboGoods', where: { WCSPROGRAMS_KoboGoodsExtCode: x['good/name'] }})(state),\n  Price: x['good/price'],\n  BnspriceUuid: dataValue('undefined'),\n  AnswerId: state._id,\n  GeneratedUuid: x['__generatedUuid']\n}) \n\n          } \n return upsertMany('WCSPROGRAMS_KoboBnsPriceGood', 'GeneratedUuid', () => mapping, {setNull: [\"''\", \"'undefined'\"]})(state); \n}) \n",
+          "adaptor": "@openfn/language-mssql@6.0.4",
           "project_credential_id": "6058484f-c8c5-498b-b420-67152bf41ccf"
         }
       },
@@ -545,7 +582,7 @@
           "condition_type": "always"
         },
         "Triage-jobs->BNS-2A-BNS-Price": {
-          "enabled": true,
+          "enabled": false,
           "id": "a4d1312a-c209-497a-8e19-462feccddeb3",
           "target_job_id": "7280bfa9-2a67-4c6e-8a3a-f7f21bcb26ae",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -554,7 +591,7 @@
           "condition_expression": "state.data.form === \"bns_price\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
         },
         "Triage-jobs->BNS-2B-BNS-Survey": {
-          "enabled": true,
+          "enabled": false,
           "id": "b541e65c-79a6-4214-88c6-653133d65210",
           "target_job_id": "196697f9-b581-4397-8487-280df2d47529",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -563,7 +600,7 @@
           "condition_expression": "state.data.form == \"bns_survey\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
         },
         "Triage-jobs->BNS-2C-NRGT---Historical-Version": {
-          "enabled": true,
+          "enabled": false,
           "id": "f19030bd-1907-409b-84c4-9d0f41b358f4",
           "target_job_id": "856aa8dd-0b53-4dbd-8af8-972315bc5879",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -572,7 +609,7 @@
           "condition_expression": "state.data.form == \"nrgt_historical\" && state.data.formName != \"NRGT Kahuzi Biega 2019\""
         },
         "Triage-jobs->BNS-2D-NRGT-2019": {
-          "enabled": true,
+          "enabled": false,
           "id": "8d13c9cc-6efd-436b-8d4f-f655e89283cc",
           "target_job_id": "c0cef1cd-ad7c-4aeb-8f70-dc6f7f0b4658",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -581,7 +618,7 @@
           "condition_expression": "state.data.form == \"nrgt_current\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
         },
         "Triage-jobs->BNS-2E-NRGT---Historical-Version-2-2022": {
-          "enabled": true,
+          "enabled": false,
           "id": "07ac5d9c-cc2e-480a-82a2-1cf46d4bad22",
           "target_job_id": "55d15411-6a56-4614-8e25-f314f3381334",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
@@ -589,16 +626,27 @@
           "condition_label": "NGRT Historical",
           "condition_expression": "state.data.form == \"nrgt_historical\" && state.data.formName == \"NRGT Kahuzi Biega 2019\""
         },
-        "Triage-jobs->Indonesia-NRGT": {
+        "Triage-jobs->Indonesia-Leuser-NRGT": {
           "enabled": true,
           "id": "966d9837-3c63-4218-8c83-2b476df6edf8",
           "target_job_id": "a92c6b11-a801-4573-8398-b0c388696561",
           "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
           "condition_type": "js_expression",
           "condition_label": "BNS-2E NRGT Indonesia",
-          "condition_expression": "state.data.form == \"nrgt_current\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
+          "condition_expression": "state.data.form == \"nrgt_leuser\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
+        },
+        "Triage-jobs->Indonesia-BNS-Price": {
+          "enabled": true,
+          "id": "82467be2-1c7f-49b2-8e2d-a97b5a0eb8e5",
+          "target_job_id": "b2d6bb72-1371-4fdf-89a4-9e967d9e9c03",
+          "source_job_id": "65e96922-0db6-4823-88ea-64601641c902",
+          "condition_type": "js_expression",
+          "condition_label": "BNS_2A BNS Price Indonesia",
+          "condition_expression": "state.data.form === \"bns_price_leuser\" && \nstate.data.body?.survey_type && \nstate.data.body.survey_type !== \"practice\""
         }
       }
     }
-  }
+  },
+  "allow_support_access": true,
+  "requires_mfa": false
 }
