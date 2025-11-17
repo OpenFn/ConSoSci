@@ -4676,7 +4676,7 @@ workflows:
                 '1207853044764227': $.inputData.body.Location,
 
                 // Fields  belonging to questions with dropdown or multiple choice
-                '1201123975239655': state => state.formatMapping["Funding/Grants_" + $.inputData.body.Funding / Grants],
+                //'1201123975239655': state => state.formatMapping["Funding/Grants_" + $.inputData.body.Funding / Grants],
                 '1202593715272940': state => state.formatMapping["Grade_" + $.inputData.body.Grade],
                 '1204269608862901': state => state.formatMapping["Classification_" + $.inputData.body.Classification],
                 '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
@@ -5197,47 +5197,80 @@ workflows:
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
             const formatMapping = {
-              SubmissionType_Grievance: '1202329899911646',
-              SubmissionType_Suggestion: '1202329899911647',
-              SubmissionType_Request: '1202329899911648',
-              SubmissionType_Feedback: '1202329899911649',
-              WcsStaff_Yes: '1208262949429785',
-              WcsStaff_No: '1208262949429786',
-              ReportFormat_InPerson: '1202330347493011',
-              ReportFormat_FocalPoint: '1207724960884497',
-              ReportFormat_VoiceCall: '1202330347494027',
-              ReportFormat_Hotline: '1202330347501419',
-              ReportFormat_TextMessage: '1202330347498273',
-              ReportFormat_SuggestionBox: '1202330347499327',
-              ReportFormat_Email: '1202330347502485',
-              ReportFormat_Letter: '1202330347503544',
-              ReportFormat_OnlineForm: '1207934414764297',
-              ReportFormat_Other: '1203830536105154',
-              Anonymous_Anonymous: '1203977086782816',
-              Gender_Male: '1202330737362427',
-              Gender_Female: '1202330737362428',
-              Gender_mixed_gender: '1202330737362429',
-              Gender_unknown_gender: '1202330737362430',
-              IndigenousPeople_Yes_ips: '1202330755980982',
-              IndigenousPeople_No_ips: '1202330755984093',
-              IndigenousPeople_unknown_ips: '1202330755985164',
-              IndigenousPeople_mixed_group: '1207724962870243',
-              'Age_<18': '1202330714895607',
-              'Age_19-35': '1202330714895608',
-              'Age_36-50': '1202330714895609',
-              'Age_>50': '1202330714895610',
-              Age_mixed_age: '1202330714895611',
-              Age_unknown_age: '1202330714895612',
-              GrievanceAgainst_Wcs: '1202330466059593',
-              GrievanceAgainst_GovernmentPartner: '1202330466059594',
-              GrievanceAgainst_PrivateSectorPartner: '1202330466059595',
-              GrievanceAgainst_CivilSocietyPartner: '1202330466059596',
-              GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',
-              DatePrecision_Yes: "1202330815421248",
-              DatePrecision_No: "1202330815421249",
-              ConfidentialitySensitivity_Yes: '1202330821410493',
-              ConfidentialitySensitivity_No: '1202330821410494'
+              "SubmissionType_Grievance": "1202329899911646",
+              "SubmissionType_Suggestion": "1202329899911647",
+              "SubmissionType_Request": "1202329899911648",
+              "SubmissionType_Feedback": "1202329899911649",
+              "ReportFormat_InPerson": "1202330347493011",
+              "ReportFormat_FocalPoint": "1207724960884497",
+              "ReportFormat_VoiceCall": "1202330347494027",
+              "ReportFormat_Hotline": "1202330347501419",
+              "ReportFormat_TextMessage": "1202330347498273",
+              "ReportFormat_SuggestionBox": "1202330347499327",
+              "ReportFormat_Email": "1202330347502485",
+              "ReportFormat_Letter": "1202330347503544",
+              "ReportFormat_OnlineForm": "1207934414764297",
+              "ReportFormat_Other": "1203830536105154",
+              "ReportFormat_Prospecting": "1208419056473280",
+              "Gender_Male": "1202330737362427",
+              "Gender_Female": "1202330737362428",
+              "Gender_Mixed gender": "1202330737362429",
+              "Gender_Unknown gender": "1202330737362430",
+              "Gender_Other gender": "1207852335266397",
+              "Gender_Prefer not to report": "1207852335266398",
+              "IndigenousPeoples_Yes": "1202330755980982",
+              "IndigenousPeoples_No": "1202330755984093",
+              "IndigenousPeoples_Unknown": "1202330755985164",
+              "IndigenousPeoples_Mixed group": "1207724962870243",
+              "Age_<18": "1202330714895607",
+              "Age_19–35": "1202330714895608",
+              "Age_36–50": "1202330714895609",
+              "Age_>50": "1202330714895610",
+              "Age_Mixed age": "1202330714895611",
+              "Age_Unknown age": "1202330714895612",
+              "GrievanceStatus _ToReview": "1187328718760775",
+              "GrievanceStatus _BeingReviewed": "1192850232576003",
+              "GrievanceStatus _Dismissed": "1187674280676653",
+              "GrievanceStatus _OnHold": "1187328718760778",
+              "GrievanceStatus _BeingInvestigated": "1187328718760776",
+              "GrievanceStatus _InResolution": "1208167139436055",
+              "GrievanceStatus _Resolved": "1187328718760777",
+              "GrievanceStatus _RemediationBeingMonitored": "1192772373678248",
+              "GrievanceStatus _TransferredToHumanResources": "1206081287831891",
+              "Grade_Grade 0": "1202593715272941",
+              "Grade_Grade 1": "1202593715272942",
+              "Grade_Grade 2": "1202593715272943",
+              "Grade_Grade 3": "1202593715272944",
+              "Grade_Grade 4": "1202593715272945",
+              "Grade_Grade 5": "1202593715272946",
+              "Classification_Boundary": "1207934444664901",
+              "Classification_Comment": "1207064126306000",
+              "Classification_Human Resources": "1206208252500541",
+              "Classification_HWC (Human-Wildlife Conflict)": "1204269608862904",
+              "Classification_Illegal Activity": "1204269617420858",
+              "Classification_Management ": "1204269617420857",
+              "Classification_PI & NR (Project Implementation & Natural Resource Management)": "1204269608862903",
+              "Classification_Positive Feedback": "1204269617420859",
+              "Classification_Question": "1207064126305999",
+              "Classification_Request for assistance": "1204269617420968",
+              "Classification_Safeguards & Human Rights": "1204269608862902",
+              "Classification_Suggestion": "1207064073157821",
+              "Classification_Other": "1204269617420860",
+              "Classification_Not eligible": "1207724727681221",
+              "SubmissionContext_individual": "1202330732062943",
+              "SubmissionContext_group": "1202330732067344",
+              "SubmissionContext_passive_observation": "1202330732068565",
+              "GrievanceAgainst_Wcs": "1202330466059593",
+              "GrievanceAgainst_GovernmentPartner": "1202330466059594",
+              "GrievanceAgainst_PrivateSectorPartner": "1202330466059595",
+              "GrievanceAgainst_CivilSocietyPartner": "1202330466059596",
+              "GrievanceAgainst_NotWcsAndNotAWcsPartner": "1202330466059597",
+              "DatePrecision_Yes": "1202330815421248",
+              "DatePrecision_No": "1202330815421249",
+              "ConfidentialitySensitivity_Yes": "1202330821410493",
+              "ConfidentialitySensitivity_No": "1202330821410494"
             };
+            state.formatMapping = formatMapping;
             state.inputData = state.data;
             return { ...state, formatMapping };
           });
@@ -5247,68 +5280,70 @@ workflows:
           // Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.
           request(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {
             query: {
-              'custom_fields.1201884379104074.value': $.inputData?.body?.CaseID,
+              'custom_fields.1202329899911595.value': $.inputData?.body?.CaseID,
               resource_subtype: 'default_task'
             }
           });
 
           fn(state => {
-           state.skipCreate = false;
-           const tasks = state.data || []; 
-           // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
-           const caseId = state.inputData?.body?.CaseID;
+            state.skipCreate = false;
+            const tasks = state.data || [];
+            // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID
+            const caseId = state.inputData?.body?.CaseID;
 
             if (tasks.length > 0) {
               console.log(`${tasks.length} task(s) found for CaseID ${caseId}. Skipping create.`);
               state.skipCreate = true;
             }
+            console.log("skipCreate", state.skipCreate);
+
             return state;
           });
 
           fnIf(!$.skipCreate,
-            createTask( {
-                  name: $.inputData.body.CaseID,
-                  projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job
-                  notes: $.inputData.body.Description,
-                  custom_fields: {
-                    // Fields  belonging to open-ended questions (qxns that accept free text input)
-                    '1203711959959076': $.inputData.body.StaffName,
-                    '1203712049265363': $.inputData.body.StaffEmail,
-                    '1208262949075450': $.inputData.body.DateGrievanceReceived,
-                    '1203712064304976': $.inputData.body.ReporterFullName,
-                    '1203712060006636': $.inputData.body.ReporterContactInformation,
-                    '1201884379104074': $.inputData.body.CaseID,
-                    '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
-                    '1202329899911619': $.inputData.body.WhereGrievance,
-                    '1208262949429777': $.inputData.body.WhenGrievance,
-                    '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,
-                    '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,
-                    '1208262949429765': $.inputData.body.Description,
-                    '1203712150593482': $.inputData.body.HarmSuffered,
-                    '1203712149463009': $.inputData.body.ReliefRequested,
-                    '1208262949075445': $.inputData.body.OneDriveFolder,
-
-                    // Fields  belonging to questions with dropdown or multiple choice
-                    '1202329899911645': $.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType], '1202593715272940': state => state.formatMapping["Grade_" + $.inputData.body.Grade],
-                    '1208262949429784': $.formatMapping["WcsStaff_" + $.inputData.body.WcsStaff],
-                    '1202330347491974': $.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-                    '1203977086782815': $.formatMapping["Anonymous_" + $.inputData.body.Anonymous],
-                    '1202330737362426': $.formatMapping["Gender_" + $.inputData.body.Gender],
-                    '1202330755979944': $.formatMapping["IndigenousPeople_" + $.inputData.body.IndigenousPeople],
-                    '1202330714895606': $.formatMapping["Age_" + $.inputData.body.Age],
-                    '1202330466059592': $.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
-                    '1202330821410492': $.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
-                  }
-              },
+            createTask({
+              name: $.inputData.body.CaseID,
+              projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job
+              notes: $.inputData.body.Description,
+              custom_fields: {
+                '1202329899911595': $.inputData.body.CaseID,
+                '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
+                '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
+                '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
+                '1202330755979944': state => state.formatMapping["IndigenousPeoples_" + $.inputData.body.IndigenousPeoples],
+                '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
+                '1187328718760774': state => state.formatMapping["GrievanceStatus_" + $.inputData.body.GrievanceStatus],
+                '1202593715272940': state => state.formatMapping["Grade_" + $.inputData.body.Grade],
+                '1204269608862901': state => state.formatMapping["Classification_" + $.inputData.body.Classification],
+                '1203711959959076': $.inputData.body.StaffName,
+                '1203712049265363': $.inputData.body.StaffEmail,
+                '1202329899911599': $.inputData.body.SubmissionDate,
+                '1211806785977267': $.inputData.body.DepositDate,
+                '1211806785977281': $.inputData.body.SuggestionBoxGps,
+                '1211806785977274': $.inputData.body.SuggestionBoxId,
+                '1211806786005136': $.inputData.body.BoxCollectionDate,
+                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
+                '1202329899911605': $.inputData.body.ReporterName,
+                '1203712060006636': $.inputData.body.ReporterContactInformation,
+                '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
+                '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
+                '1202330815421247': state => state.formatMapping["DatePrecision_" + $.inputData.body.DatePrecision],
+                '1202329899911619': $.inputData.body.WhereGrievance,
+                '1202329899911623': $.inputData.body.GrievanceDate,
+                '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,
+                '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,
+                '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
+                '1203712150593482': $.inputData.body.HarmSuffered,
+                '1203712149463009': $.inputData.body.ReliefRequested,
+                '1202329899911635': $.inputData.body.OnlineFolder,
+                '1211806786005143': $.inputData.body.Location,
+              }
+            },
               state => {
                 console.log(JSON.stringify(state.data, null, 2)); //log data
                 return state;
               }
-            )(state)
-              .catch(e => {
-                console.log('Asana says', JSON.stringify(e, null, 2));
-                throw e;
-              })
+            )
           )
 
     triggers:
