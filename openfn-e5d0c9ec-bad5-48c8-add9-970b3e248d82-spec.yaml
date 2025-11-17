@@ -30,8 +30,8 @@ credentials:
   rediet@openfn.org-Rediet-Googlesheet:
     name: Rediet Googlesheet
     owner: rediet@openfn.org
-  rediet@openfn.org-Rediet-Googlesheet2:
-    name: Rediet Googlesheet2
+  rediet@openfn.org-WCS-Aggregate-Account:
+    name: WCS Aggregate Account
     owner: rediet@openfn.org
   rediet@openfn.org-WCS-MSSQL-Test-DB:
     name: WCS MSSQL Test DB
@@ -83,20 +83,8 @@ workflows:
             const manualCursor = '2025-05-15T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
             console.log('manualCursor defined?', manualCursor);
             
-            //...otherwise the job will use this dynamicCursor
-            const dynamicCursor = getTodayISODate(); 
-
-            function getTodayISODate() {
-              const today = new Date();
-              today.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, and milliseconds to 0
-              return today.toISOString(); // Convert to ISO string
-            }
-            
-            //UNCOMMENT FOR FUTURE
-           // const cursorValue = dynamicCursor || manualCursor ; 
-            const cursorValue = manualCursor ; 
+            const cursorValue = state.lastEnd || state.manualCursor ; 
            
-            // const cursorValue = manualCursor ; 
             console.log('Cursor value to use in query:', cursorValue);
 
             const formsList = sheetsData.map(survey => ({
@@ -119,6 +107,17 @@ workflows:
               })),
             };
             return state;
+          });
+
+          alterState(state => {
+
+            const cursor72hrs = new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString();
+            console.log('Next job run will fetch data submitted after:', cursor72hrs);
+
+            return {
+              ...state,
+              lastEnd: cursor72hrs
+            };
           });
 
       Get-BNS-NRGT-Forms:
@@ -302,7 +301,8 @@ workflows:
                 tag: survey.tag,
                 name: survey.name,
                 owner: survey.owner,
-                url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,
+                url: `/api/v2/assets/${survey.uid}/data/?format=json`,
+                query: ''
                 //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
               })),
             };
@@ -316,9 +316,9 @@ workflows:
             return state;
           });     
 
-      Get-Forms:
-        name: Get Forms
-        adaptor: '@openfn/language-http@3.1.12'
+      Get-Form-Submissions:
+        name: Get Form Submissions
+        adaptor: '@openfn/language-http@3.1.11'
         credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           // Here we fetch submissions for all "Archived" forms in GoogleSheet
@@ -334,7 +334,11 @@ workflows:
           });
 
           each('$.data.surveys[*]', state => {
-            const { url, query, tag, formId, name, owner } = state.data;
+            const { url, query, tag, formId, name, owner } = state.data; // This gets survey properties
+            const rootUrl = state.url; // Get URL from root state if stored there
+            const rootQuery = state.query; // Get query from root state if stored there
+            
+            // Or construct the full URL properly
             console.log('Sending GET to ::', `${url}${query}`);
 
             return get(`${url}${query}`)(state)
@@ -368,19 +372,19 @@ workflows:
               });
           });
 
-          each(
-            '$.surveySubmissions[*]',
-            post(
-              "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",{
-              body: state => {
-                const {i, formName} = state.data;
-                const count = state.surveySubmissions.length;
-                console.log(`Posting ${i} of ${count} from ${formName}`);
-                return  state.data;
-              }
-              }
-            )
-          );  
+          // each(
+          //   '$.surveySubmissions[*]',
+          //   post(
+          //     "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",{
+          //     body: state => {
+          //       const {i, formName} = state.data;
+          //       const count = state.surveySubmissions.length;
+          //       console.log(`Posting ${i} of ${count} from ${formName}`);
+          //       return  state.data;
+          //     }
+          //     }
+          //   )
+          // );  
 
           // each(dataPath('surveys[*]'), state => {
           //   const { url, tag, formId, name, owner } = state.data;
@@ -411,20 +415,43 @@ workflows:
           //   })(state)
           // });
 
+      Post-Submission:
+        name: Post Submission
+        adaptor: '@openfn/language-http@7.2.3'
+        credential: null
+        body: |
+          each(
+            '$.surveySubmissions[*]',
+            post(
+              "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",{
+              body: state => {
+                const {i, formName} = state.data;
+                const count = state.surveySubmissions.length;
+                console.log(`Posting ${i} of ${count} from ${formName}`);
+                return  state.data;
+              }
+              }
+            )
+          );  
     triggers:
       webhook:
         type: webhook
         enabled: false
     edges:
-      Get-FormsList->Get-Forms:
+      Get-FormsList->Get-Form-Submissions:
         source_job: Get-FormsList
-        target_job: Get-Forms
+        target_job: Get-Form-Submissions
         condition_type: on_job_success
         enabled: true
       webhook->Get-FormsList:
         source_trigger: webhook
         target_job: Get-FormsList
         condition_type: always
+        enabled: true
+      Get-Form-Submissions->Post-Submission:
+        source_job: Get-Form-Submissions
+        target_job: Post-Submission
+        condition_type: on_job_success
         enabled: true
   2.-Sync-BNS-and-NRGT-Forms:
     name: 2. Sync BNS and NRGT Forms
@@ -435,7 +462,24 @@ workflows:
         credential: rediet@openfn.org-WCS-MSSQL-Test-DB
         body: |
           // This job is only a step to split the workflow into the different Sync Jobs - not actually doing anything.
-
+          // Normalize the input structure: handle data -> body -> body case
+          fn(state => {
+            const { data } = state;
+            
+            // Check if we have the nested body -> body structure
+            if (data && data.body && data.body.body) {
+              // Flatten it: move properties from data.body to data level
+              return {
+                ...state,
+                data: {
+                  ...data.body,  
+                  body: data.body.body  
+                }
+              };
+            }
+            
+            return state;
+          });
       BNS-2A-BNS-Price:
         name: BNS-2A BNS Price
         adaptor: '@openfn/language-mssql@5.2.3'
@@ -1439,6 +1483,410 @@ workflows:
            return upsertMany('WCSPROGRAMS_KoboBnsPriceGood', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
           }) 
 
+      Indonesia-BNS-Household:
+        name: Indonesia BNS Household
+        adaptor: '@openfn/language-mssql@6.0.4'
+        credential: rediet@openfn.org-WCS-Programs-Database-central-db
+        body: |
+          fn(state => {
+            const multiSelectIds = ["hh_type", "KAP_K4", "KAP_K5", "KAP_P2", "KAP_P3", "KAP_P5", "KAP_P6", "KAP_P7", "IMP_D2"];
+
+            function generateUuid(body, uuid) {
+              for (const property in body) {
+                if (Array.isArray(body[property]) && body !== null) {
+                  body['__generatedUuid'] = uuid;
+                  body[property].forEach((thing, i, arr) => {
+                    if (thing !== null) {
+                      thing['__parentUuid'] = uuid;
+                      let newUuid = uuid + '-' + (i + 1);
+                      thing['__generatedUuid'] = newUuid;
+                      for (const property in thing) {
+                        if (Array.isArray(thing[property])) {
+                          generateUuid(thing, newUuid);
+                        }
+                      }
+                    }
+                  });
+                }
+              }
+            }
+
+            generateUuid(
+              state.data.body,
+              state.data.body._id+'-'+state.data.body._xform_id_string
+            );
+
+            const { body } = state.data;
+            const { _id, _xform_id_string } = body;
+            state.data = { ...state.data, ...body };
+
+            return { ...state, _id, _xform_id_string };
+          }); 
+          fn(async state => {
+           const mapping = {
+            FormName: dataValue('formName'),
+            DatasetId: dataValue('_xform_id_string'),
+            LastUpdated: new Date().toISOString()
+          } 
+           return upsert('WCSPROGRAMS_KoboDataset', "DatasetId", mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+          fn(async state => {
+           const mapping = {
+            Long: dataValue('gps/long'),
+            Lat: dataValue('gps/lat'),
+            Geo: dataValue('geo'),
+            WCSPROGRAMS_KoboGpsID_GpsMethod: await findValue({uuid: 'wcsprograms_kobogpsid', relation: 'WCSPROGRAMS_KoboGps', where: { WCSPROGRAMS_KoboGpsExtCode: dataValue('gps_method') }})(state),
+            ImpD15: dataValue('group_wz2fq03/IMP_D15'),
+            ImpD14: dataValue('group_wz2fq03/IMP_D14'),
+            WCSPROGRAMS_KoboImpCantrilID_CantrilD13: await findValue({uuid: 'wcsprograms_koboimpcantrilid', relation: 'WCSPROGRAMS_KoboImpCantril', where: { WCSPROGRAMS_KoboImpCantrilExtCode: dataValue('Tangga_Cantril/Cantril_D13') }})(state),
+            WCSPROGRAMS_KoboImpCantrilID_CantrilD12: await findValue({uuid: 'wcsprograms_koboimpcantrilid', relation: 'WCSPROGRAMS_KoboImpCantril', where: { WCSPROGRAMS_KoboImpCantrilExtCode: dataValue('Tangga_Cantril/Cantril_D12') }})(state),
+            WCSPROGRAMS_KoboImpCantrilID_TanggaCantrilHeader: await findValue({uuid: 'wcsprograms_koboimpcantrilid', relation: 'WCSPROGRAMS_KoboImpCantril', where: { WCSPROGRAMS_KoboImpCantrilExtCode: dataValue('Tangga_Cantril/Tangga_Cantril_header') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD11: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D11') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD10: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D10') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD9: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D9') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD8: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D8') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD7: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D7') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD6: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D6') }})(state),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD5: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D5') }})(state),
+            WCSPROGRAMS_KoboImpD4ID_ImpD4: await findValue({uuid: 'wcsprograms_koboimpd4id', relation: 'WCSPROGRAMS_KoboImpD4', where: { WCSPROGRAMS_KoboImpD4ExtCode: dataValue('group_dt8cs40/IMP_D4') }})(state),
+            WCSPROGRAMS_KoboImpD3ID_ImpD3: await findValue({uuid: 'wcsprograms_koboimpd3id', relation: 'WCSPROGRAMS_KoboImpD3', where: { WCSPROGRAMS_KoboImpD3ExtCode: dataValue('group_dt8cs40/IMP_D3') }})(state),
+            SebutkanImpD2: dataValue('group_dt8cs40/Sebutkan_IMP_D2'),
+            WCSPROGRAMS_KoboImpYesnoID_ImpD1: await findValue({uuid: 'wcsprograms_koboimpyesnoid', relation: 'WCSPROGRAMS_KoboImpYesno', where: { WCSPROGRAMS_KoboImpYesnoExtCode: dataValue('group_dt8cs40/IMP_D1') }})(state),
+            IntroBnsPlusImpact: dataValue('group_dt8cs40/intro_bns_plus_Impact'),
+            SebutkanKapP7: dataValue('group_js4ak55/Sebutkan_KAP_P7'),
+            SebutkanKapP6: dataValue('group_js4ak55/Sebutkan_KAP_P6'),
+            SebutkanKapP5: dataValue('group_js4ak55/Sebutkan_KAP_P5'),
+            WCSPROGRAMS_KoboKapPYesnoID_KapP4: await findValue({uuid: 'wcsprograms_kobokappyesnoid', relation: 'WCSPROGRAMS_KoboKapPYesno', where: { WCSPROGRAMS_KoboKapPYesnoExtCode: dataValue('group_js4ak55/KAP_P4') }})(state),
+            SebutkanKapP3: dataValue('group_js4ak55/Sebutkan_KAP_P3'),
+            SebutkanKapP2: dataValue('group_js4ak55/Sebutkan_KAP_P2'),
+            WCSPROGRAMS_KoboKapPYesnoID_KapP1: await findValue({uuid: 'wcsprograms_kobokappyesnoid', relation: 'WCSPROGRAMS_KoboKapPYesno', where: { WCSPROGRAMS_KoboKapPYesnoExtCode: dataValue('group_js4ak55/KAP_P1') }})(state),
+            WCSPROGRAMS_KoboKapAAgrID_KapA5: await findValue({uuid: 'wcsprograms_kobokapaagrid', relation: 'WCSPROGRAMS_KoboKapAAgr', where: { WCSPROGRAMS_KoboKapAAgrExtCode: dataValue('group_js4ak55/KAP_A5') }})(state),
+            WCSPROGRAMS_KoboKapAAgrID_KapA4: await findValue({uuid: 'wcsprograms_kobokapaagrid', relation: 'WCSPROGRAMS_KoboKapAAgr', where: { WCSPROGRAMS_KoboKapAAgrExtCode: dataValue('group_js4ak55/KAP_A4') }})(state),
+            WCSPROGRAMS_KoboKapAAgrID_KapA3: await findValue({uuid: 'wcsprograms_kobokapaagrid', relation: 'WCSPROGRAMS_KoboKapAAgr', where: { WCSPROGRAMS_KoboKapAAgrExtCode: dataValue('group_js4ak55/KAP_A3') }})(state),
+            WCSPROGRAMS_KoboKapAImpID_KapA2: await findValue({uuid: 'wcsprograms_kobokapaimpid', relation: 'WCSPROGRAMS_KoboKapAImp', where: { WCSPROGRAMS_KoboKapAImpExtCode: dataValue('group_js4ak55/KAP_A2') }})(state),
+            WCSPROGRAMS_KoboKapAImpID_KapA1: await findValue({uuid: 'wcsprograms_kobokapaimpid', relation: 'WCSPROGRAMS_KoboKapAImp', where: { WCSPROGRAMS_KoboKapAImpExtCode: dataValue('group_js4ak55/KAP_A1') }})(state),
+            SebutkanKapK5: dataValue('group_js4ak55/Sebutkan_KAP_K5'),
+            SebutkanKapK4: dataValue('group_js4ak55/Sebutkan_KAP_K4'),
+            WCSPROGRAMS_KoboKapK3ID_KapK3: await findValue({uuid: 'wcsprograms_kobokapk3id', relation: 'WCSPROGRAMS_KoboKapK3', where: { WCSPROGRAMS_KoboKapK3ExtCode: dataValue('group_js4ak55/KAP_K3') }})(state),
+            SebutkanKapK2: dataValue('group_js4ak55/Sebutkan_KAP_K2'),
+            WCSPROGRAMS_KoboKapK2ID_KapK2: await findValue({uuid: 'wcsprograms_kobokapk2id', relation: 'WCSPROGRAMS_KoboKapK2', where: { WCSPROGRAMS_KoboKapK2ExtCode: dataValue('group_js4ak55/KAP_K2') }})(state),
+            SebutkanKapK1: dataValue('group_js4ak55/Sebutkan_KAP_K1'),
+            WCSPROGRAMS_KoboKapK1ID_KapK1: await findValue({uuid: 'wcsprograms_kobokapk1id', relation: 'WCSPROGRAMS_KoboKapK1', where: { WCSPROGRAMS_KoboKapK1ExtCode: dataValue('group_js4ak55/KAP_K1') }})(state),
+            IntroBnsPlusKap: dataValue('group_js4ak55/intro_bns_plus_kap'),
+            BnsMatrixGoodservice35Number: dataValue('bns_matrix_goodservice35/bns_matrix_goodservice35_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice35Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice35/bns_matrix_goodservice35_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice35Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice35/bns_matrix_goodservice35_possess') }})(state),
+            BnsMatrixGoodservice34Number: dataValue('bns_matrix_goodservice34/bns_matrix_goodservice34_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice34Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice34/bns_matrix_goodservice34_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice34Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice34/bns_matrix_goodservice34_possess') }})(state),
+            BnsMatrixGoodservice33Number: dataValue('bns_matrix_goodservice33/bns_matrix_goodservice33_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice33Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice33/bns_matrix_goodservice33_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice33Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice33/bns_matrix_goodservice33_possess') }})(state),
+            BnsMatrixGoodservice32Number: dataValue('bns_matrix_goodservice32/bns_matrix_goodservice32_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice32Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice32/bns_matrix_goodservice32_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice32Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice32/bns_matrix_goodservice32_possess') }})(state),
+            BnsMatrixGoodservice31Number: dataValue('bns_matrix_goodservice31/bns_matrix_goodservice31_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice31Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice31/bns_matrix_goodservice31_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice31Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice31/bns_matrix_goodservice31_possess') }})(state),
+            BnsMatrixGoodservice30Number: dataValue('bns_matrix_goodservice30/bns_matrix_goodservice30_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice30Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice30/bns_matrix_goodservice30_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice30Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice30/bns_matrix_goodservice30_possess') }})(state),
+            BnsMatrixGoodservice29Number: dataValue('bns_matrix_goodservice29/bns_matrix_goodservice29_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice29Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice29/bns_matrix_goodservice29_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice29Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice29/bns_matrix_goodservice29_possess') }})(state),
+            BnsMatrixGoodservice28Number: dataValue('bns_matrix_goodservice28/bns_matrix_goodservice28_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice28Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice28/bns_matrix_goodservice28_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice28Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice28/bns_matrix_goodservice28_possess') }})(state),
+            BnsMatrixGoodservice27Number: dataValue('bns_matrix_goodservice27/bns_matrix_goodservice27_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice27Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice27/bns_matrix_goodservice27_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice27Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice27/bns_matrix_goodservice27_possess') }})(state),
+            BnsMatrixGoodservice26Number: dataValue('bns_matrix_goodservice26/bns_matrix_goodservice26_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice26Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice26/bns_matrix_goodservice26_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice26Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice26/bns_matrix_goodservice26_possess') }})(state),
+            BnsMatrixGoodservice25Number: dataValue('bns_matrix_goodservice25/bns_matrix_goodservice25_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice25Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice25/bns_matrix_goodservice25_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice25Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice25/bns_matrix_goodservice25_possess') }})(state),
+            BnsMatrixGoodservice24Number: dataValue('bns_matrix_goodservice24/bns_matrix_goodservice24_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice24Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice24/bns_matrix_goodservice24_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice24Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice24/bns_matrix_goodservice24_possess') }})(state),
+            BnsMatrixGoodservice23Number: dataValue('bns_matrix_goodservice23/bns_matrix_goodservice23_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice23Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice23/bns_matrix_goodservice23_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice23Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice23/bns_matrix_goodservice23_possess') }})(state),
+            BnsMatrixGoodservice22Number: dataValue('bns_matrix_goodservice22/bns_matrix_goodservice22_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice22Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice22/bns_matrix_goodservice22_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice22Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice22/bns_matrix_goodservice22_possess') }})(state),
+            BnsMatrixGoodservice21Number: dataValue('bns_matrix_goodservice21/bns_matrix_goodservice21_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice21Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice21/bns_matrix_goodservice21_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice21Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice21/bns_matrix_goodservice21_possess') }})(state),
+            BnsMatrixGoodservice20Number: dataValue('bns_matrix_goodservice20/bns_matrix_goodservice20_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice20Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice20/bns_matrix_goodservice20_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice20Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice20/bns_matrix_goodservice20_possess') }})(state),
+            BnsMatrixGoodservice19Number: dataValue('bns_matrix_goodservice19/bns_matrix_goodservice19_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice19Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice19/bns_matrix_goodservice19_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice19Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice19/bns_matrix_goodservice19_possess') }})(state),
+            BnsMatrixGoodservice18Number: dataValue('bns_matrix_goodservice18/bns_matrix_goodservice18_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice18Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice18/bns_matrix_goodservice18_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice18Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice18/bns_matrix_goodservice18_possess') }})(state),
+            BnsMatrixGoodservice17Number: dataValue('bns_matrix_goodservice17/bns_matrix_goodservice17_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice17Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice17/bns_matrix_goodservice17_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice17Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice17/bns_matrix_goodservice17_possess') }})(state),
+            BnsMatrixGoodservice16Number: dataValue('bns_matrix_goodservice16/bns_matrix_goodservice16_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice16Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice16/bns_matrix_goodservice16_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice16Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice16/bns_matrix_goodservice16_possess') }})(state),
+            BnsMatrixGoodservice15Number: dataValue('bns_matrix_goodservice15/bns_matrix_goodservice15_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice15Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice15/bns_matrix_goodservice15_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice15Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice15/bns_matrix_goodservice15_possess') }})(state),
+            BnsMatrixGoodservice14Number: dataValue('bns_matrix_goodservice14/bns_matrix_goodservice14_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice14Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice14/bns_matrix_goodservice14_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice14Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice14/bns_matrix_goodservice14_possess') }})(state),
+            BnsMatrixGoodservice13Number: dataValue('bns_matrix_goodservice13/bns_matrix_goodservice13_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice13Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice13/bns_matrix_goodservice13_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice13Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice13/bns_matrix_goodservice13_possess') }})(state),
+            BnsMatrixGoodservice12Number: dataValue('bns_matrix_goodservice12/bns_matrix_goodservice12_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice12Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice12/bns_matrix_goodservice12_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice12Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice12/bns_matrix_goodservice12_possess') }})(state),
+            BnsMatrixGoodservice11Number: dataValue('bns_matrix_goodservice11/bns_matrix_goodservice11_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice11Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice11/bns_matrix_goodservice11_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice11Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice11/bns_matrix_goodservice11_possess') }})(state),
+            BnsMatrixGoodservice10Number: dataValue('bns_matrix_goodservice10/bns_matrix_goodservice10_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice10Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice10/bns_matrix_goodservice10_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice10Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice10/bns_matrix_goodservice10_possess') }})(state),
+            BnsMatrixGoodservice9Number: dataValue('bns_matrix_goodservice9/bns_matrix_goodservice9_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice9Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice9/bns_matrix_goodservice9_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice9Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice9/bns_matrix_goodservice9_possess') }})(state),
+            BnsMatrixGoodservice8Number: dataValue('bns_matrix_goodservice8/bns_matrix_goodservice8_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice8Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice8/bns_matrix_goodservice8_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice8Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice8/bns_matrix_goodservice8_possess') }})(state),
+            BnsMatrixGoodservice7Number: dataValue('bns_matrix_goodservice7/bns_matrix_goodservice7_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice7Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice7/bns_matrix_goodservice7_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice7Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice7/bns_matrix_goodservice7_possess') }})(state),
+            BnsMatrixGoodservice6Number: dataValue('bns_matrix_goodservice6/bns_matrix_goodservice6_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice6Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice6/bns_matrix_goodservice6_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice6Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice6/bns_matrix_goodservice6_possess') }})(state),
+            BnsMatrixGoodservice5Number: dataValue('bns_matrix_goodservice5/bns_matrix_goodservice5_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice5Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice5/bns_matrix_goodservice5_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice5Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice5/bns_matrix_goodservice5_possess') }})(state),
+            BnsMatrixGoodservice4Number: dataValue('bns_matrix_goodservice4/bns_matrix_goodservice4_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice4Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice4/bns_matrix_goodservice4_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice4Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice4/bns_matrix_goodservice4_possess') }})(state),
+            BnsMatrixGoodservice3Number: dataValue('bns_matrix_goodservice3/bns_matrix_goodservice3_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice3Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice3/bns_matrix_goodservice3_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice3Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice3/bns_matrix_goodservice3_possess') }})(state),
+            BnsMatrixGoodservice2Number: dataValue('bns_matrix_goodservice2/bns_matrix_goodservice2_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice2Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice2/bns_matrix_goodservice2_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice2Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice2/bns_matrix_goodservice2_possess') }})(state),
+            BnsMatrixGoodservice1Number: dataValue('bns_matrix_goodservice1/bns_matrix_goodservice1_number'),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice1Necessary: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice1/bns_matrix_goodservice1_necessary') }})(state),
+            WCSPROGRAMS_KoboYesnoID_BnsMatrixGoodservice1Possess: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('bns_matrix_goodservice1/bns_matrix_goodservice1_possess') }})(state),
+            IntroBns: dataValue('intro_bns'),
+            WCSPROGRAMS_KoboFreqID_Nr6: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr6') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr5: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr5') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr4: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr4') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2001: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_001') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2002: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_002') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2003: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_003') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2004: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_004') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2005: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_005') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2006: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_006') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2007: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2_007') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr2: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr2') }})(state),
+            WCSPROGRAMS_KoboFreqID_Nr1: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr1') }})(state),
+            WCSPROGRAMS_KoboFreqID_NrFreq: await findValue({uuid: 'wcsprograms_kobofreqid', relation: 'WCSPROGRAMS_KoboFreq', where: { WCSPROGRAMS_KoboFreqExtCode: dataValue('nr/nr_freq') }})(state),
+            WCSPROGRAMS_KoboLivelihoodID_L4: await findValue({uuid: 'wcsprograms_kobolivelihoodid', relation: 'WCSPROGRAMS_KoboLivelihood', where: { WCSPROGRAMS_KoboLivelihoodExtCode: dataValue('livelihoods/l4') }})(state),
+            WCSPROGRAMS_KoboLivelihoodID_L3: await findValue({uuid: 'wcsprograms_kobolivelihoodid', relation: 'WCSPROGRAMS_KoboLivelihood', where: { WCSPROGRAMS_KoboLivelihoodExtCode: dataValue('livelihoods/l3') }})(state),
+            WCSPROGRAMS_KoboLivelihoodID_L2: await findValue({uuid: 'wcsprograms_kobolivelihoodid', relation: 'WCSPROGRAMS_KoboLivelihood', where: { WCSPROGRAMS_KoboLivelihoodExtCode: dataValue('livelihoods/l2') }})(state),
+            WCSPROGRAMS_KoboLivelihoodID_L1: await findValue({uuid: 'wcsprograms_kobolivelihoodid', relation: 'WCSPROGRAMS_KoboLivelihood', where: { WCSPROGRAMS_KoboLivelihoodExtCode: dataValue('livelihoods/l1') }})(state),
+            NumHhMembers: dataValue('num_hh_members'),
+            BirthHead: dataValue('group_qc8pc25/birth_head'),
+            WCSPROGRAMS_KoboEthnicityID_EthnicityHead: await findValue({uuid: 'wcsprograms_koboethnicityid', relation: 'WCSPROGRAMS_KoboEthnicity', where: { WCSPROGRAMS_KoboEthnicityExtCode: dataValue('group_qc8pc25/ethnicity_head') }})(state),
+            WCSPROGRAMS_KoboGenderID_GenderHead: await findValue({uuid: 'wcsprograms_kobogenderid', relation: 'WCSPROGRAMS_KoboGender', where: { WCSPROGRAMS_KoboGenderExtCode: dataValue('group_qc8pc25/gender_head') }})(state),
+            ExplainBenefPa: dataValue('group_qc8pc25/explain_benef_PA'),
+            WCSPROGRAMS_KoboYesnoID_BenefPa: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('group_qc8pc25/benef_PA') }})(state),
+            WCSPROGRAMS_KoboYesnoID_KnowPa: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('group_qc8pc25/know_PA') }})(state),
+            ExplainProject: dataValue('group_qc8pc25/explain_project'),
+            Cond: dataValue('group_qc8pc25/cond'),
+            WCSPROGRAMS_KoboYesnoID_BenefProject: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('group_qc8pc25/benef_project') }})(state),
+            WCSPROGRAMS_KoboHhID_HhId: await findValue({uuid: 'wcsprograms_kobohhid', relation: 'WCSPROGRAMS_KoboHh', where: { WCSPROGRAMS_KoboHhExtCode: dataValue('group_qc8pc25/hh_id') }})(state),
+            WCSPROGRAMS_KoboYesnoID_NewBns: await findValue({uuid: 'wcsprograms_koboyesnoid', relation: 'WCSPROGRAMS_KoboYesno', where: { WCSPROGRAMS_KoboYesnoExtCode: dataValue('group_qc8pc25/new_BNS') }})(state),
+            Arrival: dataValue('group_qc8pc25/arrival'),
+            Participant: dataValue('group_qc8pc25/participant'),
+            Welcome: dataValue('group_cq4or32/welcome'),
+            WCSPROGRAMS_KoboSurveyorID_Surveyor: await findValue({uuid: 'wcsprograms_kobosurveyorid', relation: 'WCSPROGRAMS_KoboSurveyor', where: { WCSPROGRAMS_KoboSurveyorExtCode: dataValue('group_cq4or32/surveyor') }})(state),
+            WCSPROGRAMS_KoboVillageID_Village: await findValue({uuid: 'wcsprograms_kobovillageid', relation: 'WCSPROGRAMS_KoboVillage', where: { WCSPROGRAMS_KoboVillageExtCode: dataValue('group_cq4or32/village') }})(state),
+            WCSPROGRAMS_KoboDistrictID_District: await findValue({uuid: 'wcsprograms_kobodistrictid', relation: 'WCSPROGRAMS_KoboDistrict', where: { WCSPROGRAMS_KoboDistrictExtCode: dataValue('group_cq4or32/district') }})(state),
+            WCSPROGRAMS_KoboProvinceID_Province: await findValue({uuid: 'wcsprograms_koboprovinceid', relation: 'WCSPROGRAMS_KoboProvince', where: { WCSPROGRAMS_KoboProvinceExtCode: dataValue('group_cq4or32/province') }})(state),
+            WCSPROGRAMS_KoboLandscapeID_Landscape: await findValue({uuid: 'wcsprograms_kobolandscapeid', relation: 'WCSPROGRAMS_KoboLandscape', where: { WCSPROGRAMS_KoboLandscapeExtCode: dataValue('group_cq4or32/landscape') }})(state),
+            Deviceid: dataValue('deviceid'),
+            Today: dataValue('today'),
+            StartGeopoint: dataValue('start-geopoint'),
+            FormDateEnd: dataValue('end'),
+            Start: dataValue('start'),
+            AnswerId: state._id,
+            GeneratedUuid: dataValue('__generatedUuid'),
+            Payload: state.data.body
+          } 
+           return upsert('WCSPROGRAMS_KoboBnsAnswer', 'GeneratedUuid', mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+          fn(async state => {
+           const dataArray = state.data.body['hh_members'] || [] 
+
+                  const mapping = []; 
+
+                  for (let x of dataArray) { 
+
+                    mapping.push({
+            WCSPROGRAMS_KoboGenderID_Gender: await findValue({uuid: 'wcsprograms_kobogenderid', relation: 'WCSPROGRAMS_KoboGender', where: { WCSPROGRAMS_KoboGenderExtCode: x['hh_members/gender'] }})(state),
+            WCSPROGRAMS_KoboEthnicityID_Ethnicity: await findValue({uuid: 'wcsprograms_koboethnicityid', relation: 'WCSPROGRAMS_KoboEthnicity', where: { WCSPROGRAMS_KoboEthnicityExtCode: x['hh_members/ethnicity'] }})(state),
+            Birth: x['hh_members/birth'],
+            BnsanswerUuid: dataValue('undefined'),
+            AnswerId: state._id,
+            GeneratedUuid: x['__generatedUuid']
+          }) 
+
+                    } 
+           return upsertMany('WCSPROGRAMS_KoboBnsAnswerHhMembers', 'GeneratedUuid', () => mapping, {setNull: ["''", "'undefined'"]})(state); 
+          }) 
+          fn(async state => {
+           if (state.data['group_dt8cs40/IMP_D2']) { 
+
+                          const array = state.data['group_dt8cs40/IMP_D2'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboImpD2ID: await findValue({uuid: 'wcsprograms_koboimpd2id', relation: 'WCSPROGRAMS_KoboImpD2', where: { WCSPROGRAMS_KoboImpD2ExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerImpD2', ["WCSPROGRAMS_KoboImpD2ID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_js4ak55/KAP_P5']) { 
+
+                          const array = state.data['group_js4ak55/KAP_P5'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboKapP5ID: await findValue({uuid: 'wcsprograms_kobokapp5id', relation: 'WCSPROGRAMS_KoboKapP5', where: { WCSPROGRAMS_KoboKapP5ExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerKapP5', ["WCSPROGRAMS_KoboKapP5ID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_js4ak55/KAP_P3']) { 
+
+                          const array = state.data['group_js4ak55/KAP_P3'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboKapPIllegalID: await findValue({uuid: 'wcsprograms_kobokappillegalid', relation: 'WCSPROGRAMS_KoboKapPIllegal', where: { WCSPROGRAMS_KoboKapPIllegalExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerKapPIllegal', ["WCSPROGRAMS_KoboKapPIllegalID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_js4ak55/KAP_P2']) { 
+
+                          const array = state.data['group_js4ak55/KAP_P2'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboKapP2ID: await findValue({uuid: 'wcsprograms_kobokapp2id', relation: 'WCSPROGRAMS_KoboKapP2', where: { WCSPROGRAMS_KoboKapP2ExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerKapP2', ["WCSPROGRAMS_KoboKapP2ID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_js4ak55/KAP_K5']) { 
+
+                          const array = state.data['group_js4ak55/KAP_K5'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboKapK5ID: await findValue({uuid: 'wcsprograms_kobokapk5id', relation: 'WCSPROGRAMS_KoboKapK5', where: { WCSPROGRAMS_KoboKapK5ExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerKapK5', ["WCSPROGRAMS_KoboKapK5ID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_js4ak55/KAP_K4']) { 
+
+                          const array = state.data['group_js4ak55/KAP_K4'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboKapK4ID: await findValue({uuid: 'wcsprograms_kobokapk4id', relation: 'WCSPROGRAMS_KoboKapK4', where: { WCSPROGRAMS_KoboKapK4ExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerKapK4', ["WCSPROGRAMS_KoboKapK4ID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+          fn(async state => {
+           if (state.data['group_qc8pc25/hh_type']) { 
+
+                          const array = state.data['group_qc8pc25/hh_type'].split(' '); 
+
+                          const mapping = []; 
+           
+                          for ( let x of array ) { 
+
+                            mapping.push({
+            WCSPROGRAMS_KoboHhtypeID: await findValue({uuid: 'wcsprograms_kobohhtypeid', relation: 'WCSPROGRAMS_KoboHhtype', where: { WCSPROGRAMS_KoboHhtypeExtCode: x }})(state),
+            WCSPROGRAMS_KoboBnsanswerID: await findValue({uuid: 'wcsprograms_kobobnsanswerid', relation: 'WCSPROGRAMS_KoboBnsAnswer', where: { AnswerId: state._id }})(state)
+          }); 
+
+                          } 
+
+                       
+           return upsertMany('WCSPROGRAMS_KoboBnsanswerHhtype', ["WCSPROGRAMS_KoboHhtypeID", "WCSPROGRAMS_KoboBnsanswerID"], () => mapping, {setNull: ["''", "'undefined'"]})(state); } 
+           return state; 
+          }) 
+
     triggers:
       webhook:
         type: webhook
@@ -1455,46 +1903,44 @@ workflows:
         condition_type: js_expression
         condition_label: BNS Price
         condition_expression: |
-          state.data.form === "bns_price" && 
-          state.data.body?.survey_type && 
-          state.data.body.survey_type !== "practice"
-        enabled: false
+          state.data.form == 'bns_price' &&
+          (!state.data.body?.survey_type || state.data.body.survey_type !== 'practice')
+        enabled: true
       Triage-jobs->BNS-2B-BNS-Survey:
         source_job: Triage-jobs
         target_job: BNS-2B-BNS-Survey
         condition_type: js_expression
         condition_label: BNS Survey
         condition_expression: |
-          state.data.form == "bns_survey" && 
-          state.data.body?.survey_type && 
-          state.data.body.survey_type !== "practice"
-        enabled: false
+          state.data.form === 'bns_survey' &&
+          (!state.data.body?.survey_type || state.data.body.survey_type !== 'practice')
+        enabled: true
       Triage-jobs->BNS-2C-NRGT---Historical-Version:
         source_job: Triage-jobs
         target_job: BNS-2C-NRGT---Historical-Version
         condition_type: js_expression
         condition_label: NRGT Historical
         condition_expression: |
-          state.data.form == "nrgt_historical" && state.data.formName != "NRGT Kahuzi Biega 2019"
-        enabled: false
+          state.data.form == 'nrgt_historical' &&
+          (!state.data.body?.survey_type || state.data.body.survey_type !== 'practice')
+        enabled: true
       Triage-jobs->BNS-2D-NRGT-2019:
         source_job: Triage-jobs
         target_job: BNS-2D-NRGT-2019
         condition_type: js_expression
         condition_label: NRGT Current
         condition_expression: |
-          state.data.form == "nrgt_current" && 
-          state.data.body?.survey_type && 
-          state.data.body.survey_type !== "practice"
-        enabled: false
+          state.data.form == 'nrgt_current' &&
+          (!state.data.body?.survey_type || state.data.body.survey_type !== 'practice')
+        enabled: true
       Triage-jobs->BNS-2E-NRGT---Historical-Version-2-2022:
         source_job: Triage-jobs
         target_job: BNS-2E-NRGT---Historical-Version-2-2022
         condition_type: js_expression
         condition_label: NGRT Historical
         condition_expression: |
-          state.data.form == "nrgt_historical" && state.data.formName == "NRGT Kahuzi Biega 2019"
-        enabled: false
+          state.data.form == 'nrgt_historical' && state.data.formName == 'NRGT Kahuzi Biega 2019'
+        enabled: true
       Triage-jobs->Indonesia-Leuser-NRGT:
         source_job: Triage-jobs
         target_job: Indonesia-Leuser-NRGT
@@ -1504,7 +1950,7 @@ workflows:
           state.data.form == "nrgt_leuser" && 
           state.data.body?.survey_type && 
           state.data.body.survey_type !== "practice"
-        enabled: true
+        enabled: false
       Triage-jobs->Indonesia-BNS-Price:
         source_job: Triage-jobs
         target_job: Indonesia-BNS-Price
@@ -1514,7 +1960,17 @@ workflows:
           state.data.form === "bns_price_leuser" && 
           state.data.body?.survey_type && 
           state.data.body.survey_type !== "practice"
-        enabled: true
+        enabled: false
+      Triage-jobs->Indonesia-BNS-Household:
+        source_job: Triage-jobs
+        target_job: Indonesia-BNS-Household
+        condition_type: js_expression
+        condition_label: BNS 2B BNS Household Indonesia
+        condition_expression: |
+          state.data.form == "bns_survey_leuser" && 
+          state.data.body?.survey_type && 
+          state.data.body.survey_type !== "practice"
+        enabled: false
   AUTO1-Get-Kobo-Form:
     name: AUTO1 Get Kobo Form
     jobs:
@@ -3104,7 +3560,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: true
+        enabled: false
     edges:
       webhook->A2-Process-Forms-AUTO:
         source_trigger: webhook
@@ -3129,27 +3585,6 @@ workflows:
         target_job: A5-Prepare-Form-for-Data-Dictionary-AUTO---MSSQL
         condition_type: on_job_success
         enabled: false
-  Event-based-Workflow:
-    name: Event-based Workflow
-    jobs:
-      Transform-data:
-        name: Transform data
-        adaptor: '@openfn/language-common@latest'
-        credential: null
-        body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
-
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->Transform-data:
-        source_trigger: webhook
-        target_job: Transform-data
-        condition_type: always
-        enabled: true
   Monitor-Forms-Shared:
     name: Monitor Forms Shared
     jobs:
@@ -3449,7 +3884,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: true
+        enabled: false
     edges:
       webhook->Transform-data:
         source_trigger: webhook
@@ -3574,7 +4009,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
-        enabled: true
+        enabled: false
     edges:
       cron->auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
         source_trigger: cron
