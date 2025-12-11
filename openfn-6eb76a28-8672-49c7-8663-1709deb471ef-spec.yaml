@@ -173,11 +173,23 @@ workflows:
             return state;
           });
 
-          each(dataPath('surveys[*]'), state => {
-            const { url, query, tag, formId, formType, name, owner, projectid } =
-              state.data;
-            console.log('Sending GET to ::', `${url}${query}`); 
+          // --------- Original code
+          //each(dataPath('surveys[*]'), state => {
+          //  const { url, query, tag, formId, formType, name, owner, projectid } =
+          //    state.data;
+          //  console.log('Sending GET to ::', `${url}${query}`); 
+          //  return get(`${url}${query}`, {}, state => {
+            
+           // --------- Suggested code from the AI to be able to display the summary at the end 
+            each(dataPath('surveys[*]'), state => {
+            const { url, query, tag, formId, formType, name, owner, projectid } = state.data;
+            
             return get(`${url}${query}`, {}, state => {
+              const count = state.data.results.length;
+              
+              // Store the count for summary logging
+              state.data.submissionCount = count;
+            
               state.data.submissions = state.data.results.map((submission, i) => {
                 return {
                   i,
@@ -190,8 +202,14 @@ workflows:
                   body: submission,
                 };
               });
-              const count = state.data.submissions.length;
+            
+             //  --------- Orginal code (suite)
+             // const count = state.data.submissions.length;
+             // console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
+              
+           // --------- Suggested code from the AI to be able to display the summary at the end 
               console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
+
               //Once we fetch the data, we want to post each individual Kobo survey
               //back to the OpenFn inbox to run through the jobs =========================
               return each(dataPath('submissions[*]'), state => {
@@ -237,6 +255,35 @@ workflows:
             return state; 
           });
 
+          fn(state => {
+            // Log summary of submissions fetched per form
+            console.log('\n=== FETCH SUMMARY ===');
+            
+            const formCounts = {};
+            let totalSubmissions = 0;
+            
+            // Count submissions per form (this data is available from the surveys array)
+            state.surveys?.forEach(survey => {
+              const count = survey.submissionCount || 0; // Assuming you store this during fetch
+              formCounts[survey.formId] = {
+                name: survey.name,
+                count: count
+              };
+              totalSubmissions += count;
+            });
+            
+            // Display the summary
+            Object.keys(formCounts).forEach(formId => {
+              const { name, count } = formCounts[formId];
+              console.log(`Form: ${name} (${formId}) - ${count} submissions`);
+            });
+            
+            console.log(`\nTotal forms processed: ${Object.keys(formCounts).length}`);
+            console.log(`Total submissions fetched: ${totalSubmissions}`);
+            console.log('=====================\n');
+            
+            return state;
+          });
     triggers:
       cron:
         type: cron

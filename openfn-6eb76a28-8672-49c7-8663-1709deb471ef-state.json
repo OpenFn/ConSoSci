@@ -528,52 +528,6 @@
         }
       }
     },
-    "0.-Get-GRM-Forms-from-Kobo": {
-      "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
-      "name": "0. Get GRM Forms from Kobo",
-      "inserted_at": "2025-11-28T13:55:01.705560Z",
-      "lock_version": 69,
-      "triggers": {
-        "cron": {
-          "enabled": true,
-          "id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
-          "type": "cron",
-          "cron_expression": "0 */1 * * *"
-        }
-      },
-      "jobs": {
-        "GRM-Fetch-1-Get-FormsList-Ongoing": {
-          "id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "name": "GRM-Fetch-1 Get FormsList Ongoing",
-          "body": "//== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//\n// Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602\n// This can be run on-demand at any time by clicking \"run\" //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:P', //get Deployed GRM forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item => item.includes('TRUE') //return forms where auto-sync = TRUE\n        //&& item.includes('bns_survey', 'nrgt_current')\n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData, daterange } = state;\n\n  // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana\n  const isMoreThanAWeekOld = dateString => {\n    const currentDate = new Date();\n    const inputDate = new Date(dateString);\n    // Calculate the difference in time (in milliseconds) and convert to days\n    const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);\n\n    return daysDifference > 7;\n  };\n  // IF YOU CLEAR STATE...\n  // Set this manual cursor to the earliest submission date you want fetch.\n  const manualCursor = '2025-01-01T22:00:07.922Z';\n\n  let cursorEnd = null;\n\n  if (daterange && daterange.start && daterange.end) {\n    state.cursor = daterange.start;\n    cursorEnd = daterange.end;\n  } else {\n    state.cursor = state.lastEnd || manualCursor;\n\n    if (!state.cursor)\n      throw new Error(\n        'Please define a cursor date no greater than 1 week ago and try again'\n      );\n    if (isMoreThanAWeekOld(state.cursor))\n      throw new Error(\n        `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`\n      );\n  }\n  console.log('Current cursor value:', state.cursor);\n  if (cursorEnd) console.log('Using cursorEnd:', cursorEnd);\n\n  const formsList = sheetsData.map(survey => ({\n    formId: survey.uid,\n    tag: survey.tag,\n    name: survey.name,\n    projectid: survey.asana_projectid,\n  }));\n\n  console.log('# of GRM forms detected in Sheet:: ', formsList.length);\n  console.log(\n    'List of forms to re-sync:: ',\n    JSON.stringify(formsList, null, 2)\n  );\n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      projectid: survey.asana_projectid,\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: cursorEnd\n        ? `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\",\"$lt\":\"${cursorEnd}\"}}`\n        : `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\"}}`,\n    })),\n  };\n\n  console.log('mapped sheetsData::', JSON.stringify(state.data, null, 2));\n\n  return state;\n});\n\nfn(state => {\n  // let lastEnd = state.references\n  //   .filter(item => item.body)\n  //   .map(s => s.body.end)\n  //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n  let lastEnd = new Date().toISOString();\n\n  if (state.daterange) {\n    console.log('Manual run with daterange detected');\n    delete state.daterange;\n    return { ...state, references: [], lastEnd };\n  }\n\n  console.log('New cursor value:', lastEnd);\n  return { ...state, references: [], lastEnd };\n});\n",
-          "adaptor": "@openfn/language-googlesheets@3.0.14",
-          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae"
-        },
-        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
-          "id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "name": "GRM-Fetch-2 Get Kobo Forms Ongoing",
-          "body": "// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.regionKeyMap = {\n    'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',\n    'Global': 'glo_workflowUrl',\n    'Greater Mekong': 'gmk_workflowUrl',\n    'Andes, Amazon & Orinoco': 'aao_workflowUrl',\n    'Central Africa & Gulf of Guinea': 'cag_workflowUrl',\n    'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',\n    'Southern Cone and Patagonia': 'pat_workflowUrl',\n    'Southeast Asia Pacific': 'sap_workflowUrl',\n    'Sudano-Sahel': 'sus_workflowUrl', \n    'South East Asia and Bay of Bengal' : 'seabb_workflowUrl'\n  };\n  return state;\n});\n\neach(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } =\n    state.data;\n  console.log('Sending GET to ::', `${url}${query}`); \n  return get(`${url}${query}`, {}, state => {\n    state.data.submissions = state.data.results.map((submission, i) => {\n      return {\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      };\n    });\n    const count = state.data.submissions.length;\n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n    return each(dataPath('submissions[*]'), state => {\n      const formMeta = state.sheetsData.find(row => row.uid === formId);\n      if (!formMeta) throw new Error(`No metadata for formId ${formId}`);\n\n      const regionKey = state.regionKeyMap[formMeta.Region];\n      const workflowUrl = state.configuration[regionKey];\n\n      if (!workflowUrl) {\n        throw new Error(`No workflow URL configured for region: \"${formMeta.Region}\" and formId \"${formMeta.formId}\"`);\n      }\n      console.log(`Posting ${state.data.i + 1} of ${count}...`);\n      console.log(`Submission id:: ${state.data.body._id}`);\n\n      console.log(\"workflowUrl \" + formMeta.Region, \": \", workflowUrl); //TODO remove\n      return post(workflowUrl, {\n        body: state => state.data,\n      })(state);\n    })(state);\n  })(state).catch(err => {\n     const errors = state.errors || []; \n     errors.push({\n        formId,\n        message: err.message,\n      });\n      state.errors = errors;\n      console.log(`Error fetching submissions from  ${formId}::`, err.message);\n      return state;\n    });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n  if (!state.errors) return state;\n \n  if (state.errors ? state.errors.length > 0 : false){\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); \n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }  \n  return state; \n});\n",
-          "adaptor": "@openfn/language-http@3.1.11",
-          "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed"
-        }
-      },
-      "edges": {
-        "cron->GRM-Fetch-1-Get-FormsList-Ongoing": {
-          "enabled": true,
-          "id": "c97eea3c-5d7a-4e6e-9899-f594859f0026",
-          "target_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "source_trigger_id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
-          "condition_type": "always"
-        },
-        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
-          "enabled": true,
-          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
-          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "OLD.-Get-Asana-Field-IDs-for-Project": {
       "id": "46f442b7-49b6-4f68-8ff1-436fcb2fb211",
       "name": "OLD. Get Asana Field IDs for Project",
@@ -1282,6 +1236,52 @@
           "condition_type": "js_expression",
           "condition_label": "New Okwangwo GRM",
           "condition_expression": "state.data.formName == \"Okwangwo GRM\""
+        }
+      }
+    },
+    "0.-Get-GRM-Forms-from-Kobo": {
+      "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
+      "name": "0. Get GRM Forms from Kobo",
+      "inserted_at": "2025-12-11T15:55:09.647466Z",
+      "lock_version": 70,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
+          "type": "cron",
+          "cron_expression": "0 */1 * * *"
+        }
+      },
+      "jobs": {
+        "GRM-Fetch-1-Get-FormsList-Ongoing": {
+          "id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "name": "GRM-Fetch-1 Get FormsList Ongoing",
+          "body": "//== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//\n// Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602\n// This can be run on-demand at any time by clicking \"run\" //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:P', //get Deployed GRM forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item => item.includes('TRUE') //return forms where auto-sync = TRUE\n        //&& item.includes('bns_survey', 'nrgt_current')\n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData, daterange } = state;\n\n  // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana\n  const isMoreThanAWeekOld = dateString => {\n    const currentDate = new Date();\n    const inputDate = new Date(dateString);\n    // Calculate the difference in time (in milliseconds) and convert to days\n    const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);\n\n    return daysDifference > 7;\n  };\n  // IF YOU CLEAR STATE...\n  // Set this manual cursor to the earliest submission date you want fetch.\n  const manualCursor = '2025-01-01T22:00:07.922Z';\n\n  let cursorEnd = null;\n\n  if (daterange && daterange.start && daterange.end) {\n    state.cursor = daterange.start;\n    cursorEnd = daterange.end;\n  } else {\n    state.cursor = state.lastEnd || manualCursor;\n\n    if (!state.cursor)\n      throw new Error(\n        'Please define a cursor date no greater than 1 week ago and try again'\n      );\n    if (isMoreThanAWeekOld(state.cursor))\n      throw new Error(\n        `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`\n      );\n  }\n  console.log('Current cursor value:', state.cursor);\n  if (cursorEnd) console.log('Using cursorEnd:', cursorEnd);\n\n  const formsList = sheetsData.map(survey => ({\n    formId: survey.uid,\n    tag: survey.tag,\n    name: survey.name,\n    projectid: survey.asana_projectid,\n  }));\n\n  console.log('# of GRM forms detected in Sheet:: ', formsList.length);\n  console.log(\n    'List of forms to re-sync:: ',\n    JSON.stringify(formsList, null, 2)\n  );\n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      projectid: survey.asana_projectid,\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: cursorEnd\n        ? `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\",\"$lt\":\"${cursorEnd}\"}}`\n        : `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\"}}`,\n    })),\n  };\n\n  console.log('mapped sheetsData::', JSON.stringify(state.data, null, 2));\n\n  return state;\n});\n\nfn(state => {\n  // let lastEnd = state.references\n  //   .filter(item => item.body)\n  //   .map(s => s.body.end)\n  //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n  let lastEnd = new Date().toISOString();\n\n  if (state.daterange) {\n    console.log('Manual run with daterange detected');\n    delete state.daterange;\n    return { ...state, references: [], lastEnd };\n  }\n\n  console.log('New cursor value:', lastEnd);\n  return { ...state, references: [], lastEnd };\n});\n",
+          "adaptor": "@openfn/language-googlesheets@3.0.14",
+          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae"
+        },
+        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
+          "id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "name": "GRM-Fetch-2 Get Kobo Forms Ongoing",
+          "body": "// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.regionKeyMap = {\n    'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',\n    'Global': 'glo_workflowUrl',\n    'Greater Mekong': 'gmk_workflowUrl',\n    'Andes, Amazon & Orinoco': 'aao_workflowUrl',\n    'Central Africa & Gulf of Guinea': 'cag_workflowUrl',\n    'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',\n    'Southern Cone and Patagonia': 'pat_workflowUrl',\n    'Southeast Asia Pacific': 'sap_workflowUrl',\n    'Sudano-Sahel': 'sus_workflowUrl', \n    'South East Asia and Bay of Bengal' : 'seabb_workflowUrl'\n  };\n  return state;\n});\n\n// --------- Original code\n//each(dataPath('surveys[*]'), state => {\n//  const { url, query, tag, formId, formType, name, owner, projectid } =\n//    state.data;\n//  console.log('Sending GET to ::', `${url}${query}`); \n//  return get(`${url}${query}`, {}, state => {\n  \n // --------- Suggested code from the AI to be able to display the summary at the end \n  each(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } = state.data;\n  \n  return get(`${url}${query}`, {}, state => {\n    const count = state.data.results.length;\n    \n    // Store the count for summary logging\n    state.data.submissionCount = count;\n  \n    state.data.submissions = state.data.results.map((submission, i) => {\n      return {\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      };\n    });\n  \n   //  --------- Orginal code (suite)\n   // const count = state.data.submissions.length;\n   // console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    \n // --------- Suggested code from the AI to be able to display the summary at the end \n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n    return each(dataPath('submissions[*]'), state => {\n      const formMeta = state.sheetsData.find(row => row.uid === formId);\n      if (!formMeta) throw new Error(`No metadata for formId ${formId}`);\n\n      const regionKey = state.regionKeyMap[formMeta.Region];\n      const workflowUrl = state.configuration[regionKey];\n\n      if (!workflowUrl) {\n        throw new Error(`No workflow URL configured for region: \"${formMeta.Region}\" and formId \"${formMeta.formId}\"`);\n      }\n      console.log(`Posting ${state.data.i + 1} of ${count}...`);\n      console.log(`Submission id:: ${state.data.body._id}`);\n\n      console.log(\"workflowUrl \" + formMeta.Region, \": \", workflowUrl); //TODO remove\n      return post(workflowUrl, {\n        body: state => state.data,\n      })(state);\n    })(state);\n  })(state).catch(err => {\n     const errors = state.errors || []; \n     errors.push({\n        formId,\n        message: err.message,\n      });\n      state.errors = errors;\n      console.log(`Error fetching submissions from  ${formId}::`, err.message);\n      return state;\n    });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n  if (!state.errors) return state;\n \n  if (state.errors ? state.errors.length > 0 : false){\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null,2)); \n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }  \n  return state; \n});\n\nfn(state => {\n  // Log summary of submissions fetched per form\n  console.log('\\n=== FETCH SUMMARY ===');\n  \n  const formCounts = {};\n  let totalSubmissions = 0;\n  \n  // Count submissions per form (this data is available from the surveys array)\n  state.surveys?.forEach(survey => {\n    const count = survey.submissionCount || 0; // Assuming you store this during fetch\n    formCounts[survey.formId] = {\n      name: survey.name,\n      count: count\n    };\n    totalSubmissions += count;\n  });\n  \n  // Display the summary\n  Object.keys(formCounts).forEach(formId => {\n    const { name, count } = formCounts[formId];\n    console.log(`Form: ${name} (${formId}) - ${count} submissions`);\n  });\n  \n  console.log(`\\nTotal forms processed: ${Object.keys(formCounts).length}`);\n  console.log(`Total submissions fetched: ${totalSubmissions}`);\n  console.log('=====================\\n');\n  \n  return state;\n});",
+          "adaptor": "@openfn/language-http@3.1.11",
+          "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed"
+        }
+      },
+      "edges": {
+        "cron->GRM-Fetch-1-Get-FormsList-Ongoing": {
+          "enabled": true,
+          "id": "c97eea3c-5d7a-4e6e-9899-f594859f0026",
+          "target_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "source_trigger_id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
+          "condition_type": "always"
+        },
+        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
+          "enabled": true,
+          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
+          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "condition_type": "on_job_success"
         }
       }
     }
