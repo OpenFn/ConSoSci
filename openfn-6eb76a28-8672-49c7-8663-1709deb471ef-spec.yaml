@@ -905,7 +905,7 @@ workflows:
                 // Fields  belonging to questions with dropdown or multiple choice
                 '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-               // '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext], // Seems that this field was deleted from Asana on 11 december 2025
+               // '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext], // Seems that this field was deleted from Asana on 10 december 2025
                 '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
                 '1202330755979944': state => state.formatMapping["IndigenousPeople_" + $.inputData.body.IndigenousPeople],
                 '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
