@@ -372,49 +372,6 @@ workflows:
               });
           });
 
-          // each(
-          //   '$.surveySubmissions[*]',
-          //   post(
-          //     "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",{
-          //     body: state => {
-          //       const {i, formName} = state.data;
-          //       const count = state.surveySubmissions.length;
-          //       console.log(`Posting ${i} of ${count} from ${formName}`);
-          //       return  state.data;
-          //     }
-          //     }
-          //   )
-          // );  
-
-          // each(dataPath('surveys[*]'), state => {
-          //   const { url, tag, formId, name, owner } = state.data;
-          //   const query = "&query={\"start\":{\"$gte\":\"2020-10-29T00:00:00.000Z\"}}"
-          //   return get(`${url}${query}`, {}, state => {
-          //     console.log(state.data.result)
-          //     state.data.submissions = state.data.results.map((submission, i) => {
-          //       return {
-          //         i,
-          //         // Here we append the tags defined above to the Kobo form submission data
-          //         form: tag,
-          //         formName: name,
-          //         formOwner: owner,
-          //         body: submission,
-          //       };
-          //     });
-          //     const count = state.data.submissions.length;
-          //     console.log('Finding historical forms to resync...');
-          //     console.log(`Fetched ${count} submissions from ${formId} (${tag}).`);
-          //     //Once we fetch the data, we want to post each individual Kobo survey
-          //     //back to the OpenFn inbox to run through the jobs =========================
-          //     return each(dataPath('submissions[*]'), state => {
-          //       console.log(`Posting ${state.data.i + 1} of ${count}...`);
-          //       return post("https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4", {
-          //         body: state => state.data,
-          //       })(state);
-          //     })(state);
-          //   })(state)
-          // });
-
       Post-Submission:
         name: Post Submission
         adaptor: '@openfn/language-http@7.2.3'
@@ -1334,7 +1291,7 @@ workflows:
             AnswerId: dataValue('_id'),
             Landscape: state => {
               var landscape = dataValue('ConsentInform/landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
+              return landscape;
             },
             Surveyor: dataValue('ConsentInform/surveyor'),
             GovGroup: dataValue('RespondenInfo/gov_group'),
@@ -1376,7 +1333,7 @@ workflows:
             Resources: dataValue('Capacity_group/resources'),
             InstutionalFramework: dataValue('Capacity_group/framework'),
             Motivation: dataValue('Capacity_group/motivation'),
-            Power: dataValue('power'),
+            Power: dataValue('Power_group/power'),
             LastUpdate: new Date().toISOString(),
           });
 
@@ -1386,7 +1343,7 @@ workflows:
             DatasetOwner: state.data.formOwner,
             Landscape:  state => {
               var landscape = dataValue('ConsentInform/landscape')(state);
-              return state.landscapeMap[landscape] || landscape;
+              return landscape;
             },
             DatasetUuidId: dataValue('datasetId'),
             Citation: dataValue('instance'),
@@ -1890,7 +1847,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: true
+        enabled: false
     edges:
       webhook->Triage-jobs:
         source_trigger: webhook
@@ -1947,20 +1904,16 @@ workflows:
         condition_type: js_expression
         condition_label: BNS-2E NRGT Indonesia
         condition_expression: |
-          state.data.form == "nrgt_leuser" && 
-          state.data.body?.survey_type && 
-          state.data.body.survey_type !== "practice"
-        enabled: false
+          state.data.form == "nrgt_leuser"
+        enabled: true
       Triage-jobs->Indonesia-BNS-Price:
         source_job: Triage-jobs
         target_job: Indonesia-BNS-Price
         condition_type: js_expression
         condition_label: BNS_2A BNS Price Indonesia
         condition_expression: |
-          state.data.form === "bns_price_leuser" && 
-          state.data.body?.survey_type && 
-          state.data.body.survey_type !== "practice"
-        enabled: false
+          state.data.form === "bns_price_leuser"
+        enabled: true
       Triage-jobs->Indonesia-BNS-Household:
         source_job: Triage-jobs
         target_job: Indonesia-BNS-Household
