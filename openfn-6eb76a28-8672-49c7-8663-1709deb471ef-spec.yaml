@@ -155,137 +155,7 @@ workflows:
         adaptor: '@openfn/language-kobotoolbox@4.2.9'
         credential: rediet@openfn.org-WCS-GRM-Kobo
         body: |
-          // // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
-          // // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
-          // //**********************************************************//
-          // fn(state => {
-          //   state.errors = [];
-          //   state.globalIndex = 0;
-          //   state.regionKeyMap = {
-          //     'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',
-          //     'Global': 'glo_workflowUrl',
-          //     'Greater Mekong': 'gmk_workflowUrl',
-          //     'Andes, Amazon & Orinoco': 'aao_workflowUrl',
-          //     'Central Africa & Gulf of Guinea': 'cag_workflowUrl',
-          //     'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',
-          //     'Southern Cone and Patagonia': 'pat_workflowUrl',
-          //     'Southeast Asia Pacific': 'sap_workflowUrl',
-          //     'Sudano-Sahel': 'sus_workflowUrl',
-          //     'South East Asia and Bay of Bengal': 'seabb_workflowUrl'
-          //   };
-          //   return state;
-          // });
-
-          // // --------- Original code
-          // //each(dataPath('surveys[*]'), state => {
-          // //  const { url, query, tag, formId, formType, name, owner, projectid } =
-          // //    state.data;
-          // //  console.log('Sending GET to ::', `${url}${query}`); 
-          // //  return get(`${url}${query}`, {}, state => {
-
-          // // --------- Suggested code from the AI to be able to display the summary at the end 
-          // each(dataPath('surveys[*]'), state => {
-          //   const { url, query, tag, formId, formType, name, owner, projectid } = state.data;
-
-          //   return get(`${url}${query}`, {}, state => {
-          //     const count = state.data.results.length;
-
-          //     // Store the count for summary logging
-          //     state.data.submissionCount = count;
-
-          //     state.data.submissions = state.data.results.map((submission, i) => {
-          //       return {
-          //         i,
-          //         // Here we append the tags defined above to the Kobo form submission data
-          //         formId,
-          //         projectid,
-          //         formName: name,
-          //         formOwner: owner,
-          //         formType,
-          //         body: submission,
-          //       };
-          //     });
-
-          //     //  --------- Orginal code (suite)
-          //     // const count = state.data.submissions.length;
-          //     // console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-
-          //     // --------- Suggested code from the AI to be able to display the summary at the end 
-          //     console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
-
-          //     //Once we fetch the data, we want to post each individual Kobo survey
-          //     //back to the OpenFn inbox to run through the jobs =========================
-          //     return each(dataPath('submissions[*]'), state => {
-          //       const formMeta = state.sheetsData.find(row => row.uid === formId);
-          //       if (!formMeta) throw new Error(`No metadata for formId ${formId}`);
-
-          //       const regionKey = state.regionKeyMap[formMeta.Region];
-          //       const workflowUrl = state.configuration[regionKey];
-
-          //       if (!workflowUrl) {
-          //         throw new Error(`No workflow URL configured for region: "${formMeta.Region}" and formId "${formMeta.formId}"`);
-          //       }
-          //       console.log(`Posting ${state.data.i + 1} of ${count}...`);
-          //       console.log(`Submission id:: ${state.data.body._id}`);
-
-          //       return post(workflowUrl, {
-          //         body: state => state.data,
-          //       })(state);
-          //     })(state);
-          //   })(state).catch(err => {
-          //     const errors = state.errors || [];
-          //     errors.push({
-          //       formId,
-          //       message: err.message,
-          //     });
-          //     state.errors = errors;
-          //     console.log(`Error fetching submissions from  ${formId}::`, err.message);
-          //     return state;
-          //   });
-          // });
-
-          // //Throw errors at the end of the job if we failed to extract any Kobo forms
-          // fn(state => {
-          //   if (!state.errors) return state;
-
-          //   if (state.errors ? state.errors.length > 0 : false) {
-          //     console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null, 2));
-          //     throw new Error(
-          //       `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`
-          //     );
-          //   }
-          //   return state;
-          // });
-
-          // fn(state => {
-          //   // Log summary of submissions fetched per form
-          //   console.log('\n=== FETCH SUMMARY ===');
-
-          //   const formCounts = {};
-          //   let totalSubmissions = 0;
-
-          //   // Count submissions per form (this data is available from the surveys array)
-          //   state.surveys?.forEach(survey => {
-          //     const count = survey.submissionCount || 0; // Assuming you store this during fetch
-          //     formCounts[survey.formId] = {
-          //       name: survey.name,
-          //       count: count
-          //     };
-          //     totalSubmissions += count;
-          //   });
-
-          //   // Display the summary
-          //   Object.keys(formCounts).forEach(formId => {
-          //     const { name, count } = formCounts[formId];
-          //     console.log(`Form: ${name} (${formId}) - ${count} submissions`);
-          //   });
-
-          //   console.log(`\nTotal forms processed: ${Object.keys(formCounts).length}`);
-          //   console.log(`Total submissions fetched: ${totalSubmissions}`);
-          //   console.log('=====================\n');
-
-          //   return state;
-          // });
+          
 
           // Here we fetch submissions for all deployed "GRM" forms in GoogleSheet
           // NOTE: See linked job "[GRM-A] 1.Get FormsList (Ongoing)" for cursor & GoogleSheet query logic
@@ -303,7 +173,8 @@ workflows:
               'Southern Cone and Patagonia': 'pat_workflowUrl',
               'Southeast Asia Pacific': 'sap_workflowUrl',
               'Sudano-Sahel': 'sus_workflowUrl',
-              'South East Asia and Bay of Bengal': 'seabb_workflowUrl'
+              'South East Asia and Bay of Bengal': 'seabb_workflowUrl',
+              'Temperate Asian Mountains and Grasslands': 'tamg_workflowUrl'
             };
           state.submissions = [];
             return state;
@@ -327,7 +198,9 @@ workflows:
                   body: submission,
                 });
               });
-              const count = state.submissions.length;
+              //const count = state.submissions.length;
+              const results = state.data?.results ?? [];
+              const count = Array.isArray(state.data) ? state.data.length : (state.data?.results?.length ?? 0);
               console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
               //Once we fetch the data, we want to post each individual Kobo survey
               //back to the OpenFn inbox to run through the jobs =========================
@@ -732,7 +605,7 @@ workflows:
         body: |
           // Run this after creating a sample task in the target project.
           // Paste that task's gid below.
-          const SAMPLE_TASK_GID = "1212740517637905";
+          const SAMPLE_TASK_GID = "1213508009226403";
 
           // 1) Standard fields (present across projects)
           const STANDARD_FIELDS = {
@@ -1520,7 +1393,7 @@ workflows:
 
                 '1209077505622423': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
+                //'1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext], // Field was deleted
                 '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
                 '1202330755979944': state => state.formatMapping["IndigenousPeople_" + $.inputData.body.IndigenousPeople],
                 '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
@@ -4009,7 +3882,7 @@ workflows:
           // Retrieve the task_gid from the Asana project URL i.e. https://app.asana.com/0/<Project_gid/task_id
 
           // Make sure that this task is alive in asana!
-            getTask("1212220671128474",   //Again, this is a task_gid, and NOT a project_id
+            getTask("1213445353711810",   //Again, this is a task_gid, and NOT a project_id
             {},
             state => {
               return state;
@@ -5059,6 +4932,20 @@ workflows:
 
           // });
 
+          //Mongolia
+          // getTasks("1212740517637896", {
+
+          // });
+
+          //Sena
+          // getTasks("1209801015093765", {
+
+          // });
+
+          getTask("1211276833648304", {
+          });
+
+
 
           // // Fetch tasks from a project
           // getTasks('1202329899911590', { opt_fields: 'gid,name,resource_type,resource_subtype' });
@@ -5102,6 +4989,175 @@ workflows:
         source_trigger: cron
         target_job: Get-data
         condition_type: always
+        enabled: true
+  Scheduled-workflow:
+    name: Scheduled workflow
+    jobs:
+      Get-data:
+        name: Get data
+        adaptor: '@openfn/language-kobotoolbox@4.2.11'
+        credential: rediet@openfn.org-WCS-GRM-Kobo
+        body: |
+          fn(state => ({
+            ...state,
+            koboIds: new Set(),       // only store GrievanceIds, not full records
+            koboMissingId: [],        // submissions with no GrievanceId set
+            koboOffset: 0,
+            koboDone: false,
+            KOBO_PAGE_SIZE: 200,      // safe page size for Kobo API
+          }));
+
+          each(
+            (state) => (state.koboDone ? [] : [state.koboOffset]),
+            [
+              get(
+                state => `api/v2/assets/aBoTAXpkcvgB7VnuGkjdrg/data/?format=json&limit=${state.KOBO_PAGE_SIZE}&start=${state.koboOffset}&fields=["GrievanceId","_id","_submission_time"]`,
+                {}
+              ),
+              fn(state => {
+                const results = state.data?.results || [];
+                const total = state.data?.count || 0;
+
+                results.forEach(s => {
+                  if (s.GrievanceId) {
+                    state.koboIds.add(s.GrievanceId);
+                  } else {
+                    state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });
+                  }
+                });
+
+                state.koboOffset += results.length;
+                state.koboDone = state.koboOffset >= total || results.length === 0;
+
+                console.log(`Kobo: fetched ${state.koboOffset}/${total}`);
+                return state;
+              }),
+            ]
+          );
+      Fetch-from-Asana:
+        name: Fetch from Asana
+        adaptor: '@openfn/language-asana@5.0.10'
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
+        body: |
+          fn(state => ({
+            ...state,
+            asanaIds: new Set(),      // only store GrievanceIds, not full task objects
+            asanaTasksNoId: [],       // tasks with no GrievanceId field populated
+            asanaOffset: null,
+            asanaFetchDone: false,
+            GRIEVANCE_FIELD_GID: '1201884379104074',
+          }));
+
+          // Fetch first Asana page
+          request(
+            `/projects/1205812185361950/tasks?limit=100&opt_fields=gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value`,
+            {}
+          );
+
+          fn(state => extractAsanaPage(state));
+
+          // Paginate remaining Asana pages
+          each(
+            (state) => (state.asanaFetchDone ? [] : [state.asanaOffset]),
+            [
+              request(
+                state => `/projects/1205812185361950/tasks?limit=100&offset=${state.asanaOffset}&opt_fields=gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value`,
+                {}
+              ),
+              fn(state => extractAsanaPage(state)),
+            ]
+          );
+
+          // Helper — extract GrievanceId from one Asana page, immediately discard full task data
+          function extractAsanaPage(state) {
+            const page = state.data || {};
+            const tasks = page.data || [];
+
+            tasks.forEach(task => {
+              const field = (task.custom_fields || []).find(
+                f => f.gid === state.GRIEVANCE_FIELD_GID
+              );
+              const gid = field?.text_value || field?.display_value || null;
+              if (gid) {
+                state.asanaIds.add(gid);
+              } else {
+                state.asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });
+              }
+            });
+
+            state.asanaOffset = page.next_page?.offset || null;
+            state.asanaFetchDone = !state.asanaOffset;
+            console.log(`Asana: fetched ${state.asanaIds.size} tasks with GrievanceId so far`);
+
+            // Discard raw page data immediately — don't let it accumulate in state
+            state.data = null;
+            return state;
+          }
+      Extract-GrievanceId-from-Asana-custom-fields:
+        name: Extract GrievanceId from Asana custom fields
+        adaptor: '@openfn/language-common@3.2.3'
+        credential: null
+        body: |
+          fn(state => {
+            const { koboIds, asanaIds } = state;
+
+            const missingInAsana = [...koboIds].filter(id => !asanaIds.has(id));
+            const missingInKobo  = [...asanaIds].filter(id => !koboIds.has(id));
+
+            console.log('\n════════════════════════════════════════');
+            console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');
+            console.log('════════════════════════════════════════');
+            console.log(`Kobo submissions (with GrievanceId): ${koboIds.size}`);
+            console.log(`Asana tasks     (with GrievanceId): ${asanaIds.size}`);
+            console.log(`─────────────────────────────────────────`);
+            console.log(`❌ Missing in Asana:    ${missingInAsana.length}`);
+            console.log(`⚠️  Extra in Asana only: ${missingInKobo.length}`);
+            if (state.koboMissingId.length > 0)
+              console.log(`🚫 Kobo submissions with NO GrievanceId: ${state.koboMissingId.length}`);
+            if (state.asanaTasksNoId.length > 0)
+              console.log(`🚫 Asana tasks with NO GrievanceId set:  ${state.asanaTasksNoId.length}`);
+            console.log('════════════════════════════════════════\n');
+
+            if (missingInAsana.length > 0) {
+              console.log('❌ NOT IN ASANA:', missingInAsana.join(', '));
+            }
+            if (missingInKobo.length > 0) {
+              console.log('⚠️  NOT IN KOBO:', missingInKobo.join(', '));
+            }
+            if (state.koboMissingId.length > 0) {
+              console.log('🚫 KOBO SUBMISSIONS WITH NO GrievanceId:');
+              state.koboMissingId.forEach(s =>
+                console.log(`   KoboID: ${s.koboId} | Submitted: ${s.submittedAt}`)
+              );
+            }
+
+            // Clean up Sets before returning (not JSON-serialisable and no longer needed)
+            return {
+              ...state,
+              koboIds: undefined,
+              asanaIds: undefined,
+              diffReport: { missingInAsana, missingInKobo, koboMissingId: state.koboMissingId },
+            };
+          });
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      webhook->Get-data:
+        source_trigger: webhook
+        target_job: Get-data
+        condition_type: always
+        enabled: true
+      Get-data->Fetch-from-Asana:
+        source_job: Get-data
+        target_job: Fetch-from-Asana
+        condition_type: on_job_success
+        enabled: true
+      Fetch-from-Asana->Extract-GrievanceId-from-Asana-custom-fields:
+        source_job: Fetch-from-Asana
+        target_job: Extract-GrievanceId-from-Asana-custom-fields
+        condition_type: on_job_success
         enabled: true
   Sudano-Sahel-Sync-to-Asana:
     name: Sudano Sahel Sync to Asana
@@ -5354,7 +5410,7 @@ workflows:
                 // Fields  belonging to questions with dropdown or multiple choice
                 '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
+                // '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
                 '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
                 '1202330755979944': state => state.formatMapping["IndigenousPeople_" + $.inputData.body.IndigenousPeople],
                 '1210234880733065': state => state.formatMapping["TranshumantHerders_" + $.inputData.body.TranshumantHerders],
@@ -6159,7 +6215,7 @@ workflows:
       Get-Submission-Metadata:
         name: Get Submission Metadata
         adaptor: '@openfn/language-http@3.1.11'
-        credential: aleksa@openfn.org-WCS-GRM-Kobo-Account
+        credential: rediet@openfn.org-WCS-Kobo-Form-Monitoring
         body: |
           // Initialize an empty array to accumulate survey data
           fn(state => {
@@ -6172,45 +6228,48 @@ workflows:
             const { url1, url2, formId, name, owner, projectId } = state.data;
 
             return fn(async state => {
-              const response1 = await get(`${url1}`, {})(state);
-              const response2 = await get(`${url2}`, {})(state);
+              try {
+                const response1 = await get(`${url1}`, {})(state);
+                const response2 = await get(`${url2}`, {})(state);
 
-              const resultList = response2.data.results;
-              // const lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
-              let lastSubmissionTime;
-              if (resultList.length > 0) {
-                lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
-              } else {
-                lastSubmissionTime = null;
+                const resultList = response2.data.results;
+                let lastSubmissionTime;
+                if (resultList.length > 0) {
+                  lastSubmissionTime = resultList[resultList.length - 1]._submission_time;
+                } else {
+                  lastSubmissionTime = null;
+                }
+
+                let total_submission_count;
+                if (response1.data && 'total_submission_count' in response1.data) {
+                  total_submission_count = response1.data.total_submission_count;
+                } else {
+                  total_submission_count = undefined;
+                }
+
+                console.log(`Processing: ${formId}`);
+                console.log(url1);
+                console.log(url2);
+                console.log(`Last submission time: ${lastSubmissionTime}`);
+
+                const surveyData = {
+                  formId,
+                  name,
+                  owner,
+                  total_submission_count,
+                  lastSubmissionTime,
+                  projectId
+                };
+
+                return {
+                  ...state,
+                  surveysList: [...state.surveysList, surveyData]
+                };
+              } catch (error) {
+                console.log(`⚠️ Error processing form ${formId} (${name}): ${error.message}`);
+                // Skip this form and continue with the rest
+                return state;
               }
-              
-              let total_submission_count;
-              if (response1.data && 'total_submission_count' in response1.data) {
-                total_submission_count = response1.data.total_submission_count;
-              } else {
-                total_submission_count = undefined;
-              }
-              
-              console.log(`Processing: ${formId}`);
-              console.log(url1);
-              console.log(url2);
-              console.log(`Last submission time: ${lastSubmissionTime}`);
-
-              const surveyData = {
-                formId,
-                name,
-                // total_submission_count: response1.data.total_submission_count,
-                owner,
-                total_submission_count,
-                lastSubmissionTime,
-                projectId
-              };
-
-              // Add the current survey data to the accumulator
-              return { 
-                ...state, 
-                surveysList: [...state.surveysList, surveyData]
-              };
             })(state);
           })
 
@@ -6281,9 +6340,20 @@ workflows:
   TAMG-sync-to-Asana:
     name: TAMG sync to Asana
     jobs:
+      Triage-jobs:
+        name: Triage jobs
+        adaptor: '@openfn/language-common@3.2.2'
+        credential: null
+        body: |
+          fn(state => {
+            if (state.data?.body) {
+              state.data = state.data.body;
+            }
+            return state;
+          });
       GRM30-Upsert-Mongolia-Grievances-in-Asana:
         name: GRM30 Upsert Mongolia Grievances in Asana
-        adaptor: '@openfn/language-asana@4.3.0'
+        adaptor: '@openfn/language-asana@5.0.8'
         credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids
@@ -6305,20 +6375,20 @@ workflows:
               "ReportFormat_Prospecting": "1208419056473280",
               "Gender_Male": "1202330737362427",
               "Gender_Female": "1202330737362428",
-              "Gender_mixed_gender": "1202330737362429",
-              "Gender_Unknown_gender": "1202330737362430",
-              "Gender_Other_gender": "1207852335266397",
+              "Gender_Mixed gender": "1202330737362429",
+              "Gender_Unknown gender": "1202330737362430",
+              "Gender_Other gender": "1207852335266397",
               "Gender_Prefer not to report": "1207852335266398",
-              "IndigenousPeople_Yes_ips": "1202330755980982",
-              "IndigenousPeople_No_ips": "1202330755984093",
-              "IndigenousPeople_unknown_ips": "1202330755985164",
-              "IndigenousPeople_mixed_group": "1207724962870243",
+              "IndigenousPeoples_Yes": "1202330755980982",
+              "IndigenousPeoples_No": "1202330755984093",
+              "IndigenousPeoples_Unknown": "1202330755985164",
+              "IndigenousPeoples_Mixed group": "1207724962870243",
               "Age_<18": "1202330714895607",
               "Age_19–35": "1202330714895608",
               "Age_36–50": "1202330714895609",
               "Age_>50": "1202330714895610",
-              "Age_mixed_age": "1202330714895611",
-              "Age_unknown_age": "1202330714895612",
+              "Age_Mixed age": "1202330714895611",
+              "Age_Unknown age": "1202330714895612",
               "GrievanceStatus _ToReview": "1187328718760775",
               "GrievanceStatus _BeingReviewed": "1192850232576003",
               "GrievanceStatus _Dismissed": "1187674280676653",
@@ -6348,18 +6418,15 @@ workflows:
               "Classification_Suggestion": "1207064073157821",
               "Classification_Other": "1204269617420860",
               "Classification_Not eligible": "1207724727681221",
-              "SubmissionContext_individual": "1202330732062943",
-              "SubmissionContext_group": "1202330732067344",
-              "SubmissionContext_passive_observation": "1202330732068565",
+              "Anonymous_Yes": "1203977086782816",
+              "Anonymous_No": "1208270620741491",
+              "WcsStaff_Yes": "1208262949429785",
+              "WcsStaff_No": "1208262949429786",
               "GrievanceAgainst_Wcs": "1202330466059593",
               "GrievanceAgainst_GovernmentPartner": "1202330466059594",
               "GrievanceAgainst_PrivateSectorPartner": "1202330466059595",
               "GrievanceAgainst_CivilSocietyPartner": "1202330466059596",
-              "GrievanceAgainst_NotWcsAndNotAWcsPartner": "1202330466059597",
-              "DatePrecision_Yes": "1202330815421248",
-              "DatePrecision_No": "1202330815421249",
-              "ConfidentialitySensitivity_Yes": "1202330821410493",
-              "ConfidentialitySensitivity_No": "1202330821410494"
+              "GrievanceAgainst_NotWcsAndNotAWcsPartner": "1202330466059597"
             };
             state.formatMapping = formatMapping;
             state.inputData = state.data;
@@ -6400,34 +6467,24 @@ workflows:
                 '1202329899911595': $.inputData.body.CaseID,
                 '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-                '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
-                '1202330755979944': state => state.formatMapping["IndigenousPeople_" + $.inputData.body.IndigenousPeople],
-                '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
                 '1187328718760774': state => state.formatMapping["GrievanceStatus_" + $.inputData.body.GrievanceStatus],
                 '1202593715272940': state => state.formatMapping["Grade_" + $.inputData.body.Grade],
                 '1204269608862901': state => state.formatMapping["Classification_" + $.inputData.body.Classification],
+                '1203977086782815': state => state.formatMapping["Anonymous_" + $.inputData.body.Anonymous],
+                '1202329899911605': $.inputData.body.ReporterName,
                 '1203711959959076': $.inputData.body.StaffName,
                 '1203712049265363': $.inputData.body.StaffEmail,
-                '1202329899911599': $.inputData.body.SubmissionDate,
-                '1211806785977267': $.inputData.body.DepositDate,
-                '1211806785977281': $.inputData.body.SuggestionBoxGps,
-                '1211806785977274': $.inputData.body.SuggestionBoxId,
-                '1211806786005136': $.inputData.body.BoxCollectionDate,
-                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
-                '1202329899911605': $.inputData.body.ReporterName,
+                '1208262949429784': state => state.formatMapping["WcsStaff_" + $.inputData.body.WcsStaff],
                 '1203712060006636': $.inputData.body.ReporterContactInformation,
                 '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
                 '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
-                '1202330815421247': state => state.formatMapping["DatePrecision_" + $.inputData.body.DatePrecision],
                 '1202329899911619': $.inputData.body.WhereGrievance,
                 '1202329899911623': $.inputData.body.GrievanceDate,
                 '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,
                 '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,
-                '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
                 '1203712150593482': $.inputData.body.HarmSuffered,
                 '1203712149463009': $.inputData.body.ReliefRequested,
-                '1202329899911635': $.inputData.body.OnlineFolder,
-                '1211806786005143': $.inputData.body.Location,
+                '1202329899911599': $.inputData.body._submission_time,
               }
             },
               state => {
@@ -6442,13 +6499,18 @@ workflows:
         type: webhook
         enabled: true
     edges:
-      webhook->GRM30-Upsert-Mongolia-Grievances-in-Asana:
+      webhook->Triage-jobs:
         source_trigger: webhook
+        target_job: Triage-jobs
+        condition_type: always
+        enabled: true
+      Triage-jobs->GRM30-Upsert-Mongolia-Grievances-in-Asana:
+        source_job: Triage-jobs
         target_job: GRM30-Upsert-Mongolia-Grievances-in-Asana
         condition_type: js_expression
-        condition_label: 28. GRM Bangladesh
+        condition_label: 30. GRM Mongolia
         condition_expression: |
-          state.data.formName == "GRM Bangladesh"
+          state.data.formName == "GRM Form Mongolia"
         enabled: true
   "x-[ARCHIVE]-Fetch-Historical-Kobo-Grievance-Data":
     name: 'x-[ARCHIVE] Fetch Historical Kobo Grievance Data'
