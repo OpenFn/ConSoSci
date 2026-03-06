@@ -80,10 +80,10 @@ workflows:
 
             // Set a manual cursor if you'd like to only fetch data after this date...
             //e.g., '2023-01-01T23:51:45.491+01:00'
-            const manualCursor = '2025-05-15T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
+            const manualCursor = '2025-10-30T00:00:00.000Z';  //lastUsed: 2024-11-21T00:00:00.000Z
             console.log('manualCursor defined?', manualCursor);
             
-            const cursorValue = state.lastEnd || state.manualCursor ; 
+            const cursorValue = state.lastEnd || manualCursor ; 
            
             console.log('Cursor value to use in query:', cursorValue);
 
@@ -122,7 +122,7 @@ workflows:
 
       Get-BNS-NRGT-Forms:
         name: Get BNS NRGT Forms
-        adaptor: '@openfn/language-http@3.1.11'
+        adaptor: '@openfn/language-kobotoolbox@4.2.9'
         credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           // Here we fetch submissions for all "Deployed" forms in GoogleSheet
@@ -140,10 +140,11 @@ workflows:
           each('$.data.surveys[*]', state => {
             const { url, query, tag, formId, name, owner } = state.data;
             console.log('Sending GET to ::', `${url}${query}`);
-
-            return get(`${url}${query}`)(state)
+            const splitQuery = query.split('=')[1]
+            return getSubmissions(`${formId}`, { query: splitQuery })(state)
               .then(state => {
-                const results = state.data.results.map(submission => {
+
+                const results = state.data.map(submission => {
                   const uniqueIndex = state.globalIndex++;
                   return {
                     i: uniqueIndex,
@@ -231,7 +232,7 @@ workflows:
                   return obj;
                 }, {});
               };
-          console.log("deployedData", values);
+              console.log("deployedData", values);
 
               state.deployedData = values
                 .map(item => mapHeaderToValue(item))
@@ -253,7 +254,7 @@ workflows:
                   return obj;
                 }, {});
               };
-          console.log("archivedData", values);
+              console.log("archivedData", values);
 
 
               state.archivedData = values
@@ -269,7 +270,7 @@ workflows:
 
             // Set a manual cursor if you'd like to only fetch data after this date...
             //e.g., '2023-01-01T23:51:45.491+01:00'
-            //   const manualCursor = ''; //lastUsed: 2024-04-01T00:00:00.000Z
+            const manualCursor = '2020-11-01T00:00:00.000Z'; 
             //   console.log('manualCursor defined?', manualCursor);
             //...otherwise the job will use this dynamicCursor
             // const dynamicCursor = getTodayISODate();
@@ -280,8 +281,8 @@ workflows:
             //     return today.toISOString(); // Convert to ISO string
             //   }
 
-            //   const cursorValue = manualCursor || dynamicCursor;
-            //   console.log('Cursor value to use in query:', cursorValue);
+            const cursorValue = manualCursor;
+            console.log('Cursor value to use in query:', cursorValue);
             const combinedData = [...deployedData, ...archivedData];
             const formsList = combinedData.map(survey => ({
               formId: survey.uid,
@@ -302,8 +303,7 @@ workflows:
                 name: survey.name,
                 owner: survey.owner,
                 url: `/api/v2/assets/${survey.uid}/data/?format=json`,
-                query: ''
-                //query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
+                query: `&query={"end":{"$gte":"${cursorValue}"}}`, //get ALL forms for historical job
               })),
             };
             return state;
@@ -318,7 +318,7 @@ workflows:
 
       Get-Form-Submissions:
         name: Get Form Submissions
-        adaptor: '@openfn/language-http@3.1.11'
+        adaptor: '@openfn/language-kobotoolbox@4.2.9'
         credential: ddetoeuf@wcs.org-WCS-Kobo-account
         body: |
           // Here we fetch submissions for all "Archived" forms in GoogleSheet
@@ -340,10 +340,10 @@ workflows:
             
             // Or construct the full URL properly
             console.log('Sending GET to ::', `${url}${query}`);
-
-            return get(`${url}${query}`)(state)
+            const splitQuery = query.split('=')[1]
+            return getSubmissions(`${formId}`, { query: splitQuery, limit: Infinity })(state)
               .then(state => {
-                const results = state.data.results.map(submission => {
+                const results = state.data.map(submission => {
                   const uniqueIndex = state.globalIndex++;
                   return {
                     i: uniqueIndex,
@@ -1847,7 +1847,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: false
+        enabled: true
     edges:
       webhook->Triage-jobs:
         source_trigger: webhook
@@ -1923,7 +1923,7 @@ workflows:
           state.data.form == "bns_survey_leuser" && 
           state.data.body?.survey_type && 
           state.data.body.survey_type !== "practice"
-        enabled: false
+        enabled: true
   AUTO1-Get-Kobo-Form:
     name: AUTO1 Get Kobo Form
     jobs:
@@ -3595,6 +3595,12 @@ workflows:
 
             state.formsToUpdate = archivedForms
               .filter(form => sheetsUids.includes(form.uid))
+              .filter(form => {
+                // Only update if Kobo's date_modified is newer than what's already in the sheet
+                const sheetRow = sheetsData.find(row => row[0] === form.uid);
+                const sheetKoboDate = sheetRow?.[8]; // column I = kobo_date_modified
+                return sheetKoboDate !== form.date_modified;
+              })
               .map(form => {
                 const rowIndex = sheetsData.findIndex(row => {
                   return row[0] === form.uid;
@@ -3729,7 +3735,8 @@ workflows:
             console.log('Preparing Form Sharing task updates for Asana... ');
 
             state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {
-              const dateModified = new Date(form.date_deployed);
+              // const dateModified = new Date(form.date_deployed); Modified on 09/01/26 from date_deployed to date task is created
+              const dateModified = new Date();
               const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)
                 .toISOString()
                 .split('T')[0];
@@ -3760,7 +3767,8 @@ workflows:
                 projects: ['1198901998266253'],
                 assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
                 assignee: '1208302456826465',
-                due_on: modifiedDatePlus5,
+                //due_on: modifiedDatePlus5, Modified because archived forms were getting a due date set.
+                ...(form.deployment__active ? { due_on: modifiedDatePlus5 } : {}),
                 notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
             });
