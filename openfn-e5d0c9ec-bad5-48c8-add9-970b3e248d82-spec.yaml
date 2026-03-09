@@ -3580,14 +3580,30 @@ workflows:
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
-            'wcs-bns-DEPLOYED!A:O' //range of columns in sheet
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'wcs-bns-DEPLOYED!A:O',
+            state => {
+              const [headers, ...sheetsData] = state.data.values;
+              console.log('Ignoring headers', headers);
+              state.deployedSheetData = sheetsData;
+              return state;
+            }
           );
+
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'wcs-bns-ARCHIVED!A:O',
+            state => {
+              const [_headers, ...archivedRows] = state.data.values ?? [];
+              state.archivedSheetUids = archivedRows.map(row => row[0]);
+              return state;
+            }
+          );
+
           fn(state => {
-            const { activeForms, archivedForms, data } = state;
-            const [headers, ...sheetsData] = data.values;
-            const sheetsUids = sheetsData.map(row => row[0]);
-            console.log('Ignoring headers', headers);
+            const { activeForms, archivedForms, deployedSheetData } = state;
+
+            const sheetsUids = deployedSheetData.map(row => row[0]);
 
             state.formsToCreate = activeForms.filter(
               form => !sheetsUids.includes(form.uid)
@@ -3596,27 +3612,23 @@ workflows:
             state.formsToUpdate = archivedForms
               .filter(form => sheetsUids.includes(form.uid))
               .filter(form => {
-                // Only update if Kobo's date_modified is newer than what's already in the sheet
-                const sheetRow = sheetsData.find(row => row[0] === form.uid);
-                const sheetKoboDate = sheetRow?.[8]; // column I = kobo_date_modified
+                const sheetRow = deployedSheetData.find(row => row[0] === form.uid);
+                const sheetKoboDate = sheetRow?.[8];
                 return sheetKoboDate !== form.date_modified;
               })
               .map(form => {
-                const rowIndex = sheetsData.findIndex(row => {
-                  return row[0] === form.uid;
-                });
+                const rowIndex = deployedSheetData.findIndex(row => row[0] === form.uid);
                 if (rowIndex !== -1) {
                   return { ...form, rowIndex };
                 }
                 console.log(form.uid, 'Could not be found in google sheet');
-              });
+              }).filter(Boolean);
 
             return state;
           });
 
           fn(state => {
             const { data, references, response, ...remainingState } = state;
-
             return remainingState;
           });
 
@@ -3694,7 +3706,11 @@ workflows:
               range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
               values: [sheetRowMap(form)],
             }));
-            state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
+            // state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
+
+            state.rowValuesToArchive = formsToUpdate
+            .filter(form => !state.archivedSheetUids.includes(form.uid))
+            .map(form => sheetRowMap(form));
 
             console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
             console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
