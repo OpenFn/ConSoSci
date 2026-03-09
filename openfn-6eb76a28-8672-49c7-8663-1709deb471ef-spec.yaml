@@ -3640,14 +3640,31 @@ workflows:
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
-            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //googlesheet id
-            'grm-DEPLOYED!A:P' //range of columns in sheet
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'grm-DEPLOYED!A:P',
+            state => {
+              const [headers, ...sheetsData] = state.data.values;
+              console.log('Ignoring headers', headers);
+              state.deployedSheetData = sheetsData;
+              return state;
+            }
           );
+
+          getValues(
+            '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
+            'grm-ARCHIVED!A:P',
+            state => {
+              const [_headers, ...archivedRows] = state.data.values ?? [];
+              state.archivedSheetUids = archivedRows.map(row => row[1]); // column B = uid
+              console.log('# of archivedSheetUids::', state.archivedSheetUids.length);
+              return state;
+            }
+          );
+
           fn(state => {
-            const { activeForms, archivedForms, data } = state;
-            const [headers, ...sheetsData] = data.values;
-            const sheetsUids = sheetsData.map(row => row[1]);
-            console.log('Ignoring headers', headers);
+            const { activeForms, archivedForms, deployedSheetData } = state;
+
+            const sheetsUids = deployedSheetData.map(row => row[1]); // column B = uid
 
             state.formsToCreate = activeForms.filter(
               form => !sheetsUids.includes(form.uid)
@@ -3656,24 +3673,21 @@ workflows:
             state.formsToUpdate = archivedForms
               .filter(form => sheetsUids.includes(form.uid))
               .map(form => {
-                const rowIndex = sheetsData.findIndex(row => {
-                  return row[1] === form.uid;
-                });
+                const rowIndex = deployedSheetData.findIndex(row => row[1] === form.uid);
                 if (rowIndex !== -1) {
                   return { ...form, rowIndex };
                 }
                 console.log(form.uid, 'Could not be found in google sheet');
-              });
+              })
+              .filter(Boolean); // drop undefined entries
 
             return state;
           });
 
           fn(state => {
             const { data, references, response, ...remainingState } = state;
-
             return remainingState;
           });
-
       FS3---Update-Spreadsheet-with-New-Forms-Shared:
         name: FS3 - Update Spreadsheet with New Forms Shared
         adaptor: '@openfn/language-googlesheets@2.4.0'
@@ -3688,7 +3702,7 @@ workflows:
             const instance = name =>
               containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';
 
-            state.formLastModified = form => form.date_modified; 
+            state.formLastModified = form => form.date_modified;
 
             const sheetRowMap = form => [
               '',
@@ -3705,8 +3719,7 @@ workflows:
               new Date().toISOString(), //row_date_modified
               false, //auto_sync checkbox
               //job code template
-              `"{id: '${form.uid}', name: '${
-                form.name
+              `"{id: '${form.uid}', name: '${form.name
               }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
               '',
               'ADD MANUALLY @Admin!'
@@ -3714,10 +3727,15 @@ workflows:
 
             state.rowValuesToCreate = state.formsToCreate.map(form => sheetRowMap(form));
             state.rowValuesToUpdate = state.formsToUpdate.map(form => ({
-              range: `grm-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
+              range: `grm-DEPLOYED!A${form.rowIndex + 2}:P${form.rowIndex + 2}`,
               values: [sheetRowMap(form)],
             }));
-            state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));
+            // state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));
+            state.rowValuesToArchive = state.formsToUpdate
+              .filter(form => !state.archivedSheetUids.includes(form.uid))
+              .map(form => sheetRowMap(form));
+
+            console.log('# of forms to archive (new only)::', state.rowValuesToArchive.length);
 
             console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
             console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
