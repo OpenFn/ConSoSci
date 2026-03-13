@@ -907,7 +907,7 @@ workflows:
 
           fnIf(!$.skipCreate, state =>
             createTask({
-              name: $.inputData.body.CaseID,
+              name: `03-${$.inputData.body.CaseID}`,
               projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job
               notes: $.inputData.body.Description,
               custom_fields: {
@@ -2710,6 +2710,196 @@ workflows:
         condition_label: New Kenya Form
         condition_expression: |
           state.data.formName == "grm_kenya"
+        enabled: true
+  Generate-Discrepancy-Report:
+    name: Generate Discrepancy Report
+    jobs:
+      Get-All-Kobo-Submissions:
+        name: Get All Kobo Submissions
+        adaptor: '@openfn/language-kobotoolbox@4.2.11'
+        credential: rediet@openfn.org-WCS-GRM-Kobo
+        body: |
+          fn(state => ({
+            ...state,
+            // ── Configurable constants ──────────────────
+            KOBO_ASSET_ID: 'akknuhDAMSW88M6eBYkr6Y',
+            ASANA_PROJECT_GID: '1202329899911590',
+            ASANA_GRIEVANCE_FIELD_GID: '1202329899911595',
+            // ────────────────────────────────────────────
+            koboIdMap: {},
+            koboMissingId: [],
+            koboDuplicateIds: []
+          }));
+
+          getSubmissions(state => state.KOBO_ASSET_ID,
+            { fields: ['GrievanceId', 'GrievanceID', 'CaseID', 'CaseId', '_id', '_submission_time'] }
+          );
+
+          fn(state => {
+            const submissions = state.data || [];
+
+            submissions.forEach(s => {
+              const id = s.GrievanceId || s.GrievanceID || s.CaseID || s.CaseId || null;
+              if (id) {
+                if (state.koboIdMap[id]) {
+                  state.koboDuplicateIds.push({ grievanceId: id, koboId: s._id, submittedAt: s._submission_time });
+                } else {
+                  state.koboIdMap[id] = true;
+                }
+              } else {
+                state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });
+              }
+            });
+
+            console.log(`Kobo: ${submissions.length} submissions | unique GrievanceIds: ${Object.keys(state.koboIdMap).length}`);
+
+            state.data = null;
+            return state;
+          });
+      Get-all-Asana-Tasks:
+        name: Get all Asana Tasks
+        adaptor: '@openfn/language-asana@5.0.10'
+        credential: ddetoeuf@wcs.org-GRM-Asana-token
+        body: |
+          fn(state => ({
+            ...state,
+            asanaIdMap: {},
+            asanaTasksNoId: [],
+          }));
+
+          getTasks(
+            state => state.ASANA_PROJECT_GID,
+            { opt_fields: 'gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value' }
+          );
+
+          fn(state => {
+            const tasks = state.data || [];
+            const asanaIdMap = {};
+            const asanaTasksNoId = [];
+            const asanaDuplicateIds = [];   
+
+            tasks.forEach(task => {
+              const field = (task.custom_fields || []).find(
+                f => f.gid === state.ASANA_GRIEVANCE_FIELD_GID
+              );
+              const gid = field?.text_value || field?.display_value || null;
+              if (gid) {
+                if (asanaIdMap[gid]) {
+                  asanaDuplicateIds.push({ grievanceId: gid, taskGid: task.gid, taskName: task.name });
+                } else {
+                  asanaIdMap[gid] = task.name;
+                }
+              } else {
+                asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });
+              }
+            });
+
+            console.log(`Asana: ${tasks.length} tasks | unique GrievanceIds: ${Object.keys(asanaIdMap).length} | duplicates: ${asanaDuplicateIds.length} | no GrievanceId: ${asanaTasksNoId.length}`);
+
+            state.data = null;
+            return { ...state, asanaIdMap, asanaTasksNoId, asanaDuplicateIds, asanaTotalTasks: tasks.length };
+          });
+      Generate-Diff-Report:
+        name: Generate Diff Report
+        adaptor: '@openfn/language-common@3.2.3'
+        credential: null
+        body: |
+          fn(state => {
+            const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds } = state;
+
+            const missingInAsana = Object.keys(koboIdMap).filter(id => !asanaIdMap[id]);
+            const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);
+
+            console.log('\n════════════════════════════════════════');
+            console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');
+            console.log('════════════════════════════════════════');
+            console.log(`Kobo submissions total:              ${Object.keys(koboIdMap).length + koboDuplicateIds.length + koboMissingId.length}`);
+            console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(koboIdMap).length}`);
+            console.log(`  ⚠ Duplicate GrievanceIds:          ${koboDuplicateIds.length}`);
+            console.log(`  🚫 No GrievanceId:                 ${koboMissingId.length}`);
+            console.log(`Asana tasks total:                   ${state.asanaTotalTasks}`);
+            console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(asanaIdMap).length}`);
+            console.log(`  ⚠ Duplicate GrievanceIds:          ${state.asanaDuplicateIds.length}`);
+            console.log(`  🚫 No GrievanceId:                 ${asanaTasksNoId.length}`);
+            console.log(`─────────────────────────────────────────`);
+            console.log(`❌ Missing in Asana:                 ${missingInAsana.length}`);
+            console.log(`⚠️  In Asana only:                    ${asanaOnlyIds.length}`);
+            console.log('════════════════════════════════════════\n');
+
+            if (missingInAsana.length > 0) {
+              console.log('❌ NOT IN ASANA:');
+              missingInAsana.forEach(id => console.log(`   ${id}`));
+            }
+
+            if (asanaOnlyIds.length > 0) {
+              console.log('⚠️  IN ASANA ONLY:');
+              asanaOnlyIds.forEach(id =>
+                console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)
+              );
+            }
+
+            if (koboDuplicateIds.length > 0) {
+              console.log('\n⚠️  KOBO DUPLICATE GrievanceIds:');
+              koboDuplicateIds.forEach(d =>
+                console.log(`   GrievanceId: ${d.grievanceId} | KoboID: ${d.koboId} | Submitted: ${d.submittedAt}`)
+              );
+            }
+
+            if (koboMissingId.length > 0) {
+              console.log('\n🚫 KOBO SUBMISSIONS WITH NO GrievanceId:');
+              koboMissingId.forEach(s =>
+                console.log(`   KoboID: ${s.koboId} | Submitted: ${s.submittedAt}`)
+              );
+            }
+
+            if (asanaTasksNoId.length > 0) {
+              console.log('\n🚫 ASANA TASKS WITH NO GrievanceId:');
+              asanaTasksNoId.forEach(t =>
+                console.log(`   TaskGID: ${t.taskGid} | Name: ${t.taskName}`)
+              );
+            }
+
+            if (state.asanaDuplicateIds.length > 0) {
+              console.log('\n⚠️  ASANA DUPLICATE GrievanceIds:');
+              state.asanaDuplicateIds.forEach(d =>
+                console.log(`   GrievanceId: ${d.grievanceId} | TaskGID: ${d.taskGid} | Name: ${d.taskName}`)
+              );
+            }
+
+            return {
+              ...state,
+              koboIdMap: undefined,
+              asanaIdMap: undefined,
+              asanaTotalTasks: undefined,
+              diffReport: {
+                missingInAsana,
+                asanaOnlyIds,
+                koboDuplicateIds,
+                asanaDuplicateIds: state.asanaDuplicateIds,
+                koboMissingId,
+                asanaTasksNoId,
+              },
+            };
+          });
+    triggers:
+      webhook:
+        type: webhook
+        enabled: false
+    edges:
+      webhook->Get-All-Kobo-Submissions:
+        source_trigger: webhook
+        target_job: Get-All-Kobo-Submissions
+        condition_type: always
+        enabled: true
+      Get-All-Kobo-Submissions->Get-all-Asana-Tasks:
+        source_job: Get-All-Kobo-Submissions
+        target_job: Get-all-Asana-Tasks
+        condition_type: on_job_success
+        enabled: true
+      Get-all-Asana-Tasks->Generate-Diff-Report:
+        source_job: Get-all-Asana-Tasks
+        target_job: Generate-Diff-Report
+        condition_type: on_job_success
         enabled: true
   Global-Sync-to-Asana:
     name: Global Sync to Asana
@@ -5009,175 +5199,6 @@ workflows:
         source_trigger: cron
         target_job: Get-data
         condition_type: always
-        enabled: true
-  Scheduled-workflow:
-    name: Scheduled workflow
-    jobs:
-      Get-data:
-        name: Get data
-        adaptor: '@openfn/language-kobotoolbox@4.2.11'
-        credential: rediet@openfn.org-WCS-GRM-Kobo
-        body: |
-          fn(state => ({
-            ...state,
-            koboIds: new Set(),       // only store GrievanceIds, not full records
-            koboMissingId: [],        // submissions with no GrievanceId set
-            koboOffset: 0,
-            koboDone: false,
-            KOBO_PAGE_SIZE: 200,      // safe page size for Kobo API
-          }));
-
-          each(
-            (state) => (state.koboDone ? [] : [state.koboOffset]),
-            [
-              get(
-                state => `api/v2/assets/aBoTAXpkcvgB7VnuGkjdrg/data/?format=json&limit=${state.KOBO_PAGE_SIZE}&start=${state.koboOffset}&fields=["GrievanceId","_id","_submission_time"]`,
-                {}
-              ),
-              fn(state => {
-                const results = state.data?.results || [];
-                const total = state.data?.count || 0;
-
-                results.forEach(s => {
-                  if (s.GrievanceId) {
-                    state.koboIds.add(s.GrievanceId);
-                  } else {
-                    state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });
-                  }
-                });
-
-                state.koboOffset += results.length;
-                state.koboDone = state.koboOffset >= total || results.length === 0;
-
-                console.log(`Kobo: fetched ${state.koboOffset}/${total}`);
-                return state;
-              }),
-            ]
-          );
-      Fetch-from-Asana:
-        name: Fetch from Asana
-        adaptor: '@openfn/language-asana@5.0.10'
-        credential: ddetoeuf@wcs.org-GRM-Asana-token
-        body: |
-          fn(state => ({
-            ...state,
-            asanaIds: new Set(),      // only store GrievanceIds, not full task objects
-            asanaTasksNoId: [],       // tasks with no GrievanceId field populated
-            asanaOffset: null,
-            asanaFetchDone: false,
-            GRIEVANCE_FIELD_GID: '1201884379104074',
-          }));
-
-          // Fetch first Asana page
-          request(
-            `/projects/1205812185361950/tasks?limit=100&opt_fields=gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value`,
-            {}
-          );
-
-          fn(state => extractAsanaPage(state));
-
-          // Paginate remaining Asana pages
-          each(
-            (state) => (state.asanaFetchDone ? [] : [state.asanaOffset]),
-            [
-              request(
-                state => `/projects/1205812185361950/tasks?limit=100&offset=${state.asanaOffset}&opt_fields=gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value`,
-                {}
-              ),
-              fn(state => extractAsanaPage(state)),
-            ]
-          );
-
-          // Helper — extract GrievanceId from one Asana page, immediately discard full task data
-          function extractAsanaPage(state) {
-            const page = state.data || {};
-            const tasks = page.data || [];
-
-            tasks.forEach(task => {
-              const field = (task.custom_fields || []).find(
-                f => f.gid === state.GRIEVANCE_FIELD_GID
-              );
-              const gid = field?.text_value || field?.display_value || null;
-              if (gid) {
-                state.asanaIds.add(gid);
-              } else {
-                state.asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });
-              }
-            });
-
-            state.asanaOffset = page.next_page?.offset || null;
-            state.asanaFetchDone = !state.asanaOffset;
-            console.log(`Asana: fetched ${state.asanaIds.size} tasks with GrievanceId so far`);
-
-            // Discard raw page data immediately — don't let it accumulate in state
-            state.data = null;
-            return state;
-          }
-      Extract-GrievanceId-from-Asana-custom-fields:
-        name: Extract GrievanceId from Asana custom fields
-        adaptor: '@openfn/language-common@3.2.3'
-        credential: null
-        body: |
-          fn(state => {
-            const { koboIds, asanaIds } = state;
-
-            const missingInAsana = [...koboIds].filter(id => !asanaIds.has(id));
-            const missingInKobo  = [...asanaIds].filter(id => !koboIds.has(id));
-
-            console.log('\n════════════════════════════════════════');
-            console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');
-            console.log('════════════════════════════════════════');
-            console.log(`Kobo submissions (with GrievanceId): ${koboIds.size}`);
-            console.log(`Asana tasks     (with GrievanceId): ${asanaIds.size}`);
-            console.log(`─────────────────────────────────────────`);
-            console.log(`❌ Missing in Asana:    ${missingInAsana.length}`);
-            console.log(`⚠️  Extra in Asana only: ${missingInKobo.length}`);
-            if (state.koboMissingId.length > 0)
-              console.log(`🚫 Kobo submissions with NO GrievanceId: ${state.koboMissingId.length}`);
-            if (state.asanaTasksNoId.length > 0)
-              console.log(`🚫 Asana tasks with NO GrievanceId set:  ${state.asanaTasksNoId.length}`);
-            console.log('════════════════════════════════════════\n');
-
-            if (missingInAsana.length > 0) {
-              console.log('❌ NOT IN ASANA:', missingInAsana.join(', '));
-            }
-            if (missingInKobo.length > 0) {
-              console.log('⚠️  NOT IN KOBO:', missingInKobo.join(', '));
-            }
-            if (state.koboMissingId.length > 0) {
-              console.log('🚫 KOBO SUBMISSIONS WITH NO GrievanceId:');
-              state.koboMissingId.forEach(s =>
-                console.log(`   KoboID: ${s.koboId} | Submitted: ${s.submittedAt}`)
-              );
-            }
-
-            // Clean up Sets before returning (not JSON-serialisable and no longer needed)
-            return {
-              ...state,
-              koboIds: undefined,
-              asanaIds: undefined,
-              diffReport: { missingInAsana, missingInKobo, koboMissingId: state.koboMissingId },
-            };
-          });
-    triggers:
-      webhook:
-        type: webhook
-        enabled: false
-    edges:
-      webhook->Get-data:
-        source_trigger: webhook
-        target_job: Get-data
-        condition_type: always
-        enabled: true
-      Get-data->Fetch-from-Asana:
-        source_job: Get-data
-        target_job: Fetch-from-Asana
-        condition_type: on_job_success
-        enabled: true
-      Fetch-from-Asana->Extract-GrievanceId-from-Asana-custom-fields:
-        source_job: Fetch-from-Asana
-        target_job: Extract-GrievanceId-from-Asana-custom-fields
-        condition_type: on_job_success
         enabled: true
   Sudano-Sahel-Sync-to-Asana:
     name: Sudano Sahel Sync to Asana
