@@ -907,7 +907,7 @@ workflows:
 
           fnIf(!$.skipCreate, state =>
             createTask({
-              name: `03-${$.inputData.body.CaseID}`,
+              name: ${$.inputData.body.CaseID},
               projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job
               notes: $.inputData.body.Description,
               custom_fields: {
