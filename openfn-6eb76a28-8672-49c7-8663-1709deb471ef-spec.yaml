@@ -5873,9 +5873,9 @@ workflows:
               ReportFormat_Letter: '1202330347503544',
               ReportFormat_OnlineForm: '1207934414764297',
               ReportFormat_Other: '1203830536105154',
-              SubmissionContext_individual: '1202330732062943',
-              SubmissionContext_group: '1202330732067344',
-              SubmissionContext_passive_observation: '1202330732068565',
+             // SubmissionContext_individual: '1202330732062943',
+             // SubmissionContext_group: '1202330732067344',
+             // SubmissionContext_passive_observation: '1202330732068565',
               Village_YelwanDuguri: '1208360193118210',
               Village_GajiDuguri: '1208360193118211',
               Village_Kwalla: '1208360193118212',
@@ -5958,7 +5958,7 @@ workflows:
                 // Fields  belonging to questions with dropdown or multiple choice
                 '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
+               // '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext], //Field was removed from Asana
                 '1208360193118209': state => state.formatMapping["Village_" + $.inputData.body.Village],
                 '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
                 '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
