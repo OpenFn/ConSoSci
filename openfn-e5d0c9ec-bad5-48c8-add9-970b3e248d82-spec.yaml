@@ -3605,8 +3605,18 @@ workflows:
 
             const sheetsUids = deployedSheetData.map(row => row[0]);
 
+            // state.formsToCreate = activeForms.filter(
+            //   form => !sheetsUids.includes(form.uid)
+            // );
+
             state.formsToCreate = activeForms.filter(
               form => !sheetsUids.includes(form.uid)
+                && !state.archivedSheetUids.includes(form.uid)  
+            );
+
+            state.formsReactivated = activeForms.filter(
+              form => !sheetsUids.includes(form.uid)
+                && state.archivedSheetUids.includes(form.uid) 
             );
 
             state.formsToUpdate = archivedForms
@@ -3676,8 +3686,8 @@ workflows:
 
             const workspaceName = name =>
               containsGRMFeedback(name) ? 'Grievances' : 'ConSoSci';
-              
-            state.formLastModified = form => form.date_modified; 
+
+            state.formLastModified = form => form.date_modified;
 
             const sheetRowMap = form => [
               form.uid,
@@ -3696,12 +3706,16 @@ workflows:
               false, //auto_sync checkbox
               false, //historical_sync checkbox
               //job code template
-              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${
-                form.name
+              `"{id: '${form.uid}', tag: '${createTagName(form.name)}', name: '${form.name
               }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
             ];
 
-            state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
+            // state.rowValuesToCreate = formsToCreate.map(form => sheetRowMap(form));
+            state.rowValuesToCreate = [
+              ...formsToCreate.map(form => sheetRowMap(form)),
+              ...state.formsReactivated.map(form => sheetRowMap(form)),  // ← add this
+            ];
+
             state.rowValuesToUpdate = formsToUpdate.map(form => ({
               range: `wcs-bns-DEPLOYED!A${form.rowIndex + 2}:N${form.rowIndex + 2}`,
               values: [sheetRowMap(form)],
@@ -3709,11 +3723,12 @@ workflows:
             // state.rowValuesToArchive = formsToUpdate.map(form => sheetRowMap(form));
 
             state.rowValuesToArchive = formsToUpdate
-            .filter(form => !state.archivedSheetUids.includes(form.uid))
-            .map(form => sheetRowMap(form));
+              .filter(form => !state.archivedSheetUids.includes(form.uid))
+              .map(form => sheetRowMap(form));
 
             console.log('# of new forms detected:: ', state.rowValuesToCreate.length);
             console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);
+            console.log('# of reactivated forms detected:: ', state.formsReactivated.length);
             return state;
           });
 
