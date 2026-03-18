@@ -5064,7 +5064,7 @@ workflows:
                 '1211806785977281': $.inputData.body.SuggestionBoxGps,
                 '1211806785977274': $.inputData.body.SuggestionBoxId,
                 '1211806786005136': $.inputData.body.BoxCollectionDate,
-                '1202330732061901': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
+                '1213724329054827': state => state.formatMapping["SubmissionContext_" + $.inputData.body.SubmissionContext],
                 '1202329899911605': $.inputData.body.ReporterName,
                 '1203712060006636': $.inputData.body.ReporterContactInformation,
                 '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
