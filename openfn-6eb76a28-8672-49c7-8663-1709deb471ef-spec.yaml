@@ -2713,9 +2713,9 @@ workflows:
           fn(state => ({
             ...state,
             // ── Configurable constants ──────────────────
-            KOBO_ASSET_ID: 'a6FdhcebAqFZpdRej4f5FP', // AAO 
-            ASANA_PROJECT_GID: '1203150475209897', // AAO Asana Project Id
-            ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', // Use either CaseID '1202329899911595' or GrievanceId '1201884379104074'
+            KOBO_ASSET_ID: 'aeMMvn4Pi4m8M7FakifgK8', // Ruaha Katavi !!! UPDATE THE KOBO ID BEFORE RUNNING
+            ASANA_PROJECT_GID: '1204127406220940', // Ruaha Katavi !!! UPDATE THE ASANA ID BEFORE RUNNING
+            ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', // Use either CaseID '1202329899911595' or GrievanceId '1201884379104074' !!! UPDATE THE ID BEFORE RUNNING
             // ────────────────────────────────────────────
             koboIdMap: {},
             koboMissingId: [],

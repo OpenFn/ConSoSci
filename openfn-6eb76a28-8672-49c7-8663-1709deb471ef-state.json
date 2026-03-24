@@ -8,10 +8,10 @@
   "inserted_at": "2025-03-10T07:35:06Z",
   "updated_at": "2026-03-10T07:48:21Z",
   "parent_id": null,
+  "scheduled_deletion": null,
   "history_retention_period": 7,
   "dataclip_retention_period": 7,
   "retention_policy": "retain_all",
-  "scheduled_deletion": null,
   "project_credentials": {
     "aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances": {
       "id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
@@ -702,65 +702,6 @@
         }
       }
     },
-    "Generate-Discrepancy-Report": {
-      "id": "8e327468-e864-49c8-8be3-94d4c5aef450",
-      "name": "Generate Discrepancy Report",
-      "inserted_at": "2026-03-17T18:30:05.370949Z",
-      "lock_version": 34,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "5af1f220-a85a-41b4-88aa-ba65f596c3c2",
-          "type": "webhook"
-        }
-      },
-      "jobs": {
-        "Get-All-Kobo-Submissions": {
-          "id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
-          "name": "Get All Kobo Submissions",
-          "body": "fn(state => ({\n  ...state,\n  // ── Configurable constants ──────────────────\n  KOBO_ASSET_ID: 'a6FdhcebAqFZpdRej4f5FP', // AAO \n  ASANA_PROJECT_GID: '1203150475209897', // AAO Asana Project Id\n  ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', // Use either CaseID '1202329899911595' or GrievanceId '1201884379104074'\n  // ────────────────────────────────────────────\n  koboIdMap: {},\n  koboMissingId: [],\n  koboDuplicateIds: []\n}));\n\ngetSubmissions(state => state.KOBO_ASSET_ID,\n  { fields: ['GrievanceId', 'GrievanceID', 'CaseID', 'CaseId', '_id', '_submission_time'] }\n);\n\nfn(state => {\n  const submissions = state.data || [];\n\n  submissions.forEach(s => {\n    const id = s.GrievanceId || s.GrievanceID || s.CaseID || s.CaseId || null;\n    if (id) {\n      if (state.koboIdMap[id]) {\n        state.koboDuplicateIds.push({ grievanceId: id, koboId: s._id, submittedAt: s._submission_time });\n      } else {\n        state.koboIdMap[id] = true;\n      }\n    } else {\n      state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });\n    }\n  });\n\n  console.log(`Kobo: ${submissions.length} submissions | unique GrievanceIds: ${Object.keys(state.koboIdMap).length}`);\n\n  state.data = null;\n  return state;\n});",
-          "project_credential_id": "e00592c4-d94b-4c80-83eb-e7429c62d245",
-          "adaptor": "@openfn/language-kobotoolbox@4.2.11"
-        },
-        "Get-all-Asana-Tasks": {
-          "id": "c7b98df4-5142-48af-82d9-153f3468f16a",
-          "name": "Get all Asana Tasks",
-          "body": "fn(state => ({\n  ...state,\n  asanaIdMap: {},\n  asanaTasksNoId: [],\n}));\n\ngetTasks(\n  state => state.ASANA_PROJECT_GID,\n  { opt_fields: 'gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value' }\n);\n\nfn(state => {\n  const tasks = state.data || [];\n  const asanaIdMap = {};\n  const asanaTasksNoId = [];\n  const asanaDuplicateIds = [];   \n\n  tasks.forEach(task => {\n    const field = (task.custom_fields || []).find(\n      f => f.gid === state.ASANA_GRIEVANCE_FIELD_GID\n    );\n    const gid = field?.text_value || field?.display_value || null;\n    if (gid) {\n      if (asanaIdMap[gid]) {\n        asanaDuplicateIds.push({ grievanceId: gid, taskGid: task.gid, taskName: task.name });\n      } else {\n        asanaIdMap[gid] = task.name;\n      }\n    } else {\n      asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });\n    }\n  });\n\n  console.log(`Asana: ${tasks.length} tasks | unique GrievanceIds: ${Object.keys(asanaIdMap).length} | duplicates: ${asanaDuplicateIds.length} | no GrievanceId: ${asanaTasksNoId.length}`);\n\n  state.data = null;\n  return { ...state, asanaIdMap, asanaTasksNoId, asanaDuplicateIds, asanaTotalTasks: tasks.length };\n});",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@5.0.10"
-        },
-        "Generate-Diff-Report": {
-          "id": "5948282e-ad63-4de9-82d7-7d45bd6c3433",
-          "name": "Generate Diff Report",
-          "body": "fn(state => {\n  const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds } = state;\n\n  const missingInAsana = Object.keys(koboIdMap).filter(id => !asanaIdMap[id]);\n  const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);\n\n  console.log('\\n════════════════════════════════════════');\n  console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');\n  console.log('════════════════════════════════════════');\n  console.log(`Kobo submissions total:              ${Object.keys(koboIdMap).length + koboDuplicateIds.length + koboMissingId.length}`);\n  console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(koboIdMap).length}`);\n  console.log(`  ⚠ Duplicate GrievanceIds:          ${koboDuplicateIds.length}`);\n  console.log(`  🚫 No GrievanceId:                 ${koboMissingId.length}`);\n  console.log(`Asana tasks total:                   ${state.asanaTotalTasks}`);\n  console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(asanaIdMap).length}`);\n  console.log(`  ⚠ Duplicate GrievanceIds:          ${state.asanaDuplicateIds.length}`);\n  console.log(`  🚫 No GrievanceId:                 ${asanaTasksNoId.length}`);\n  console.log(`─────────────────────────────────────────`);\n  console.log(`❌ Missing in Asana:                 ${missingInAsana.length}`);\n  console.log(`⚠️  In Asana only:                    ${asanaOnlyIds.length}`);\n  console.log('════════════════════════════════════════\\n');\n\n  if (missingInAsana.length > 0) {\n    console.log('❌ NOT IN ASANA:');\n    missingInAsana.forEach(id => console.log(`   ${id}`));\n  }\n\n  if (asanaOnlyIds.length > 0) {\n    console.log('⚠️  IN ASANA ONLY:');\n    asanaOnlyIds.forEach(id =>\n      console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)\n    );\n  }\n\n  if (koboDuplicateIds.length > 0) {\n    console.log('\\n⚠️  KOBO DUPLICATE GrievanceIds:');\n    koboDuplicateIds.forEach(d =>\n      console.log(`   GrievanceId: ${d.grievanceId} | KoboID: ${d.koboId} | Submitted: ${d.submittedAt}`)\n    );\n  }\n\n  if (koboMissingId.length > 0) {\n    console.log('\\n🚫 KOBO SUBMISSIONS WITH NO GrievanceId:');\n    koboMissingId.forEach(s =>\n      console.log(`   KoboID: ${s.koboId} | Submitted: ${s.submittedAt}`)\n    );\n  }\n\n  if (asanaTasksNoId.length > 0) {\n    console.log('\\n🚫 ASANA TASKS WITH NO GrievanceId:');\n    asanaTasksNoId.forEach(t =>\n      console.log(`   TaskGID: ${t.taskGid} | Name: ${t.taskName}`)\n    );\n  }\n\n  if (state.asanaDuplicateIds.length > 0) {\n    console.log('\\n⚠️  ASANA DUPLICATE GrievanceIds:');\n    state.asanaDuplicateIds.forEach(d =>\n      console.log(`   GrievanceId: ${d.grievanceId} | TaskGID: ${d.taskGid} | Name: ${d.taskName}`)\n    );\n  }\n\n  return {\n    ...state,\n    koboIdMap: undefined,\n    asanaIdMap: undefined,\n    asanaTotalTasks: undefined,\n    diffReport: {\n      missingInAsana,\n      asanaOnlyIds,\n      koboDuplicateIds,\n      asanaDuplicateIds: state.asanaDuplicateIds,\n      koboMissingId,\n      asanaTasksNoId,\n    },\n  };\n});",
-          "project_credential_id": null,
-          "adaptor": "@openfn/language-common@3.2.3"
-        }
-      },
-      "edges": {
-        "webhook->Get-All-Kobo-Submissions": {
-          "enabled": true,
-          "id": "90a350ab-678e-4459-8940-d1f2cf1df856",
-          "target_job_id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
-          "source_trigger_id": "5af1f220-a85a-41b4-88aa-ba65f596c3c2",
-          "condition_type": "always"
-        },
-        "Get-All-Kobo-Submissions->Get-all-Asana-Tasks": {
-          "enabled": true,
-          "id": "0d339ba4-d6c9-44ab-881b-2479def8eb76",
-          "target_job_id": "c7b98df4-5142-48af-82d9-153f3468f16a",
-          "source_job_id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
-          "condition_type": "on_job_success"
-        },
-        "Get-all-Asana-Tasks->Generate-Diff-Report": {
-          "enabled": true,
-          "id": "48a32eb3-4484-482b-815c-bd64ac0ce8ba",
-          "target_job_id": "5948282e-ad63-4de9-82d7-7d45bd6c3433",
-          "source_job_id": "c7b98df4-5142-48af-82d9-153f3468f16a",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "EAWIO-Sync-to-Asana": {
       "id": "a195906a-3908-4adc-978e-af131a8f8a6d",
       "name": "EAWIO Sync to Asana",
@@ -1326,6 +1267,65 @@
           "condition_type": "js_expression",
           "condition_label": "New Bismarck Form",
           "condition_expression": "state.data.formName == \"Bismarck GRM Form\""
+        }
+      }
+    },
+    "Generate-Discrepancy-Report": {
+      "id": "8e327468-e864-49c8-8be3-94d4c5aef450",
+      "name": "Generate Discrepancy Report",
+      "inserted_at": "2026-03-24T04:07:31.093830Z",
+      "lock_version": 37,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "5af1f220-a85a-41b4-88aa-ba65f596c3c2",
+          "type": "webhook"
+        }
+      },
+      "jobs": {
+        "Get-All-Kobo-Submissions": {
+          "id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
+          "name": "Get All Kobo Submissions",
+          "body": "fn(state => ({\n  ...state,\n  // ── Configurable constants ──────────────────\n  KOBO_ASSET_ID: 'aeMMvn4Pi4m8M7FakifgK8', // Ruaha Katavi !!! UPDATE THE KOBO ID BEFORE RUNNING\n  ASANA_PROJECT_GID: '1204127406220940', // Ruaha Katavi !!! UPDATE THE ASANA ID BEFORE RUNNING\n  ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', // Use either CaseID '1202329899911595' or GrievanceId '1201884379104074' !!! UPDATE THE ID BEFORE RUNNING\n  // ────────────────────────────────────────────\n  koboIdMap: {},\n  koboMissingId: [],\n  koboDuplicateIds: []\n}));\n\ngetSubmissions(state => state.KOBO_ASSET_ID,\n  { fields: ['GrievanceId', 'GrievanceID', 'CaseID', 'CaseId', '_id', '_submission_time'] }\n);\n\nfn(state => {\n  const submissions = state.data || [];\n\n  submissions.forEach(s => {\n    const id = s.GrievanceId || s.GrievanceID || s.CaseID || s.CaseId || null;\n    if (id) {\n      if (state.koboIdMap[id]) {\n        state.koboDuplicateIds.push({ grievanceId: id, koboId: s._id, submittedAt: s._submission_time });\n      } else {\n        state.koboIdMap[id] = true;\n      }\n    } else {\n      state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });\n    }\n  });\n\n  console.log(`Kobo: ${submissions.length} submissions | unique GrievanceIds: ${Object.keys(state.koboIdMap).length}`);\n\n  state.data = null;\n  return state;\n});",
+          "project_credential_id": "e00592c4-d94b-4c80-83eb-e7429c62d245",
+          "adaptor": "@openfn/language-kobotoolbox@4.2.11"
+        },
+        "Get-all-Asana-Tasks": {
+          "id": "c7b98df4-5142-48af-82d9-153f3468f16a",
+          "name": "Get all Asana Tasks",
+          "body": "fn(state => ({\n  ...state,\n  asanaIdMap: {},\n  asanaTasksNoId: [],\n}));\n\ngetTasks(\n  state => state.ASANA_PROJECT_GID,\n  { opt_fields: 'gid,name,custom_fields.gid,custom_fields.text_value,custom_fields.display_value' }\n);\n\nfn(state => {\n  const tasks = state.data || [];\n  const asanaIdMap = {};\n  const asanaTasksNoId = [];\n  const asanaDuplicateIds = [];   \n\n  tasks.forEach(task => {\n    const field = (task.custom_fields || []).find(\n      f => f.gid === state.ASANA_GRIEVANCE_FIELD_GID\n    );\n    const gid = field?.text_value || field?.display_value || null;\n    if (gid) {\n      if (asanaIdMap[gid]) {\n        asanaDuplicateIds.push({ grievanceId: gid, taskGid: task.gid, taskName: task.name });\n      } else {\n        asanaIdMap[gid] = task.name;\n      }\n    } else {\n      asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });\n    }\n  });\n\n  console.log(`Asana: ${tasks.length} tasks | unique GrievanceIds: ${Object.keys(asanaIdMap).length} | duplicates: ${asanaDuplicateIds.length} | no GrievanceId: ${asanaTasksNoId.length}`);\n\n  state.data = null;\n  return { ...state, asanaIdMap, asanaTasksNoId, asanaDuplicateIds, asanaTotalTasks: tasks.length };\n});",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@5.0.10"
+        },
+        "Generate-Diff-Report": {
+          "id": "5948282e-ad63-4de9-82d7-7d45bd6c3433",
+          "name": "Generate Diff Report",
+          "body": "fn(state => {\n  const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds } = state;\n\n  const missingInAsana = Object.keys(koboIdMap).filter(id => !asanaIdMap[id]);\n  const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);\n\n  console.log('\\n════════════════════════════════════════');\n  console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');\n  console.log('════════════════════════════════════════');\n  console.log(`Kobo submissions total:              ${Object.keys(koboIdMap).length + koboDuplicateIds.length + koboMissingId.length}`);\n  console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(koboIdMap).length}`);\n  console.log(`  ⚠ Duplicate GrievanceIds:          ${koboDuplicateIds.length}`);\n  console.log(`  🚫 No GrievanceId:                 ${koboMissingId.length}`);\n  console.log(`Asana tasks total:                   ${state.asanaTotalTasks}`);\n  console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(asanaIdMap).length}`);\n  console.log(`  ⚠ Duplicate GrievanceIds:          ${state.asanaDuplicateIds.length}`);\n  console.log(`  🚫 No GrievanceId:                 ${asanaTasksNoId.length}`);\n  console.log(`─────────────────────────────────────────`);\n  console.log(`❌ Missing in Asana:                 ${missingInAsana.length}`);\n  console.log(`⚠️  In Asana only:                    ${asanaOnlyIds.length}`);\n  console.log('════════════════════════════════════════\\n');\n\n  if (missingInAsana.length > 0) {\n    console.log('❌ NOT IN ASANA:');\n    missingInAsana.forEach(id => console.log(`   ${id}`));\n  }\n\n  if (asanaOnlyIds.length > 0) {\n    console.log('⚠️  IN ASANA ONLY:');\n    asanaOnlyIds.forEach(id =>\n      console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)\n    );\n  }\n\n  if (koboDuplicateIds.length > 0) {\n    console.log('\\n⚠️  KOBO DUPLICATE GrievanceIds:');\n    koboDuplicateIds.forEach(d =>\n      console.log(`   GrievanceId: ${d.grievanceId} | KoboID: ${d.koboId} | Submitted: ${d.submittedAt}`)\n    );\n  }\n\n  if (koboMissingId.length > 0) {\n    console.log('\\n🚫 KOBO SUBMISSIONS WITH NO GrievanceId:');\n    koboMissingId.forEach(s =>\n      console.log(`   KoboID: ${s.koboId} | Submitted: ${s.submittedAt}`)\n    );\n  }\n\n  if (asanaTasksNoId.length > 0) {\n    console.log('\\n🚫 ASANA TASKS WITH NO GrievanceId:');\n    asanaTasksNoId.forEach(t =>\n      console.log(`   TaskGID: ${t.taskGid} | Name: ${t.taskName}`)\n    );\n  }\n\n  if (state.asanaDuplicateIds.length > 0) {\n    console.log('\\n⚠️  ASANA DUPLICATE GrievanceIds:');\n    state.asanaDuplicateIds.forEach(d =>\n      console.log(`   GrievanceId: ${d.grievanceId} | TaskGID: ${d.taskGid} | Name: ${d.taskName}`)\n    );\n  }\n\n  return {\n    ...state,\n    koboIdMap: undefined,\n    asanaIdMap: undefined,\n    asanaTotalTasks: undefined,\n    diffReport: {\n      missingInAsana,\n      asanaOnlyIds,\n      koboDuplicateIds,\n      asanaDuplicateIds: state.asanaDuplicateIds,\n      koboMissingId,\n      asanaTasksNoId,\n    },\n  };\n});",
+          "project_credential_id": null,
+          "adaptor": "@openfn/language-common@3.2.3"
+        }
+      },
+      "edges": {
+        "webhook->Get-All-Kobo-Submissions": {
+          "enabled": true,
+          "id": "90a350ab-678e-4459-8940-d1f2cf1df856",
+          "target_job_id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
+          "source_trigger_id": "5af1f220-a85a-41b4-88aa-ba65f596c3c2",
+          "condition_type": "always"
+        },
+        "Get-All-Kobo-Submissions->Get-all-Asana-Tasks": {
+          "enabled": true,
+          "id": "0d339ba4-d6c9-44ab-881b-2479def8eb76",
+          "target_job_id": "c7b98df4-5142-48af-82d9-153f3468f16a",
+          "source_job_id": "b47af914-3bbd-4dcd-8473-c9033e2408b8",
+          "condition_type": "on_job_success"
+        },
+        "Get-all-Asana-Tasks->Generate-Diff-Report": {
+          "enabled": true,
+          "id": "48a32eb3-4484-482b-815c-bd64ac0ce8ba",
+          "target_job_id": "5948282e-ad63-4de9-82d7-7d45bd6c3433",
+          "source_job_id": "c7b98df4-5142-48af-82d9-153f3468f16a",
+          "condition_type": "on_job_success"
         }
       }
     }
