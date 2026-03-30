@@ -1,5 +1,8 @@
 ---
-layout: page title: WCS Grievances nav_order: 3 permalink: /wcs-grievances/
+layout: page
+title: WCS Grievances
+nav_order: 3
+permalink: /wcs-grievances/
 ---
 
 # WCS Grievances
