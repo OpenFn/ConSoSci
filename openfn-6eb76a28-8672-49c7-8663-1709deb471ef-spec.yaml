@@ -256,6 +256,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */1 * * *'
+        cron_cursor_job: GRM-Fetch-1-Get-FormsList-Ongoing
         enabled: true
     edges:
       cron->GRM-Fetch-1-Get-FormsList-Ongoing:
@@ -572,6 +573,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -605,7 +607,7 @@ workflows:
         body: |
           // Run this after creating a sample task in the target project.
           // Paste that task's gid below.
-          const SAMPLE_TASK_GID = "1213712734435915";
+          const SAMPLE_TASK_GID = "1213104214905492";
 
           // 1) Standard fields (present across projects)
           const STANDARD_FIELDS = {
@@ -805,6 +807,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: false
     edges:
       webhook->Generate-Asana-GID-Mapping:
@@ -1418,6 +1421,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Transform-data:
@@ -2615,6 +2619,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -2713,13 +2718,22 @@ workflows:
           fn(state => ({
             ...state,
             // ── Configurable constants ──────────────────
-            KOBO_ASSET_ID: 'aeMMvn4Pi4m8M7FakifgK8', // Ruaha Katavi !!! UPDATE THE KOBO ID BEFORE RUNNING
-            ASANA_PROJECT_GID: '1204127406220940', // Ruaha Katavi !!! UPDATE THE ASANA ID BEFORE RUNNING
+            KOBO_ASSET_ID: 'aBoTAXpkcvgB7VnuGkjdrg', // Mamabay !!! UPDATE THE KOBO ID BEFORE RUNNING
+            ASANA_PROJECT_GID: '1205812185361950', // Mamabay !!! UPDATE THE ASANA ID BEFORE RUNNING
             ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', // Use either CaseID '1202329899911595' or GrievanceId '1201884379104074' !!! UPDATE THE ID BEFORE RUNNING
             // ────────────────────────────────────────────
             koboIdMap: {},
             koboMissingId: [],
             koboDuplicateIds: []
+          }));
+
+          // Fetch project name
+          http.get(state => `/assets/${state.KOBO_ASSET_ID}/`);
+
+          fn(state => ({
+            ...state,
+            koboProjectName: state.data?.name ?? state.KOBO_ASSET_ID,
+            data: null,
           }));
 
           getSubmissions(state => state.KOBO_ASSET_ID,
@@ -2799,10 +2813,14 @@ workflows:
             const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds } = state;
 
             const missingInAsana = Object.keys(koboIdMap).filter(id => !asanaIdMap[id]);
-            const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);
+            // const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);
+            const asanaOnlyIds = Object.keys(asanaIdMap)
+              .filter(id => !koboIdMap[id])
+              .map(id => ({ grievanceId: id, taskName: asanaIdMap[id] }));
 
             console.log('\n════════════════════════════════════════');
             console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');
+            console.log(`📁  Project: ${state.koboProjectName}`);
             console.log('════════════════════════════════════════');
             console.log(`Kobo submissions total:              ${Object.keys(koboIdMap).length + koboDuplicateIds.length + koboMissingId.length}`);
             console.log(`  ✔ Unique GrievanceIds:             ${Object.keys(koboIdMap).length}`);
@@ -2824,8 +2842,11 @@ workflows:
 
             if (asanaOnlyIds.length > 0) {
               console.log('⚠️  IN ASANA ONLY:');
-              asanaOnlyIds.forEach(id =>
-                console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)
+              // asanaOnlyIds.forEach(id =>
+              //   console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)
+              // );
+              asanaOnlyIds.forEach(({ grievanceId, taskName }) =>
+                console.log(`   GrievanceId: ${grievanceId} | Task: ${taskName}`)
               );
             }
 
@@ -2862,7 +2883,9 @@ workflows:
               koboIdMap: undefined,
               asanaIdMap: undefined,
               asanaTotalTasks: undefined,
+              koboProjectName: undefined,
               diffReport: {
+                koboProjectName: state.koboProjectName,
                 missingInAsana,
                 asanaOnlyIds,
                 koboDuplicateIds,
@@ -2872,9 +2895,92 @@ workflows:
               },
             };
           });
+      Googlesheets:
+        name: Googlesheets
+        adaptor: '@openfn/language-googlesheets@4.0.10'
+        credential: rediet@openfn.org-Rediet-Googlesheet
+        body: |
+          fn(state => {
+            const { diffReport } = state;
+            const { koboProjectName, missingInAsana, asanaOnlyIds, koboDuplicateIds, asanaDuplicateIds, koboMissingId, asanaTasksNoId } = diffReport;
+
+            const runDate = new Date().toISOString().split('T')[0];
+
+            const summaryRow = [
+              runDate, koboProjectName,
+              missingInAsana.length, asanaOnlyIds.length,
+              koboDuplicateIds.length, asanaDuplicateIds.length,
+              koboMissingId.length, asanaTasksNoId.length,
+            ];
+
+            const detailRows = [
+              ...missingInAsana.map(id =>
+                [runDate, koboProjectName, 'Missing in Asana', id, '']),
+              ...asanaOnlyIds.map(({ grievanceId, taskName }) =>
+                [runDate, koboProjectName, 'Asana Only', grievanceId, taskName]),
+              ...koboDuplicateIds.map(d =>
+                [runDate, koboProjectName, 'Kobo Duplicate', d.grievanceId, `KoboID: ${d.koboId} | ${d.submittedAt}`]),
+              ...asanaDuplicateIds.map(d =>
+                [runDate, koboProjectName, 'Asana Duplicate', d.grievanceId, `TaskGID: ${d.taskGid} | ${d.taskName}`]),
+              ...koboMissingId.map(s =>
+                [runDate, koboProjectName, 'Kobo No ID', '', `KoboID: ${s.koboId} | ${s.submittedAt}`]),
+              ...asanaTasksNoId.map(t =>
+                [runDate, koboProjectName, 'Asana No ID', '', `TaskGID: ${t.taskGid} | ${t.taskName}`]),
+            ];
+
+            return {
+              ...state,
+              summaryRow,
+              detailsToWrite: detailRows.length > 0 ? detailRows : [[runDate, koboProjectName, 'No discrepancies', '', '']],
+            };
+          });
+
+          // ── Find next empty row in Summary ──
+          getValues('1kTkNuaqmzg1MCctSlon0q4sdsQnANuuBPdM49wDHyzM', 'Summary!A:A');
+
+          fn(state => {
+            const count = (state.data || []).length;
+            return { ...state, summaryNextRow: count + 1, data: null };
+          });
+
+          // ── Find next empty row in Details ──
+          getValues('1kTkNuaqmzg1MCctSlon0q4sdsQnANuuBPdM49wDHyzM', 'Details!A:A');
+
+          fn(state => {
+            const count = (state.data || []).length;
+            return {
+              ...state,
+              summaryRange: `Summary!A${state.summaryNextRow}:H${state.summaryNextRow}`,
+              detailsRange: `Details!A${count + 1}:E${count + state.detailsToWrite.length}`,
+              data: null,
+            };
+          });
+
+          // ── Write ──
+          batchUpdateValues({
+            spreadsheetId: '1kTkNuaqmzg1MCctSlon0q4sdsQnANuuBPdM49wDHyzM',
+            range: state => state.summaryRange,
+            values: state => [state.summaryRow],
+          });
+
+          batchUpdateValues({
+            spreadsheetId: '1kTkNuaqmzg1MCctSlon0q4sdsQnANuuBPdM49wDHyzM',
+            range: state => state.detailsRange,
+            values: state => state.detailsToWrite,
+          });
+
+          fn(state => ({
+            ...state,
+            summaryRow: undefined,
+            detailsToWrite: undefined,
+            summaryRange: undefined,
+            detailsRange: undefined,
+            summaryNextRow: undefined,
+          }));
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: false
     edges:
       webhook->Get-All-Kobo-Submissions:
@@ -2890,6 +2996,11 @@ workflows:
       Get-all-Asana-Tasks->Generate-Diff-Report:
         source_job: Get-all-Asana-Tasks
         target_job: Generate-Diff-Report
+        condition_type: on_job_success
+        enabled: true
+      Generate-Diff-Report->Googlesheets:
+        source_job: Generate-Diff-Report
+        target_job: Googlesheets
         condition_type: on_job_success
         enabled: true
   Global-Sync-to-Asana:
@@ -3315,6 +3426,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -3618,6 +3730,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -3772,6 +3885,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->GRM15-Upsert-Belize-Grievances-in-Asana:
@@ -4029,6 +4143,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 0 * * *'
+        cron_cursor_job: FS1---Get-Forms
         enabled: true
     edges:
       cron->FS1---Get-Forms:
@@ -4172,6 +4287,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: false
     edges:
       webhook->A-GIDs-and-Mappings-for-Upsert:
@@ -4314,6 +4430,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->GRM14-Upsert-Argentina-Grievances-in-Asana:
@@ -4703,6 +4820,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -4919,6 +5037,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->GRM02-c-Update-Asana-Task-Aceh:
@@ -5091,6 +5210,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->GRM28-Upsert-Bangladesh-Grievances-in-Asana:
@@ -5184,6 +5304,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '*/15 * * * *'
+        cron_cursor_job: Get-data
         enabled: false
     edges:
       cron->Get-data:
@@ -6098,6 +6219,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -6352,6 +6474,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
+        cron_cursor_job: Get-GRM-Forms-List
         enabled: true
     edges:
       cron->Get-GRM-Forms-List:
@@ -6529,6 +6652,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -6794,6 +6918,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */1 * * *'
+        cron_cursor_job: ARCHIVE-Fetch-Historical-Kobo-Grievance-Data
         enabled: false
     edges:
       cron->ARCHIVE-Fetch-Historical-Kobo-Grievance-Data:
