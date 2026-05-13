@@ -607,7 +607,7 @@ workflows:
         body: |
           // Run this after creating a sample task in the target project.
           // Paste that task's gid below.
-          const SAMPLE_TASK_GID = "1213104214905492";
+          const SAMPLE_TASK_GID = "1213992608420654";
 
           // 1) Standard fields (present across projects)
           const STANDARD_FIELDS = {
@@ -2719,8 +2719,8 @@ workflows:
             ...state,
             // ── Configurable constants ──────────────────
             // Check out the "WCS Forms to Sync - Ongoing & Archived" spreadsheet to fill ouot the parameters : https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=114601110#gid=114601110
-            KOBO_ASSET_ID: 'aHYNoZsRMpJZnWeotomtce', // Niassa GRM!!! UPDATE THE KOBO ID BEFORE RUNNING
-            ASANA_PROJECT_GID: '1204346679777510', // AFI GRM !!! UPDATE THE ASANA ID BEFORE RUNNING
+            KOBO_ASSET_ID: 'aBoTAXpkcvgB7VnuGkjdrg', // Mamabay GRM!!! UPDATE THE KOBO ID BEFORE RUNNING
+            ASANA_PROJECT_GID: '1205812185361950', // Mamabay GRM !!! UPDATE THE ASANA ID BEFORE RUNNING
             ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', 
             // ────────────────────────────────────────────
             koboIdMap: {},
@@ -5843,6 +5843,8 @@ workflows:
               Village_YelwanDuguri: '1208360193118210',
               Village_GajiDuguri: '1208360193118211',
               Village_Kwalla: '1208360193118212',
+              Village_Dagudi: '1214766833240232',
+              Village_Mainnamaji: '1214766833240233',
               Gender_Male: '1202330737362427',
               Gender_Female: '1202330737362428',
               Gender_mixed_gender: '1202330737362429',
