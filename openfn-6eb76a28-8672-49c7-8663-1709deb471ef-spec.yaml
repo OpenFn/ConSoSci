@@ -2691,8 +2691,8 @@ workflows:
             ...state,
             // ── Configurable constants ──────────────────
             // Check out the "WCS Forms to Sync - Ongoing & Archived" spreadsheet to fill ouot the parameters : https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=114601110#gid=114601110
-            KOBO_ASSET_ID: 'aBoTAXpkcvgB7VnuGkjdrg', // Mamabay GRM!!! UPDATE THE KOBO ID BEFORE RUNNING
-            ASANA_PROJECT_GID: '1205812185361950', // Mamabay GRM !!! UPDATE THE ASANA ID BEFORE RUNNING
+            KOBO_ASSET_ID: 'aHYNoZsRMpJZnWeotomtce', // Niassa GRM!!! UPDATE THE KOBO ID BEFORE RUNNING
+            ASANA_PROJECT_GID: '1204346679777510', // Niassa GRM !!! UPDATE THE ASANA ID BEFORE RUNNING
             ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', 
             // ────────────────────────────────────────────
             koboIdMap: {},
