@@ -5,6 +5,7 @@ description: |
 collections:
   mydata:
     name: mydata
+channels: null
 credentials:
   aisha@openfn.org-AK-Asana:
     name: AK Asana
@@ -195,6 +196,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
+        cron_cursor_job: Get-Forms-List
         enabled: true
     edges:
       cron->Get-Forms-List:
@@ -337,12 +339,13 @@ workflows:
             const { url, query, tag, formId, name, owner } = state.data; // This gets survey properties
             const rootUrl = state.url; // Get URL from root state if stored there
             const rootQuery = state.query; // Get query from root state if stored there
-            
+
             // Or construct the full URL properly
             console.log('Sending GET to ::', `${url}${query}`);
             const splitQuery = query.split('=')[1]
             return getSubmissions(`${formId}`, { query: splitQuery, limit: Infinity })(state)
               .then(state => {
+                const formCount = state.data.length;
                 const results = state.data.map(submission => {
                   const uniqueIndex = state.globalIndex++;
                   return {
@@ -352,6 +355,7 @@ workflows:
                     formName: name,
                     formOwner: owner,
                     body: submission,
+                    formCount,
                   };
                 });
 
@@ -382,9 +386,9 @@ workflows:
             post(
               "https://app.openfn.org/i/b3f86593-f37e-4139-80b8-852b9d3c49f4",{
               body: state => {
-                const {i, formName} = state.data;
+                const { i, formName, formCount } = state.data;
                 const count = state.surveySubmissions.length;
-                console.log(`Posting ${i} of ${count} from ${formName}`);
+                console.log(`Posting ${i} of ${formCount} from ${formName}`);
                 return  state.data;
               }
               }
@@ -393,6 +397,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: false
     edges:
       Get-FormsList->Get-Form-Submissions:
@@ -1847,6 +1852,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: true
     edges:
       webhook->Triage-jobs:
@@ -1942,14 +1948,14 @@ workflows:
 
             const manualFormList = [
               //==================== Forms must be shared with the account openfn_kobo====================//
-            
+
               {
-                  uid:'arwvoy3RZ3Qg6X88W6pU2c', // This is the uid of the form to sync.
-                  p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)
-                  p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)
-                  tableId: 'BnsAnswer' // This is the table name in the database 
+                uid: 'arwvoy3RZ3Qg6X88W6pU2c', // This is the uid of the form to sync.
+                p1: 'WCSPROGRAMS', // This is the 1st prefix for the table name in the database (optional)
+                p2: 'Kobo', // This is the 2nd prefix for for the table name in the database (optional)
+                tableId: 'BnsAnswer' // This is the table name in the database 
               },
-              
+
             ];
 
             state.data.forms = state.data.results
@@ -2002,18 +2008,23 @@ workflows:
               )
             );
 
-            return { ...state, lastEnd, formsWatched: manualFormList };
+            return {
+              ...state,
+              lastEnd,
+              formsWatched: manualFormList,
+              response: null,  // drop the raw HTTP response stream
+            };
           });
 
       A-1-2-Post-Data-to-WF-Generator:
         name: A-1-2 Post Data to WF Generator
         adaptor: '@openfn/language-http@3.1.11'
-        credential: null
+        credential: aleksa@openfn.org-openfn-api-AK-PAT-social-sciences
         body: |
           each('$.data.forms[*]', state => {
             const form = state.data;
             return post(
-              "https://app.openfn.org/i/ec90e89e-9fd3-4d26-ab9f-df0dc01a0629",
+              "/i/ec90e89e-9fd3-4d26-ab9f-df0dc01a0629",
               { body: { ...form, formUpdate: true } },
               state => {
                 console.log('Sent ', form.tag, ' for handling:');
@@ -2033,6 +2044,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
+        cron_cursor_job: A-1-1-Get-Kobo-Forms
         enabled: true
     edges:
       cron->A-1-1-Get-Kobo-Forms:
@@ -3513,7 +3525,8 @@ workflows:
     triggers:
       webhook:
         type: webhook
-        enabled: false
+        webhook_reply: before_start
+        enabled: true
     edges:
       webhook->A2-Process-Forms-AUTO:
         source_trigger: webhook
@@ -3840,6 +3853,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 0 * * *'
+        cron_cursor_job: FS1---Get-Forms
         enabled: true
     edges:
       cron->FS1---Get-Forms:
@@ -3876,6 +3890,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        webhook_reply: before_start
         enabled: false
     edges:
       webhook->Transform-data:
@@ -4001,6 +4016,7 @@ workflows:
       cron:
         type: cron
         cron_expression: '0 */3 * * *'
+        cron_cursor_job: auto-WCSPROGRAMS_KoboNrgtNrgtAnswer
         enabled: false
     edges:
       cron->auto-WCSPROGRAMS_KoboNrgtNrgtAnswer:
