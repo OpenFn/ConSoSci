@@ -80,7 +80,7 @@ workflows:
             };
             // IF YOU CLEAR STATE...
             // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2026-05-19T22:00:07.922Z';
+            const manualCursor = '2026-06-16T11:00:07.922Z';
 
             let cursorEnd = null;
 
@@ -2369,16 +2369,13 @@ workflows:
             "ReportFormat_Prospecting": "1208419056473280",
             "ReportFormat_ProjectMeeting": "1208936305975370",
             "ReportFormat_GrievanceBook": "1214730936867593",
-            "Age_<18": "1202330714895607",
             "Age_19–35": "1202330714895608",
             "Age_36–50": "1202330714895609",
-            "Age_>50": "1202330714895610",
-            "Age_Mixed age": "1202330714895611",
-            "Age_Unknown age": "1202330714895612",
+            "Age_>60": "1202330714895610",
+            "Age_mixed_age": "1202330714895611",
+            "Age_unknown_age": "1202330714895612",
             "WcsStaff_Yes": "1208262949429785",
             "WcsStaff_No": "1208262949429786",
-            "Anonymous_Yes": "1203977086782816",
-            "Anonymous_No": "1208270620741491",
             "GrievanceAgainst_Wcs": "1202330466059593",
             "GrievanceAgainst_GovernmentPartner": "1202330466059594",
             "GrievanceAgainst_PrivateSectorPartner": "1202330466059595",
@@ -2422,28 +2419,15 @@ workflows:
               custom_fields: {
             '1201884379104074': $.inputData.body.GrievanceID,
             '1202329899911645': state => state.formatMapping["SubmissionType_" + $.inputData.body.SubmissionType],
-            '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
-            '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
             '1208262949429784': state => state.formatMapping["WcsStaff_" + $.inputData.body.WcsStaff],
-            '1203711959959076': $.inputData.body.StaffName,
-            '1203712049265363': $.inputData.body.StaffEmail,
-            '1203711932409666': $.inputData.body.DateGrievanceEntered,
+            '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
             '1210513334764350': state => state.formatMapping["ReportLocation_" + $.inputData.body.ReportLocation],
-            '1203977086782815': state => state.formatMapping["Anonymous_" + $.inputData.body.Anonymous],
-            '1210513334764376': $.inputData.body.ReporterLocation,
-            '1202329899911605': $.inputData.body.ReporterName,
-            '1203712060006636': $.inputData.body.ReporterContactInformation,
-            '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
+            '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
             '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
-            '1202329899911619': $.inputData.body.WhereGrievance,
             '1202329899911623': $.inputData.body.GrievanceDate,
-            '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,
-            '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,
             '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
-            '1203712150593482': $.inputData.body.HarmSuffered,
             '1203712149463009': $.inputData.body.ReliefRequested,
-            '1203712121887316': $.inputData.body.ActionsTaken,
-            '1202329899911599': $.inputData.body.SubmissionDate,
+            '1202329899911599': $.inputData.body.today,
 
               },
 
@@ -2671,8 +2655,8 @@ workflows:
             ...state,
             // ── Configurable constants ──────────────────
             // Check out the "WCS Forms to Sync - Ongoing & Archived" spreadsheet to fill ouot the parameters : https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=114601110#gid=114601110
-            KOBO_ASSET_ID: 'aBoTAXpkcvgB7VnuGkjdrg', // Mamabay!!! UPDATE THE KOBO ID BEFORE RUNNING
-            ASANA_PROJECT_GID: '1205812185361950', // Blue Future !!! UPDATE THE ASANA ID BEFORE RUNNING
+            KOBO_ASSET_ID: 'aKXjStgj9doSpyMhsVwkE7', // Keo Seima!!! UPDATE THE KOBO ID BEFORE RUNNING
+            ASANA_PROJECT_GID: '1205638979644635', // Keo Seima GRM !!! UPDATE THE ASANA ID BEFORE RUNNING
             ASANA_GRIEVANCE_FIELD_GID: '1201884379104074', 
             // ────────────────────────────────────────────
             koboIdMap: {},
@@ -2702,7 +2686,7 @@ workflows:
                 if (state.koboIdMap[id]) {
                   state.koboDuplicateIds.push({ grievanceId: id, koboId: s._id, submittedAt: s._submission_time });
                 } else {
-                  state.koboIdMap[id] = true;
+                  state.koboIdMap[id] = { koboId: String(s._id) };
                 }
               } else {
                 state.koboMissingId.push({ koboId: s._id, submittedAt: s._submission_time });
@@ -2733,29 +2717,33 @@ workflows:
           fn(state => {
             const tasks = state.data || [];
             const asanaIdMap = {};
+            const asanaKoboIdMap = {};
             const asanaTasksNoId = [];
-            const asanaDuplicateIds = [];   
+            const asanaDuplicateIds = [];
 
             tasks.forEach(task => {
               const field = (task.custom_fields || []).find(
                 f => f.gid === state.ASANA_GRIEVANCE_FIELD_GID
               );
-              const gid = field?.text_value || field?.display_value || null;
+              const gid = (field?.text_value || field?.display_value || '').trim() || null;
               if (gid) {
                 if (asanaIdMap[gid]) {
-                  asanaDuplicateIds.push({ grievanceId: gid, taskGid: task.gid, taskName: task.name });
+                  asanaDuplicateIds.push({ grievanceId: gid, taskGid: task.gid, taskName: task.name, firstTaskGid: asanaIdMap[gid].taskGid, firstTaskName: asanaIdMap[gid].taskName });
                 } else {
-                  asanaIdMap[gid] = task.name;
+                  asanaIdMap[gid] = { taskGid: task.gid, taskName: task.name }; // ← store object not just name
                 }
               } else {
                 asanaTasksNoId.push({ taskGid: task.gid, taskName: task.name });
               }
+              //build KoboID index from task name
+              const match = task.name.match(/KoboID:(\d+)/);
+              if (match) asanaKoboIdMap[match[1]] = { taskGid: task.gid, taskName: task.name };
             });
 
             console.log(`Asana: ${tasks.length} tasks | unique GrievanceIds: ${Object.keys(asanaIdMap).length} | duplicates: ${asanaDuplicateIds.length} | no GrievanceId: ${asanaTasksNoId.length}`);
 
             state.data = null;
-            return { ...state, asanaIdMap, asanaTasksNoId, asanaDuplicateIds, asanaTotalTasks: tasks.length };
+            return { ...state, asanaIdMap, asanaTasksNoId, asanaDuplicateIds, asanaTotalTasks: tasks.length, asanaKoboIdMap };
           });
       Generate-Diff-Report:
         name: Generate Diff Report
@@ -2763,13 +2751,48 @@ workflows:
         credential: null
         body: |
           fn(state => {
-            const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds } = state;
+            const { koboIdMap, asanaIdMap, asanaTasksNoId, koboMissingId, koboDuplicateIds, asanaKoboIdMap } = state;
 
-            const missingInAsana = Object.keys(koboIdMap).filter(id => !asanaIdMap[id]);
-            // const asanaOnlyIds = Object.keys(asanaIdMap).filter(id => !koboIdMap[id]);
+            const matchedByNameOnly = [];
+            const koboMissingIdSet = new Set(koboMissingId.map(s => String(s.koboId)));
+
+            const missingInAsana = Object.keys(koboIdMap).filter(id => {
+              if (asanaIdMap[id]) return false;
+              const { koboId } = koboIdMap[id];
+              const asanaEntry = asanaKoboIdMap[koboId];
+              if (asanaEntry) {
+                matchedByNameOnly.push({ grievanceId: id, asanaGrievanceId: '', koboId, taskGid: asanaEntry.taskGid, taskName: asanaEntry.taskName, matchReason: '🔍 Matched by KoboID - GrievanceId field blank/invalid in Asana' });
+                return false;
+              }
+              return true;
+            });
+
+            const matchedTaskNames = new Set(matchedByNameOnly.map(m => m.taskName));
+
             const asanaOnlyIds = Object.keys(asanaIdMap)
-              .filter(id => !koboIdMap[id])
-              .map(id => ({ grievanceId: id, taskName: asanaIdMap[id] }));
+              .filter(id => {
+                if (koboIdMap[id]) return false;
+                const asanaEntry = asanaIdMap[id];
+                if (matchedTaskNames.has(asanaEntry.taskName)) return false;
+                const taskName = asanaEntry.taskName;
+                const match = taskName.match(/KoboID:(\d+)/);
+                if (match) {
+                  const koboId = match[1];
+                  const foundInKoboMap = Object.values(koboIdMap).some(v => v.koboId === koboId);
+                  const foundInKoboMissing = koboMissingIdSet.has(koboId);
+                  if (foundInKoboMap) {
+                    const koboGrievanceId = Object.keys(koboIdMap).find(k => koboIdMap[k].koboId === koboId) || '';
+                    matchedByNameOnly.push({ grievanceId: koboGrievanceId, asanaGrievanceId: id, koboId, taskGid: asanaEntry.taskGid, taskName, matchReason: '🔍 Matched by KoboID - GrievanceId field has wrong value in Asana' });
+                    return false;
+                  }
+                  if (foundInKoboMissing) {
+                    matchedByNameOnly.push({ grievanceId: '', asanaGrievanceId: id, koboId, taskGid: asanaEntry.taskGid, taskName, matchReason: '🔍 Matched by KoboID - GrievanceId missing on both Kobo and Asana' });
+                    return false;
+                  }
+                }
+                return true;
+              })
+              .map(id => ({ grievanceId: id, taskName: asanaIdMap[id].taskName }));
 
             console.log('\n════════════════════════════════════════');
             console.log('📊  GRIEVANCE SYNC DIAGNOSTIC REPORT');
@@ -2784,6 +2807,7 @@ workflows:
             console.log(`  ⚠ Duplicate GrievanceIds:          ${state.asanaDuplicateIds.length}`);
             console.log(`  🚫 No GrievanceId:                 ${asanaTasksNoId.length}`);
             console.log(`─────────────────────────────────────────`);
+            console.log(`🔍 Matched by KoboID only:           ${matchedByNameOnly.length}`);
             console.log(`❌ Missing in Asana:                 ${missingInAsana.length}`);
             console.log(`⚠️  In Asana only:                    ${asanaOnlyIds.length}`);
             console.log('════════════════════════════════════════\n');
@@ -2795,9 +2819,6 @@ workflows:
 
             if (asanaOnlyIds.length > 0) {
               console.log('⚠️  IN ASANA ONLY:');
-              // asanaOnlyIds.forEach(id =>
-              //   console.log(`   GrievanceId: ${id} | Task: ${asanaIdMap[id]}`)
-              // );
               asanaOnlyIds.forEach(({ grievanceId, taskName }) =>
                 console.log(`   GrievanceId: ${grievanceId} | Task: ${taskName}`)
               );
@@ -2831,15 +2852,24 @@ workflows:
               );
             }
 
+            if (matchedByNameOnly.length > 0) {
+              console.log('\n🔍 MATCHED BY KOBO ID ONLY:');
+              matchedByNameOnly.forEach(({ grievanceId, asanaGrievanceId, koboId, taskName, matchReason }) =>
+                console.log(`   ${matchReason} | Kobo GrievanceId: ${grievanceId} | Asana GrievanceId: ${asanaGrievanceId} | KoboID: ${koboId} | Task: ${taskName}`)
+              );
+            }
+
             return {
               ...state,
               koboIdMap: undefined,
               asanaIdMap: undefined,
+              asanaKoboIdMap: undefined,
               asanaTotalTasks: undefined,
               koboProjectName: undefined,
               diffReport: {
                 koboProjectName: state.koboProjectName,
                 missingInAsana,
+                matchedByNameOnly,
                 asanaOnlyIds,
                 koboDuplicateIds,
                 asanaDuplicateIds: state.asanaDuplicateIds,
@@ -2855,7 +2885,7 @@ workflows:
         body: |
           fn(state => {
             const { diffReport } = state;
-            const { koboProjectName, missingInAsana, asanaOnlyIds, koboDuplicateIds, asanaDuplicateIds, koboMissingId, asanaTasksNoId } = diffReport;
+            const { koboProjectName, missingInAsana, asanaOnlyIds, koboDuplicateIds, asanaDuplicateIds, koboMissingId, asanaTasksNoId, matchedByNameOnly } = diffReport;
 
             const runDate = new Date().toISOString().replace('T', ' ').split('.')[0];
 
@@ -2864,29 +2894,38 @@ workflows:
               missingInAsana.length, asanaOnlyIds.length,
               koboDuplicateIds.length, asanaDuplicateIds.length,
               koboMissingId.length, asanaTasksNoId.length,
+              matchedByNameOnly.length,
             ];
 
             const detailRows = [
               ...missingInAsana.map(id =>
-                [runDate, koboProjectName, 'Missing in Asana', id, '', '', '', '']),
+                [runDate, koboProjectName, '❌ Not synced to Asana', id, '', '', '', '']),
+
               ...asanaOnlyIds.map(({ grievanceId, taskName }) =>
-                [runDate, koboProjectName, 'Asana Only', grievanceId, '', '', '', taskName]),
+                [runDate, koboProjectName, '⚠️ Asana only (no Kobo match)', '', grievanceId, '', '', taskName]),
+
               ...koboDuplicateIds.map(d =>
-                [runDate, koboProjectName, 'Kobo Duplicate', d.grievanceId, d.koboId, d.submittedAt, '', '']),
+                [runDate, koboProjectName, '⚠️ Kobo duplicate GrievanceId', d.grievanceId, '', d.koboId, '', '']),
+
               ...asanaDuplicateIds.map(d =>
-                [runDate, koboProjectName, 'Asana Duplicate', d.grievanceId, '', '', d.taskGid, d.taskName]),
+                [runDate, koboProjectName, '⚠️ Asana duplicate GrievanceId', '', d.grievanceId, '', `${d.taskGid} | DUPLICATE OF: ${d.firstTaskGid}`, d.taskName]),
+
               ...koboMissingId.map(s =>
-                [runDate, koboProjectName, 'Kobo No ID', '', s.koboId, s.submittedAt, '', '']),
+                [runDate, koboProjectName, '🚫 Kobo submission has no GrievanceId', '', '', s.koboId, '', '']),
+
               ...asanaTasksNoId.map(t =>
-                [runDate, koboProjectName, 'Asana No ID', '', '', '', t.taskGid, t.taskName]),
+                [runDate, koboProjectName, '🚫 Asana task has no GrievanceId', '', '', '', t.taskGid, t.taskName]),
+
+              ...matchedByNameOnly.map(({ grievanceId, asanaGrievanceId, koboId, taskGid, taskName, matchReason }) =>
+                [runDate, koboProjectName, matchReason, grievanceId, asanaGrievanceId, koboId, taskGid || '', taskName]),
             ];
+
             return {
               ...state,
               summaryRow,
               detailsToWrite: detailRows.length > 0 ? detailRows : [[runDate, koboProjectName, 'No discrepancies', '', '']],
             };
           });
-
 
           // ── Find next empty row in Summary ──
 
@@ -2907,7 +2946,7 @@ workflows:
             const count = rows.length;
             return {
               ...state,
-              summaryRange: `Summary!A${state.summaryNextRow}:H${state.summaryNextRow}`,
+              summaryRange: `Summary!A${state.summaryNextRow}:I${state.summaryNextRow}`,
               detailsRange: `Details!A${count + 1}:H${count + state.detailsToWrite.length}`,
               data: null,
             };
@@ -3609,7 +3648,7 @@ workflows:
               ConfidentialitySensitivity_Yes: '1202330821410493',
               ConfidentialitySensitivity_No: '1202330821410494'
             };
-            state.inputData = state.data;
+            state.inputData = state.data.body;
             return { ...state, formatMapping };
           });
 
@@ -3698,7 +3737,7 @@ workflows:
         condition_type: js_expression
         condition_label: 15. New Belize Form
         condition_expression: |
-          state.data.formName == "Belize Grievance Form"
+          state.data.body.formName == "Belize Grievance Form"
         enabled: true
   Monitor-Forms-Shared:
     name: Monitor Forms Shared
@@ -4936,7 +4975,7 @@ workflows:
               "ConfidentialitySensitivity_No": "1202330821410494"
             };
             state.formatMapping = formatMapping;
-            state.inputData = state.data;
+            state.inputData = state.data.body;
             return { ...state, formatMapping };
           });
 
@@ -5023,7 +5062,7 @@ workflows:
         condition_type: js_expression
         condition_label: 28. GRM Bangladesh
         condition_expression: |
-          state.data.formName == "GRM Bangladesh"
+          state.data.body.formName == "GRM Bangladesh"
         enabled: true
   Scheduled-Workflow:
     name: Scheduled Workflow
