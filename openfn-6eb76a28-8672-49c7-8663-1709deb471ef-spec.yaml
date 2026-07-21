@@ -2720,9 +2720,7 @@ workflows:
             '1216201118088726': $.inputData.body._uuid,
             '1216201118088728': $.inputData.body._submission_time,
             '1216201118088736': $.inputData.body._index,
-               
               },
-
             },
               state => {
                 console.log(JSON.stringify(state?.data, null, 2)); //log data
