@@ -2825,7 +2825,10 @@ workflows:
       Triage-jobs->GRM32-Upsert-DeepSouth:
         source_job: Triage-jobs
         target_job: GRM32-Upsert-DeepSouth
-        condition_type: on_job_success
+        condition_type: js_expression
+        condition_label: New Deep South From
+        condition_expression: |
+          state.data.formName == "GRM Deep South"
         enabled: true
   Generate-Discrepancy-Report:
     name: Generate Discrepancy Report

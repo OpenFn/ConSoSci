@@ -13,8 +13,6 @@
   "history_retention_period": 7,
   "dataclip_retention_period": 7,
   "retention_policy": "retain_all",
-  "allow_support_access": false,
-  "collections": {},
   "project_credentials": {
     "aleksa@openfn.org-Asana-API-Token---AK-WCS-Grievances": {
       "id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
@@ -62,6 +60,8 @@
       "owner": "rediet@openfn.org"
     }
   },
+  "allow_support_access": false,
+  "collections": {},
   "requires_mfa": false,
   "workflows": {
     "SAP-2.-Update-Asana-Task-Aceh": {
@@ -1193,8 +1193,8 @@
     "EAWIO-Sync-to-Asana": {
       "id": "a195906a-3908-4adc-978e-af131a8f8a6d",
       "name": "EAWIO Sync to Asana",
-      "inserted_at": "2026-07-21T06:32:55.010130Z",
-      "lock_version": 100,
+      "inserted_at": "2026-07-21T06:36:51.480936Z",
+      "lock_version": 101,
       "triggers": {
         "webhook": {
           "enabled": true,
@@ -1376,7 +1376,9 @@
           "id": "86d1646e-9a2e-4941-85d8-abfd2f916d69",
           "target_job_id": "79283015-541a-403f-8657-d3e16093dd22",
           "source_job_id": "046ce8ac-c1fc-49c0-804e-973416afc31e",
-          "condition_type": "on_job_success"
+          "condition_type": "js_expression",
+          "condition_label": "New Deep South From",
+          "condition_expression": "state.data.formName == \"GRM Deep South\""
         }
       }
     }
