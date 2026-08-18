@@ -44,7 +44,7 @@ workflows:
           // This can be run on-demand at any time by clicking "run" //
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:P', //get Deployed GRM forms list from Sheet
+            'grm-DEPLOYED!A:Q', //get Deployed GRM forms list from Sheet
             state => {
               const [headers, ...values] = state.data.values;
 
@@ -165,6 +165,7 @@ workflows:
             state.errors = [];
             state.globalIndex = 0;
             state.regionKeyMap = {
+              // Name of region as written in the column "Region" in WCS Forms to Sync spreadsheet : OpenFn workflow name
               'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',
               'Global': 'glo_workflowUrl',
               'Greater Mekong': 'gmk_workflowUrl',
@@ -235,16 +236,21 @@ workflows:
         adaptor: '@openfn/language-http@7.2.6'
         credential: rediet@openfn.org-WCS-GRM-Kobo---RAW-cred
         body: |
+          const baseUrl = "https://app.openfn.org"
+
           each('$.submissions[*]', state => {
             const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);
             if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);
 
-            const regionKey = state.regionKeyMap[formMeta.Region];
-            const workflowUrl = state.configuration[regionKey];
-
-            if (!workflowUrl) {
-              throw new Error(`No workflow URL configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`);
+            if (!formMeta.openfn_workflow_uuid) {
+              throw new Error(`No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`)
             }
+            // const regionKey = state.regionKeyMap[formMeta.Region];
+            const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
+
+            // if (!workflowUrl) {
+            //   throw new Error(`No workflow URL configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`);
+            // }
             console.log(`Posting ${state.data.i + 1}...`);
             console.log(`Submission id:: ${state.data.body._id}`);
 
@@ -260,15 +266,15 @@ workflows:
         cron_cursor_job: GRM-Fetch-1-Get-FormsList-Ongoing
         enabled: true
     edges:
-      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
-        source_trigger: cron
-        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        condition_type: always
-        enabled: true
       GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
         source_job: GRM-Fetch-1-Get-FormsList-Ongoing
         target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
         condition_type: on_job_success
+        enabled: false
+      cron->GRM-Fetch-1-Get-FormsList-Ongoing:
+        source_trigger: cron
+        target_job: GRM-Fetch-1-Get-FormsList-Ongoing
+        condition_type: always
         enabled: true
       GRM-Fetch-2-Get-Kobo-Forms-Ongoing->Post-Submissions:
         source_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
@@ -4175,12 +4181,13 @@ workflows:
               `"{id: '${form.uid}', name: '${form.name
               }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
               '',
-              'ADD MANUALLY @Admin!'
+              'ADD MANUALLY @Admin!',
+              'ADD MANUALLY @Admin!' //openfn_workflow_uuid
             ];
 
             state.rowValuesToCreate = state.formsToCreate.map(form => sheetRowMap(form));
             state.rowValuesToUpdate = state.formsToUpdate.map(form => ({
-              range: `grm-DEPLOYED!A${form.rowIndex + 2}:P${form.rowIndex + 2}`,
+              range: `grm-DEPLOYED!A${form.rowIndex + 2}:Q${form.rowIndex + 2}`,
               values: [sheetRowMap(form)],
             }));
             // state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));
@@ -4198,7 +4205,7 @@ workflows:
           //if new Kobo form shared, adding to the "Deployed"" Sheet...
           appendValues({
             spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'grm-DEPLOYED!A:O', //range of columns in sheet
+            range: 'grm-DEPLOYED!A:P', //range of columns in sheet
             values: state => state.rowValuesToCreate,
           });
 
@@ -4215,7 +4222,7 @@ workflows:
           //also adding archived rows to "Archived" Sheet...
           appendValues({
             spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'grm-ARCHIVED!A:O', //range of columns in sheet
+            range: 'grm-ARCHIVED!A:P', //range of columns in sheet
             values: state => state.rowValuesToArchive,
           });
 
@@ -4309,9 +4316,9 @@ workflows:
         target_job: FS1---Get-Forms
         condition_type: always
         enabled: true
-      FS1---Get-Forms->FS2---Get-List-from-Sheets:
-        source_job: FS1---Get-Forms
-        target_job: FS2---Get-List-from-Sheets
+      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
+        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
         enabled: true
       FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared:
@@ -4319,9 +4326,9 @@ workflows:
         target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
         condition_type: on_job_success
         enabled: true
-      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
-        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
-        target_job: FS4---Notify-in-Asana
+      FS1---Get-Forms->FS2---Get-List-from-Sheets:
+        source_job: FS1---Get-Forms
+        target_job: FS2---Get-List-from-Sheets
         condition_type: on_job_success
         enabled: true
   OLD.-Get-Asana-Field-IDs-for-Project:
