@@ -226,7 +226,7 @@ workflows:
 
           fn(state => {
             state.errors ??= []
-            state.submissionsMap = []
+            state.matchedSubmissions = []
             state.submissions.forEach(submission => {
               const formMeta = state.sheetsData.find(row => row.uid === submission.formId);
               if (!formMeta) {
@@ -249,11 +249,10 @@ workflows:
           })
 
           each('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {
-            const { submission, formMeta, workflowUrl } = state.data
+            const { submission, formMeta } = state.data
             console.log(`Posting ${submission.i + 1}...`);
             console.log(`Submission id:: ${submission.body._id}`);
-
-            console.log("workflowUrl " + formMeta.Region, ": ", workflowUrl);
+            console.log(`Region: ${formMeta.Region}`)
             return submission
           })
           );
@@ -262,22 +261,6 @@ workflows:
             console.error(state.errors)
             throw new Error(state.errors)
           })
-
-          // state => {
-          //   const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);
-          //   if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);
-
-          //   if (!formMeta.openfn_workflow_uuid) {
-          //     throw new Error(`No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`)
-          //   }
-
-          //   const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
-
-          //   //TODO remove
-          //   return post(workflowUrl, {
-          //     body: state => state.data,
-          //   })(state);
-          // }
     triggers:
       cron:
         type: cron
