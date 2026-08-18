@@ -1306,8 +1306,8 @@
     "0.-Get-GRM-Forms-from-Kobo": {
       "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
       "name": "0. Get GRM Forms from Kobo",
-      "inserted_at": "2026-08-18T14:28:49.714693Z",
-      "lock_version": 109,
+      "inserted_at": "2026-08-18T14:41:59.292450Z",
+      "lock_version": 115,
       "triggers": {
         "cron": {
           "enabled": true,
@@ -1335,7 +1335,7 @@
         "Post-Submissions": {
           "id": "9e0b7989-bbfe-4ad2-8583-653373773776",
           "name": "Post Submissions",
-          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  state.errors ??= []\n  state.matchedSubmissions = []\n  state.submissions.forEach(submission => {\n    const formMeta = state.sheetsData.find(row => row.uid === submission.formId);\n    if (!formMeta) {\n      const message = `No metadata for formId ${submission.formId}`\n      console.warn(message)\n      state.errors.push(message)\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      const message = `No OpenFn workflow Uuid configured for region: \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      console.warn(message)\n      state.errors.push(message)\n    }\n\n    const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`\n    state.matchedSubmissions.push({ workflowUrl, submission, formMeta })\n\n  })\n  return state\n})\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return submission\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  console.error(state.errors)\n  throw new Error(state.errors)\n})",
+          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  const { submissions = [], sheetsData = [] } = state;\n\n  const errors = (state.errors ??= []);\n  const matchedSubmissions = [];\n\n  const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));\n\n  for (const submission of submissions) {\n    const formMeta = formMetaByUid.get(submission.formId);\n\n    if (!formMeta) {\n      errors.push(`No metadata for formId ${submission.formId}`);\n      continue;\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      errors.push(\n        `No OpenFn workflow UUID configured for region \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      );\n      continue;\n    }\n\n    matchedSubmissions.push({\n      workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,\n      submission,\n      formMeta,\n    });\n  }\n\n  return { ...state, errors, matchedSubmissions };\n});\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return submission\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  const dedup = [...new Set(state.errors)]\n  console.warn(dedup)\n  throw new Error(dedup)\n})",
           "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed",
           "adaptor": "@openfn/language-http@7.2.6"
         }

@@ -225,28 +225,37 @@ workflows:
           const baseUrl = "https://app.openfn.org"
 
           fn(state => {
-            state.errors ??= []
-            state.matchedSubmissions = []
-            state.submissions.forEach(submission => {
-              const formMeta = state.sheetsData.find(row => row.uid === submission.formId);
+            const { submissions = [], sheetsData = [] } = state;
+
+            const errors = (state.errors ??= []);
+            const matchedSubmissions = [];
+
+            const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));
+
+            for (const submission of submissions) {
+              const formMeta = formMetaByUid.get(submission.formId);
+
               if (!formMeta) {
-                const message = `No metadata for formId ${submission.formId}`
-                console.warn(message)
-                state.errors.push(message)
+                errors.push(`No metadata for formId ${submission.formId}`);
+                continue;
               }
 
               if (!formMeta.openfn_workflow_uuid) {
-                const message = `No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`
-                console.warn(message)
-                state.errors.push(message)
+                errors.push(
+                  `No OpenFn workflow UUID configured for region "${formMeta.Region}" and formId "${formMeta.uid}"`
+                );
+                continue;
               }
 
-              const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
-              state.matchedSubmissions.push({ workflowUrl, submission, formMeta })
+              matchedSubmissions.push({
+                workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,
+                submission,
+                formMeta,
+              });
+            }
 
-            })
-            return state
-          })
+            return { ...state, errors, matchedSubmissions };
+          });
 
           each('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {
             const { submission, formMeta } = state.data
@@ -258,8 +267,9 @@ workflows:
           );
 
           fnIf(state => state.errors.length > 0, state => {
-            console.error(state.errors)
-            throw new Error(state.errors)
+            const dedup = [...new Set(state.errors)]
+            console.warn(dedup)
+            throw new Error(dedup)
           })
     triggers:
       cron:
