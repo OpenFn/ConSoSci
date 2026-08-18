@@ -224,24 +224,60 @@ workflows:
         body: |
           const baseUrl = "https://app.openfn.org"
 
-          each('$.submissions[*]', state => {
-            const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);
-            if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);
+          fn(state => {
+            state.errors ??= []
+            state.submissionsMap = []
+            state.submissions.forEach(submission => {
+              const formMeta = state.sheetsData.find(row => row.uid === submission.formId);
+              if (!formMeta) {
+                const message = `No metadata for formId ${submission.formId}`
+                console.warn(message)
+                state.errors.push(message)
+              }
 
-            if (!formMeta.openfn_workflow_uuid) {
-              throw new Error(`No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`)
-            }
-            
-            const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
+              if (!formMeta.openfn_workflow_uuid) {
+                const message = `No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`
+                console.warn(message)
+                state.errors.push(message)
+              }
 
-            console.log(`Posting ${state.data.i + 1}...`);
-            console.log(`Submission id:: ${state.data.body._id}`);
+              const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
+              state.matchedSubmissions.push({ workflowUrl, submission, formMeta })
 
-            console.log("workflowUrl " + formMeta.Region, ": ", workflowUrl); //TODO remove
-            return post(workflowUrl, {
-              body: state => state.data,
-            })(state);
-          });
+            })
+            return state
+          })
+
+          each('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {
+            const { submission, formMeta, workflowUrl } = state.data
+            console.log(`Posting ${submission.i + 1}...`);
+            console.log(`Submission id:: ${submission.body._id}`);
+
+            console.log("workflowUrl " + formMeta.Region, ": ", workflowUrl);
+            return submission
+          })
+          );
+
+          fnIf(state => state.errors.length > 0, state => {
+            console.error(state.errors)
+            throw new Error(state.errors)
+          })
+
+          // state => {
+          //   const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);
+          //   if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);
+
+          //   if (!formMeta.openfn_workflow_uuid) {
+          //     throw new Error(`No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`)
+          //   }
+
+          //   const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
+
+          //   //TODO remove
+          //   return post(workflowUrl, {
+          //     body: state => state.data,
+          //   })(state);
+          // }
     triggers:
       cron:
         type: cron
