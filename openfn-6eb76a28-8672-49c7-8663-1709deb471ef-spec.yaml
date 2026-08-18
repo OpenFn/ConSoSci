@@ -164,21 +164,7 @@ workflows:
           fn(state => {
             state.errors = [];
             state.globalIndex = 0;
-            state.regionKeyMap = {
-              // Name of region as written in the column "Region" in WCS Forms to Sync spreadsheet : OpenFn workflow name
-              'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',
-              'Global': 'glo_workflowUrl',
-              'Greater Mekong': 'gmk_workflowUrl',
-              'Andes, Amazon & Orinoco': 'aao_workflowUrl',
-              'Central Africa & Gulf of Guinea': 'cag_workflowUrl',
-              'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',
-              'Southern Cone and Patagonia': 'pat_workflowUrl',
-              'Southeast Asia Pacific': 'sap_workflowUrl',
-              'Sudano-Sahel': 'sus_workflowUrl',
-              'South East Asia and Bay of Bengal': 'seabb_workflowUrl',
-              'Temperate Asian Mountains and Grasslands': 'tamg_workflowUrl'
-            };
-          state.submissions = [];
+            state.submissions = [];
             return state;
           });
 
@@ -187,9 +173,9 @@ workflows:
               state.data;
             console.log('Sending GET to ::', `${url}${query}`);
             const splitQuery = query.split('=')[1]
-            return getSubmissions(`${formId}`, {query: splitQuery})(state).then( state => {
+            return getSubmissions(`${formId}`, { query: splitQuery })(state).then(state => {
               state.data.forEach((submission, i) => {
-               state.submissions.push( {
+                state.submissions.push({
                   i,
                   // Here we append the tags defined above to the Kobo form submission data
                   formId,
@@ -206,7 +192,7 @@ workflows:
               console.log(`Fetched ${count} submissions from ${formId} (${name}).`);
               //Once we fetch the data, we want to post each individual Kobo survey
               //back to the OpenFn inbox to run through the jobs =========================
-            return state;
+              return state;
             }).catch(err => {
               const errors = state.errors || [];
               errors.push({
@@ -245,12 +231,9 @@ workflows:
             if (!formMeta.openfn_workflow_uuid) {
               throw new Error(`No OpenFn workflow Uuid configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`)
             }
-            // const regionKey = state.regionKeyMap[formMeta.Region];
+            
             const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`
 
-            // if (!workflowUrl) {
-            //   throw new Error(`No workflow URL configured for region: "${formMeta.Region}" and formId "${formMeta.uid}"`);
-            // }
             console.log(`Posting ${state.data.i + 1}...`);
             console.log(`Submission id:: ${state.data.body._id}`);
 
@@ -266,20 +249,23 @@ workflows:
         cron_cursor_job: GRM-Fetch-1-Get-FormsList-Ongoing
         enabled: true
     edges:
-      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
-        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
-        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
-        condition_type: on_job_success
-        enabled: false
       cron->GRM-Fetch-1-Get-FormsList-Ongoing:
         source_trigger: cron
         target_job: GRM-Fetch-1-Get-FormsList-Ongoing
         condition_type: always
         enabled: true
+      GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
+        source_job: GRM-Fetch-1-Get-FormsList-Ongoing
+        target_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
+        condition_type: on_job_success
+        enabled: true
       GRM-Fetch-2-Get-Kobo-Forms-Ongoing->Post-Submissions:
         source_job: GRM-Fetch-2-Get-Kobo-Forms-Ongoing
         target_job: Post-Submissions
-        condition_type: on_job_success
+        condition_type: js_expression
+        condition_label: has-submissions
+        condition_expression: |
+          state.submissions.length > 0
         enabled: true
   AAO-Sync-to-Asana:
     name: AAO Sync to Asana

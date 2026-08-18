@@ -1306,8 +1306,8 @@
     "0.-Get-GRM-Forms-from-Kobo": {
       "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
       "name": "0. Get GRM Forms from Kobo",
-      "inserted_at": "2026-08-18T13:37:48.910036Z",
-      "lock_version": 101,
+      "inserted_at": "2026-08-18T14:06:56.063677Z",
+      "lock_version": 105,
       "triggers": {
         "cron": {
           "enabled": true,
@@ -1328,26 +1328,19 @@
         "GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
           "id": "32590563-b5f6-4474-8528-cdbea6891a42",
           "name": "GRM-Fetch-2 Get Kobo Forms Ongoing",
-          "body": "\n\n// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.regionKeyMap = {\n    // Name of region as written in the column \"Region\" in WCS Forms to Sync spreadsheet : OpenFn workflow name\n    'East Africa Western Indian Ocean & Madagascar': 'eaw_workflowUrl',\n    'Global': 'glo_workflowUrl',\n    'Greater Mekong': 'gmk_workflowUrl',\n    'Andes, Amazon & Orinoco': 'aao_workflowUrl',\n    'Central Africa & Gulf of Guinea': 'cag_workflowUrl',\n    'Mesoamerica & Western Caribbean': 'mwc_workflowUrl',\n    'Southern Cone and Patagonia': 'pat_workflowUrl',\n    'Southeast Asia Pacific': 'sap_workflowUrl',\n    'Sudano-Sahel': 'sus_workflowUrl',\n    'South East Asia and Bay of Bengal': 'seabb_workflowUrl',\n    'Temperate Asian Mountains and Grasslands': 'tamg_workflowUrl'\n  };\nstate.submissions = [];\n  return state;\n});\n\neach(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } =\n    state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n  const splitQuery = query.split('=')[1]\n  return getSubmissions(`${formId}`, {query: splitQuery})(state).then( state => {\n    state.data.forEach((submission, i) => {\n     state.submissions.push( {\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      });\n    });\n    //const count = state.submissions.length;\n    const results = state.data?.results ?? [];\n    const count = Array.isArray(state.data) ? state.data.length : (state.data?.results?.length ?? 0);\n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n  return state;\n  }).catch(err => {\n    const errors = state.errors || [];\n    errors.push({\n      formId,\n      message: err.message,\n    });\n    state.errors = errors;\n    console.log(`Error fetching submissions from  ${formId}::`, err.message);\n    return state;\n  });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n\n  if (state.errors ? state.errors.length > 0 : false) {\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null, 2));\n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }\n  return state;\n});\n",
+          "body": "\n\n// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.submissions = [];\n  return state;\n});\n\neach(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } =\n    state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n  const splitQuery = query.split('=')[1]\n  return getSubmissions(`${formId}`, { query: splitQuery })(state).then(state => {\n    state.data.forEach((submission, i) => {\n      state.submissions.push({\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      });\n    });\n    //const count = state.submissions.length;\n    const results = state.data?.results ?? [];\n    const count = Array.isArray(state.data) ? state.data.length : (state.data?.results?.length ?? 0);\n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n    return state;\n  }).catch(err => {\n    const errors = state.errors || [];\n    errors.push({\n      formId,\n      message: err.message,\n    });\n    state.errors = errors;\n    console.log(`Error fetching submissions from  ${formId}::`, err.message);\n    return state;\n  });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n\n  if (state.errors ? state.errors.length > 0 : false) {\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null, 2));\n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }\n  return state;\n});\n",
           "project_credential_id": "e00592c4-d94b-4c80-83eb-e7429c62d245",
           "adaptor": "@openfn/language-kobotoolbox@4.2.9"
         },
         "Post-Submissions": {
           "id": "9e0b7989-bbfe-4ad2-8583-653373773776",
           "name": "Post Submissions",
-          "body": "const baseUrl = \"https://app.openfn.org\"\n\neach('$.submissions[*]', state => {\n  const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);\n  if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);\n\n  if (!formMeta.openfn_workflow_uuid) {\n    throw new Error(`No OpenFn workflow Uuid configured for region: \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`)\n  }\n  // const regionKey = state.regionKeyMap[formMeta.Region];\n  const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`\n\n  // if (!workflowUrl) {\n  //   throw new Error(`No workflow URL configured for region: \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`);\n  // }\n  console.log(`Posting ${state.data.i + 1}...`);\n  console.log(`Submission id:: ${state.data.body._id}`);\n\n  console.log(\"workflowUrl \" + formMeta.Region, \": \", workflowUrl); //TODO remove\n  return post(workflowUrl, {\n    body: state => state.data,\n  })(state);\n});",
+          "body": "const baseUrl = \"https://app.openfn.org\"\n\neach('$.submissions[*]', state => {\n  const formMeta = state.sheetsData.find(row => row.uid === state.data.formId);\n  if (!formMeta) throw new Error(`No metadata for formId ${state.data.formId}`);\n\n  if (!formMeta.openfn_workflow_uuid) {\n    throw new Error(`No OpenFn workflow Uuid configured for region: \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`)\n  }\n  \n  const workflowUrl = `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`\n\n  console.log(`Posting ${state.data.i + 1}...`);\n  console.log(`Submission id:: ${state.data.body._id}`);\n\n  console.log(\"workflowUrl \" + formMeta.Region, \": \", workflowUrl); //TODO remove\n  return post(workflowUrl, {\n    body: state => state.data,\n  })(state);\n});",
           "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed",
           "adaptor": "@openfn/language-http@7.2.6"
         }
       },
       "edges": {
-        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
-          "enabled": false,
-          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
-          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "condition_type": "on_job_success"
-        },
         "cron->GRM-Fetch-1-Get-FormsList-Ongoing": {
           "enabled": true,
           "id": "c97eea3c-5d7a-4e6e-9899-f594859f0026",
@@ -1355,12 +1348,21 @@
           "source_trigger_id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
           "condition_type": "always"
         },
+        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
+          "enabled": true,
+          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
+          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "condition_type": "on_job_success"
+        },
         "GRM-Fetch-2-Get-Kobo-Forms-Ongoing->Post-Submissions": {
           "enabled": true,
           "id": "a4078578-22d5-4a7b-8088-52fa54b4aac7",
           "target_job_id": "9e0b7989-bbfe-4ad2-8583-653373773776",
           "source_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "condition_type": "on_job_success"
+          "condition_type": "js_expression",
+          "condition_label": "has-submissions",
+          "condition_expression": "state.submissions.length > 0"
         }
       }
     }
