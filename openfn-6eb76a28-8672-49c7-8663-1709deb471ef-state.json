@@ -306,70 +306,6 @@
         }
       }
     },
-    "Global-Sync-to-Asana": {
-      "id": "0b3179e7-50f9-4ce0-9406-eb71947565da",
-      "name": "Global Sync to Asana",
-      "inserted_at": "2026-04-14T15:11:06.895655Z",
-      "lock_version": 48,
-      "triggers": {
-        "webhook": {
-          "enabled": true,
-          "id": "2b8d8b32-928a-40bb-895e-bb11c2660e41",
-          "type": "webhook",
-          "webhook_reply": "before_start"
-        }
-      },
-      "jobs": {
-        "Triage-jobs": {
-          "id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
-          "name": "Triage jobs",
-          "body": "// Check out the Job Writing Guide for help getting started:\n// https://docs.openfn.org/documentation/jobs/job-writing-guide\nfn(state => {\n  if (state.data?.body) {\n    state.data = state.data.body;\n  }\n  return state;\n});",
-          "project_credential_id": null,
-          "adaptor": "@openfn/language-common@latest"
-        },
-        "GRM00-Upsert-TEST-Grievances": {
-          "id": "44fb1e36-6c77-4d3a-894a-f00f6f1d909a",
-          "name": "GRM00 Upsert TEST Grievances",
-          "body": "fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids\n  const formatMapping = {\n\n    SubmissionType_Grievance: '1208823831241793',\n    SubmissionType_Suggestion: '1208823831314328',\n    'SubmissionType_Test case': '1208823831314329',\n    SubmissionType_Question: '1208823831314330',\n    Classification_Boundary: '1207934444664901',\n    Classification_Comment: '1207064126306000',\n    'Classification_Human Resources': '1206208252500541',\n    'Classification_HWC (Human-Wildlife Conflict)': '1204269608862904',\n    'Classification_Illegal Activity': '1204269617420858',\n    'Classification_Management ': '1204269617420857',\n    'Classification_PI & NR (Project Implementation & Natural Resource Management)': '1204269608862903',\n    'Classification_Positive Feedback': '1204269617420859',\n    Classification_Question: '1207064126305999',\n    'Classification_Request for assistance': '1204269617420968',\n    'Classification_Safeguards & Human Rights': '1204269608862902',\n    Classification_Suggestion: '1207064073157821',\n    Classification_Other: '1204269617420860',\n    'Classification_Not eligible': '1207724727681221',\n    Country_Bolivia: '1208823831314340',\n    Country_Brazil: '1208823831314341',\n    Country_Colombia: '1208823831314342',\n    Country_Ecuador: '1208823831314343',\n    Country_Peru: '1208823831314344',\n    Country_Indeterminado: '1208823831314345',\n    Donor_AFD: '1207470695842883',\n    Donor_BAF: '1207470914898964',\n    Donor_BEF: '1207470928895774',\n    Donor_EU: '1207470928895775',\n    Donor_GEF: '1207470928895776',\n    Donor_Hempel: '1207942941061344',\n    Donor_INL: '1207470928895777',\n    Donor_KFW: '1207942941061345',\n    Donor_LLF: '1207470928895778',\n    Donor_NOAA: '1207470928895779',\n    Donor_MACP: '1207470928895780',\n    'Donor_REDD+': '1207470928895781',\n    Donor_USAID: '1207470928895782',\n    'Donor_World Bank': '1207551210258645',\n    WcsStaff_Yes: '1208823831341595',\n    WcsStaff_No: '1208823831341596',\n    ReportFormat_InPerson: '1202330347493011',\n    ReportFormat_FocalPoint: '1207724960884497',\n    ReportFormat_VoiceCall: '1202330347494027',\n    ReportFormat_Hotline: '1202330347501419',\n    ReportFormat_TextMessage: '1202330347498273',\n    ReportFormat_SuggestionBox: '1202330347499327',\n    ReportFormat_Email: '1202330347502485',\n    ReportFormat_Letter: '1202330347503544',\n    ReportFormat_OnlineForm: '1207934414764297',\n    ReportFormat_Other: '1203830536105154',\n    ReportFormat_Prospecting: '1208419056473280',\n    Anonymous_Yes: '1203977086782816',\n    Anonymous_No: '1208270620741491',\n    Gender_male: '1202330737362427',\n    Gender_female: '1202330737362428',\n    'Gender_mixed_gender': '1202330737362429',\n    'Gender_unknown_gender': '1202330737362430',\n    IndigenousPeople_Yes_ips: '1202330755980982',\n    IndigenousPeople_No_ips: '1202330755984093',\n    IndigenousPeople_unknown_ips: '1202330755985164',\n    IndigenousPeople_mixed_group: '1207724962870243',\n    'Age_<18': '1202330714895607',\n    'Age_19-35': '1202330714895608',\n    'Age_36-50': '1202330714895609',\n    'Age_>50': '1202330714895610',\n    Age_mixed_age: '1202330714895611',\n    Age_unknown_age: '1202330714895612',\n    GrievanceAgainst_Wcs: '1202330466059593',\n    GrievanceAgainst_GovernmentPartner: '1202330466059594',\n    GrievanceAgainst_PrivateSectorPartner: '1202330466059595',\n    GrievanceAgainst_CivilSocietyPartner: '1202330466059596',\n    GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',\n    ConfidentialitySensitivity_Yes: '1202330821410493',\n    ConfidentialitySensitivity_No: '1202330821410494'\n  };\n  state.inputData = state.data;\n  return { ...state, formatMapping };\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.\n// Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID\n  const grievanceId = state.inputData?.body?.GrievanceID;\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, state =>\n  createTask({\n    name: $.inputData.body.GrievanceID,\n    projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job\n    notes: $.inputData.body.DescriptioGrievance,\n    custom_fields: {\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      '1203711959959076': $.inputData.body.StaffName,\n      '1203712049265363': $.inputData.body.StaffEmail,\n      '1208823831241787': $.inputData.body[\"Submission Date\"],\n      '1203712064304976': $.inputData.body.ReporterFullName,\n      '1203712060006636': $.inputData.body.ReporterContactInformation,\n      '1201884379104074': $.inputData.body.GrievanceId,\n      '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,\n      '1202329899911619': $.inputData.body.WhereGrievance,\n      '1208823831341587': $.inputData.body.WhenGrievance,\n      '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,\n      '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,\n      '1208823831341575': $.inputData.body.DescriptioGrievance,\n      '1203712150593482': $.inputData.body.HarmSuffered,\n      '1203712149463009': $.inputData.body.ReliefRequested,\n      '1208823831241782': $.inputData.body[\"OneDrive Folder\"],\n      '1203830309880883': $.inputData.body.WhatProject,\n      '1208823831341580': $.inputData.body.Suggestion,\n\n      // Fields  belonging to questions with dropdown or multiple choice\n      '1187328718760774': state => state.formatMapping[\"GrievanceStatus _\" + $.inputData.body.GrievanceStatus],\n      '1208823831241792': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      '1202593715272940': state => state.formatMapping[\"Grade_\" + $.inputData.body.Grade],\n      '1204269608862901': state => state.formatMapping[\"Classification_\" + $.inputData.body.Classification],\n      '1208823831314339': state => state.formatMapping[\"Country_\" + $.inputData.body.Country],\n      '1207470695842882': state => state.formatMapping[\"Donor_\" + $.inputData.body.Donor],\n      '1208823831341594': state => state.formatMapping[\"WcsStaff_\" + $.inputData.body.WcsStaff],\n      '1202330347491974': state => state.formatMapping[\"ReportFormat_\" + $.inputData.body.ReportFormat],\n      '1203977086782815': state => state.formatMapping[\"Anonymous_\" + $.inputData.body.Anonymous],\n      '1202330737362426': state => state.formatMapping[\"Gender_\" + $.inputData.body.Gender],\n      '1202330755979944': state => state.formatMapping[\"IndigenousPeople_\" + $.inputData.body.IndigenousPeople],\n      '1202330714895606': state => state.formatMapping[\"Age_\" + $.inputData.body.Age],\n      '1202330466059592': state => state.formatMapping[\"GrievanceAgainst_\" + $.inputData.body.GrievanceAgainst],\n      '1202330821410492': state => state.formatMapping[\"ConfidentialitySensitivity_\" + $.inputData.body.ConfidentialitySensitivity],\n    }\n  },\n    state => {\n      console.log(JSON.stringify(state.data, null, 2)); //log data\n      return state;\n    }\n  )\n)\n",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@4.3.0"
-        },
-        "GRM01-Upsert-WCS-Global-Grievances-in-Asana": {
-          "id": "6cb7b710-d0da-475b-8165-a503e29b8c3c",
-          "name": "GRM01 Upsert WCS Global Grievances in Asana",
-          "body": "fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids\n  const formatMapping = {\n    SubmissionType_Grievance: '1202329899911646',\n    SubmissionType_Suggestion: '1202329899911647',\n    SubmissionType_Request: '1202329899911648',\n    SubmissionType_Feedback: '1202329899911649',\n    WcsStaff_Yes: '1204450063214998',\n    WcsStaff_No: '1204450063214999',\n    GrievanceAgainst_Wcs: '1202330466059593',\n    GrievanceAgainst_GovernmentPartner: '1202330466059594',\n    GrievanceAgainst_PrivateSectorPartner: '1202330466059595',\n    GrievanceAgainst_CivilSocietyPartner: '1202330466059596',\n    GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',\n    GrievanceType_RelatedProjects: '1187634487549316',\n    GrievanceType_LandTerritory: '1187634487549317',\n    GrievanceType_WildlifeConflict: '1187634487549318',\n    GrievanceType_OtherIssues: '1201884389902967',\n    GrievanceType_Suggestion: '1201884389905045',\n    ConfidentialitySensitivity_Yes: '1201743216292435',\n    ConfidentialitySensitivity_No: '1201743216292436',\n    GrievanceReportFormat_InPerson: '1192836094355011',\n    GrievanceReportFormat_VoiceCall: '1192836094355012',\n    GrievanceReportFormat_TextMessage: '1192847692374160',\n    GrievanceReportFormat_Email: '1192847692376214',\n    GrievanceReportFormat_PostalLetter: '1192847692376223'\n  };\n  state.inputData = state.data;\n  return { ...state, formatMapping };\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.\n// Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID,\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID\n  const grievanceId = state.inputData?.body?.GrievanceID;\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\n\nfnIf(!$.skipCreate,\n  createTask({\n    name: $.inputData.body.GrievanceID,\n    projects: [$.inputData.projectid],  //to dynamically map project id, assuming it's defined in the Get job\n    notes: $.inputData.body.DescriptioGrievance,\n    custom_fields: {\n      //Open-ended questions\n      '1202329899911595': $.inputData.body.GrievanceID,\n      '1204450063214985': $.inputData.body.Country,\n      '1204450063214993': $.inputData.body.Anonymous,\n      '1204450063214995': $.inputData.body.ReporterFullName,\n      '1203712060006636': $.inputData.body.ReporterContactInformation,\n      '1201884379104074': $.inputData.body.GrievanceId,\n      '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,\n      '1202329899911619': $.inputData.body.WhereGrievance,\n      '1201382335160256': $.inputData.body.WhenGrievance,\n      '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,\n      '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,\n      '1203712150593482': $.inputData.body.HarmSuffered,\n      '1203712149463009': $.inputData.body.ReliefRequested,\n      '1201382335160251': $.inputData.body.today,\n\n\n      //Multiple choice questions \n      '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      '1204450063214997': state => state.formatMapping[\"WcsStaff_\" + $.inputData.body.WcsStaff],\n      '1202330466059592': state => state.formatMapping[\"GrievanceAgainst_\" + $.inputData.body.GrievanceAgainst],\n      '1187634487549315': state => state.formatMapping[\"GrievanceType_\" + $.inputData.body.GrievanceType],\n      '1201743216292434': state => state.formatMapping[\"ConfidentialitySensitivity_\" + $.inputData.body.ConfidentialitySensitivity],\n      '1192836094355010': state => state.formatMapping[\"GrievanceReportFormat_\" + $.inputData.body.GrievanceReportFormat],\n    },\n  },\n    state => {\n      console.log(JSON.stringify(state.data, null, 2)); //log data\n      return state;\n    }\n  )\n);",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@4.3.0"
-        }
-      },
-      "edges": {
-        "webhook->Triage-jobs": {
-          "enabled": true,
-          "id": "39b25ede-73b9-42c6-8139-f407dc9cbc2e",
-          "target_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
-          "source_trigger_id": "2b8d8b32-928a-40bb-895e-bb11c2660e41",
-          "condition_type": "always"
-        },
-        "Triage-jobs->GRM00-Upsert-TEST-Grievances": {
-          "enabled": false,
-          "id": "02632ad9-0ed9-45b0-88ca-f3855c26af12",
-          "target_job_id": "44fb1e36-6c77-4d3a-894a-f00f6f1d909a",
-          "source_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
-          "condition_type": "js_expression",
-          "condition_label": "New TEST form",
-          "condition_expression": "state.data.formName == \"Test WCS FGRM Form\""
-        },
-        "Triage-jobs->GRM01-Upsert-WCS-Global-Grievances-in-Asana": {
-          "enabled": true,
-          "id": "7b0c9432-2747-4d6e-876b-e19d3f752039",
-          "target_job_id": "6cb7b710-d0da-475b-8165-a503e29b8c3c",
-          "source_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
-          "condition_type": "js_expression",
-          "condition_label": "New WCS Global GRM form",
-          "condition_expression": "state.data.formName == \"WCS Global Grievances & Suggestions\""
-        }
-      }
-    },
     "Sudano-Sahel-Sync-to-Asana": {
       "id": "4f9fd6fb-8b25-4af1-8ced-bf4bb971ce71",
       "name": "Sudano Sahel Sync to Asana",
@@ -1228,86 +1164,75 @@
         }
       }
     },
-    "Monitor-Forms-Shared": {
-      "id": "855282b5-f5fb-4d03-85f8-9249602724a5",
-      "name": "Monitor Forms Shared",
-      "inserted_at": "2026-08-18T13:37:48.902333Z",
-      "lock_version": 34,
+    "Global-Sync-to-Asana": {
+      "id": "0b3179e7-50f9-4ce0-9406-eb71947565da",
+      "name": "Global Sync to Asana",
+      "inserted_at": "2026-08-19T08:12:19.664250Z",
+      "lock_version": 49,
       "triggers": {
-        "cron": {
+        "webhook": {
           "enabled": true,
-          "id": "c3fbcabb-2c8d-4488-8fb4-d66e2f3eb3d6",
-          "type": "cron",
-          "cron_expression": "0 0 * * *",
-          "cron_cursor_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708"
+          "id": "2b8d8b32-928a-40bb-895e-bb11c2660e41",
+          "type": "webhook",
+          "webhook_reply": "before_start"
         }
       },
       "jobs": {
-        "FS1---Get-Forms": {
-          "id": "022d2ff0-4007-45b1-8d72-8954e7626708",
-          "name": "FS1 - Get Forms",
-          "body": "//Check Kobo account for forms with these matching keywords\ngetForms({}, state => {\n  //ALL KEYWORDS:\n  const keywords = ['grm', 'grievance', 'suggestion', 'queja', 'reclamo', 'ocorrência', 'Reclamações', 'feedback'];\n\n  const checkForKeyWords = name => {\n    return keywords.some(keyword => name.toLowerCase().includes(keyword));\n  };\n\n  state.activeForms = state.data.results\n    .filter(form => checkForKeyWords(form.name))\n    .filter(form => form.deployment__active);\n\n  state.archivedForms = state.data.results\n    .filter(form => checkForKeyWords(form.name))\n    .filter(form => !form.deployment__active);\n    \n  console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );\n  console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );\n\n  state.data = {};\n  state.references = [];\n  return state;\n});\n\n",
-          "project_credential_id": "5612d657-0a94-499a-bb7e-cd2b6eb02d62",
-          "adaptor": "@openfn/language-kobotoolbox@2.1.0"
+        "Triage-jobs": {
+          "id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
+          "name": "Triage jobs",
+          "body": "// Check out the Job Writing Guide for help getting started:\n// https://docs.openfn.org/documentation/jobs/job-writing-guide\nfn(state => {\n  if (state.data?.body) {\n    state.data = state.data.body;\n  }\n  return state;\n});",
+          "project_credential_id": null,
+          "adaptor": "@openfn/language-common@latest"
         },
-        "FS2---Get-List-from-Sheets": {
-          "id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
-          "name": "FS2 - Get List from Sheets",
-          "body": "getValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:P',\n  state => {\n    const [headers, ...sheetsData] = state.data.values;\n    console.log('Ignoring headers', headers);\n    state.deployedSheetData = sheetsData;\n    return state;\n  }\n);\n\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-ARCHIVED!A:P',\n  state => {\n    const [_headers, ...archivedRows] = state.data.values ?? [];\n    state.archivedSheetUids = archivedRows.map(row => row[1]); // column B = uid\n    console.log('# of archivedSheetUids::', state.archivedSheetUids.length);\n    return state;\n  }\n);\n\nfn(state => {\n  const { activeForms, archivedForms, deployedSheetData } = state;\n\n  const sheetsUids = deployedSheetData.map(row => row[1]); // column B = uid\n\n  state.formsToCreate = activeForms.filter(\n    form => !sheetsUids.includes(form.uid)\n  );\n\n  state.formsToUpdate = archivedForms\n    .filter(form => sheetsUids.includes(form.uid))\n    .map(form => {\n      const rowIndex = deployedSheetData.findIndex(row => row[1] === form.uid);\n      if (rowIndex !== -1) {\n        return { ...form, rowIndex };\n      }\n      console.log(form.uid, 'Could not be found in google sheet');\n    })\n    .filter(Boolean); // drop undefined entries\n\n  return state;\n});\n\nfn(state => {\n  const { data, references, response, ...remainingState } = state;\n  return remainingState;\n});",
-          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
-          "adaptor": "@openfn/language-googlesheets@4.0.13"
+        "GRM00-Upsert-TEST-Grievances": {
+          "id": "44fb1e36-6c77-4d3a-894a-f00f6f1d909a",
+          "name": "GRM00 Upsert TEST Grievances",
+          "body": "fn(state => {   //Mapping table to map Kobo field CHOICES to Asana custom_fields_choices gids\n  const formatMapping = {\n\n    SubmissionType_Grievance: '1208823831241793',\n    SubmissionType_Suggestion: '1208823831314328',\n    'SubmissionType_Test case': '1208823831314329',\n    SubmissionType_Question: '1208823831314330',\n    Classification_Boundary: '1207934444664901',\n    Classification_Comment: '1207064126306000',\n    'Classification_Human Resources': '1206208252500541',\n    'Classification_HWC (Human-Wildlife Conflict)': '1204269608862904',\n    'Classification_Illegal Activity': '1204269617420858',\n    'Classification_Management ': '1204269617420857',\n    'Classification_PI & NR (Project Implementation & Natural Resource Management)': '1204269608862903',\n    'Classification_Positive Feedback': '1204269617420859',\n    Classification_Question: '1207064126305999',\n    'Classification_Request for assistance': '1204269617420968',\n    'Classification_Safeguards & Human Rights': '1204269608862902',\n    Classification_Suggestion: '1207064073157821',\n    Classification_Other: '1204269617420860',\n    'Classification_Not eligible': '1207724727681221',\n    Country_Bolivia: '1208823831314340',\n    Country_Brazil: '1208823831314341',\n    Country_Colombia: '1208823831314342',\n    Country_Ecuador: '1208823831314343',\n    Country_Peru: '1208823831314344',\n    Country_Indeterminado: '1208823831314345',\n    Donor_AFD: '1207470695842883',\n    Donor_BAF: '1207470914898964',\n    Donor_BEF: '1207470928895774',\n    Donor_EU: '1207470928895775',\n    Donor_GEF: '1207470928895776',\n    Donor_Hempel: '1207942941061344',\n    Donor_INL: '1207470928895777',\n    Donor_KFW: '1207942941061345',\n    Donor_LLF: '1207470928895778',\n    Donor_NOAA: '1207470928895779',\n    Donor_MACP: '1207470928895780',\n    'Donor_REDD+': '1207470928895781',\n    Donor_USAID: '1207470928895782',\n    'Donor_World Bank': '1207551210258645',\n    WcsStaff_Yes: '1208823831341595',\n    WcsStaff_No: '1208823831341596',\n    ReportFormat_InPerson: '1202330347493011',\n    ReportFormat_FocalPoint: '1207724960884497',\n    ReportFormat_VoiceCall: '1202330347494027',\n    ReportFormat_Hotline: '1202330347501419',\n    ReportFormat_TextMessage: '1202330347498273',\n    ReportFormat_SuggestionBox: '1202330347499327',\n    ReportFormat_Email: '1202330347502485',\n    ReportFormat_Letter: '1202330347503544',\n    ReportFormat_OnlineForm: '1207934414764297',\n    ReportFormat_Other: '1203830536105154',\n    ReportFormat_Prospecting: '1208419056473280',\n    Anonymous_Yes: '1203977086782816',\n    Anonymous_No: '1208270620741491',\n    Gender_male: '1202330737362427',\n    Gender_female: '1202330737362428',\n    'Gender_mixed_gender': '1202330737362429',\n    'Gender_unknown_gender': '1202330737362430',\n    IndigenousPeople_Yes_ips: '1202330755980982',\n    IndigenousPeople_No_ips: '1202330755984093',\n    IndigenousPeople_unknown_ips: '1202330755985164',\n    IndigenousPeople_mixed_group: '1207724962870243',\n    'Age_<18': '1202330714895607',\n    'Age_19-35': '1202330714895608',\n    'Age_36-50': '1202330714895609',\n    'Age_>50': '1202330714895610',\n    Age_mixed_age: '1202330714895611',\n    Age_unknown_age: '1202330714895612',\n    GrievanceAgainst_Wcs: '1202330466059593',\n    GrievanceAgainst_GovernmentPartner: '1202330466059594',\n    GrievanceAgainst_PrivateSectorPartner: '1202330466059595',\n    GrievanceAgainst_CivilSocietyPartner: '1202330466059596',\n    GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',\n    ConfidentialitySensitivity_Yes: '1202330821410493',\n    ConfidentialitySensitivity_No: '1202330821410494'\n  };\n  state.inputData = state.data;\n  return { ...state, formatMapping };\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.\n// Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1201884379104074.value': $.inputData?.body?.GrievanceID,\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID\n  const grievanceId = state.inputData?.body?.GrievanceID;\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, state =>\n  createTask({\n    name: $.inputData.body.GrievanceID,\n    projects: [$.inputData.projectid], //to dynamically map project id, assuming it's defined in the Get job\n    notes: $.inputData.body.DescriptioGrievance,\n    custom_fields: {\n      // Fields  belonging to open-ended questions (qxns that accept free text input)\n      '1203711959959076': $.inputData.body.StaffName,\n      '1203712049265363': $.inputData.body.StaffEmail,\n      '1208823831241787': $.inputData.body[\"Submission Date\"],\n      '1203712064304976': $.inputData.body.ReporterFullName,\n      '1203712060006636': $.inputData.body.ReporterContactInformation,\n      '1201884379104074': $.inputData.body.GrievanceId,\n      '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,\n      '1202329899911619': $.inputData.body.WhereGrievance,\n      '1208823831341587': $.inputData.body.WhenGrievance,\n      '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,\n      '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,\n      '1208823831341575': $.inputData.body.DescriptioGrievance,\n      '1203712150593482': $.inputData.body.HarmSuffered,\n      '1203712149463009': $.inputData.body.ReliefRequested,\n      '1208823831241782': $.inputData.body[\"OneDrive Folder\"],\n      '1203830309880883': $.inputData.body.WhatProject,\n      '1208823831341580': $.inputData.body.Suggestion,\n\n      // Fields  belonging to questions with dropdown or multiple choice\n      '1187328718760774': state => state.formatMapping[\"GrievanceStatus _\" + $.inputData.body.GrievanceStatus],\n      '1208823831241792': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      '1202593715272940': state => state.formatMapping[\"Grade_\" + $.inputData.body.Grade],\n      '1204269608862901': state => state.formatMapping[\"Classification_\" + $.inputData.body.Classification],\n      '1208823831314339': state => state.formatMapping[\"Country_\" + $.inputData.body.Country],\n      '1207470695842882': state => state.formatMapping[\"Donor_\" + $.inputData.body.Donor],\n      '1208823831341594': state => state.formatMapping[\"WcsStaff_\" + $.inputData.body.WcsStaff],\n      '1202330347491974': state => state.formatMapping[\"ReportFormat_\" + $.inputData.body.ReportFormat],\n      '1203977086782815': state => state.formatMapping[\"Anonymous_\" + $.inputData.body.Anonymous],\n      '1202330737362426': state => state.formatMapping[\"Gender_\" + $.inputData.body.Gender],\n      '1202330755979944': state => state.formatMapping[\"IndigenousPeople_\" + $.inputData.body.IndigenousPeople],\n      '1202330714895606': state => state.formatMapping[\"Age_\" + $.inputData.body.Age],\n      '1202330466059592': state => state.formatMapping[\"GrievanceAgainst_\" + $.inputData.body.GrievanceAgainst],\n      '1202330821410492': state => state.formatMapping[\"ConfidentialitySensitivity_\" + $.inputData.body.ConfidentialitySensitivity],\n    }\n  },\n    state => {\n      console.log(JSON.stringify(state.data, null, 2)); //log data\n      return state;\n    }\n  )\n)\n",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@4.3.0"
         },
-        "FS3---Update-Spreadsheet-with-New-Forms-Shared": {
-          "id": "6be96110-8a85-4b48-874a-09cd6dc61039",
-          "name": "FS3 - Update Spreadsheet with New Forms Shared",
-          "body": "//Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo\nfn(state => {\n\n  const containsGRMFeedback = name =>\n    !name.toLowerCase().includes('grm', 'feedback');\n\n  const instance = name =>\n    containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';\n\n  state.formLastModified = form => form.date_modified;\n\n  const sheetRowMap = form => [\n    '',\n    form.uid,\n    form.name,\n    'ADD MANUALLY @Admin!', //for GRM only\n    'ADD MANUALLY @Admin!', //for GRM only\n    form.owner__username,\n    form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched\n    'WCS Grievances (Kobo to Asana)', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),\n    `${form.url}`, //form.url,\n    form.date_modified, //kobo_form_date_modified\n    form.date_created, //kobo_form_date_created\n    new Date().toISOString(), //row_date_modified\n    false, //auto_sync checkbox\n    //job code template\n    `\"{id: '${form.uid}', name: '${form.name\n    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},\"`,\n    '',\n    'ADD MANUALLY @Admin!',\n    'ADD MANUALLY @Admin!' //openfn_workflow_uuid\n  ];\n\n  state.rowValuesToCreate = state.formsToCreate.map(form => sheetRowMap(form));\n  state.rowValuesToUpdate = state.formsToUpdate.map(form => ({\n    range: `grm-DEPLOYED!A${form.rowIndex + 2}:Q${form.rowIndex + 2}`,\n    values: [sheetRowMap(form)],\n  }));\n  // state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));\n  state.rowValuesToArchive = state.formsToUpdate\n    .filter(form => !state.archivedSheetUids.includes(form.uid))\n    .map(form => sheetRowMap(form));\n\n  console.log('# of forms to archive (new only)::', state.rowValuesToArchive.length);\n\n  console.log('# of new forms detected:: ', state.rowValuesToCreate.length);\n  console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);\n  return state;\n});\n\n//if new Kobo form shared, adding to the \"Deployed\"\" Sheet...\nappendValues({\n  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n  range: 'grm-DEPLOYED!A:P', //range of columns in sheet\n  values: state => state.rowValuesToCreate,\n});\n\n//updating rows in Sheet where forms are archived\neach(\n  '$.rowValuesToUpdate[*]',\n  batchUpdateValues({\n    spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n    range: state => state.data.range, //range of columns in sheet\n    values: state => state.data.values,\n  })\n);\n\n//also adding archived rows to \"Archived\" Sheet...\nappendValues({\n  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n  range: 'grm-ARCHIVED!A:P', //range of columns in sheet\n  values: state => state.rowValuesToArchive,\n});\n",
-          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
-          "adaptor": "@openfn/language-googlesheets@4.0.13"
-        },
-        "FS4---Notify-in-Asana": {
-          "id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
-          "name": "FS4 - Notify in Asana",
-          "body": "//This job will add a task to Asana if a new Kobo form was shared\nfn(state => {\n  console.log('Preparing Form Sharing task updates for Asana... ');\n\n  state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {\n    const dateModified = new Date(form.date_deployed);\n    const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `New form added to OpenFn: ${form.name}`,\n      approval_status: 'pending',\n      projects: ['1198901998266253'],\n      assignee_section: '1202566315436326', //OLD General Section: '1203181218738601',\n      assignee: '1208302456826465',\n      due_on: deployedDatePlus5,\n      notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says \"ADD MANUALLY\" to add any values missing e.g., \"Instance\"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  }) : [];\n\n  const yesterday = new Date();\n    yesterday.setDate(yesterday.getDate() - 1);\n    yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday\n\n  state.archivedFormsTasks = state.archivedForms\n  .filter(form => new Date(form.date_modified) > yesterday)\n  .map(form => {\n    const dateModified = new Date(form.date_modified);\n    const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `Form archived: ${form.name}`,\n      projects: ['1198901998266253'],\n      assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',\n      assignee: '1208302456826465',\n      due_on: modifiedDatePlus5,\n      notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the \"Deployed\" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the \"Archived\" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  });\n\n  console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);\n  //console.log('New form alert tasks to upsert:: ', state.asanaTasks);\n  console.log(\n    '# of Archived Form Asana Tasks to add:: ',\n    state.archivedFormsTasks.length\n  );\n  console.log(\n    'Archived form alert tasks to upsert:: ',\n    state.archivedFormsTasks\n  );\n  return state;\n});\n\n//upsert Asana task if new form shared notification needed\neach(\n  '$.asanaTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n\neach(\n  '$.archivedFormsTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n",
-          "project_credential_id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
-          "adaptor": "@openfn/language-asana@4.0.9"
+        "GRM01-Upsert-WCS-Global-Grievances-in-Asana": {
+          "id": "6cb7b710-d0da-475b-8165-a503e29b8c3c",
+          "name": "GRM01 Upsert WCS Global Grievances in Asana",
+          "body": "fn(state => {   //Mapping table to map Kobo field choices to Asana custom_fields gids\n  const formatMapping = {\n    SubmissionType_Grievance: '1202329899911646',\n    SubmissionType_Suggestion: '1202329899911647',\n    SubmissionType_Request: '1202329899911648',\n    SubmissionType_Feedback: '1202329899911649',\n    WcsStaff_Yes: '1204450063214998',\n    WcsStaff_No: '1204450063214999',\n    GrievanceAgainst_Wcs: '1202330466059593',\n    GrievanceAgainst_GovernmentPartner: '1202330466059594',\n    GrievanceAgainst_PrivateSectorPartner: '1202330466059595',\n    GrievanceAgainst_CivilSocietyPartner: '1202330466059596',\n    GrievanceAgainst_NotWcsAndNotAWcsPartner: '1202330466059597',\n    GrievanceType_RelatedProjects: '1187634487549316',\n    GrievanceType_LandTerritory: '1187634487549317',\n    GrievanceType_WildlifeConflict: '1187634487549318',\n    GrievanceType_OtherIssues: '1201884389902967',\n    GrievanceType_Suggestion: '1201884389905045',\n    ConfidentialitySensitivity_Yes: '1201743216292435',\n    ConfidentialitySensitivity_No: '1201743216292436',\n    GrievanceReportFormat_InPerson: '1192836094355011',\n    GrievanceReportFormat_VoiceCall: '1192836094355012',\n    GrievanceReportFormat_TextMessage: '1192847692374160',\n    GrievanceReportFormat_Email: '1192847692376214',\n    GrievanceReportFormat_PostalLetter: '1192847692376223'\n  };\n  state.inputData = state.data;\n  return { ...state, formatMapping };\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID (1201884379104074) to match the GrievanceID/CaseID field in your Asana workspace.\n// Also update `GrievanceID` key if your input uses a different name like CaseID or GrievanceId.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID,\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  // ✅ Ensure this matches the field name you used above. e.g., GrievanceID, CaseID\n  const grievanceId = state.inputData?.body?.GrievanceID;\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\n\nfnIf(!$.skipCreate,\n  createTask({\n    name: $.inputData.body.GrievanceID,\n    projects: [$.inputData.projectid],  //to dynamically map project id, assuming it's defined in the Get job\n    notes: $.inputData.body.DescriptioGrievance,\n    custom_fields: {\n      //Open-ended questions\n      '1202329899911595': $.inputData.body.GrievanceID,\n      '1204450063214985': $.inputData.body.Country,\n      '1204450063214993': $.inputData.body.Anonymous,\n      '1204450063214995': $.inputData.body.ReporterFullName,\n      '1203712060006636': $.inputData.body.ReporterContactInformation,\n      '1201884379104074': $.inputData.body.GrievanceId,\n      '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,\n      '1202329899911619': $.inputData.body.WhereGrievance,\n      '1201382335160256': $.inputData.body.WhenGrievance,\n      '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,\n      '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,\n      '1203712150593482': $.inputData.body.HarmSuffered,\n      '1203712149463009': $.inputData.body.ReliefRequested,\n      '1201382335160251': $.inputData.body.today,\n\n\n      //Multiple choice questions \n      '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      '1204450063214997': state => state.formatMapping[\"WcsStaff_\" + $.inputData.body.WcsStaff],\n      '1202330466059592': state => state.formatMapping[\"GrievanceAgainst_\" + $.inputData.body.GrievanceAgainst],\n      '1187634487549315': state => state.formatMapping[\"GrievanceType_\" + $.inputData.body.GrievanceType],\n      '1201743216292434': state => state.formatMapping[\"ConfidentialitySensitivity_\" + $.inputData.body.ConfidentialitySensitivity],\n      '1192836094355010': state => state.formatMapping[\"GrievanceReportFormat_\" + $.inputData.body.GrievanceReportFormat],\n    },\n  },\n    state => {\n      console.log(JSON.stringify(state.data, null, 2)); //log data\n      return state;\n    }\n  )\n);",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@4.3.0"
         }
       },
       "edges": {
-        "cron->FS1---Get-Forms": {
+        "webhook->Triage-jobs": {
           "enabled": true,
-          "id": "f6be2c40-e31e-494f-8896-aff6e27b74cb",
-          "target_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708",
-          "source_trigger_id": "c3fbcabb-2c8d-4488-8fb4-d66e2f3eb3d6",
+          "id": "39b25ede-73b9-42c6-8139-f407dc9cbc2e",
+          "target_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
+          "source_trigger_id": "2b8d8b32-928a-40bb-895e-bb11c2660e41",
           "condition_type": "always"
         },
-        "FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana": {
+        "Triage-jobs->GRM00-Upsert-TEST-Grievances": {
           "enabled": true,
-          "id": "8d76397d-9071-4cd5-89b0-2c8b9388cc84",
-          "target_job_id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
-          "source_job_id": "6be96110-8a85-4b48-874a-09cd6dc61039",
-          "condition_type": "on_job_success"
+          "id": "02632ad9-0ed9-45b0-88ca-f3855c26af12",
+          "target_job_id": "44fb1e36-6c77-4d3a-894a-f00f6f1d909a",
+          "source_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
+          "condition_type": "js_expression",
+          "condition_label": "New TEST form",
+          "condition_expression": "state.data.formName == \"Test WCS FGRM Form\""
         },
-        "FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared": {
+        "Triage-jobs->GRM01-Upsert-WCS-Global-Grievances-in-Asana": {
           "enabled": true,
-          "id": "652e61eb-de6c-42a3-8a11-179c623d5533",
-          "target_job_id": "6be96110-8a85-4b48-874a-09cd6dc61039",
-          "source_job_id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
-          "condition_type": "on_job_success"
-        },
-        "FS1---Get-Forms->FS2---Get-List-from-Sheets": {
-          "enabled": true,
-          "id": "300ee68d-aad3-4048-8dde-e994660cee5a",
-          "target_job_id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
-          "source_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708",
-          "condition_type": "on_job_success"
+          "id": "7b0c9432-2747-4d6e-876b-e19d3f752039",
+          "target_job_id": "6cb7b710-d0da-475b-8165-a503e29b8c3c",
+          "source_job_id": "d0e9729a-a288-4ab6-86de-bec6647498a4",
+          "condition_type": "js_expression",
+          "condition_label": "New WCS Global GRM form",
+          "condition_expression": "state.data.formName == \"WCS Global Grievances & Suggestions\""
         }
       }
     },
     "0.-Get-GRM-Forms-from-Kobo": {
       "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
       "name": "0. Get GRM Forms from Kobo",
-      "inserted_at": "2026-08-18T14:41:59.292450Z",
-      "lock_version": 115,
+      "inserted_at": "2026-08-20T07:46:56.156426Z",
+      "lock_version": 116,
       "triggers": {
         "cron": {
           "enabled": true,
@@ -1335,7 +1260,7 @@
         "Post-Submissions": {
           "id": "9e0b7989-bbfe-4ad2-8583-653373773776",
           "name": "Post Submissions",
-          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  const { submissions = [], sheetsData = [] } = state;\n\n  const errors = (state.errors ??= []);\n  const matchedSubmissions = [];\n\n  const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));\n\n  for (const submission of submissions) {\n    const formMeta = formMetaByUid.get(submission.formId);\n\n    if (!formMeta) {\n      errors.push(`No metadata for formId ${submission.formId}`);\n      continue;\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      errors.push(\n        `No OpenFn workflow UUID configured for region \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      );\n      continue;\n    }\n\n    matchedSubmissions.push({\n      workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,\n      submission,\n      formMeta,\n    });\n  }\n\n  return { ...state, errors, matchedSubmissions };\n});\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return submission\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  const dedup = [...new Set(state.errors)]\n  console.warn(dedup)\n  throw new Error(dedup)\n})",
+          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  const { submissions = [], sheetsData = [] } = state;\n\n  const errors = (state.errors ??= []);\n  const matchedSubmissions = [];\n\n  const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));\n\n  for (const submission of submissions) {\n    const formMeta = formMetaByUid.get(submission.formId);\n\n    if (!formMeta) {\n      errors.push(`No metadata for formId ${submission.formId}`);\n      continue;\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      errors.push(\n        `No OpenFn workflow UUID configured for region \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      );\n      continue;\n    }\n\n    matchedSubmissions.push({\n      workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,\n      submission,\n      formMeta,\n    });\n  }\n\n  return { ...state, errors, matchedSubmissions };\n});\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return {\n    body: submission,\n  };\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  const dedup = [...new Set(state.errors)]\n  console.warn(dedup)\n  throw new Error(dedup)\n})",
           "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed",
           "adaptor": "@openfn/language-http@7.2.6"
         }
@@ -1363,6 +1288,81 @@
           "condition_type": "js_expression",
           "condition_label": "has-submissions",
           "condition_expression": "state.submissions.length > 0"
+        }
+      }
+    },
+    "Monitor-Forms-Shared": {
+      "id": "855282b5-f5fb-4d03-85f8-9249602724a5",
+      "name": "Monitor Forms Shared",
+      "inserted_at": "2026-08-21T14:52:00.750514Z",
+      "lock_version": 35,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "c3fbcabb-2c8d-4488-8fb4-d66e2f3eb3d6",
+          "type": "cron",
+          "cron_expression": "0 0 * * *",
+          "cron_cursor_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708"
+        }
+      },
+      "jobs": {
+        "FS1---Get-Forms": {
+          "id": "022d2ff0-4007-45b1-8d72-8954e7626708",
+          "name": "FS1 - Get Forms",
+          "body": "//Check Kobo account for forms with these matching keywords\ngetForms({}, state => {\n  //ALL KEYWORDS:\n  const keywords = ['grm', 'grievance', 'suggestion', 'queja', 'reclamo', 'ocorrência', 'Reclamações', 'feedback'];\n\n  const checkForKeyWords = name => {\n    return keywords.some(keyword => name.toLowerCase().includes(keyword));\n  };\n\n  state.activeForms = state.data.results\n    .filter(form => checkForKeyWords(form.name))\n    .filter(form => form.deployment__active);\n\n  state.archivedForms = state.data.results\n    .filter(form => checkForKeyWords(form.name))\n    .filter(form => !form.deployment__active);\n    \n  console.log('# of activeForms ::', state.activeForms ? state.activeForms.length : null );\n  console.log('# of archivedForms ::', state.archivedForms ? state.archivedForms.length : null );\n\n  state.data = {};\n  state.references = [];\n  return state;\n});\n\n",
+          "project_credential_id": "5612d657-0a94-499a-bb7e-cd2b6eb02d62",
+          "adaptor": "@openfn/language-kobotoolbox@2.1.0"
+        },
+        "FS2---Get-List-from-Sheets": {
+          "id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
+          "name": "FS2 - Get List from Sheets",
+          "body": "getValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:Q',\n  state => {\n    const [headers, ...sheetsData] = state.data.values;\n    console.log('Ignoring headers', headers);\n    state.deployedSheetData = sheetsData;\n    return state;\n  }\n);\n\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-ARCHIVED!A:Q',\n  state => {\n    const [_headers, ...archivedRows] = state.data.values ?? [];\n    state.archivedSheetUids = archivedRows.map(row => row[1]); // column B = uid\n    console.log('# of archivedSheetUids::', state.archivedSheetUids.length);\n    return state;\n  }\n);\n\nfn(state => {\n  const { activeForms, archivedForms, deployedSheetData } = state;\n\n  const sheetsUids = deployedSheetData.map(row => row[1]); // column B = uid\n\n  state.formsToCreate = activeForms.filter(\n    form => !sheetsUids.includes(form.uid)\n  );\n\n  state.formsToUpdate = archivedForms\n    .filter(form => sheetsUids.includes(form.uid))\n    .map(form => {\n      const rowIndex = deployedSheetData.findIndex(row => row[1] === form.uid);\n      if (rowIndex !== -1) {\n        return { ...form, rowIndex };\n      }\n      console.log(form.uid, 'Could not be found in google sheet');\n    })\n    .filter(Boolean); // drop undefined entries\n\n  return state;\n});\n\nfn(state => {\n  const { data, references, response, ...remainingState } = state;\n  return remainingState;\n});",
+          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
+          "adaptor": "@openfn/language-googlesheets@4.0.13"
+        },
+        "FS3---Update-Spreadsheet-with-New-Forms-Shared": {
+          "id": "6be96110-8a85-4b48-874a-09cd6dc61039",
+          "name": "FS3 - Update Spreadsheet with New Forms Shared",
+          "body": "//Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo\nfn(state => {\n\n  const containsGRMFeedback = name =>\n    !name.toLowerCase().includes('grm', 'feedback');\n\n  const instance = name =>\n    containsGRMFeedback(name) ? 'ADD MANUALLY @Admin!' : '';\n\n  state.formLastModified = form => form.date_modified;\n\n  const sheetRowMap = form => [\n    '',\n    form.uid,\n    form.name,\n    'ADD MANUALLY @Admin!', //for GRM only\n    'ADD MANUALLY @Admin!', //for GRM only\n    form.owner__username,\n    form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched\n    'WCS Grievances (Kobo to Asana)', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),\n    `${form.url}`, //form.url,\n    form.date_modified, //kobo_form_date_modified\n    form.date_created, //kobo_form_date_created\n    new Date().toISOString(), //row_date_modified\n    false, //auto_sync checkbox\n    //job code template\n    `\"{id: '${form.uid}', name: '${form.name\n    }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},\"`,\n    '',\n    'ADD MANUALLY @Admin!',\n    'ADD MANUALLY @Admin!' //openfn_workflow_uuid\n  ];\n\n  state.rowValuesToCreate = state.formsToCreate.map(form => sheetRowMap(form));\n  state.rowValuesToUpdate = state.formsToUpdate.map(form => ({\n    range: `grm-DEPLOYED!A${form.rowIndex + 2}:Q${form.rowIndex + 2}`,\n    values: [sheetRowMap(form)],\n  }));\n  // state.rowValuesToArchive = state.formsToUpdate.map(form => sheetRowMap(form));\n  state.rowValuesToArchive = state.formsToUpdate\n    .filter(form => !state.archivedSheetUids.includes(form.uid))\n    .map(form => sheetRowMap(form));\n\n  console.log('# of forms to archive (new only)::', state.rowValuesToArchive.length);\n\n  console.log('# of new forms detected:: ', state.rowValuesToCreate.length);\n  console.log('Forms to add to the master sheet:: ', state.rowValuesToCreate);\n  return state;\n});\n\n//if new Kobo form shared, adding to the \"Deployed\"\" Sheet...\nappendValues({\n  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n  range: 'grm-DEPLOYED!A:Q', //range of columns in sheet\n  values: state => state.rowValuesToCreate,\n});\n\n//updating rows in Sheet where forms are archived\neach(\n  '$.rowValuesToUpdate[*]',\n  batchUpdateValues({\n    spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n    range: state => state.data.range, //range of columns in sheet\n    values: state => state.data.values,\n  })\n);\n\n//also adding archived rows to \"Archived\" Sheet...\nappendValues({\n  spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id\n  range: 'grm-ARCHIVED!A:Q', //range of columns in sheet\n  values: state => state.rowValuesToArchive,\n});\n",
+          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
+          "adaptor": "@openfn/language-googlesheets@4.0.13"
+        },
+        "FS4---Notify-in-Asana": {
+          "id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
+          "name": "FS4 - Notify in Asana",
+          "body": "//This job will add a task to Asana if a new Kobo form was shared\nfn(state => {\n  console.log('Preparing Form Sharing task updates for Asana... ');\n\n  state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {\n    const dateModified = new Date(form.date_deployed);\n    const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `New form added to OpenFn: ${form.name}`,\n      approval_status: 'pending',\n      projects: ['1198901998266253'],\n      assignee_section: '1202566315436326', //OLD General Section: '1203181218738601',\n      assignee: '1208302456826465',\n      due_on: deployedDatePlus5,\n      notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says \"ADD MANUALLY\" to add any values missing e.g., \"Instance\"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  }) : [];\n\n  const yesterday = new Date();\n    yesterday.setDate(yesterday.getDate() - 1);\n    yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday\n\n  state.archivedFormsTasks = state.archivedForms\n  .filter(form => new Date(form.date_modified) > yesterday)\n  .map(form => {\n    const dateModified = new Date(form.date_modified);\n    const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `Form archived: ${form.name}`,\n      projects: ['1198901998266253'],\n      assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',\n      assignee: '1208302456826465',\n      due_on: modifiedDatePlus5,\n      notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the \"Deployed\" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the \"Archived\" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  });\n\n  console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);\n  //console.log('New form alert tasks to upsert:: ', state.asanaTasks);\n  console.log(\n    '# of Archived Form Asana Tasks to add:: ',\n    state.archivedFormsTasks.length\n  );\n  console.log(\n    'Archived form alert tasks to upsert:: ',\n    state.archivedFormsTasks\n  );\n  return state;\n});\n\n//upsert Asana task if new form shared notification needed\neach(\n  '$.asanaTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n\neach(\n  '$.archivedFormsTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n",
+          "project_credential_id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
+          "adaptor": "@openfn/language-asana@4.0.9"
+        }
+      },
+      "edges": {
+        "cron->FS1---Get-Forms": {
+          "enabled": true,
+          "id": "f6be2c40-e31e-494f-8896-aff6e27b74cb",
+          "target_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708",
+          "source_trigger_id": "c3fbcabb-2c8d-4488-8fb4-d66e2f3eb3d6",
+          "condition_type": "always"
+        },
+        "FS1---Get-Forms->FS2---Get-List-from-Sheets": {
+          "enabled": true,
+          "id": "300ee68d-aad3-4048-8dde-e994660cee5a",
+          "target_job_id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
+          "source_job_id": "022d2ff0-4007-45b1-8d72-8954e7626708",
+          "condition_type": "on_job_success"
+        },
+        "FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared": {
+          "enabled": true,
+          "id": "652e61eb-de6c-42a3-8a11-179c623d5533",
+          "target_job_id": "6be96110-8a85-4b48-874a-09cd6dc61039",
+          "source_job_id": "3f8d4cca-b0d0-4175-8405-a4d3183c926b",
+          "condition_type": "on_job_success"
+        },
+        "FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana": {
+          "enabled": true,
+          "id": "8d76397d-9071-4cd5-89b0-2c8b9388cc84",
+          "target_job_id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
+          "source_job_id": "6be96110-8a85-4b48-874a-09cd6dc61039",
+          "condition_type": "on_job_success"
         }
       }
     }

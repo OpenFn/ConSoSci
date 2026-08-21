@@ -262,7 +262,9 @@ workflows:
             console.log(`Posting ${submission.i + 1}...`);
             console.log(`Submission id:: ${submission.body._id}`);
             console.log(`Region: ${formMeta.Region}`)
-            return submission
+            return {
+              body: submission,
+            };
           })
           );
 
@@ -3464,7 +3466,7 @@ workflows:
         condition_label: New TEST form
         condition_expression: |
           state.data.formName == "Test WCS FGRM Form"
-        enabled: false
+        enabled: true
       Triage-jobs->GRM01-Upsert-WCS-Global-Grievances-in-Asana:
         source_job: Triage-jobs
         target_job: GRM01-Upsert-WCS-Global-Grievances-in-Asana
@@ -4115,7 +4117,7 @@ workflows:
         body: |
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-DEPLOYED!A:P',
+            'grm-DEPLOYED!A:Q',
             state => {
               const [headers, ...sheetsData] = state.data.values;
               console.log('Ignoring headers', headers);
@@ -4126,7 +4128,7 @@ workflows:
 
           getValues(
             '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',
-            'grm-ARCHIVED!A:P',
+            'grm-ARCHIVED!A:Q',
             state => {
               const [_headers, ...archivedRows] = state.data.values ?? [];
               state.archivedSheetUids = archivedRows.map(row => row[1]); // column B = uid
@@ -4220,7 +4222,7 @@ workflows:
           //if new Kobo form shared, adding to the "Deployed"" Sheet...
           appendValues({
             spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'grm-DEPLOYED!A:P', //range of columns in sheet
+            range: 'grm-DEPLOYED!A:Q', //range of columns in sheet
             values: state => state.rowValuesToCreate,
           });
 
@@ -4237,7 +4239,7 @@ workflows:
           //also adding archived rows to "Archived" Sheet...
           appendValues({
             spreadsheetId: '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY', //sheet id
-            range: 'grm-ARCHIVED!A:P', //range of columns in sheet
+            range: 'grm-ARCHIVED!A:Q', //range of columns in sheet
             values: state => state.rowValuesToArchive,
           });
 
@@ -4331,9 +4333,9 @@ workflows:
         target_job: FS1---Get-Forms
         condition_type: always
         enabled: true
-      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
-        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
-        target_job: FS4---Notify-in-Asana
+      FS1---Get-Forms->FS2---Get-List-from-Sheets:
+        source_job: FS1---Get-Forms
+        target_job: FS2---Get-List-from-Sheets
         condition_type: on_job_success
         enabled: true
       FS2---Get-List-from-Sheets->FS3---Update-Spreadsheet-with-New-Forms-Shared:
@@ -4341,9 +4343,9 @@ workflows:
         target_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
         condition_type: on_job_success
         enabled: true
-      FS1---Get-Forms->FS2---Get-List-from-Sheets:
-        source_job: FS1---Get-Forms
-        target_job: FS2---Get-List-from-Sheets
+      FS3---Update-Spreadsheet-with-New-Forms-Shared->FS4---Notify-in-Asana:
+        source_job: FS3---Update-Spreadsheet-with-New-Forms-Shared
+        target_job: FS4---Notify-in-Asana
         condition_type: on_job_success
         enabled: true
   OLD.-Get-Asana-Field-IDs-for-Project:
