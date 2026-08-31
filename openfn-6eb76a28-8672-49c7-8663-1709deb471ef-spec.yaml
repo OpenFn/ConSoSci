@@ -3744,8 +3744,8 @@ workflows:
               }
             )
           );
-      Asana:
-        name: Asana
+      GRM28-Upsert-Bangladesh-Grievances-in-Asana:
+        name: GRM28 Upsert Bangladesh Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
         credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
@@ -3927,9 +3927,9 @@ workflows:
         condition_expression: |
           state.data.formName == "Feedback and Grievance Redress Mechanism - NPL"
         enabled: true
-      Triage-jobs->Asana:
+      Triage-jobs->GRM28-Upsert-Bangladesh-Grievances-in-Asana:
         source_job: Triage-jobs
-        target_job: Asana
+        target_job: GRM28-Upsert-Bangladesh-Grievances-in-Asana
         condition_type: js_expression
         condition_label: 28. GRM Bangladesh
         condition_expression: |
@@ -4185,8 +4185,9 @@ workflows:
               form.uid,
               form.name,
               'ADD MANUALLY @Admin!', //for GRM only
-              'ADD MANUALLY @Admin!', //for GRM only
+              'ADD MANUALLY @Admin!', //for GRM only Asana project
               form.owner__username,
+           //   'ADD MANUALLY @Admin!', // instance
               form.deployment__active ? 'deployed' : 'archived', //deployment status //if we assume only deployed forms will be fetched
               'WCS Grievances (Kobo to Asana)', //openfn project space --> OLD dynamic mapping: //workspaceName(form.name),
               `${form.url}`, //form.url,
@@ -4197,8 +4198,8 @@ workflows:
               //job code template
               `"{id: '${form.uid}', name: '${form.name
               }', owner: '${form.owner__username}', instance: '${instance(form.name)}'},"`,
-              '',
-              'ADD MANUALLY @Admin!',
+              '', // Note
+              'ADD MANUALLY @Admin!', // Checked by
               'ADD MANUALLY @Admin!' //openfn_workflow_uuid
             ];
 
