@@ -6615,8 +6615,8 @@ workflows:
         target_job: Upsert-to-DB
         condition_type: on_job_success
         enabled: true
-  TAMG-sync-to-Asana:
-    name: TAMG sync to Asana
+  Temperate-Asia-sync-to-Asana:
+    name: Temperate Asia sync to Asana
     jobs:
       Triage-jobs:
         name: Triage jobs
