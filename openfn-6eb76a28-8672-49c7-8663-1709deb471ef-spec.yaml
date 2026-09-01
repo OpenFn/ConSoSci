@@ -80,7 +80,7 @@ workflows:
             };
             // IF YOU CLEAR STATE...
             // Set this manual cursor to the earliest submission date you want fetch.
-            const manualCursor = '2026-07-21T00:00:07.922Z';
+            const manualCursor = '2026-09-01T00:00:07.922Z'; // FOR MANUAL RUN THE CURSOR SHOULD NOT BE OLDER THAN ONE WEEK AGO
 
             let cursorEnd = null;
 
@@ -631,7 +631,7 @@ workflows:
         body: |
           // Run this after creating a sample task in the target project.
           // Paste that task's gid below.
-          const SAMPLE_TASK_GID = "1216814540568983";
+          const SAMPLE_TASK_GID = "1218044502983536";
 
           // 1) Standard fields (present across projects)
           const STANDARD_FIELDS = {

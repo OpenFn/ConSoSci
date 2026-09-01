@@ -1038,52 +1038,6 @@
         }
       }
     },
-    "Asana-Mapping-Template": {
-      "id": "b97403e0-90f7-4de6-8300-110dd565db9c",
-      "name": "Asana Mapping Template",
-      "inserted_at": "2026-07-24T18:33:02.051375Z",
-      "lock_version": 41,
-      "triggers": {
-        "webhook": {
-          "enabled": false,
-          "id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
-          "type": "webhook",
-          "webhook_reply": "before_start"
-        }
-      },
-      "jobs": {
-        "Generate-Asana-GID-Mapping": {
-          "id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "name": "Generate Asana GID Mapping",
-          "body": "// Run this after creating a sample task in the target project.\n// Paste that task's gid below.\nconst SAMPLE_TASK_GID = \"1216814540568983\";\n\n// 1) Standard fields (present across projects)\nconst STANDARD_FIELDS = {\n  SubmissionType: \"1202329899911645\",\n  ReportFormat: \"1202330347491974\",\n  CaseID: \"1202329899911595\",\n  GrievanceID: \"1201884379104074\",\n  Gender: \"1202330737362426\",\n  IndigenousPeoples: \"1202330755979944\",\n  Age: \"1202330714895606\"\n};\n\n// 2) Standard option GIDs (enum choices)\nconst STANDARD_OPTION_MAPPING = {\n  \"SubmissionType_Grievance\": \"1202329899911646\",\n  \"SubmissionType_Suggestion\": \"1202329899911647\",\n  \"SubmissionType_Request\": \"1202329899911648\",\n  \"SubmissionType_Feedback\": \"1202329899911649\",\n\n  \"ReportFormat_InPerson\": \"1202330347493011\",\n  \"ReportFormat_FocalPoint\": \"1207724960884497\",\n  \"ReportFormat_VoiceCall\": \"1202330347494027\",\n  \"ReportFormat_Hotline\": \"1202330347501419\",\n  \"ReportFormat_TextMessage\": \"1202330347498273\",\n  \"ReportFormat_SuggestionBox\": \"1202330347499327\",\n  \"ReportFormat_Email\": \"1202330347502485\",\n  \"ReportFormat_Letter\": \"1202330347503544\",\n  \"ReportFormat_OnlineForm\": \"1207934414764297\",\n  \"ReportFormat_Other\": \"1203830536105154\",\n  \"ReportFormat_Prospecting\": \"1208419056473280\",\n  \"ReportFormat_ProjectMeeting\": \"1208936305975370\",\n  \"ReportFormat_GrievanceBook\": \"1214730936867593\",\n\n  \"Gender_Male\": \"1202330737362427\",\n  \"Gender_Female\": \"1202330737362428\",\n  \"Gender_Mixed gender\": \"1202330737362429\",\n  \"Gender_Unknown gender\": \"1202330737362430\",\n  \"Gender_Other gender\": \"1207852335266397\",\n  \"Gender_Prefer not to report\": \"1207852335266398\",\n\n  \"IndigenousPeoples_Yes\": \"1202330755980982\",\n  \"IndigenousPeoples_No\": \"1202330755984093\",\n  \"IndigenousPeoples_Unknown\": \"1202330755985164\",\n  \"IndigenousPeoples_Mixed group\": \"1207724962870243\",\n\n  \"Age_<18\": \"1202330714895607\",\n  \"Age_19–35\": \"1202330714895608\",\n  \"Age_36–50\": \"1202330714895609\",\n  \"Age_>50\": \"1202330714895610\",\n  \"Age_Mixed age\": \"1202330714895611\",\n  \"Age_Unknown age\": \"1202330714895612\"\n};\n\n// Fetch the sample task so we can inspect this project's custom fields\ngetTask(SAMPLE_TASK_GID, {}, state => {\n  const { data } = state.body;\n\n  // Build a set of standard field GIDs so we can skip duplicates later\n  const standardGids = new Set(Object.values(STANDARD_FIELDS));\n  const presentGids = new Set(data.custom_fields.map(f => f.gid));\n\n  // 3) Build the combined mapping table: start with standard options, then add project-specific options\n  const formatMapping = { ...STANDARD_OPTION_MAPPING };\n\n  data.custom_fields.forEach(field => {\n    // Skip if this field is one of the known standard fields\n    if (standardGids.has(field.gid)) return;\n\n    if (field.enum_options) {\n      field.enum_options.forEach(option => {\n        formatMapping[`${field.name}_${option.name}`] = option.gid;\n      });\n    }\n  });\n\n  // Print a copy-paste friendly mapping table\n  console.log(\"//======= Mapping Table (Standard + Project specific) =========\");\n  console.log(\"-----BEGIN PASTE 1-----\");\n  console.log(\"const formatMapping = \" + JSON.stringify(formatMapping, null, 2) + \";\");\n  console.log(\"state.formatMapping = formatMapping;\");\n  console.log(\"-----END PASTE 1-----\");\n  console.log(\"//===================== End Mapping Table =====================\");\n  console.log(\"\");\n\n\n  // 4) Print statements for custom_fields payload\n  // helpers\n  const cleanName = s => (s || '').trim();\n  const isIdent = s => /^[A-Za-z_$][\\w$]*$/.test(s);\n  const bodyRef = name => {\n    const clean = cleanName(name);\n    return isIdent(clean) ? `$.inputData.body.${clean}` : `$.inputData.body[${JSON.stringify(clean)}]`;\n  };\n  const enumExpr = name => {\n    const clean = cleanName(name);\n    // lookup key is \"<FieldName>_\" + raw payload value\n    return `state => state.formatMapping[${JSON.stringify(clean + \"_\")} + ${bodyRef(clean)}]`;\n  };\n\n  let paste2 = \"custom_fields: {\\n\";\n\n  // Standard open-ended\n  if (presentGids.has(STANDARD_FIELDS.CaseID)) {\n    paste2 += `  '${STANDARD_FIELDS.CaseID}': ${bodyRef('CaseID')},\\n`;\n  }\n  if (presentGids.has(STANDARD_FIELDS.GrievanceID)) {\n    paste2 += `  '${STANDARD_FIELDS.GrievanceID}': ${bodyRef('GrievanceID')},\\n`;\n  }\n\n  // Standard enums\n  ['SubmissionType', 'ReportFormat', 'Gender', 'IndigenousPeoples', 'Age'].forEach(name => {\n    const gid = STANDARD_FIELDS[name];\n    if (presentGids.has(gid)) {\n      paste2 += `  '${gid}': ${enumExpr(name)},\\n`;\n    }\n  });\n\n  // Project specific\n  data.custom_fields.forEach(f => {\n    if (standardGids.has(f.gid)) return;\n    if (f.name && !f.enum_options) {\n      paste2 += `  '${f.gid}': ${bodyRef(f.name)},\\n`;\n    } else if (f.name && f.enum_options) {\n      paste2 += `  '${f.gid}': ${enumExpr(f.name)},\\n`;\n    }\n  });\n\n  paste2 += \"}\";\n\n  console.log(\"-----BEGIN PASTE 2-----\\n\" + paste2 + \"\\n-----END PASTE 2-----\");\n  console.log(\"//=========== End of Statements =======================\");\n\n  // Return state with the combined mapping in case you want to consume it programmatically\n  return { ...state, formatMapping };\n});",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@5.0.2"
-        },
-        "Asana-Regional-Template": {
-          "id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
-          "name": "Asana Regional Template",
-          "body": "// ===== STEP 1: Mapping + input capture =====\nfn(state => {\n  // 🔹 PASTE 1: from the Generator job\n  // Copy the BEGIN/END block from Generator logs that looks like:\n  //   const formatMapping = { ... };\n  //   state.formatMapping = formatMapping;\n  // Paste ONLY those 2 lines here, nothing else.\n\n  state.inputData = state.data;                     // keep\n  state.formatMapping = state.formatMapping || {};  // safe fallback\n  return state;\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID below to your CaseID/GrievanceID field GID.\n// Also update the key if your input uses a different field name like CaseID instead of GrievanceID.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID, // <-- REPLACE THIS GID if needed\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  const grievanceId = state.inputData?.body?.GrievanceID; // <-- REPLACE THIS: must match your search key above\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, \n  createTask({\n    name: $.inputData.body.GrievanceID,             // or CaseID, to match your search key\n    projects: [$.inputData.projectid],              // keep as is\n    notes: $.inputData.body.DescriptioGrievance,    // keep as is\n    // 🔹 PASTE 2: from the Generator job\n    // Copy everything inside of the block between BEGIN/END markers\n    // The generator will output lines like:\n    custom_fields: {\n      //   '1202329899911595': $.inputData.body.CaseID,\n      //   '1201884379104074': $.inputData.body.GrievanceID,\n      //   '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      //   '1210398577520508': state => state.formatMapping[\"Request Response_\" + $.inputData.body['Request Response']],\n      // Notice: if the field name contains spaces, the generator already uses bracket notation for you.\n    },\n  },\n    st => {\n      console.log(JSON.stringify(st.data, null, 2)); // log data\n      return st;\n    }\n  )\n);\n",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@5.0.2"
-        }
-      },
-      "edges": {
-        "webhook->Generate-Asana-GID-Mapping": {
-          "enabled": true,
-          "id": "10554605-2076-4b6c-8a20-ad1a4f07925f",
-          "target_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "source_trigger_id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
-          "condition_type": "always"
-        },
-        "Generate-Asana-GID-Mapping->Asana-Regional-Template": {
-          "enabled": false,
-          "id": "9045f83c-4764-46eb-8d1c-2d508cbd34db",
-          "target_job_id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
-          "source_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
-          "condition_type": "on_job_success"
-        }
-      }
-    },
     "Global-Sync-to-Asana": {
       "id": "0b3179e7-50f9-4ce0-9406-eb71947565da",
       "name": "Global Sync to Asana",
@@ -1145,69 +1099,6 @@
           "condition_type": "js_expression",
           "condition_label": "New WCS Global GRM form",
           "condition_expression": "state.data.formName == \"WCS Global Grievances & Suggestions\""
-        }
-      }
-    },
-    "0.-Get-GRM-Forms-from-Kobo": {
-      "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
-      "name": "0. Get GRM Forms from Kobo",
-      "inserted_at": "2026-08-20T07:46:56.156426Z",
-      "lock_version": 116,
-      "triggers": {
-        "cron": {
-          "enabled": true,
-          "id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
-          "type": "cron",
-          "cron_expression": "0 */1 * * *",
-          "cron_cursor_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49"
-        }
-      },
-      "jobs": {
-        "GRM-Fetch-1-Get-FormsList-Ongoing": {
-          "id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "name": "GRM-Fetch-1 Get FormsList Ongoing",
-          "body": "//== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//\n// Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602\n// This can be run on-demand at any time by clicking \"run\" //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:Q', //get Deployed GRM forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item => item.includes('TRUE') //return forms where auto-sync = TRUE\n        //&& item.includes('bns_survey', 'nrgt_current')\n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData, daterange } = state;\n\n  // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana\n  const isMoreThanAWeekOld = dateString => {\n    const currentDate = new Date();\n    const inputDate = new Date(dateString);\n    // Calculate the difference in time (in milliseconds) and convert to days\n    const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);\n\n    return daysDifference > 7;\n  };\n  // IF YOU CLEAR STATE...\n  // Set this manual cursor to the earliest submission date you want fetch.\n  const manualCursor = '2026-07-21T00:00:07.922Z';\n\n  let cursorEnd = null;\n\n  if (daterange && daterange.start && daterange.end) {\n    state.cursor = daterange.start;\n    cursorEnd = daterange.end;\n  } else {\n    state.cursor = state.lastEnd || manualCursor;\n\n    if (!state.cursor)\n      throw new Error(\n        'Please define a cursor date no greater than 1 week ago and try again'\n      );\n    if (isMoreThanAWeekOld(state.cursor))\n      throw new Error(\n        `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`\n      );\n  }\n  console.log('Current cursor value:', state.cursor);\n  if (cursorEnd) console.log('Using cursorEnd:', cursorEnd);\n\n  const formsList = sheetsData.map(survey => ({\n    formId: survey.uid,\n    tag: survey.tag,\n    name: survey.name,\n    projectid: survey.asana_projectid,\n  }));\n\n  console.log('# of GRM forms detected in Sheet:: ', formsList.length);\n  console.log(\n    'List of forms to re-sync:: ',\n    JSON.stringify(formsList, null, 2)\n  );\n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      projectid: survey.asana_projectid,\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: cursorEnd\n        ? `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\",\"$lt\":\"${cursorEnd}\"}}`\n        : `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\"}}`,\n    })),\n  };\n\n  console.log('mapped sheetsData::', JSON.stringify(state.data, null, 2));\n\n  return state;\n});\n\nfn(state => {\n  // let lastEnd = state.references\n  //   .filter(item => item.body)\n  //   .map(s => s.body.end)\n  //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n  let lastEnd = new Date().toISOString();\n\n  if (state.daterange) {\n    console.log('Manual run with daterange detected');\n    delete state.daterange;\n    return { ...state, references: [], lastEnd };\n  }\n\n  console.log('New cursor value:', lastEnd);\n  return { ...state, references: [], lastEnd };\n});\n",
-          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
-          "adaptor": "@openfn/language-googlesheets@4.0.13"
-        },
-        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
-          "id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "name": "GRM-Fetch-2 Get Kobo Forms Ongoing",
-          "body": "\n\n// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.submissions = [];\n  return state;\n});\n\neach(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } =\n    state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n  const splitQuery = query.split('=')[1]\n  return getSubmissions(`${formId}`, { query: splitQuery })(state).then(state => {\n    state.data.forEach((submission, i) => {\n      state.submissions.push({\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      });\n    });\n    //const count = state.submissions.length;\n    const results = state.data?.results ?? [];\n    const count = Array.isArray(state.data) ? state.data.length : (state.data?.results?.length ?? 0);\n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n    return state;\n  }).catch(err => {\n    const errors = state.errors || [];\n    errors.push({\n      formId,\n      message: err.message,\n    });\n    state.errors = errors;\n    console.log(`Error fetching submissions from  ${formId}::`, err.message);\n    return state;\n  });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n\n  if (state.errors ? state.errors.length > 0 : false) {\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null, 2));\n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }\n  return state;\n});\n",
-          "project_credential_id": "e00592c4-d94b-4c80-83eb-e7429c62d245",
-          "adaptor": "@openfn/language-kobotoolbox@4.2.9"
-        },
-        "Post-Submissions": {
-          "id": "9e0b7989-bbfe-4ad2-8583-653373773776",
-          "name": "Post Submissions",
-          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  const { submissions = [], sheetsData = [] } = state;\n\n  const errors = (state.errors ??= []);\n  const matchedSubmissions = [];\n\n  const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));\n\n  for (const submission of submissions) {\n    const formMeta = formMetaByUid.get(submission.formId);\n\n    if (!formMeta) {\n      errors.push(`No metadata for formId ${submission.formId}`);\n      continue;\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      errors.push(\n        `No OpenFn workflow UUID configured for region \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      );\n      continue;\n    }\n\n    matchedSubmissions.push({\n      workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,\n      submission,\n      formMeta,\n    });\n  }\n\n  return { ...state, errors, matchedSubmissions };\n});\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return {\n    body: submission,\n  };\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  const dedup = [...new Set(state.errors)]\n  console.warn(dedup)\n  throw new Error(dedup)\n})",
-          "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed",
-          "adaptor": "@openfn/language-http@7.2.6"
-        }
-      },
-      "edges": {
-        "cron->GRM-Fetch-1-Get-FormsList-Ongoing": {
-          "enabled": true,
-          "id": "c97eea3c-5d7a-4e6e-9899-f594859f0026",
-          "target_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "source_trigger_id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
-          "condition_type": "always"
-        },
-        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
-          "enabled": true,
-          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
-          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
-          "condition_type": "on_job_success"
-        },
-        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing->Post-Submissions": {
-          "enabled": true,
-          "id": "a4078578-22d5-4a7b-8088-52fa54b4aac7",
-          "target_job_id": "9e0b7989-bbfe-4ad2-8583-653373773776",
-          "source_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
-          "condition_type": "js_expression",
-          "condition_label": "has-submissions",
-          "condition_expression": "state.submissions.length > 0"
         }
       }
     },
@@ -1363,6 +1254,115 @@
           "condition_type": "js_expression",
           "condition_label": "28. GRM Bangladesh",
           "condition_expression": "state.data.body.formName == \"GRM Bangladesh\""
+        }
+      }
+    },
+    "Asana-Mapping-Template": {
+      "id": "b97403e0-90f7-4de6-8300-110dd565db9c",
+      "name": "Asana Mapping Template",
+      "inserted_at": "2026-09-01T09:09:03.804194Z",
+      "lock_version": 42,
+      "triggers": {
+        "webhook": {
+          "enabled": false,
+          "id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
+          "type": "webhook",
+          "webhook_reply": "before_start"
+        }
+      },
+      "jobs": {
+        "Generate-Asana-GID-Mapping": {
+          "id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "name": "Generate Asana GID Mapping",
+          "body": "// Run this after creating a sample task in the target project.\n// Paste that task's gid below.\nconst SAMPLE_TASK_GID = \"1218044502983536\";\n\n// 1) Standard fields (present across projects)\nconst STANDARD_FIELDS = {\n  SubmissionType: \"1202329899911645\",\n  ReportFormat: \"1202330347491974\",\n  CaseID: \"1202329899911595\",\n  GrievanceID: \"1201884379104074\",\n  Gender: \"1202330737362426\",\n  IndigenousPeoples: \"1202330755979944\",\n  Age: \"1202330714895606\"\n};\n\n// 2) Standard option GIDs (enum choices)\nconst STANDARD_OPTION_MAPPING = {\n  \"SubmissionType_Grievance\": \"1202329899911646\",\n  \"SubmissionType_Suggestion\": \"1202329899911647\",\n  \"SubmissionType_Request\": \"1202329899911648\",\n  \"SubmissionType_Feedback\": \"1202329899911649\",\n\n  \"ReportFormat_InPerson\": \"1202330347493011\",\n  \"ReportFormat_FocalPoint\": \"1207724960884497\",\n  \"ReportFormat_VoiceCall\": \"1202330347494027\",\n  \"ReportFormat_Hotline\": \"1202330347501419\",\n  \"ReportFormat_TextMessage\": \"1202330347498273\",\n  \"ReportFormat_SuggestionBox\": \"1202330347499327\",\n  \"ReportFormat_Email\": \"1202330347502485\",\n  \"ReportFormat_Letter\": \"1202330347503544\",\n  \"ReportFormat_OnlineForm\": \"1207934414764297\",\n  \"ReportFormat_Other\": \"1203830536105154\",\n  \"ReportFormat_Prospecting\": \"1208419056473280\",\n  \"ReportFormat_ProjectMeeting\": \"1208936305975370\",\n  \"ReportFormat_GrievanceBook\": \"1214730936867593\",\n\n  \"Gender_Male\": \"1202330737362427\",\n  \"Gender_Female\": \"1202330737362428\",\n  \"Gender_Mixed gender\": \"1202330737362429\",\n  \"Gender_Unknown gender\": \"1202330737362430\",\n  \"Gender_Other gender\": \"1207852335266397\",\n  \"Gender_Prefer not to report\": \"1207852335266398\",\n\n  \"IndigenousPeoples_Yes\": \"1202330755980982\",\n  \"IndigenousPeoples_No\": \"1202330755984093\",\n  \"IndigenousPeoples_Unknown\": \"1202330755985164\",\n  \"IndigenousPeoples_Mixed group\": \"1207724962870243\",\n\n  \"Age_<18\": \"1202330714895607\",\n  \"Age_19–35\": \"1202330714895608\",\n  \"Age_36–50\": \"1202330714895609\",\n  \"Age_>50\": \"1202330714895610\",\n  \"Age_Mixed age\": \"1202330714895611\",\n  \"Age_Unknown age\": \"1202330714895612\"\n};\n\n// Fetch the sample task so we can inspect this project's custom fields\ngetTask(SAMPLE_TASK_GID, {}, state => {\n  const { data } = state.body;\n\n  // Build a set of standard field GIDs so we can skip duplicates later\n  const standardGids = new Set(Object.values(STANDARD_FIELDS));\n  const presentGids = new Set(data.custom_fields.map(f => f.gid));\n\n  // 3) Build the combined mapping table: start with standard options, then add project-specific options\n  const formatMapping = { ...STANDARD_OPTION_MAPPING };\n\n  data.custom_fields.forEach(field => {\n    // Skip if this field is one of the known standard fields\n    if (standardGids.has(field.gid)) return;\n\n    if (field.enum_options) {\n      field.enum_options.forEach(option => {\n        formatMapping[`${field.name}_${option.name}`] = option.gid;\n      });\n    }\n  });\n\n  // Print a copy-paste friendly mapping table\n  console.log(\"//======= Mapping Table (Standard + Project specific) =========\");\n  console.log(\"-----BEGIN PASTE 1-----\");\n  console.log(\"const formatMapping = \" + JSON.stringify(formatMapping, null, 2) + \";\");\n  console.log(\"state.formatMapping = formatMapping;\");\n  console.log(\"-----END PASTE 1-----\");\n  console.log(\"//===================== End Mapping Table =====================\");\n  console.log(\"\");\n\n\n  // 4) Print statements for custom_fields payload\n  // helpers\n  const cleanName = s => (s || '').trim();\n  const isIdent = s => /^[A-Za-z_$][\\w$]*$/.test(s);\n  const bodyRef = name => {\n    const clean = cleanName(name);\n    return isIdent(clean) ? `$.inputData.body.${clean}` : `$.inputData.body[${JSON.stringify(clean)}]`;\n  };\n  const enumExpr = name => {\n    const clean = cleanName(name);\n    // lookup key is \"<FieldName>_\" + raw payload value\n    return `state => state.formatMapping[${JSON.stringify(clean + \"_\")} + ${bodyRef(clean)}]`;\n  };\n\n  let paste2 = \"custom_fields: {\\n\";\n\n  // Standard open-ended\n  if (presentGids.has(STANDARD_FIELDS.CaseID)) {\n    paste2 += `  '${STANDARD_FIELDS.CaseID}': ${bodyRef('CaseID')},\\n`;\n  }\n  if (presentGids.has(STANDARD_FIELDS.GrievanceID)) {\n    paste2 += `  '${STANDARD_FIELDS.GrievanceID}': ${bodyRef('GrievanceID')},\\n`;\n  }\n\n  // Standard enums\n  ['SubmissionType', 'ReportFormat', 'Gender', 'IndigenousPeoples', 'Age'].forEach(name => {\n    const gid = STANDARD_FIELDS[name];\n    if (presentGids.has(gid)) {\n      paste2 += `  '${gid}': ${enumExpr(name)},\\n`;\n    }\n  });\n\n  // Project specific\n  data.custom_fields.forEach(f => {\n    if (standardGids.has(f.gid)) return;\n    if (f.name && !f.enum_options) {\n      paste2 += `  '${f.gid}': ${bodyRef(f.name)},\\n`;\n    } else if (f.name && f.enum_options) {\n      paste2 += `  '${f.gid}': ${enumExpr(f.name)},\\n`;\n    }\n  });\n\n  paste2 += \"}\";\n\n  console.log(\"-----BEGIN PASTE 2-----\\n\" + paste2 + \"\\n-----END PASTE 2-----\");\n  console.log(\"//=========== End of Statements =======================\");\n\n  // Return state with the combined mapping in case you want to consume it programmatically\n  return { ...state, formatMapping };\n});",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@5.0.2"
+        },
+        "Asana-Regional-Template": {
+          "id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
+          "name": "Asana Regional Template",
+          "body": "// ===== STEP 1: Mapping + input capture =====\nfn(state => {\n  // 🔹 PASTE 1: from the Generator job\n  // Copy the BEGIN/END block from Generator logs that looks like:\n  //   const formatMapping = { ... };\n  //   state.formatMapping = formatMapping;\n  // Paste ONLY those 2 lines here, nothing else.\n\n  state.inputData = state.data;                     // keep\n  state.formatMapping = state.formatMapping || {};  // safe fallback\n  return state;\n});\n\n// ✅ SEARCH TASKS IN ASANA:\n// Update the custom_field GID below to your CaseID/GrievanceID field GID.\n// Also update the key if your input uses a different field name like CaseID instead of GrievanceID.\nrequest(`/workspaces/${state.configuration.workspaceGid}/tasks/search`, {\n  query: {\n    'custom_fields.1202329899911595.value': $.inputData?.body?.GrievanceID, // <-- REPLACE THIS GID if needed\n    resource_subtype: 'default_task'\n  }\n});\n\nfn(state => {\n  state.skipCreate = false;\n  const tasks = state.data || [];\n  const grievanceId = state.inputData?.body?.GrievanceID; // <-- REPLACE THIS: must match your search key above\n\n  if (tasks.length > 0) {\n    console.log(`${tasks.length} task(s) found for GrievanceID ${grievanceId}. Skipping create.`);\n    state.skipCreate = true;\n  }\n  return state;\n});\n\nfnIf(!$.skipCreate, \n  createTask({\n    name: $.inputData.body.GrievanceID,             // or CaseID, to match your search key\n    projects: [$.inputData.projectid],              // keep as is\n    notes: $.inputData.body.DescriptioGrievance,    // keep as is\n    // 🔹 PASTE 2: from the Generator job\n    // Copy everything inside of the block between BEGIN/END markers\n    // The generator will output lines like:\n    custom_fields: {\n      //   '1202329899911595': $.inputData.body.CaseID,\n      //   '1201884379104074': $.inputData.body.GrievanceID,\n      //   '1202329899911645': state => state.formatMapping[\"SubmissionType_\" + $.inputData.body.SubmissionType],\n      //   '1210398577520508': state => state.formatMapping[\"Request Response_\" + $.inputData.body['Request Response']],\n      // Notice: if the field name contains spaces, the generator already uses bracket notation for you.\n    },\n  },\n    st => {\n      console.log(JSON.stringify(st.data, null, 2)); // log data\n      return st;\n    }\n  )\n);\n",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@5.0.2"
+        }
+      },
+      "edges": {
+        "webhook->Generate-Asana-GID-Mapping": {
+          "enabled": true,
+          "id": "10554605-2076-4b6c-8a20-ad1a4f07925f",
+          "target_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "source_trigger_id": "2bc91626-4af7-4a22-8e7c-c0ed08c85f02",
+          "condition_type": "always"
+        },
+        "Generate-Asana-GID-Mapping->Asana-Regional-Template": {
+          "enabled": false,
+          "id": "9045f83c-4764-46eb-8d1c-2d508cbd34db",
+          "target_job_id": "1808790c-32d9-41fe-8140-b3a7f004dd8c",
+          "source_job_id": "ac5999f7-97b8-447e-8ec9-c528d3cf7326",
+          "condition_type": "on_job_success"
+        }
+      }
+    },
+    "0.-Get-GRM-Forms-from-Kobo": {
+      "id": "466e0e86-d4de-4760-92fe-7ddf5e8060e0",
+      "name": "0. Get GRM Forms from Kobo",
+      "inserted_at": "2026-09-01T09:20:25.720313Z",
+      "lock_version": 119,
+      "triggers": {
+        "cron": {
+          "enabled": true,
+          "id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
+          "type": "cron",
+          "cron_expression": "0 */1 * * *",
+          "cron_cursor_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49"
+        }
+      },
+      "jobs": {
+        "GRM-Fetch-1-Get-FormsList-Ongoing": {
+          "id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "name": "GRM-Fetch-1 Get FormsList Ongoing",
+          "body": "//== Job to be used for getting a list of deployed GRM Kobo forms from sheets to auto-sync  ==//\n// Link to sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit?gid=1559623602#gid=1559623602\n// This can be run on-demand at any time by clicking \"run\" //\ngetValues(\n  '1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY',\n  'grm-DEPLOYED!A:Q', //get Deployed GRM forms list from Sheet\n  state => {\n    const [headers, ...values] = state.data.values;\n\n    const mapHeaderToValue = value => {\n      return headers.reduce((obj, header) => {\n        obj[header] = value[headers.indexOf(header)];\n        return obj;\n      }, {});\n    };\n\n    state.sheetsData = values\n      .filter(\n        item => item.includes('TRUE') //return forms where auto-sync = TRUE\n        //&& item.includes('bns_survey', 'nrgt_current')\n      )\n      .map(item => mapHeaderToValue(item));\n\n    return state;\n  }\n);\n\nfn(state => {\n  const { sheetsData, daterange } = state;\n\n  // OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana\n  const isMoreThanAWeekOld = dateString => {\n    const currentDate = new Date();\n    const inputDate = new Date(dateString);\n    // Calculate the difference in time (in milliseconds) and convert to days\n    const daysDifference = (currentDate - inputDate) / (1000 * 60 * 60 * 24);\n\n    return daysDifference > 7;\n  };\n  // IF YOU CLEAR STATE...\n  // Set this manual cursor to the earliest submission date you want fetch.\n  const manualCursor = '2026-09-01T00:00:07.922Z'; // FOR MANUAL RUN THE CURSOR SHOULD NOT BE OLDER THAN ONE WEEK AGO\n\n  let cursorEnd = null;\n\n  if (daterange && daterange.start && daterange.end) {\n    state.cursor = daterange.start;\n    cursorEnd = daterange.end;\n  } else {\n    state.cursor = state.lastEnd || manualCursor;\n\n    if (!state.cursor)\n      throw new Error(\n        'Please define a cursor date no greater than 1 week ago and try again'\n      );\n    if (isMoreThanAWeekOld(state.cursor))\n      throw new Error(\n        `cursor ${state.cursor} is older than 1 week. OpenFn will not sync Kobo records that are older than 1 week to avoid overwriting data in Asana.`\n      );\n  }\n  console.log('Current cursor value:', state.cursor);\n  if (cursorEnd) console.log('Using cursorEnd:', cursorEnd);\n\n  const formsList = sheetsData.map(survey => ({\n    formId: survey.uid,\n    tag: survey.tag,\n    name: survey.name,\n    projectid: survey.asana_projectid,\n  }));\n\n  console.log('# of GRM forms detected in Sheet:: ', formsList.length);\n  console.log(\n    'List of forms to re-sync:: ',\n    JSON.stringify(formsList, null, 2)\n  );\n\n  state.data = {\n    surveys: sheetsData.map(survey => ({\n      projectid: survey.asana_projectid,\n      formId: survey.uid,\n      tag: survey.tag,\n      name: survey.name,\n      owner: survey.owner,\n      url: `https://kf.kobotoolbox.org/api/v2/assets/${survey.uid}/data/?format=json`,\n      query: cursorEnd\n        ? `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\",\"$lt\":\"${cursorEnd}\"}}`\n        : `&query={\"_submission_time\":{\"$gte\":\"${state.cursor}\"}}`,\n    })),\n  };\n\n  console.log('mapped sheetsData::', JSON.stringify(state.data, null, 2));\n\n  return state;\n});\n\nfn(state => {\n  // let lastEnd = state.references\n  //   .filter(item => item.body)\n  //   .map(s => s.body.end)\n  //   .sort((a, b) => new Date(b.date) - new Date(a.date))[0];\n  let lastEnd = new Date().toISOString();\n\n  if (state.daterange) {\n    console.log('Manual run with daterange detected');\n    delete state.daterange;\n    return { ...state, references: [], lastEnd };\n  }\n\n  console.log('New cursor value:', lastEnd);\n  return { ...state, references: [], lastEnd };\n});\n",
+          "project_credential_id": "cbba3661-76c8-4998-941a-67e92e02c2ae",
+          "adaptor": "@openfn/language-googlesheets@4.0.13"
+        },
+        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
+          "id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "name": "GRM-Fetch-2 Get Kobo Forms Ongoing",
+          "body": "\n\n// Here we fetch submissions for all deployed \"GRM\" forms in GoogleSheet\n// NOTE: See linked job \"[GRM-A] 1.Get FormsList (Ongoing)\" for cursor & GoogleSheet query logic\n//**********************************************************//\nfn(state => {\n  state.errors = [];\n  state.globalIndex = 0;\n  state.submissions = [];\n  return state;\n});\n\neach(dataPath('surveys[*]'), state => {\n  const { url, query, tag, formId, formType, name, owner, projectid } =\n    state.data;\n  console.log('Sending GET to ::', `${url}${query}`);\n  const splitQuery = query.split('=')[1]\n  return getSubmissions(`${formId}`, { query: splitQuery })(state).then(state => {\n    state.data.forEach((submission, i) => {\n      state.submissions.push({\n        i,\n        // Here we append the tags defined above to the Kobo form submission data\n        formId,\n        projectid,\n        formName: name,\n        formOwner: owner,\n        formType,\n        body: submission,\n      });\n    });\n    //const count = state.submissions.length;\n    const results = state.data?.results ?? [];\n    const count = Array.isArray(state.data) ? state.data.length : (state.data?.results?.length ?? 0);\n    console.log(`Fetched ${count} submissions from ${formId} (${name}).`);\n    //Once we fetch the data, we want to post each individual Kobo survey\n    //back to the OpenFn inbox to run through the jobs =========================\n    return state;\n  }).catch(err => {\n    const errors = state.errors || [];\n    errors.push({\n      formId,\n      message: err.message,\n    });\n    state.errors = errors;\n    console.log(`Error fetching submissions from  ${formId}::`, err.message);\n    return state;\n  });\n});\n\n//Throw errors at the end of the job if we failed to extract any Kobo forms\nfn(state => {\n\n  if (state.errors ? state.errors.length > 0 : false) {\n    console.log('ERROR: Failed Kobo extracts :: ', JSON.stringify(state.errors, null, 2));\n    throw new Error(\n      `ERROR: ${state.errors.length} Kobo form extracts failed - please check permissions & ids! See above logs for formIds.`\n    );\n  }\n  return state;\n});\n",
+          "project_credential_id": "e00592c4-d94b-4c80-83eb-e7429c62d245",
+          "adaptor": "@openfn/language-kobotoolbox@4.2.9"
+        },
+        "Post-Submissions": {
+          "id": "9e0b7989-bbfe-4ad2-8583-653373773776",
+          "name": "Post Submissions",
+          "body": "const baseUrl = \"https://app.openfn.org\"\n\nfn(state => {\n  const { submissions = [], sheetsData = [] } = state;\n\n  const errors = (state.errors ??= []);\n  const matchedSubmissions = [];\n\n  const formMetaByUid = new Map(sheetsData.map(row => [row.uid, row]));\n\n  for (const submission of submissions) {\n    const formMeta = formMetaByUid.get(submission.formId);\n\n    if (!formMeta) {\n      errors.push(`No metadata for formId ${submission.formId}`);\n      continue;\n    }\n\n    if (!formMeta.openfn_workflow_uuid) {\n      errors.push(\n        `No OpenFn workflow UUID configured for region \"${formMeta.Region}\" and formId \"${formMeta.uid}\"`\n      );\n      continue;\n    }\n\n    matchedSubmissions.push({\n      workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,\n      submission,\n      formMeta,\n    });\n  }\n\n  return { ...state, errors, matchedSubmissions };\n});\n\neach('$.matchedSubmissions[*]', post($.data.workflowUrl, state => {\n  const { submission, formMeta } = state.data\n  console.log(`Posting ${submission.i + 1}...`);\n  console.log(`Submission id:: ${submission.body._id}`);\n  console.log(`Region: ${formMeta.Region}`)\n  return {\n    body: submission,\n  };\n})\n);\n\nfnIf(state => state.errors.length > 0, state => {\n  const dedup = [...new Set(state.errors)]\n  console.warn(dedup)\n  throw new Error(dedup)\n})",
+          "project_credential_id": "9516f11a-8ebe-46a0-b864-422bef6b02ed",
+          "adaptor": "@openfn/language-http@7.2.6"
+        }
+      },
+      "edges": {
+        "cron->GRM-Fetch-1-Get-FormsList-Ongoing": {
+          "enabled": true,
+          "id": "c97eea3c-5d7a-4e6e-9899-f594859f0026",
+          "target_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "source_trigger_id": "0b68dfb0-7482-4630-ae12-acb1bc257999",
+          "condition_type": "always"
+        },
+        "GRM-Fetch-1-Get-FormsList-Ongoing->GRM-Fetch-2-Get-Kobo-Forms-Ongoing": {
+          "enabled": true,
+          "id": "4431f650-2b66-4c7c-ba27-c67742b8f48a",
+          "target_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "source_job_id": "021760c3-294b-40a3-b7e6-4419359e2d49",
+          "condition_type": "on_job_success"
+        },
+        "GRM-Fetch-2-Get-Kobo-Forms-Ongoing->Post-Submissions": {
+          "enabled": true,
+          "id": "a4078578-22d5-4a7b-8088-52fa54b4aac7",
+          "target_job_id": "9e0b7989-bbfe-4ad2-8583-653373773776",
+          "source_job_id": "32590563-b5f6-4474-8528-cdbea6891a42",
+          "condition_type": "js_expression",
+          "condition_label": "has-submissions",
+          "condition_expression": "state.submissions.length > 0"
         }
       }
     }
