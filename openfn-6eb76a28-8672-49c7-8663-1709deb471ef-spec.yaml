@@ -4262,7 +4262,7 @@ workflows:
                 name: `New form added to OpenFn: ${form.name}`,
                 approval_status: 'pending',
                 projects: ['1198901998266253'],
-                assignee_section: '1202566315436326', // Section "Forms synced with WCS account to review"
+                assignee_section: '1202566315436326', // Section "Grievance mechanisms" of Asana OpenFn project
                 assignee: '1167814594911933', // This is Omar Torrico
                 due_on: deployedDatePlus5,
                 notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
@@ -4283,7 +4283,7 @@ workflows:
               return {
                 name: `Form archived: ${form.name}`,
                 projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', // Section "Forms synced with WCS account to review"
+                assignee_section: '1202566315436326', // Section "Grievance mechanisms" of Asana OpenFn project
                 assignee: '1167814594911933', // This is Omar Torrico
                 due_on: modifiedDatePlus5,
                 notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
@@ -5347,7 +5347,7 @@ workflows:
     jobs:
       Get-data:
         name: Get data
-        adaptor: '@openfn/language-asana@5.0.3'
+        adaptor: '@openfn/language-asana@5.1.2'
         credential: ddetoeuf@wcs.org-GRM-Asana-token
         body: |
           // Check out the Job Writing Guide for help getting started:

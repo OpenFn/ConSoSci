@@ -765,39 +765,6 @@
         }
       }
     },
-    "Scheduled-Workflow": {
-      "id": "ddd0d7bb-749a-4f60-aafd-6dee95cd34ce",
-      "name": "Scheduled Workflow",
-      "inserted_at": "2026-07-23T09:17:04.280885Z",
-      "lock_version": 35,
-      "triggers": {
-        "cron": {
-          "enabled": false,
-          "id": "712cea97-d57d-4c27-8371-97b7aa0103bb",
-          "type": "cron",
-          "cron_expression": "*/15 * * * *",
-          "cron_cursor_job_id": "908485c2-b675-4fd3-83a1-a70db4c5a757"
-        }
-      },
-      "jobs": {
-        "Get-data": {
-          "id": "908485c2-b675-4fd3-83a1-a70db4c5a757",
-          "name": "Get data",
-          "body": "// Check out the Job Writing Guide for help getting started:\n// https://docs.openfn.org/documentation/jobs/job-writing-guide\n\n//CAR\n// getTasks(\"1208390966993328\", {\n\n// });\n\n\n//OWR\n// getTasks(\"1202329899911590\", {\n\n// });\n\n//KBNP\n// getTasks(\"1203957987731383\", {\n  \n// });\n\n//Kenya\n// getTasks(\"1211115043293309\", {\n\n// });\n\n//Mongolia\n// getTasks(\"1212740517637896\", {\n\n// });\n\n//Sena\n// getTasks(\"1209801015093765\", {\n\n// });\n\ngetTask(\"1216814540568983\", {\n});\n\n\n\n// // Fetch tasks from a project\n// getTasks('1202329899911590', { opt_fields: 'gid,name,resource_type,resource_subtype' });\n\n// // Group tasks by month\n// fn(state => {\n//   const tasks = state.data?.data || state.data || [];\n  \n//   const tasksByMonth = tasks.reduce((acc, task) => {\n//     // Extract YYYY-MM from name like \"2025-12-30-16-05-30\"\n//     const match = task.name?.match(/^(\\d{4}-\\d{2})/);\n    \n//     if (match) {\n//       const monthKey = match[1]; // e.g., \"2025-12\"\n//       acc[monthKey] = (acc[monthKey] || 0) + 1;\n//     } else {\n//       acc['unknown'] = (acc['unknown'] || 0) + 1;\n//     }\n    \n//     return acc;\n//   }, {});\n\n//   // Sort by month\n//   const sorted = Object.entries(tasksByMonth)\n//     .sort(([a], [b]) => a.localeCompare(b))\n//     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});\n\n//   console.log('Tasks by month:', sorted);\n//   console.log('Total tasks:', tasks.length);\n\n//   return { ...state, tasksByMonth: sorted, totalTasks: tasks.length };\n// });\n\n\n\n",
-          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
-          "adaptor": "@openfn/language-asana@5.0.3"
-        }
-      },
-      "edges": {
-        "cron->Get-data": {
-          "enabled": true,
-          "id": "45bc95fb-dd89-46b7-81d6-691e9620f5fa",
-          "target_job_id": "908485c2-b675-4fd3-83a1-a70db4c5a757",
-          "source_trigger_id": "712cea97-d57d-4c27-8371-97b7aa0103bb",
-          "condition_type": "always"
-        }
-      }
-    },
     "Global-Sync-to-Asana": {
       "id": "0b3179e7-50f9-4ce0-9406-eb71947565da",
       "name": "Global Sync to Asana",
@@ -1291,11 +1258,44 @@
         }
       }
     },
+    "Scheduled-Workflow": {
+      "id": "ddd0d7bb-749a-4f60-aafd-6dee95cd34ce",
+      "name": "Scheduled Workflow",
+      "inserted_at": "2026-09-02T10:53:59.856326Z",
+      "lock_version": 38,
+      "triggers": {
+        "cron": {
+          "enabled": false,
+          "id": "712cea97-d57d-4c27-8371-97b7aa0103bb",
+          "type": "cron",
+          "cron_expression": "*/15 * * * *",
+          "cron_cursor_job_id": "908485c2-b675-4fd3-83a1-a70db4c5a757"
+        }
+      },
+      "jobs": {
+        "Get-data": {
+          "id": "908485c2-b675-4fd3-83a1-a70db4c5a757",
+          "name": "Get data",
+          "body": "// Check out the Job Writing Guide for help getting started:\n// https://docs.openfn.org/documentation/jobs/job-writing-guide\n\n//CAR\n// getTasks(\"1208390966993328\", {\n\n// });\n\n\n//OWR\n// getTasks(\"1202329899911590\", {\n\n// });\n\n//KBNP\n// getTasks(\"1203957987731383\", {\n  \n// });\n\n//Kenya\n// getTasks(\"1211115043293309\", {\n\n// });\n\n//Mongolia\n// getTasks(\"1212740517637896\", {\n\n// });\n\n//Sena\n// getTasks(\"1209801015093765\", {\n\n// });\n\ngetTask(\"1216814540568983\", {\n});\n\n\n\n// // Fetch tasks from a project\n// getTasks('1202329899911590', { opt_fields: 'gid,name,resource_type,resource_subtype' });\n\n// // Group tasks by month\n// fn(state => {\n//   const tasks = state.data?.data || state.data || [];\n  \n//   const tasksByMonth = tasks.reduce((acc, task) => {\n//     // Extract YYYY-MM from name like \"2025-12-30-16-05-30\"\n//     const match = task.name?.match(/^(\\d{4}-\\d{2})/);\n    \n//     if (match) {\n//       const monthKey = match[1]; // e.g., \"2025-12\"\n//       acc[monthKey] = (acc[monthKey] || 0) + 1;\n//     } else {\n//       acc['unknown'] = (acc['unknown'] || 0) + 1;\n//     }\n    \n//     return acc;\n//   }, {});\n\n//   // Sort by month\n//   const sorted = Object.entries(tasksByMonth)\n//     .sort(([a], [b]) => a.localeCompare(b))\n//     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {});\n\n//   console.log('Tasks by month:', sorted);\n//   console.log('Total tasks:', tasks.length);\n\n//   return { ...state, tasksByMonth: sorted, totalTasks: tasks.length };\n// });\n\n\n\n",
+          "project_credential_id": "c447b12d-0559-42a9-ae25-9a6fd61174d2",
+          "adaptor": "@openfn/language-asana@5.1.2"
+        }
+      },
+      "edges": {
+        "cron->Get-data": {
+          "enabled": true,
+          "id": "45bc95fb-dd89-46b7-81d6-691e9620f5fa",
+          "target_job_id": "908485c2-b675-4fd3-83a1-a70db4c5a757",
+          "source_trigger_id": "712cea97-d57d-4c27-8371-97b7aa0103bb",
+          "condition_type": "always"
+        }
+      }
+    },
     "Monitor-Forms-Shared": {
       "id": "855282b5-f5fb-4d03-85f8-9249602724a5",
       "name": "Monitor Forms Shared",
-      "inserted_at": "2026-09-02T09:13:44.709704Z",
-      "lock_version": 40,
+      "inserted_at": "2026-09-02T12:25:37.932883Z",
+      "lock_version": 41,
       "triggers": {
         "cron": {
           "enabled": true,
@@ -1330,7 +1330,7 @@
         "FS4---Notify-in-Asana": {
           "id": "5d4eade6-8ec8-4bf1-8203-4e0da61eb43c",
           "name": "FS4 - Notify in Asana",
-          "body": "//This job will add a task to Asana if a new Kobo form was shared\nfn(state => {\n  console.log('Preparing Form Sharing task updates for Asana... ');\n\n  state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {\n    const dateModified = new Date(form.date_deployed);\n    const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `New form added to OpenFn: ${form.name}`,\n      approval_status: 'pending',\n      projects: ['1198901998266253'],\n      assignee_section: '1202566315436326', // Section \"Forms synced with WCS account to review\"\n      assignee: '1167814594911933', // This is Omar Torrico\n      due_on: deployedDatePlus5,\n      notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says \"ADD MANUALLY\" to add any values missing e.g., \"Instance\"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  }) : [];\n\n  const yesterday = new Date();\n    yesterday.setDate(yesterday.getDate() - 1);\n    yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday\n\n  state.archivedFormsTasks = state.archivedForms\n  .filter(form => new Date(form.date_modified) > yesterday)\n  .map(form => {\n    const dateModified = new Date(form.date_modified);\n    const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `Form archived: ${form.name}`,\n      projects: ['1198901998266253'],\n      assignee_section: '1207247884457665', // Section \"Forms synced with WCS account to review\"\n      assignee: '1167814594911933', // This is Omar Torrico\n      due_on: modifiedDatePlus5,\n      notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the \"Deployed\" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the \"Archived\" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  });\n\n  console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);\n  //console.log('New form alert tasks to upsert:: ', state.asanaTasks);\n  console.log(\n    '# of Archived Form Asana Tasks to add:: ',\n    state.archivedFormsTasks.length\n  );\n  console.log(\n    'Archived form alert tasks to upsert:: ',\n    state.archivedFormsTasks\n  );\n  return state;\n});\n\n//upsert Asana task if new form shared notification needed\neach(\n  '$.asanaTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n\neach(\n  '$.archivedFormsTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n",
+          "body": "//This job will add a task to Asana if a new Kobo form was shared\nfn(state => {\n  console.log('Preparing Form Sharing task updates for Asana... ');\n\n  state.asanaTasks = state.formsToCreate ? state.formsToCreate.map(form => {\n    const dateModified = new Date(form.date_deployed);\n    const deployedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `New form added to OpenFn: ${form.name}`,\n      approval_status: 'pending',\n      projects: ['1198901998266253'],\n      assignee_section: '1202566315436326', // Section \"Grievance mechanisms\" of Asana OpenFn project\n      assignee: '1167814594911933', // This is Omar Torrico\n      due_on: deployedDatePlus5,\n      notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says \"ADD MANUALLY\" to add any values missing e.g., \"Instance\"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  }) : [];\n\n  const yesterday = new Date();\n    yesterday.setDate(yesterday.getDate() - 1);\n    yesterday.setHours(0, 0, 0, 0);  // Set to beginning of yesterday\n\n  state.archivedFormsTasks = state.archivedForms\n  .filter(form => new Date(form.date_modified) > yesterday)\n  .map(form => {\n    const dateModified = new Date(form.date_modified);\n    const modifiedDatePlus5 = new Date(dateModified.getTime() + 5 * 24 * 60 * 60 * 1000)\n      .toISOString()\n      .split('T')[0];\n    return {\n      name: `Form archived: ${form.name}`,\n      projects: ['1198901998266253'],\n      assignee_section: '1202566315436326', // Section \"Grievance mechanisms\" of Asana OpenFn project\n      assignee: '1167814594911933', // This is Omar Torrico\n      due_on: modifiedDatePlus5,\n      notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the \"Deployed\" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the \"Archived\" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,\n    };\n  });\n\n  console.log('# of New Form Asana Tasks to add:: ', state.asanaTasks.length);\n  //console.log('New form alert tasks to upsert:: ', state.asanaTasks);\n  console.log(\n    '# of Archived Form Asana Tasks to add:: ',\n    state.archivedFormsTasks.length\n  );\n  console.log(\n    'Archived form alert tasks to upsert:: ',\n    state.archivedFormsTasks\n  );\n  return state;\n});\n\n//upsert Asana task if new form shared notification needed\neach(\n  '$.asanaTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n\neach(\n  '$.archivedFormsTasks[*]',\n  upsertTask('1198901998266253', {\n    //project_id\n    externalId: 'name',\n    data: state => state.data,\n  })\n);\n",
           "project_credential_id": "3b707ca8-ef3c-4552-a536-ecb246664a13",
           "adaptor": "@openfn/language-asana@4.0.9"
         }
