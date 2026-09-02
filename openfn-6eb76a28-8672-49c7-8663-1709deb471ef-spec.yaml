@@ -4269,7 +4269,7 @@ workflows:
                   --> E: "Asana project name" - add the exact Asana project name used for this GRM,
                   --> M : "automate_sync" - Put "true" if you want to sync the data to Asana, 
                   --> P : "Region" - Select the appropriate region from the drop down list,
-                  --> Q: "openfn_workflow_uuid" - Copy and paste the workflow uuid for this region. If a GRM already exist in this region, simply copy from the relevant line in the table. If no GRM exist for this region, a new workflow should be created to get the UUID,
+                  --> Q: "openfn_workflow_uuid" - Copy and paste the workflow uuid for this region. If a GRM already exist in this region, simply copy from the relevant line in the table. If no GRM exist for this region, a new workflow should be created to get the UUID. To obtain the UUId: 1. Open the region workflow; 2. Click on the first step (webook); 3. Copy the highlighted UUID.
                   --> S : "Checked by" - put the name of the person who is reviewing & updating the line .
                 Google Sheet is available here https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
