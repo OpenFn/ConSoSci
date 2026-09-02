@@ -46,7 +46,7 @@ workflows:
     jobs:
       Get-Forms-List:
         name: Get Forms List
-        adaptor: '@openfn/language-googlesheets@2.3.0'
+        adaptor: '@openfn/language-googlesheets@4.0.13'
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           //== Job to be used for getting a list of "deployed" Kobo forms from sheets to auto-sync  ==//
@@ -219,7 +219,7 @@ workflows:
     jobs:
       Get-FormsList:
         name: Get FormsList
-        adaptor: '@openfn/language-googlesheets@2.3.0'
+        adaptor: '@openfn/language-googlesheets@4.0.13'
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
@@ -2045,7 +2045,7 @@ workflows:
         type: cron
         cron_expression: '0 */3 * * *'
         cron_cursor_job: A-1-1-Get-Kobo-Forms
-        enabled: true
+        enabled: false
     edges:
       cron->A-1-1-Get-Kobo-Forms:
         source_trigger: cron
@@ -3526,7 +3526,7 @@ workflows:
       webhook:
         type: webhook
         webhook_reply: before_start
-        enabled: true
+        enabled: false
     edges:
       webhook->A2-Process-Forms-AUTO:
         source_trigger: webhook
@@ -3589,7 +3589,7 @@ workflows:
 
       FS2---Get-List-from-Sheets:
         name: FS2 - Get List from Sheets
-        adaptor: '@openfn/language-googlesheets@2.4.0'
+        adaptor: '@openfn/language-googlesheets@4.0.13'
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           getValues(
@@ -3657,7 +3657,7 @@ workflows:
 
       FS3---Update-Spreadsheet-with-New-Forms-Shared:
         name: FS3 - Update Spreadsheet with New Forms Shared
-        adaptor: '@openfn/language-googlesheets@2.4.0'
+        adaptor: '@openfn/language-googlesheets@4.0.13'
         credential: ddetoeuf@wcs.org-Diane-GoogleSheet
         body: |
           //Compare new forms in Kobo with GoogleSheet list to see if new forms were shared in Kobo
@@ -3788,10 +3788,16 @@ workflows:
                 name: `New form added to OpenFn: ${form.name}`,
                 approval_status: 'pending',
                 projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
+                assignee_section: '1207247884457665', // Section 'Forms synced with WCS account to review'
+                assignee: '1167814594911933', // This is Omar Torrico
                 due_on: deployedDatePlus5,
-                notes: `New form added to OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) update columns L, N, & O, and (2) update column E (look for cells where it says "ADD MANUALLY" to add any values missing e.g., "Instance"): https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+                notes: `A new form was shared with the Kobotoolbox account "wcs" to be synced to the WCS PROGRAMS database through OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet "WCS Forms to Sync - Ongoing & Archived [BNS & GRM]", tab "wcs-bns-DEPLOYED", to update the following columns :
+                  --> E: "instance" - add the citation for this dataset (this should be "Unpublished /Country Name/ data /year/ for data that has not been made public)
+                  --> L : "automate_sync" - Put "true" if you want to sync the data to the DB, 
+                  --> M : "historical_sync" - put on "true" if data were already collected and need to be synced to the DB,
+                  --> O : "Checked by" - put the name of the person who is reviewing & updating the line,
+                  --> Q: "Year" - add the year the data were collected 
+                Google Sheet is available here https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
             }) : [];
 
@@ -3809,11 +3815,18 @@ workflows:
               return {
                 name: `Form archived: ${form.name}`,
                 projects: ['1198901998266253'],
-                assignee_section: '1207247884457665', //OLD General Section: '1203181218738601',
-                assignee: '1208302456826465',
+                assignee_section: '1207247884457665', // Section 'Forms synced with WCS account to review'
+                assignee: '1167814594911933', // This is Omar Torrico
                 //due_on: modifiedDatePlus5, Modified because archived forms were getting a due date set.
                 ...(form.deployment__active ? { due_on: modifiedDatePlus5 } : {}),
-                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet to (1) confirm this is correct, (2) remove from the "Deployed" sheet if you want to remove from the OpenFn Sync, and (3) update notes in the "Archived" sheet: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+                notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet "WCS Forms to Sync - Ongoing & Archived [BNS & GRM]", tab "wcs-bns-ARCHIVED", to :
+                  (1) confirm this is correct, 
+                  (2) remove the line of that form from the "wcs-bns-DEPLOYED" tab if you want to stop automatic syncing of data, 
+                  (3) Review the following columns: 
+                    --> L : "automate_sync" - It should be "false" to stop automatic syncing of the data to the DB, 
+                    --> M : "historical_sync" - It should be "false" if you do not need to re-sync the data. Put "true" if data were cleaned up and need to be re-synced to the DB,
+                  (4) If needed, update notes in column O.
+                The Google Sheet is available here: https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
               };
             });
 
