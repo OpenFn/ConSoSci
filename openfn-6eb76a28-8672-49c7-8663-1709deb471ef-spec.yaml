@@ -4271,7 +4271,11 @@ workflows:
                   --> P : "Region" - Select the appropriate region from the drop down list,
                   --> Q: "openfn_workflow_uuid" - Copy and paste the workflow uuid for this region. If a GRM already exist in this region, simply copy from the relevant line in the table. If no GRM exist for this region, a new workflow should be created to get the UUID. To obtain the UUId: 1. Open the region workflow; 2. Click on the first step (webook); 3. Copy the highlighted UUID.
                   --> S : "Checked by" - put the name of the person who is reviewing & updating the line .
-                Google Sheet is available here https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602`,
+                Google Sheet is available here https://docs.google.com/spreadsheets/d/1s7K3kxzm5AlpwiALattyc7D9_aIyqWmo2ubcQIUlqlY/edit#gid=1559623602
+                
+                You should then set up the data integrations between Kobo and Asana for this GRM Form. Contact the Safeguards Regional Coordinator who should set up the Asana GRM project, and check the set up instructions in the GRM Internal Management Asana project here: https://app.asana.com/1/8834311939765/project/1203977007681976/task/1204012366175200?focus=true `
+                ,
+                
               };
             }) : [];
 
