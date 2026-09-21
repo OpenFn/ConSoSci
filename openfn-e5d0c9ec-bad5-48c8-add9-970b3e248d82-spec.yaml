@@ -3789,7 +3789,7 @@ workflows:
                 approval_status: 'pending',
                 projects: ['1198901998266253'],
                 assignee_section: '1207247884457665', // Section 'Forms synced with WCS account to review'
-                assignee: '1167814594911933', // This is Omar Torrico
+                assignee: '969793041717558', // This is François Sandrin
                 due_on: deployedDatePlus5,
                 notes: `A new form was shared with the Kobotoolbox account "wcs" to be synced to the WCS PROGRAMS database through OpenFn: ${form.name} (uid: ${form.uid}). Please review the Google Sheet "WCS Forms to Sync - Ongoing & Archived [BNS & GRM]", tab "wcs-bns-DEPLOYED", to update the following columns :
                   --> E: "instance" - add the citation for this dataset (this should be "Unpublished /Country Name/ data /year/ for data that has not been made public)
@@ -3816,7 +3816,7 @@ workflows:
                 name: `Form archived: ${form.name}`,
                 projects: ['1198901998266253'],
                 assignee_section: '1207247884457665', // Section 'Forms synced with WCS account to review'
-                assignee: '1167814594911933', // This is Omar Torrico
+                assignee: '969793041717558', // This is François Sandrin
                 //due_on: modifiedDatePlus5, Modified because archived forms were getting a due date set.
                 ...(form.deployment__active ? { due_on: modifiedDatePlus5 } : {}),
                 notes: `Kobo form was archived: ${form.name} (uid: ${form.uid}). Please review the Google Sheet "WCS Forms to Sync - Ongoing & Archived [BNS & GRM]", tab "wcs-bns-ARCHIVED", to :
