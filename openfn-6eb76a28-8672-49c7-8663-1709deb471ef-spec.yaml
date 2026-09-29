@@ -944,7 +944,7 @@ workflows:
                 '1202329899911593': $.inputData.body.StaffName,
                 '1202329899911595': $.inputData.body.CaseID,
                 '1202329899911597': $.inputData.body.StaffEmail,
-                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Submission Date" in Asana
+                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "DateReceived" in Asana
                 '1204411543329531': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1204398350066782': $.inputData.body.SuggestionBoxId,
                 '1204398351814002': $.inputData.body.SuggestionBoxGps,
@@ -1122,7 +1122,7 @@ workflows:
                 '1203958690339485': $.inputData.body.StaffName,
                 '1203958690339489': $.inputData.body.CaseID,
                 '1203958690339493': $.inputData.body.StaffEmail,
-                '1203958690339497': $.inputData.body.today, // The Today value in Kobo goes into Submission Date in Asana
+                '1203958690339497': $.inputData.body.today, // The Today value in Kobo goes into DateReceived in Asana
                 '1203958690356245': $.inputData.body.ReporterName,
                 '1203958690356249': $.inputData.body.ReporterContactInformation,
                 '1203958690356256': $.inputData.body.AuthorityGrievanceReporter,
@@ -1266,7 +1266,7 @@ workflows:
                 '1202329899911595': $.inputData.body.CaseID,
                 '1203711959959076': $.inputData.body.StaffName,
                 '1203712049265363': $.inputData.body.StaffEmail,
-                '1202329899911599': $.inputData.body.today,// The Kobo value "today" is used to fill the "Submission Date" in Asana
+                '1202329899911599': $.inputData.body.today,// The Kobo value "today" is used to fill the "Date Received" in Asana
                 '1204987862967325': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1204987862967339': $.inputData.body.SuggestionBoxGps,
                 '1204987862967330': $.inputData.body.SuggestionBoxId,
@@ -5576,7 +5576,7 @@ workflows:
               notes: $.inputData.body.Description,
               custom_fields: {
                 // Fields  belonging to open-ended questions (qxns that accept free text input)
-                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Submission Date" in Asana
+                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Date Received" in Asana
                 '1204411543329531': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1202329899911595': $.inputData.body.CaseID,
                 '1203711959959076': $.inputData.body.StaffName,
