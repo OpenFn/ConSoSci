@@ -106,7 +106,7 @@ workflows:
               formId: survey.uid,
               tag: survey.tag,
               name: survey.name,
-              projectid: survey.asana_projectid,
+              projectid: survey.asana_projectid
             }));
 
             console.log('# of GRM forms detected in Sheet:: ', formsList.length);
@@ -148,7 +148,7 @@ workflows:
             }
 
             console.log('New cursor value:', lastEnd);
-            return { ...state, references: [], lastEnd };
+            return { ...state, references: [], response: {}, lastEnd };
           });
 
       GRM-Fetch-2-Get-Kobo-Forms-Ongoing:
@@ -227,6 +227,11 @@ workflows:
           fn(state => {
             const { submissions = [], sheetsData = [] } = state;
 
+            const groupedForms = sheetsData.reduce((acc, { name, openfn_workflow_uuid }) => {
+              (acc[openfn_workflow_uuid] ??= []).push(name);
+              return acc;
+            }, {});
+
             const errors = (state.errors ??= []);
             const matchedSubmissions = [];
 
@@ -249,7 +254,7 @@ workflows:
 
               matchedSubmissions.push({
                 workflowUrl: `${baseUrl}/i/${formMeta.openfn_workflow_uuid}`,
-                submission,
+                submission: { ...submission, formsToSync: groupedForms[formMeta.openfn_workflow_uuid] },
                 formMeta,
               });
             }
@@ -272,6 +277,13 @@ workflows:
             const dedup = [...new Set(state.errors)]
             console.warn(dedup)
             throw new Error(dedup)
+          })
+
+          fn(state => {
+            return {
+              cursor: state.cursor,
+              lastEnd: state.lastEnd
+            }
           })
     triggers:
       cron:
@@ -306,11 +318,17 @@ workflows:
         adaptor: '@openfn/language-common@2.5.0'
         credential: null
         body: |
-          // Check out the Job Writing Guide for help getting started:
-          // https://docs.openfn.org/documentation/jobs/job-writing-guide
           fn(state => {
             if (state.data?.body) {
               state.data = state.data.body;
+            }
+            return state;
+          });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
             }
             return state;
           });
@@ -597,6 +615,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        custom_path: 'aao-sync-to-asana'
         webhook_reply: before_start
         enabled: true
     edges:
@@ -862,6 +881,14 @@ workflows:
             }
             return state;
           });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
+            }
+            return state;
+          });
       GRM03-Upsert-Ituri-Grievances-in-Asana:
         name: GRM03 Upsert Ituri Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
@@ -944,7 +971,7 @@ workflows:
                 '1202329899911593': $.inputData.body.StaffName,
                 '1202329899911595': $.inputData.body.CaseID,
                 '1202329899911597': $.inputData.body.StaffEmail,
-                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "DateReceived" in Asana
+                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Submission Date" in Asana
                 '1204411543329531': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1204398350066782': $.inputData.body.SuggestionBoxId,
                 '1204398351814002': $.inputData.body.SuggestionBoxGps,
@@ -1122,7 +1149,7 @@ workflows:
                 '1203958690339485': $.inputData.body.StaffName,
                 '1203958690339489': $.inputData.body.CaseID,
                 '1203958690339493': $.inputData.body.StaffEmail,
-                '1203958690339497': $.inputData.body.today, // The Today value in Kobo goes into DateReceived in Asana
+                '1203958690339497': $.inputData.body.today, // The Today value in Kobo goes into Submission Date in Asana
                 '1203958690356245': $.inputData.body.ReporterName,
                 '1203958690356249': $.inputData.body.ReporterContactInformation,
                 '1203958690356256': $.inputData.body.AuthorityGrievanceReporter,
@@ -1266,7 +1293,7 @@ workflows:
                 '1202329899911595': $.inputData.body.CaseID,
                 '1203711959959076': $.inputData.body.StaffName,
                 '1203712049265363': $.inputData.body.StaffEmail,
-                '1202329899911599': $.inputData.body.today,// The Kobo value "today" is used to fill the "Date Received" in Asana
+                '1202329899911599': $.inputData.body.today,// The Kobo value "today" is used to fill the "Submission Date" in Asana
                 '1204987862967325': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1204987862967339': $.inputData.body.SuggestionBoxGps,
                 '1204987862967330': $.inputData.body.SuggestionBoxId,
@@ -1450,11 +1477,6 @@ workflows:
         webhook_reply: before_start
         enabled: true
     edges:
-      webhook->Transform-data:
-        source_trigger: webhook
-        target_job: Transform-data
-        condition_type: always
-        enabled: true
       Transform-data->GRM03-Upsert-Ituri-Grievances-in-Asana:
         source_job: Transform-data
         target_job: GRM03-Upsert-Ituri-Grievances-in-Asana
@@ -1462,6 +1484,11 @@ workflows:
         condition_label: New OWR Form
         condition_expression: |
           state.data.formName == "OWR feedback form"
+        enabled: true
+      webhook->Transform-data:
+        source_trigger: webhook
+        target_job: Transform-data
+        condition_type: always
         enabled: true
       Transform-data->GRM06-Upsert-KBNP-Grievances:
         source_job: Transform-data
@@ -1500,6 +1527,14 @@ workflows:
           fn(state => {
             if (state.data?.body) {
               state.data = state.data.body;
+            }
+            return state;
+          });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
             }
             return state;
           });
@@ -1747,6 +1782,8 @@ workflows:
               'GrievanceStatus _BeingInvestigated': '1187328718760776',
               'GrievanceStatus _Resolved': '1187328718760777',
               'GrievanceStatus _RemediationBeingMonitored': '1192772373678248',
+              RegionalProgram_Global: '1203712073216294',
+              RegionalProgram_EastAfricaAndMadagascar: '1203712073216295',
               Country_AllCountryPrograms: '1203712064585506',
               Country_Mozambique: '1203712075492389',
               GrievanceAgainst_Wcs: '1202330466059593',
@@ -3189,6 +3226,15 @@ workflows:
             }
             return state;
           });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
+            }
+            return state;
+          });
+
       GRM00-Upsert-TEST-Grievances:
         name: GRM00 Upsert TEST Grievances
         adaptor: '@openfn/language-asana@4.3.0'
@@ -3485,6 +3531,14 @@ workflows:
           fn(state => {
             if (state.data?.body) {
               state.data = state.data.body;
+            }
+            return state;
+          });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
             }
             return state;
           });
@@ -3930,7 +3984,7 @@ workflows:
         condition_type: js_expression
         condition_label: 28. GRM Bangladesh
         condition_expression: |
-          state.data.body.formName == "GRM Bangladesh"
+          state.data.formName == "GRM Bangladesh"
         enabled: true
   MesoAmerica-Sync-to-Asana:
     name: MesoAmerica Sync to Asana
@@ -4654,6 +4708,14 @@ workflows:
             }
             return state;
           });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
+            }
+            return state;
+          });
       GRM02-a-Upsert-Aceh-Grievances-in-Asana:
         name: GRM02 a Upsert Aceh Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
@@ -5039,12 +5101,13 @@ workflows:
               "ReportFormat_Letter": "1202330347503544",
               "Gender_Male": "1202330737362427",
               "Gender_Female": "1202330737362428",
-              "Gender_MixedGender": "1202330737362429",
-              "Gender_UnknownGender": "1202330737362430",
-              "Gender_OtherGender": "1207852335266397",
+              "Gender_mixed_gender": "1202330737362429",
+              "Gender_Unknown_gender": "1202330737362430",
+              "Gender_Other_gender": "1207852335266397",
+              "Gender_Prefer not to report": "1207852335266398",
               "Age_<18": "1202330714895607",
-              "Age_19-35": "1202330714895608",
-              "Age_36-50": "1202330714895609",
+              "Age_19–35": "1202330714895608",
+              "Age_36–50": "1202330714895609",
               "Age_>50": "1202330714895610",
               "Age_mixed_age": "1202330714895611",
               "Age_unknown_age": "1202330714895612",
@@ -5053,26 +5116,19 @@ workflows:
               "GrievanceAgainst_PrivateSectorPartner": "1202330466059595",
               "GrievanceAgainst_CivilSocietyPartner": "1202330466059596",
               "GrievanceAgainst_NotWcsAndNotAWcsPartner": "1202330466059597",
-              "GrievanceAgainst_FundingAgency": "1218838720451214",
               "ConfidentialitySensitivity_Yes": "1202330821410493",
               "ConfidentialitySensitivity_No": "1202330821410494",
-              "ProblemType_LivelihoodProgram": "1218393144774810",
-              "ProblemType_LandAcquisitionAndConstruction": "1218393144774811",
-              "ProblemType_Compensation": "1218393144774812",
-              "ProblemType_ResettlementSite": "1218393144774813",
-              "ProblemType_ViolationOfEnvironmentalProceduresAndProcesses": "1218393144774814",
-              "ProblemType_GenderDiscrimination": "1218393144774815",
-              "ProblemType_ViolationOfLocalCommunityRights": "1218393144774816",
-              "ProblemType_HealthAndSafetyIssues": "1218393144774817",
-              "ProblemType_OthersProblemType": "1218393144774818",
-              "FollowUp_NeedtoFollowUp": "1218969541185906",
-              "FollowUp_NoNeedToFollowUp": "1218969541185907",
-              "ComplainantType_OthersComplainantType": "1218747713239150",
-              "ComplainantType_ProjectAffectedPerson": "1218747713239146",
-              "ComplainantType_CivilOrganization": "1218747713239148",
-              "ComplainantType_ServiceOrganization": "1218747713239149",
-              "ComplainantType_Intermediary": "1218747713239147",
-
+              "Problem type_LivelihoodProgram": "1218393144774810",
+              "Problem type_LandAcquisitionAndConstruction": "1218393144774811",
+              "Problem type_Compensation": "1218393144774812",
+              "Problem type_ResettlementSite": "1218393144774813",
+              "Problem type_ViolationOfEnvironmentalProceduresAndProcesses": "1218393144774814",
+              "Problem type_GenderDiscrimination": "1218393144774815",
+              "Problem type_ViolationOfLocalCommunityRights": "1218393144774816",
+              "Problem type_HealthAndSafetyIssues": "1218393144774817",
+              "Problem type_OthersProblemType": "1218393144774818",
+               "ActionsTaken_NeedtoFollowUp": "1218393144774822",
+            "ActionsTaken_NoNeedToFollowUp": "1218393144774823"
             };
             state.formatMapping = formatMapping;
             state.inputData = state.data;
@@ -5115,27 +5171,31 @@ workflows:
                 '1202330347491974': state => state.formatMapping["ReportFormat_" + $.inputData.body.ReportFormat],
                 '1202330737362426': state => state.formatMapping["Gender_" + $.inputData.body.Gender],
                 '1202330714895606': state => state.formatMapping["Age_" + $.inputData.body.Age],
-                '1208262949429784': state => state.formatMapping["WcsStaff_" + $.inputData.body.WcsStaff],
                 '1203711959959076': $.inputData.body.StaffName,
                 '1203712049265363': $.inputData.body.StaffEmail,
-                '1203977086782815': state => state.formatMapping["Anonymous_" + $.inputData.body.Anonymous],
+                '1202329899911599': $.inputData.body.SubmissionDate,
+                '1215339102541070': $.inputData.body.DepositDate,
+                '1215339102541084': $.inputData.body.SuggestionBoxGps,
+                '1215339102541077': $.inputData.body.SuggestionBoxId,
+                '1215339102541091': $.inputData.body.BoxCollectionDate,
                 '1202329899911605': $.inputData.body.ReporterName,
                 '1203712060006636': $.inputData.body.ReporterContactInformation,
-                '1202329899911599': $.inputData.body.DateReceived,
-                '1218747713239145': state => state.formatMapping["ComplainantType_" + $.inputData.body.ComplainantType],
-                '1218969541185909': $.inputData.body.OtherComplainantType,
+                '1203712112458773': $.inputData.body.AuthorityGrievanceReporter,
+                '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
+                '1202330815421247': state => state.formatMapping["DatePrecision_" + $.inputData.body.DatePrecision],
                 '1202329899911619': $.inputData.body.WhereGrievance,
-                '1218393144774809': state => state.formatMapping["ProblemType_" + $.inputData.body.ProblemType],
-                '1218747713737915': $.inputData.body.OtherProblemType,
                 '1202329899911623': $.inputData.body.GrievanceDate,
+                '1203712125372990': $.inputData.body.PartiesInvolvedGrievance,
+                '1203712145400954': $.inputData.body.LocalAuthoritiesContacted,
+                '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
                 '1203712150593482': $.inputData.body.HarmSuffered,
                 '1203712149463009': $.inputData.body.ReliefRequested,
-                '1202330466059592': state => state.formatMapping["GrievanceAgainst_" + $.inputData.body.GrievanceAgainst],
-                '1218838720451212': $.inputData.body.ActionsTaken,
-                '1218969541185905': state => state.formatMapping["FollowUp_" + $.inputData.body.FollowUp],
-                '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
                 '1202329899911635': $.inputData.body.OnlineFolder,
-
+                '1215339102541098': $.inputData.body.Location,
+                '1202330821410492': state => state.formatMapping["ConfidentialitySensitivity_" + $.inputData.body.ConfidentialitySensitivity],
+                '1202329899911599': $.inputData.body.DateReceived,
+                '1218393144774809': state => state.formatMapping["Problem type_" + $.inputData.body["Problem type"]],
+                '1218393144774821': state => state.formatMapping["ActionsTaken_" + $.inputData.body.ActionsTaken],
               }
             },
               state => {
@@ -5148,6 +5208,7 @@ workflows:
     triggers:
       webhook:
         type: webhook
+        custom_path: 'seap-1-sync-to-asana'
         webhook_reply: before_start
         enabled: true
     edges:
@@ -5493,6 +5554,14 @@ workflows:
             }
             return state;
           });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
+            }
+            return state;
+          });
       GRM18-Upsert-CAR-Grievances-in-Asana:
         name: GRM18 Upsert CAR Grievances in Asana
         adaptor: '@openfn/language-asana@4.3.0'
@@ -5576,7 +5645,7 @@ workflows:
               notes: $.inputData.body.Description,
               custom_fields: {
                 // Fields  belonging to open-ended questions (qxns that accept free text input)
-                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Date Received" in Asana
+                '1202329899911599': $.inputData.body.today, // The Kobo value "today" is used to fill the "Submission Date" in Asana
                 '1204411543329531': $.inputData.body.SubmissionDate, // the kobo value "SubmissionDate" is used to fill the "Deposit date" in Asana
                 '1202329899911595': $.inputData.body.CaseID,
                 '1203711959959076': $.inputData.body.StaffName,
@@ -6386,7 +6455,7 @@ workflows:
       GRM33-Upsert-Oban-grievances-in-Asana:
         name: GRM33 Upsert Oban grievances in Asana
         adaptor: '@openfn/language-asana@5.1.3'
-        credential: ddetoeuf@wcs.org-GRM-Asana-token
+        credential: null
         body: |
           // Check out the Job Writing Guide for help getting started:
           // https://docs.openfn.org/documentation/jobs/job-writing-guide
@@ -6514,7 +6583,7 @@ workflows:
           },
 
               },
-
+            
               state => {
                 console.log(JSON.stringify(state.data, null, 2)); //log data
                 return state;
@@ -6600,7 +6669,7 @@ workflows:
         condition_label: New Oban Form
         condition_expression: |
           state.data.formName == "Oban GRM"
-        enabled: true
+        enabled: false
   Sync-GRM-Submission-Metadata:
     name: Sync GRM Submission Metadata
     jobs:
@@ -6821,6 +6890,14 @@ workflows:
           fn(state => {
             if (state.data?.body) {
               state.data = state.data.body;
+            }
+            return state;
+          });
+
+          fn(state => {
+            const formsToSync = state.data.formsToSync || [];
+            if (!formsToSync.includes(state.data.formName)) {
+              throw new Error(`Could not match formName: "${state.data.formName}"`);
             }
             return state;
           });
